@@ -1,0 +1,13 @@
+from django.urls import path, re_path
+from rest_auth import urls as urls_rest
+
+from .views import *
+
+app_name = 'api'
+
+urlpatterns = [
+    # ----------------------------------------------------------------------------------swagger y login
+    path('docs/v1.0/', SwaggerSchemaView.as_view(), ),
+    path('login/', urls_rest.LoginView.as_view()),   
+    
+    ]
