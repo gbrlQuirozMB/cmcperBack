@@ -6,12 +6,13 @@ from django.shortcuts import render
 from rest_framework import permissions
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.generics import ListAPIView, CreateAPIView
+from rest_framework.views import APIView
 
 from api.exceptions import *
 from .serializers import *
 from api.logger import log
-
-# Create your views here.
+from api.Paginacion import Paginacion
+from rest_framework.response import Response
 
 
 # ----------------------------------------------------------------------------------Preregistro
@@ -25,3 +26,27 @@ class PreregistroCreateView(CreateAPIView):
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
+
+
+class PreregistroListEndPoint(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def get(self, request):
+        queryset = Medico.objects.all().filter(aceptado=False)
+        size = self.request.query_params.get('size', None)
+        direc = self.request.query_params.get('direc', None)
+        orderby = self.request.query_params.get('orderby', None)
+        page = self.request.query_params.get('page', None)
+
+        paginacion = Paginacion(queryset, MedicoListSerializer, size, direc, orderby, page)
+        serializer = paginacion.paginar()
+
+        respuesta = {
+            "totalElements": paginacion.totalElements,
+            "totalPages": paginacion.totalPages,
+            "sort": paginacion.orderby,
+            "direction": paginacion.direc,
+            "size": paginacion.size,
+            "content": serializer.data
+        }
+        return Response(respuesta)

@@ -17,9 +17,9 @@ class Paginacion:
         try:
             size = int(self.size)
             if size < 1:
-                size = 3
+                size = 10
         except:
-            size = 3
+            size = 10
 
         direc = str(self.direc)
         if direc.lower() == 'asc':
@@ -44,7 +44,7 @@ class Paginacion:
             direc = 'desc'
         else:
             direc = 'asc'
-        log.info(f'se obtienen: {cuenta} registros, tamanio pagina: {size}, direccion: {direc}, ordenados por: {orderBy}')
+        log.info(f'se obtienen: {cuenta} registros, registros por pagina: {size}, direccion: {direc}, ordenados por: {orderBy}')
 
         page = self.page
         try:

@@ -6,7 +6,9 @@ from .views import *
 app_name = 'preregistro'
 
 urlpatterns = [
-    # ----------------------------------------------------------------------------------Carta
+    # ----------------------------------------------------------------------------------Preregistro
     # path('comprar-carta/', csrf_exempt(CarritoCreateView.as_view()), ),
     path('create/', PreregistroCreateView.as_view(), ),
+    path('list/', PreregistroListEndPoint.as_view(), ),
+    
 ]
