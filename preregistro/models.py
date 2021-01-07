@@ -25,8 +25,8 @@ class Medico(models.Model):
     colonia = models.CharField(max_length=100)
     calle = models.CharField(max_length=100)
     cp = models.CharField(max_length=10)
-    numInterior = models.CharField(max_length=10, db_column='num_interior')
-    numInterior = models.CharField(max_length=10, db_column='num_exterior')
+    numInterior = models.CharField(max_length=10, blank=True, db_column='num_interior')
+    numExterior = models.CharField(max_length=10, db_column='num_exterior')
     # pantalla 4
     rfcFacturacion = models.CharField(max_length=15,db_column='rfc_facturacion')
     usoCfdi = models.CharField(max_length=5, db_column='uso_cfdi', choices=(
@@ -43,7 +43,7 @@ class Medico(models.Model):
     calleConsult = models.CharField(max_length=100, blank=True, db_column='calle_consult')
     cpConsult = models.CharField(max_length=10, blank=True, db_column='cp_consult')
     numInteriorConsult = models.CharField(max_length=10, blank=True, db_column='num_interior_consult')
-    numInteriorConsult = models.CharField(max_length=10, blank=True, db_column='num_exterior_consult')
+    numExteriorConsult = models.CharField(max_length=10, blank=True, db_column='num_exterior_consult')
     # pantalla 6
     cedProfesional = models.CharField(max_length=20, db_column='ced_profesional')
     cedEspecialidad = models.CharField(max_length=20, db_column='ced_especialidad')
@@ -61,7 +61,7 @@ class Medico(models.Model):
     # administracion interna
     aceptado = models.BooleanField(default=False)
     motivo = models.TextField(blank=True)
-    numRegistro = models.IntegerField(blank=True)
+    numRegistro = models.IntegerField(blank=True, null=True)
 
     class Meta:
         db_table = 'pre_registro_medico'

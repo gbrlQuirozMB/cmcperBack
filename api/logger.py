@@ -1,13 +1,14 @@
 import logging as log
 
 # log.basicConfig(level=log.INFO)
-log.basicConfig(#format="%(asctime)s - %(name)s - %(levelname)s: %(message)s",
-                format="%(asctime)s - %(levelname)s [%(filename)s:%(lineno)s]-> %(message)s",
+log.basicConfig(
+                # format="%(asctime)s - %(levelname)s [%(filename)s:%(lineno)s]-> %(message)s",
+                format="%(asctime)s - %(levelname)s [%(pathname)s:%(lineno)s]-> \n %(message)s",
                 datefmt="%Y-%m-%d %H:%M",
-                handlers=[
-                    log.FileHandler("errores.log"),
-                    log.StreamHandler()
-                ],
+                # handlers=[
+                #     log.FileHandler("errores.log"),
+                #     log.StreamHandler()
+                # ],
                 level=log.DEBUG)
 
 # log.info(__name__)  # si se ejecuta este archivo imprime __main__ si se ejecuta desde otro archivo es logger
