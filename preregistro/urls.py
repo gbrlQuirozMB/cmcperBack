@@ -10,5 +10,6 @@ urlpatterns = [
     # path('comprar-carta/', csrf_exempt(CarritoCreateView.as_view()), ),
     path('create/', PreregistroCreateView.as_view(), ),
     path('list/', PreregistroListEndPoint.as_view(), ),
+    path('detail/<pk>/', PreregistroDetailView.as_view(), ),
     
 ]

@@ -5,7 +5,7 @@ from django.conf import settings
 from django.shortcuts import render
 from rest_framework import permissions
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.generics import ListAPIView, CreateAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView
 from rest_framework.views import APIView
 
 from api.exceptions import *
@@ -29,6 +29,13 @@ class PreregistroCreateView(CreateAPIView):
 
 
 class PreregistroListEndPoint(APIView):
+    """
+    ?size=3&page=1&orderby=id&direc=asc
+    size -- es el numero de registros a traer
+    page -- el numero de pagina a traer
+    orderby -- campo opr el cual se ordenaran los registros a traer
+    direc -- si es ascendente(asc) o descencende (vacio)
+    """
     permission_classes = (permissions.AllowAny,)
 
     def get(self, request):
@@ -50,3 +57,10 @@ class PreregistroListEndPoint(APIView):
             "content": serializer.data
         }
         return Response(respuesta)
+
+
+class PreregistroDetailView(RetrieveAPIView):
+    queryset = Medico.objects.filter()
+    serializer_class = MedicoSerializer
+    permission_classes = (permissions.AllowAny,)
+    
