@@ -5,7 +5,7 @@ from django.conf import settings
 from django.shortcuts import render
 from rest_framework import permissions
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView
 from rest_framework.views import APIView
 
 from api.exceptions import *
@@ -64,3 +64,14 @@ class PreregistroDetailView(RetrieveAPIView):
     serializer_class = MedicoSerializer
     permission_classes = (permissions.AllowAny,)
     
+    
+class PreregistroUpdateView(RetrieveUpdateAPIView):
+    queryset = Medico.objects.filter()
+    serializer_class = MedicoAceptadoSerializer
+    permission_classes = (permissions.AllowAny,)
+    
+    def put(self, request, *args, **kwargs):
+        pk = kwargs['pk']
+        Medico.objects.filter(id=pk).update(aceptado=True, numRegistro=pk)
+        
+        return self.update(request, *args, **kwargs)

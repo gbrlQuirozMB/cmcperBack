@@ -13,3 +13,10 @@ class MedicoListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Medico
         fields = ['id', 'nombre', 'apPaterno', 'apMaterno', 'rfc', 'curp', 'cedProfesional', 'cedEspecialidad', 'telCelular']
+
+
+class MedicoAceptadoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Medico
+        fields = ['id', 'motivo', 'aceptado', 'numRegistro', 'nombre', 'apPaterno', 'apMaterno', 'rfc', 'curp', 'cedProfesional', 'cedEspecialidad', 'telCelular']
+        read_only_fields = ['aceptado', 'numRegistro','nombre','apPaterno', 'apMaterno', 'rfc', 'curp', 'cedProfesional', 'cedEspecialidad', 'telCelular']
