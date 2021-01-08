@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_auth',
     'api',
     'preregistro',
+    'chat',
 ]
 
 MIDDLEWARE = [

@@ -65,4 +65,4 @@ class Medico(models.Model):
 
     class Meta:
         db_table = 'pre_registro_medico'
-        ordering = ['creado_en']
+        ordering = ['-creado_en']
