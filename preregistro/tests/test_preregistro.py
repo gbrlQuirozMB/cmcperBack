@@ -164,7 +164,6 @@ class PutAceptar200Test(APITestCase):
                               cedCirugiaGral='cedCirugiaGral1',hospitalResi='hospitalResi1',telJefEnse='telJefEnse1',fechaInicioResi='1999-06-06',fechaFinResi='2000-07-07',telCelular='telCelular1',
                               telParticular='telParticular1',email='email1')
         self.json = {
-            # "aceptado": True,
             "motivo": "este es el motivo de aceptacion"
         }
         
@@ -187,3 +186,24 @@ class PutAceptar200Test(APITestCase):
         # print(dato)
         # print(f'{dato.query} {nl} --- {nl}')
         
+class PutRechazar200Test(APITestCase):
+    def setUp(self):
+        Medico.objects.create(id=1, nombre='n1', apPaterno='app1', apMaterno='apm1', rfc='rfc1', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1', deleMuni='deleMuni1',
+                              colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1', cedEspecialidad='cedEspecialidad1',
+                              cedCirugiaGral='cedCirugiaGral1',hospitalResi='hospitalResi1',telJefEnse='telJefEnse1',fechaInicioResi='1999-06-06',fechaFinResi='2000-07-07',telCelular='telCelular1',
+                              telParticular='telParticular1',email='email1')
+        self.json = {
+            "motivo": "este es el motivo de rechazo"
+        }
+        
+    
+    def test(self):
+        response = self.client.get('/api/preregistro/detail/1/')
+        print(f'response JSON ===>>> {nl} {response.data} {nl} ---')
+        
+        response = self.client.put('/api/preregistro/rechazar/1/',self.json)
+        print(f'response JSON ===>>> {nl} {response.data} {nl} ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        response = self.client.get('/api/preregistro/detail/1/')
+        print(f'response JSON ===>>> {nl} {response.data} {nl} ---')

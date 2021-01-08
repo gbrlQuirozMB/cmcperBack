@@ -12,11 +12,11 @@ class MedicoSerializer(serializers.ModelSerializer):
 class MedicoListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Medico
-        fields = ['id', 'nombre', 'apPaterno', 'apMaterno', 'rfc', 'curp', 'cedProfesional', 'cedEspecialidad', 'telCelular']
+        fields = ['id', 'nombre', 'apPaterno', 'apMaterno', 'rfc', 'curp', 'cedProfesional', 'telJefEnse']
 
 
-class MedicoAceptadoSerializer(serializers.ModelSerializer):
+class MedicoAceptadoRechazadoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Medico
-        fields = ['id', 'motivo', 'aceptado', 'numRegistro', 'nombre', 'apPaterno', 'apMaterno', 'rfc', 'curp', 'cedProfesional', 'cedEspecialidad', 'telCelular']
-        read_only_fields = ['aceptado', 'numRegistro','nombre','apPaterno', 'apMaterno', 'rfc', 'curp', 'cedProfesional', 'cedEspecialidad', 'telCelular']
+        fields = ['id', 'motivo', 'aceptado', 'numRegistro', 'nombre', 'apPaterno', 'apMaterno', 'rfc', 'telCelular']
+        read_only_fields = ['aceptado', 'numRegistro','nombre','apPaterno', 'apMaterno', 'rfc', 'telCelular']

@@ -11,6 +11,7 @@ urlpatterns = [
     path('create/', PreregistroCreateView.as_view(), ),
     path('list/', PreregistroListEndPoint.as_view(), ),
     path('detail/<pk>/', PreregistroDetailView.as_view(), ),
-    path('aceptar/<pk>/', PreregistroUpdateView.as_view(), ),
+    path('aceptar/<pk>/', PreregistroAceptadoUpdateView.as_view(), ),
+    path('rechazar/<pk>/', PreregistroRechazadoUpdateView.as_view(), ),
     
 ]

@@ -65,13 +65,24 @@ class PreregistroDetailView(RetrieveAPIView):
     permission_classes = (permissions.AllowAny,)
     
     
-class PreregistroUpdateView(RetrieveUpdateAPIView):
+class PreregistroAceptadoUpdateView(RetrieveUpdateAPIView):
     queryset = Medico.objects.filter()
-    serializer_class = MedicoAceptadoSerializer
+    serializer_class = MedicoAceptadoRechazadoSerializer
     permission_classes = (permissions.AllowAny,)
     
     def put(self, request, *args, **kwargs):
         pk = kwargs['pk']
         Medico.objects.filter(id=pk).update(aceptado=True, numRegistro=pk)
+        
+        return self.update(request, *args, **kwargs)
+    
+class PreregistroRechazadoUpdateView(RetrieveUpdateAPIView):
+    queryset = Medico.objects.filter()
+    serializer_class = MedicoAceptadoRechazadoSerializer
+    permission_classes = (permissions.AllowAny,)
+    
+    def put(self, request, *args, **kwargs):
+        pk = kwargs['pk']
+        Medico.objects.filter(id=pk).update(aceptado=False, numRegistro=0)
         
         return self.update(request, *args, **kwargs)
