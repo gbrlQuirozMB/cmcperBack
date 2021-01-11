@@ -15,10 +15,9 @@ class Mensaje(models.Model):
         
 class Conversacion(models.Model):
     creado_en = models.DateTimeField(auto_now_add=True)
-    actualzado_en = models.DateTimeField(auto_now=True)
     nombre = models.CharField(max_length=150)
     destinatario = models.IntegerField()
     
     class Meta:
         db_table = 'conversacion'
-        ordering = ['-actualzado_en']
+        ordering = ['-creado_en']
