@@ -70,3 +70,46 @@ class Post201Test(APITestCase):
             self.assertEqual(Conversacion.objects.get(id=4).nombre, 'gabriel quiroz') # regresa el nombre concatenado para mostrarte en la lista
         else:
             self.assertEqual(Conversacion.objects.get(id=4).nombre, 'n1 app1 apm1') # regresa el nombre concatenado para mostrarte en la lista
+            
+            
+class GetList200Test(APITestCase):
+    def setUp(self):
+        Medico.objects.create(nombre='n1', apPaterno='app1', apMaterno='apm1', rfc='rfc1', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1', deleMuni='deleMuni1',
+                colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1', cedEspecialidad='cedEspecialidad1',
+                cedCirugiaGral='cedCirugiaGral1',hospitalResi='hospitalResi1',telJefEnse='telJefEnse1',fechaInicioResi='1999-06-06',fechaFinResi='2000-07-07',telCelular='telCelular1',
+                telParticular='telParticular1',email='email1', numRegistro=333)
+        self.json = {
+            "mensaje": "mesaje del json",
+            "destinatario": 333,
+            "remitente": 369
+        }
+        self.jsonOtro = {
+            "mensaje": "mesaje del json",
+            "destinatario": 333,
+            "remitente": 111
+        }
+    def test(self):
+        self.client.post('/api/chat/create/', data=self.json)
+        self.client.post('/api/chat/create/', data=self.json)
+        self.client.post('/api/chat/create/', data=self.json)
+        self.client.post('/api/chat/create/', data=self.json)
+        self.client.post('/api/chat/create/', data=self.json)
+        self.client.post('/api/chat/create/', data=self.jsonOtro)
+        self.client.post('/api/chat/create/', data=self.jsonOtro)
+        self.client.post('/api/chat/create/', data=self.jsonOtro)
+        self.client.post('/api/chat/create/', data=self.jsonOtro)
+        self.client.post('/api/chat/create/', data=self.jsonOtro)
+        
+        response = self.client.get('/api/chat/all/369/333/')
+        print(f'response JSON ===>>> {nl} {response.json()} {nl} ---')
+
+        response = self.client.get(
+            '/api/chat/all/369/333/?size=3&page=1&orderby=id&direc=asc')
+        print(f'response JSON ===>>> {nl} {response.json()} {nl} ---')
+
+        response = self.client.get(
+            '/api/chat/all/369/333/?size=3&page=2&orderby=id&direc=asc')
+        print(f'response JSON ===>>> {nl} {response.json()} {nl} ---')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
