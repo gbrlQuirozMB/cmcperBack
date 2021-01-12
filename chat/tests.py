@@ -165,3 +165,24 @@ class GetConversacionList200Test(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
+        
+
+class GetMedicoChatList200Test(APITestCase):
+    def setUp(self):
+            Medico.objects.create(id=1, nombre='n1', apPaterno='app1', apMaterno='apm1', rfc='rfc1', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1', deleMuni='deleMuni1',
+                                colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1', cedEspecialidad='cedEspecialidad1',
+                                cedCirugiaGral='cedCirugiaGral1',hospitalResi='hospitalResi1',telJefEnse='telJefEnse1',fechaInicioResi='1999-06-06',fechaFinResi='2000-07-07',telCelular='telCelular1',
+                                telParticular='telParticular1',email='email1',aceptado=True,numRegistro=333)
+            Medico.objects.create(id=2, nombre='n2', apPaterno='app2', apMaterno='apm2', rfc='rfc2', curp='curp2', fechaNac='2020-09-09', pais='pais2', estado='estado2', ciudad='ciudad2', deleMuni='deleMuni2',
+                                colonia='colonia', calle='calle2', cp='cp2', numExterior='numExterior2', rfcFacturacion='rfcFacturacion2', cedProfesional='cedProfesional2', cedEspecialidad='cedEspecialidad2',
+                                cedCirugiaGral='cedCirugiaGral2',hospitalResi='hospitalResi2',telJefEnse='telJefEnse2',fechaInicioResi='1999-06-06',fechaFinResi='2000-07-07',telCelular='telCelular2',
+                                telParticular='telParticular2',email='email2',aceptado=True,numRegistro=666)
+            Medico.objects.create(id=3, nombre='n3', apPaterno='app3', apMaterno='apm3', rfc='rfc3', curp='curp3', fechaNac='2020-09-09', pais='pais3', estado='estado3', ciudad='ciudad3', deleMuni='deleMuni3',
+                                colonia='colonia', calle='calle3', cp='cp3', numExterior='numExterior3', rfcFacturacion='rfcFacturacion3', cedProfesional='cedProfesional3', cedEspecialidad='cedEspecialidad3',
+                                cedCirugiaGral='cedCirugiaGral3',hospitalResi='hospitalResi3',telJefEnse='telJefEnse3',fechaInicioResi='1999-06-06',fechaFinResi='2000-07-07',telCelular='telCelular3',
+                                telParticular='telParticular3',email='email3',aceptado=True,numRegistro=999)
+
+    def test(self):
+        response = self.client.get('/api/chat/medicos/list/')
+        print(f'response JSON ===>>> {nl} {response.json()} {nl} ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

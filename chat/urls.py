@@ -11,5 +11,6 @@ urlpatterns = [
     path('create/', ChatCreateView.as_view(), ),
     path('all/<int:remitente>/<int:destinatario>/', ChatListEndPoint.as_view(), ),
     path('conversaciones/', ConversacionListEndPoint.as_view(), ),
+    path('medicos/list/', MedicoChatListEndPoint.as_view(), ),
     
 ]
