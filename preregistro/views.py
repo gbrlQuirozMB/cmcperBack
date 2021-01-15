@@ -14,6 +14,9 @@ from api.logger import log
 from api.Paginacion import Paginacion
 from rest_framework.response import Response
 
+from django.contrib.auth.models import User
+from django.contrib.auth.base_user import BaseUserManager
+
 
 # ----------------------------------------------------------------------------------Preregistro
 class PreregistroCreateView(CreateAPIView):
@@ -73,7 +76,14 @@ class PreregistroAceptadoUpdateView(RetrieveUpdateAPIView):
     def put(self, request, *args, **kwargs):
         pk = kwargs['pk']
         Medico.objects.filter(id=pk).update(aceptado=True, numRegistro=pk)
-        
+        # falta saber los grupos y permisos que se crearan, pero depende mas de las apps
+        datosMedico = Medico.objects.filter(id=1).values_list('nombre','apPaterno','apMaterno','email','rfc')
+        username = datosMedico[0][0][0:3] + datosMedico[0][1][0:3] + datosMedico[0][4][4:6]
+        # password = User.objects.make_random_password() # letras mayusculas, minusculas
+        password = BaseUserManager().make_random_password() # letras mayusculas, minusculas y numeros
+        user = User.objects.create_user(username=username,email=datosMedico[0][3],password=password,first_name=datosMedico[0][0],last_name=datosMedico[0][1])
+        user.user_permissions.set([41,44,37,40,34])
+        # falta enviar por correo el nuevo usuarios creado pero eso lo HACE el FRONT desde otro endpoint
         return self.update(request, *args, **kwargs)
     
 class PreregistroRechazadoUpdateView(RetrieveUpdateAPIView):
@@ -84,5 +94,5 @@ class PreregistroRechazadoUpdateView(RetrieveUpdateAPIView):
     def put(self, request, *args, **kwargs):
         pk = kwargs['pk']
         Medico.objects.filter(id=pk).update(aceptado=False, numRegistro=0)
-        
+        # falta enviar por correo el motivo del rechazo pero eso lo HACE el FRONT desde otro endpoint
         return self.update(request, *args, **kwargs)

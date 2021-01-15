@@ -1,5 +1,7 @@
 
 import json
+
+from django.contrib.auth.models import User
 from preregistro.models import Medico
 from django.http import response
 from rest_framework import status
@@ -156,13 +158,12 @@ class GetDetail200Test(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-
 class PutAceptar200Test(APITestCase):
     def setUp(self):
-        Medico.objects.create(id=1, nombre='n1', apPaterno='app1', apMaterno='apm1', rfc='rfc1', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1', deleMuni='deleMuni1',
+        Medico.objects.create(id=1, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1', deleMuni='deleMuni1',
                               colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1', cedEspecialidad='cedEspecialidad1',
                               cedCirugiaGral='cedCirugiaGral1',hospitalResi='hospitalResi1',telJefEnse='telJefEnse1',fechaInicioResi='1999-06-06',fechaFinResi='2000-07-07',telCelular='telCelular1',
-                              telParticular='telParticular1',email='email1')
+                              telParticular='telParticular1',email='gabriel@mb.company')
         self.json = {
             "motivo": "este es el motivo de aceptacion"
         }
@@ -179,12 +180,18 @@ class PutAceptar200Test(APITestCase):
         response = self.client.get('/api/preregistro/detail/1/')
         print(f'response JSON ===>>> {nl} {response.data} {nl} ---')
         
+        self.assertEqual(User.objects.count(), 1)
+        self.assertEqual(User.objects.get().email, 'gabriel@mb.company')
         
         
-        # Medico.objects.filter(id=1).update(nombre='rocio')
-        # dato = Medico.objects.filter(id=1).values_list('nombre','aceptado')
-        # print(dato)
-        # print(f'{dato.query} {nl} --- {nl}')
+        queryset = User.objects.filter(id=1)
+        for dato in queryset:
+            print(f'username: {dato.username}')
+            print(f'email: {dato.email}')
+            print(f'password: {dato.password}')
+            print(f'first_name: {dato.first_name}')
+            print(f'last_name: {dato.last_name}')
+            print(f'user_permissions: {dato.get_user_permissions()}')
         
 class PutRechazar200Test(APITestCase):
     def setUp(self):
@@ -207,3 +214,24 @@ class PutRechazar200Test(APITestCase):
         
         response = self.client.get('/api/preregistro/detail/1/')
         print(f'response JSON ===>>> {nl} {response.data} {nl} ---')
+        
+        
+
+class baseDatosTest(APITestCase):
+    def setUp(self):
+        Medico.objects.create(id=1, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog760406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1', deleMuni='deleMuni1',
+                              colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1', cedEspecialidad='cedEspecialidad1',
+                              cedCirugiaGral='cedCirugiaGral1',hospitalResi='hospitalResi1',telJefEnse='telJefEnse1',fechaInicioResi='1999-06-06',fechaFinResi='2000-07-07',telCelular='telCelular1',
+                              telParticular='telParticular1',email='gabriel@mb.company')
+        
+    def test(self):
+        # creando valores para crear usuarios
+        # user = User.objects.create_user(username=username,email=datosMedico[0][3],password=password,first_name=datosMedico[0][0],last_name=datosMedico[0][1])
+        
+        datosMedico = Medico.objects.filter(id=1).values_list('nombre','apPaterno','apMaterno','email','rfc')
+        nombre = str(datosMedico[0][0] + ' ' + datosMedico[0][1] + ' ' + datosMedico[0][2])
+        username = datosMedico[0][0][0:3] + datosMedico[0][1][0:3] + datosMedico[0][4][4:6]
+        
+        print(username)
+        
+        
