@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'api',
     'preregistro',
     'chat',
+    'notificaciones',
 ]
 
 MIDDLEWARE = [
