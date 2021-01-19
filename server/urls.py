@@ -23,4 +23,5 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('api/preregistro/', include('preregistro.urls')),
     path('api/chat/', include('chat.urls')),
+    path('api/notificaciones/', include('notificaciones.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
