@@ -6,7 +6,7 @@ from django.conf import settings
 from django.shortcuts import render
 from rest_framework import permissions
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView
 from rest_framework.views import APIView
 
 from api.exceptions import *
@@ -73,7 +73,7 @@ class PreregistroDetailView(RetrieveAPIView):
     permission_classes = (permissions.AllowAny,)
     
     
-class PreregistroAceptadoUpdateView(RetrieveUpdateAPIView):
+class PreregistroAceptadoUpdateView(UpdateAPIView):
     queryset = Medico.objects.filter()
     serializer_class = MedicoAceptadoRechazadoSerializer
     permission_classes = (permissions.AllowAny,)
@@ -105,7 +105,7 @@ class PreregistroAceptadoUpdateView(RetrieveUpdateAPIView):
         
         return self.update(request, *args, **kwargs)
     
-class PreregistroRechazadoUpdateView(RetrieveUpdateAPIView):
+class PreregistroRechazadoUpdateView(UpdateAPIView):
     queryset = Medico.objects.filter()
     serializer_class = MedicoAceptadoRechazadoSerializer
     permission_classes = (permissions.AllowAny,)

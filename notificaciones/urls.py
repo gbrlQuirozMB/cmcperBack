@@ -9,5 +9,6 @@ urlpatterns = [
     # ----------------------------------------------------------------------------------Chat
     # path('comprar-carta/', csrf_exempt(CarritoCreateView.as_view()), ),
     path('all/<int:destinatario>/', NotificacionListEndPoint.as_view(), ),
+    path('leer/<pk>/', NotificacionLeerUpdateView.as_view(), ),
     
 ]

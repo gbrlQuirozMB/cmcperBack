@@ -1,4 +1,5 @@
-from notificaciones.serializers import NotificacionSerializer
+from rest_framework.generics import RetrieveUpdateAPIView, UpdateAPIView
+from notificaciones.serializers import NotificacionLeerSerializer, NotificacionSerializer
 from notificaciones.models import Notificacion
 from django.shortcuts import render
 from rest_framework.views import APIView
@@ -37,3 +38,15 @@ class NotificacionListEndPoint(APIView):
             "content": serializer.data
         }
         return Response(respuesta)
+    
+    
+class NotificacionLeerUpdateView(RetrieveUpdateAPIView):
+    queryset = Notificacion.objects.filter()
+    serializer_class = NotificacionLeerSerializer
+    permission_classes = (permissions.AllowAny,)
+    
+    def put(self, request, *args, **kwargs):
+        pk = kwargs['pk']
+        Notificacion.objects.filter(id=pk).update(leido=True)
+
+        return self.update(request, *args, **kwargs)

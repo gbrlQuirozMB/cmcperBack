@@ -186,15 +186,18 @@ class PutAceptar200Test(APITestCase):
     
     def test(self):
         # como esta originalmente
-        response = self.client.get('/api/preregistro/detail/1/')
-        print(f'response JSON ===>>> {nl} {response.data} {nl} ---')
+        # response = self.client.get('/api/preregistro/detail/1/')
+        # print(f'response JSON ===>>> {nl} {response.data} {nl} ---')
         # se hace la aprobacion
         response = self.client.put('/api/preregistro/aceptar/1/',self.json)
         print(f'response JSON ===>>> {nl} {response.data} {nl} ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # como queda despues
-        response = self.client.get('/api/preregistro/detail/1/')
-        print(f'response JSON ===>>> {nl} {response.data} {nl} ---')
+        # response = self.client.get('/api/preregistro/detail/1/')
+        # print(f'response JSON ===>>> {nl} {response.data} {nl} ---')
+        
+        dato = Medico.objects.get(id=1)
+        print(f'--->>>dato: {dato.id} - {dato.motivo} - {dato.aceptado} - {dato.numRegistro}')
         
         # que el usuario se haya creado correctamente
         self.assertEqual(User.objects.count(), 4)
@@ -225,17 +228,19 @@ class PutRechazar200Test(APITestCase):
         
     
     def test(self):
-        response = self.client.get('/api/preregistro/detail/1/')
-        print(f'response JSON ===>>> {nl} {response.data} {nl} ---')
+        # response = self.client.get('/api/preregistro/detail/1/')
+        # print(f'response JSON ===>>> {nl} {response.data} {nl} ---')
         
         response = self.client.put('/api/preregistro/rechazar/1/',self.json)
         print(f'response JSON ===>>> {nl} {response.data} {nl} ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
-        response = self.client.get('/api/preregistro/detail/1/')
-        print(f'response JSON ===>>> {nl} {response.data} {nl} ---')
+        # response = self.client.get('/api/preregistro/detail/1/')
+        # print(f'response JSON ===>>> {nl} {response.data} {nl} ---')
         
         # no hay notificacion porque estas son dentro del sistema
+        dato = Medico.objects.get(id=1)
+        print(f'--->>>dato: {dato.id} - {dato.motivo} - {dato.aceptado} - {dato.numRegistro}')
         
         
 
