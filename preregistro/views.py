@@ -1,3 +1,4 @@
+from notificaciones.models import Notificacion
 from django.shortcuts import render
 from datetime import datetime
 
@@ -16,6 +17,8 @@ from rest_framework.response import Response
 
 from django.contrib.auth.models import User
 from django.contrib.auth.base_user import BaseUserManager
+from django.core.mail import send_mail
+
 
 
 # ----------------------------------------------------------------------------------Preregistro
@@ -26,6 +29,8 @@ class PreregistroCreateView(CreateAPIView):
     def post(self, request, *args, **kwargs):
         serializer = MedicoSerializer(data=request.data)
         if serializer.is_valid():
+            datoUser = User.objects.filter(is_superuser=True, is_staff=True).values_list('id')
+            Notificacion.objects.create(titulo='Preregistro',mensaje='Se creo un preregistro',destinatario=datoUser[0][0],remitente=0)
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
@@ -79,11 +84,25 @@ class PreregistroAceptadoUpdateView(RetrieveUpdateAPIView):
         # falta saber los grupos y permisos que se crearan, pero depende mas de las apps
         datosMedico = Medico.objects.filter(id=1).values_list('nombre','apPaterno','apMaterno','email','rfc')
         username = datosMedico[0][0][0:3] + datosMedico[0][1][0:3] + datosMedico[0][4][4:6]
+        email = datosMedico[0][3]
         # password = User.objects.make_random_password() # letras mayusculas, minusculas
         password = BaseUserManager().make_random_password() # letras mayusculas, minusculas y numeros
-        user = User.objects.create_user(username=username,email=datosMedico[0][3],password=password,first_name=datosMedico[0][0],last_name=datosMedico[0][1])
+        user = User.objects.create_user(username=username,email=email,password=password,first_name=datosMedico[0][0],last_name=datosMedico[0][1])
         user.user_permissions.set([41,44,37,40,34])
-        # falta enviar por correo el nuevo usuarios creado pero eso lo HACE el FRONT desde otro endpoint
+        Notificacion.objects.create(titulo='Preregistro',mensaje='Su preregistro se aprobó',destinatario=pk,remitente=0)
+        try:
+            nl = '\n'
+            textContent = f'Hola {datosMedico[0][0]} {datosMedico[0][1]}, {nl} Su preregistro ha sido aprobado. {nl} Usuario: {username} {nl} Contraseña: {password}'
+            send_mail(
+                'Preregistro Aprobado',
+                textContent,
+                'gabriel@mb.company',
+                [email],
+                fail_silently=False,
+            )
+        except:
+            raise ResponseError('Error al enviar correo', 500)
+        
         return self.update(request, *args, **kwargs)
     
 class PreregistroRechazadoUpdateView(RetrieveUpdateAPIView):
@@ -94,5 +113,20 @@ class PreregistroRechazadoUpdateView(RetrieveUpdateAPIView):
     def put(self, request, *args, **kwargs):
         pk = kwargs['pk']
         Medico.objects.filter(id=pk).update(aceptado=False, numRegistro=0)
-        # falta enviar por correo el motivo del rechazo pero eso lo HACE el FRONT desde otro endpoint
+        datosMedico = Medico.objects.filter(id=1).values_list('nombre','apPaterno','apMaterno','email','rfc')
+        email = datosMedico[0][3]
+        motivo = self.request.data.get('motivo')
+        # no hay notificacion porque estas son dentro del sistema
+        try:
+            nl = '\n'
+            textContent = f'Hola {datosMedico[0][0]} {datosMedico[0][1]}, {nl} Su preregistro ha sido rechazado. {nl} Motivo: {motivo}'
+            send_mail(
+                'Preregistro Rechazado',
+                textContent,
+                'gabriel@mb.company',
+                [email],
+                fail_silently=False,
+            )
+        except:
+            raise ResponseError('Error al enviar correo', 500)
         return self.update(request, *args, **kwargs)

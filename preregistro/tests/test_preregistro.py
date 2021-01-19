@@ -1,5 +1,6 @@
 
 import json
+from notificaciones.models import Notificacion
 
 from django.contrib.auth.models import User
 from preregistro.models import Medico
@@ -12,6 +13,10 @@ nl = '\n'
 
 class Post201Test(APITestCase):
     def setUp(self):
+        User.objects.create_user(username='limitado',email='limitado@cmcper.com',password='password',first_name='Juanito',last_name='Perez')
+        User.objects.create_user(username='normal',email='normal@cmcper.com',password='password',first_name='Panchito',last_name='Sanchez')
+        User.objects.create_user(username='admin',email='admin@cmcper.com',password='password',first_name='Enrique',last_name='Lucero', is_superuser=True, is_staff=True)
+        
         self.json = {
             "nombre": "gabriel",
             "apPaterno": "quiroz",
@@ -48,6 +53,12 @@ class Post201Test(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Medico.objects.count(), 1)
         self.assertEqual(Medico.objects.get().nombre, 'gabriel')
+        
+        queryset = Notificacion.objects.all()
+        print(f'queryset: {queryset}')
+        for dato in queryset:
+            print(f'--->>>dato: titulo: {dato.titulo}, mensaje: {dato.mensaje}, destinatario: {dato.destinatario}, remitente: {dato.remitente}')
+        
 
 
 class Post400Test(APITestCase):
@@ -160,6 +171,10 @@ class GetDetail200Test(APITestCase):
 
 class PutAceptar200Test(APITestCase):
     def setUp(self):
+        User.objects.create_user(username='limitado',email='limitado@cmcper.com',password='password',first_name='Juanito',last_name='Perez')
+        User.objects.create_user(username='normal',email='normal@cmcper.com',password='password',first_name='Panchito',last_name='Sanchez')
+        User.objects.create_user(username='admin',email='admin@cmcper.com',password='password',first_name='Enrique',last_name='Lucero', is_superuser=True, is_staff=True)
+        
         Medico.objects.create(id=1, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1', deleMuni='deleMuni1',
                               colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1', cedEspecialidad='cedEspecialidad1',
                               cedCirugiaGral='cedCirugiaGral1',hospitalResi='hospitalResi1',telJefEnse='telJefEnse1',fechaInicioResi='1999-06-06',fechaFinResi='2000-07-07',telCelular='telCelular1',
@@ -170,21 +185,21 @@ class PutAceptar200Test(APITestCase):
         
     
     def test(self):
+        # como esta originalmente
         response = self.client.get('/api/preregistro/detail/1/')
         print(f'response JSON ===>>> {nl} {response.data} {nl} ---')
-        
+        # se hace la aprobacion
         response = self.client.put('/api/preregistro/aceptar/1/',self.json)
         print(f'response JSON ===>>> {nl} {response.data} {nl} ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+        # como queda despues
         response = self.client.get('/api/preregistro/detail/1/')
         print(f'response JSON ===>>> {nl} {response.data} {nl} ---')
         
-        self.assertEqual(User.objects.count(), 1)
-        self.assertEqual(User.objects.get().email, 'gabriel@mb.company')
-        
-        
-        queryset = User.objects.filter(id=1)
+        # que el usuario se haya creado correctamente
+        self.assertEqual(User.objects.count(), 4)
+        self.assertEqual(User.objects.get(id=4).email, 'gabriel@mb.company')
+        queryset = User.objects.filter(id=4)
         for dato in queryset:
             print(f'username: {dato.username}')
             print(f'email: {dato.email}')
@@ -192,6 +207,11 @@ class PutAceptar200Test(APITestCase):
             print(f'first_name: {dato.first_name}')
             print(f'last_name: {dato.last_name}')
             print(f'user_permissions: {dato.get_user_permissions()}')
+        
+        # que la notificaion este correcta
+        queryset = Notificacion.objects.all()
+        for dato in queryset:
+            print(f'--->>>dato: titulo: {dato.titulo}, mensaje: {dato.mensaje}, destinatario: {dato.destinatario}, remitente: {dato.remitente}')
         
 class PutRechazar200Test(APITestCase):
     def setUp(self):
@@ -214,6 +234,8 @@ class PutRechazar200Test(APITestCase):
         
         response = self.client.get('/api/preregistro/detail/1/')
         print(f'response JSON ===>>> {nl} {response.data} {nl} ---')
+        
+        # no hay notificacion porque estas son dentro del sistema
         
         
 

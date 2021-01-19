@@ -1,3 +1,4 @@
+from notificaciones.models import Notificacion
 from rest_framework import permissions
 from django.shortcuts import render
 from rest_framework.generics import CreateAPIView
@@ -28,6 +29,8 @@ class ChatCreateView(CreateAPIView):
             Conversacion.objects.filter(destinatario=destinatario).delete()
             nombre = getNombreSesion(request,destinatario)
             Conversacion.objects.create(destinatario=destinatario,nombre=nombre)
+            Notificacion.objects.create(titulo='Chat',mensaje='Tiene un nuevo mensaje',destinatario=destinatario,remitente=0)
+            
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)

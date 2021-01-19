@@ -1,3 +1,4 @@
+from notificaciones.models import Notificacion
 from rest_framework.test import APITestCase
 from .models import *
 from preregistro.models import *
@@ -70,6 +71,11 @@ class Post201Test(APITestCase):
             self.assertEqual(Conversacion.objects.get(id=4).nombre, 'gabriel quiroz') # regresa el nombre concatenado para mostrarte en la lista
         else:
             self.assertEqual(Conversacion.objects.get(id=4).nombre, 'n1 app1 apm1') # regresa el nombre concatenado para mostrarte en la lista
+        
+         # que la notificaion este correcta
+        queryset = Notificacion.objects.all()
+        for dato in queryset:
+            print(f'--->>>dato: titulo: {dato.titulo}, mensaje: {dato.mensaje}, destinatario: {dato.destinatario}, remitente: {dato.remitente}')
             
             
 class GetChatList200Test(APITestCase):
