@@ -30,10 +30,10 @@ class Medico(models.Model):
     # pantalla 4
     rfcFacturacion = models.CharField(max_length=15,db_column='rfc_facturacion')
     usoCfdi = models.CharField(max_length=5, db_column='uso_cfdi', choices=(
-        ('GG','Gastos en General'),
-        ('AM','Adlquisición de Mercancias'),
-        ('PD','Por Definir')
-    ), default="PD")
+        ('G03','Gastos en General'),
+        ('G01','Adlquisición de Mercancias'),
+        ('P01','Por Definir')
+    ), default="P01")
     # pantalla 5.1
     paisConsult = models.CharField(max_length=100, blank=True, db_column='pais_consult')
     estadoConsult = models.CharField(max_length=100, blank=True, db_column='estado_consult')
