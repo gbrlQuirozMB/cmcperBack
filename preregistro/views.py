@@ -44,7 +44,7 @@ class PreregistroListEndPoint(APIView):
     orderby -- campo opr el cual se ordenaran los registros a traer
     direc -- si es ascendente(asc) o descencende (vacio)
     """
-    permission_classes = (permissions.AllowAny,)
+    # permission_classes = (permissions.AllowAny,)
 
     def get(self, request):
         queryset = Medico.objects.all().filter(aceptado=False)
@@ -70,13 +70,13 @@ class PreregistroListEndPoint(APIView):
 class PreregistroDetailView(RetrieveAPIView):
     queryset = Medico.objects.filter()
     serializer_class = MedicoSerializer
-    permission_classes = (permissions.AllowAny,)
+    # permission_classes = (permissions.AllowAny,)
     
     
 class PreregistroAceptadoUpdateView(UpdateAPIView):
     queryset = Medico.objects.filter()
     serializer_class = MedicoAceptadoRechazadoSerializer
-    permission_classes = (permissions.AllowAny,)
+    # permission_classes = (permissions.AllowAny,)
     
     def put(self, request, *args, **kwargs):
         pk = kwargs['pk']
@@ -108,7 +108,7 @@ class PreregistroAceptadoUpdateView(UpdateAPIView):
 class PreregistroRechazadoUpdateView(UpdateAPIView):
     queryset = Medico.objects.filter()
     serializer_class = MedicoAceptadoRechazadoSerializer
-    permission_classes = (permissions.AllowAny,)
+    # permission_classes = (permissions.AllowAny,)
     
     def put(self, request, *args, **kwargs):
         pk = kwargs['pk']

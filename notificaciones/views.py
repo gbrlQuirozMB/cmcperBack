@@ -17,7 +17,7 @@ class NotificacionListEndPoint(APIView):
     orderby -- campo opr el cual se ordenaran los registros a traer
     direc -- si es ascendente(asc) o descencende (vacio)
     """
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, destinatario):
         queryset = Notificacion.objects.all().filter(destinatario=destinatario, leido=False)
@@ -43,7 +43,7 @@ class NotificacionListEndPoint(APIView):
 class NotificacionLeerUpdateView(RetrieveUpdateAPIView):
     queryset = Notificacion.objects.filter()
     serializer_class = NotificacionLeerSerializer
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.IsAuthenticated,)
     
     def put(self, request, *args, **kwargs):
         pk = kwargs['pk']

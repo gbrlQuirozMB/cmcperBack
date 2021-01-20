@@ -6,11 +6,13 @@ from rest_framework.views import APIView
 from rest_framework_swagger import renderers
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
+from rest_framework.authentication import TokenAuthentication
 # Create your views here.
 
 
 class SwaggerSchemaView(APIView):
     permission_classes = [AllowAny]
+    authentication_classes = [TokenAuthentication]
     renderer_classes = [
         renderers.OpenAPIRenderer,
         renderers.SwaggerUIRenderer

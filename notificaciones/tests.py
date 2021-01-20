@@ -2,6 +2,8 @@ from notificaciones.models import Notificacion
 from django.test import TestCase
 from rest_framework.test import APITestCase
 from rest_framework import status
+from django.contrib.auth.models import User
+
 
 
 # Create your tests here.
@@ -20,7 +22,12 @@ class GetNotificacionList200Test(APITestCase):
         Notificacion.objects.create(titulo='titulo9',mensaje='mensaje9',destinatario=666,remitente=369)
         Notificacion.objects.create(titulo='titulo10',mensaje='mensaje10',destinatario=666,remitente=369,leido=True)
         
+        self.user = User.objects.create_user(username='gabriel') #IsAuthenticated
+        
+        
     def test(self):
+        self.client.force_authenticate(user=self.user)
+        
         response = self.client.get('/api/notificaciones/all/333/?orderby=creado_en&direc=asc')
         print(f'response JSON ===>>> \n {response.json()} \n ---')
         
