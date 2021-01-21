@@ -32,7 +32,7 @@ class CustomAuthToken(ObtainAuthToken):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
-        print(f'--->>>permisos: {user.get_user_permissions()}')
+        # print(f'--->>>permisos: {user.get_user_permissions()}')
         return Response({
             'token': token.key,
             'user_id': user.pk,
