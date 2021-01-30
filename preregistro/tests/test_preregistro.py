@@ -183,8 +183,11 @@ class PutAceptar200Test(APITestCase):
             "motivo": "este es el motivo de aceptacion"
         }
         
+        self.user = User.objects.create_user(username='gabriel') #IsAuthenticated
+        
     
     def test(self):
+        self.client.force_authenticate(user=self.user)
         # como esta originalmente
         # response = self.client.get('/api/preregistro/detail/1/')
         # print(f'response JSON ===>>> {nl} {response.data} {nl} ---')
@@ -200,9 +203,9 @@ class PutAceptar200Test(APITestCase):
         print(f'--->>>dato: {dato.id} - {dato.motivo} - {dato.aceptado} - {dato.numRegistro}')
         
         # que el usuario se haya creado correctamente
-        self.assertEqual(User.objects.count(), 4)
-        self.assertEqual(User.objects.get(id=4).email, 'gabriel@mb.company')
-        queryset = User.objects.filter(id=4)
+        self.assertEqual(User.objects.count(), 5)
+        self.assertEqual(User.objects.get(id=5).email, 'gabriel@mb.company')
+        queryset = User.objects.filter(id=5)
         for dato in queryset:
             print(f'username: {dato.username}')
             print(f'email: {dato.email}')

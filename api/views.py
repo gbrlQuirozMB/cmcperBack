@@ -37,6 +37,8 @@ class CustomAuthToken(ObtainAuthToken):
             'token': token.key,
             'user_id': user.pk,
             'email': user.email,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
             'is_superuser': user.is_superuser,
             'permisos': user.get_user_permissions()
         })
