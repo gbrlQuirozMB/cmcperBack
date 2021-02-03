@@ -8,7 +8,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
 # Create your views here.
-
+from django.contrib.auth.models import Permission
 
 class SwaggerSchemaView(APIView):
     permission_classes = [AllowAny]
@@ -33,6 +33,12 @@ class CustomAuthToken(ObtainAuthToken):
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
         # print(f'--->>>permisos: {user.get_user_permissions()}')
+        
+        # permisos en version django 2.2
+        # permissions = Permission.objects.filter(user=request.user)
+        # permissions = Permission.objects.filter(user=user).values_list('name', flat=True)
+        # print(f'--->>>permissions: {permissions}')
+        
         return Response({
             'token': token.key,
             'user_id': user.pk,
@@ -41,4 +47,6 @@ class CustomAuthToken(ObtainAuthToken):
             'last_name': user.last_name,
             'is_superuser': user.is_superuser,
             'permisos': user.get_user_permissions()
+            # permisos en version django 2.2
+            # 'permisos': permissions
         })

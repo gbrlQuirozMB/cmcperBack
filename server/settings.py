@@ -32,8 +32,9 @@ ALLOWED_HOSTS = ["*"]
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
        'http://localhost:8000',
-       'http://416bd6d863fd.ngrok.io', 
+       'http://5f1db00f133b.ngrok.io', #back
        'http://localhost:4200',
+       'http://54625c39d9d4.ngrok.io', #front
 )
 
 # Application definition
@@ -80,17 +81,17 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
 }
 
-SWAGGER_SETTINGS = {
-    # 'SECURITY_DEFINITIONS': {
-    #     'api_key': {
-    #         'type': 'apiKey',
-    #         'in': 'header',
-    #         'name': 'Authorization'
-    #     }
-    # },
-    "is_authenticated": False,  # Set to True to enforce user authentication,
-    "is_superuser": False,  # Set to True to enforce admin only access
-}
+# SWAGGER_SETTINGS = {
+#     # 'SECURITY_DEFINITIONS': {
+#     #     'api_key': {
+#     #         'type': 'apiKey',
+#     #         'in': 'header',
+#     #         'name': 'Authorization'
+#     #     }
+#     # },
+#     "is_authenticated": False,  # Set to True to enforce user authentication,
+#     "is_superuser": False,  # Set to True to enforce admin only access
+# }
 
 ROOT_URLCONF = 'server.urls'
 

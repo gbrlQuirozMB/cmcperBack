@@ -31,7 +31,7 @@ class Medico(models.Model):
     rfcFacturacion = models.CharField(max_length=15,db_column='rfc_facturacion')
     usoCfdi = models.CharField(max_length=5, db_column='uso_cfdi', choices=(
         ('G03','Gastos en General'),
-        ('G01','Adlquisición de Mercancias'),
+        ('G01','Adquisición de Mercancías'),
         ('P01','Por Definir')
     ), default="P01")
     # pantalla 5.1
