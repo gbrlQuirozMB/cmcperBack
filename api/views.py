@@ -1,3 +1,4 @@
+from preregistro.models import Medico
 from django.shortcuts import render
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -32,20 +33,20 @@ class CustomAuthToken(ObtainAuthToken):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
-        # print(f'--->>>permisos: {user.get_user_permissions()}')
-        
         # permisos en version django 2.2
         # permissions = Permission.objects.filter(user=request.user)
         # permissions = Permission.objects.filter(user=user).values_list('name', flat=True)
-        # print(f'--->>>permissions: {permissions}')
+        
+        idMedico = Medico.objects.filter(username=user).values_list('id')
         
         return Response({
             'token': token.key,
-            'user_id': user.pk,
+            'idUser': user.pk,
+            'idMedico': idMedico[0][0],
             'email': user.email,
-            'first_name': user.first_name,
-            'last_name': user.last_name,
-            'is_superuser': user.is_superuser,
+            'firstName': user.first_name,
+            'lastName': user.last_name,
+            'isSuperuser': user.is_superuser,
             'permisos': user.get_user_permissions()
             # permisos en version django 2.2
             # 'permisos': permissions

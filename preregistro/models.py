@@ -63,6 +63,7 @@ class Medico(models.Model):
     aceptado = models.BooleanField(default=False)
     motivo = models.TextField(blank=True)
     numRegistro = models.IntegerField(blank=True, null=True)
+    username = models.CharField(max_length=150, blank=True)
 
     class Meta:
         db_table = 'pre_registro_medico'

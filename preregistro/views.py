@@ -80,7 +80,6 @@ class PreregistroAceptadoUpdateView(UpdateAPIView):
     
     def put(self, request, *args, **kwargs):
         pk = kwargs['pk']
-        Medico.objects.filter(id=pk).update(aceptado=True, numRegistro=pk)
         # falta saber los grupos y permisos que se crearan, pero depende mas de las apps
         datosMedico = Medico.objects.filter(id=pk).values_list('nombre','apPaterno','apMaterno','email','rfc')
         username = datosMedico[0][0][0:3] + datosMedico[0][1][0:3] #+ datosMedico[0][4][4:6]
@@ -88,9 +87,11 @@ class PreregistroAceptadoUpdateView(UpdateAPIView):
         lastName = datosMedico[0][1] + ' ' + datosMedico[0][2]
         # password = User.objects.make_random_password() # letras mayusculas, minusculas
         password = BaseUserManager().make_random_password() # letras mayusculas, minusculas y numeros
-        username = username + '-' + password[0:4]
+        username = username + '-' + password[0:5]
         user = User.objects.create_user(username=username,email=email,password=password,first_name=datosMedico[0][0],last_name=lastName)
         user.user_permissions.set([41,44,37,40,34])
+        # actualiza el status del registro para que este aceptado
+        Medico.objects.filter(id=pk).update(aceptado=True, numRegistro=pk, username=username)
         Notificacion.objects.create(titulo='Preregistro',mensaje='Su preregistro se aprobó',destinatario=pk,remitente=0)
         try:
             nl = '\n'
