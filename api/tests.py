@@ -26,6 +26,11 @@ class PostUserData200Test(APITestCase):
             "password": "password"
         }
         
+        # self.json = {
+        #     "username": "admin",
+        #     "password": "password"
+        # }
+        
         # self.user = User.objects.create_user(username='gabriel') #IsAuthenticated
         
     

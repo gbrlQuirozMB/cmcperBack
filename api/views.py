@@ -36,13 +36,16 @@ class CustomAuthToken(ObtainAuthToken):
         # permisos en version django 2.2
         # permissions = Permission.objects.filter(user=request.user)
         # permissions = Permission.objects.filter(user=user).values_list('name', flat=True)
-        
-        idMedico = Medico.objects.filter(username=user).values_list('id')
+        if user.is_superuser:
+            idMedico = 'No es medico'
+        else:
+            datoMedico = Medico.objects.filter(username=user).values_list('id')
+            idMedico = datoMedico[0][0]
         
         return Response({
             'token': token.key,
             'idUser': user.pk,
-            'idMedico': idMedico[0][0],
+            'idMedico': idMedico,
             'email': user.email,
             'firstName': user.first_name,
             'lastName': user.last_name,
