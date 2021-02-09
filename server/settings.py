@@ -27,7 +27,15 @@ SECRET_KEY = '_o246i)o*hmu($4y-eh(l!3p4b5bfm3$_z4!z5^n7_yzdb^62e'
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = ["*"]
-
+# ALLOWED_HOSTS = ['http://localhost:8000', 'http://345a5193bbe1.ngrok.io:80']
+# CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = (
+       'http://localhost:8000',
+       'http://e0477649a843.ngrok.io', #back
+       'http://localhost:4200',
+       'http://54625c39d9d4.ngrok.io', #front
+)
 
 # Application definition
 
@@ -42,17 +50,22 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     'rest_framework.authtoken',
     'rest_auth',
+    'corsheaders',
     'api',
+    'preregistro',
+    'chat',
+    'notificaciones',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 REST_FRAMEWORK = {
@@ -65,8 +78,20 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
-    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
 }
+
+# SWAGGER_SETTINGS = {
+#     # 'SECURITY_DEFINITIONS': {
+#     #     'api_key': {
+#     #         'type': 'apiKey',
+#     #         'in': 'header',
+#     #         'name': 'Authorization'
+#     #     }
+#     # },
+#     "is_authenticated": False,  # Set to True to enforce user authentication,
+#     "is_superuser": False,  # Set to True to enforce admin only access
+# }
 
 ROOT_URLCONF = 'server.urls'
 
@@ -174,3 +199,4 @@ EMAIL_HOST = config('EMAIL_HOST', default='mail.booster.com.mx')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='billy@booster.com.mx')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='billy123!')
 EMAIL_PORT = config('EMAIL_PORT', default=465)
+
