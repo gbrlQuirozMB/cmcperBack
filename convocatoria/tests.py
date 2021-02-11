@@ -15,7 +15,7 @@ class PutEsExtranjero200Test(APITestCase):
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
 
         self.json = {
-            "isExtranjero": True,
+            "isExtranjero": False,
             "nacionalidad": "Indio"
         }
 
