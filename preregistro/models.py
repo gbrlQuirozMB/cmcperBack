@@ -62,6 +62,9 @@ class Medico(models.Model):
     # historia-2 doc-1 pantalla-4
     isExtranjero = models.BooleanField(default=False, db_column='is_extranjero')
     nacionalidad = models.CharField(max_length=100, blank=True)
+    # historia-2 doc-1 pantalla-5
+    estudioExtranjero = models.BooleanField(default=False, db_column='estudio_extranjero')
+    escuelaExtranjero = models.CharField(max_length=200, blank=True)
     # administracion interna
     aceptado = models.BooleanField(default=False)
     motivo = models.TextField(blank=True)

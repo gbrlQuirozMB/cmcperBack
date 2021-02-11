@@ -7,6 +7,7 @@ app_name = 'convocatoria'
 
 urlpatterns = [
     # ----------------------------------------------------------------------------------Preregistro
-    path('medico/es-extranjero/<pk>/', esExtranjeroUpdateView.as_view(), ),
+    path('medico/es-extranjero/<pk>/', EsExtranjeroUpdateView.as_view(), ),
+    path('medico/estudio-extranjero/<pk>/', EstudioExtranjeroUpdateView.as_view(), ),
     
 ]

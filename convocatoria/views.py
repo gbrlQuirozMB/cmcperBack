@@ -1,3 +1,4 @@
+from rest_framework import response
 from .serializers import *
 from preregistro.models import Medico
 from django.shortcuts import render
@@ -5,6 +6,19 @@ from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView,
 
 
 # Create your views here.
-class esExtranjeroUpdateView(UpdateAPIView):
+class EsExtranjeroUpdateView(UpdateAPIView):
     queryset = Medico.objects.filter()
-    serializer_class = ExtranjeroSerializer
+    serializer_class = EsExtranjeroSerializer
+
+
+class EstudioExtranjeroUpdateView(UpdateAPIView):
+    queryset = Medico.objects.filter()
+    serializer_class = EstudioExtranjeroSerializer
+
+    def put(self, request, *args, **kwargs):
+        # para poder modificar el dato que llega
+        request.data._mutable = True
+        request.data['estudioExtranjero'] = True
+        request.data._mutable = False
+        
+        return self.update(request, *args, **kwargs)
