@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ["*"]
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
        'http://localhost:8000',
-       'http://e0477649a843.ngrok.io', #back
+       'http://537d8496ad26.ngrok.io', #back
        'http://localhost:4200',
        'http://54625c39d9d4.ngrok.io', #front
 )
@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'preregistro',
     'chat',
     'notificaciones',
+    'convocatoria',
 ]
 
 MIDDLEWARE = [
@@ -175,7 +176,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = config('STATIC_ROOT', default='')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
 MEDIA_URL = config('MEDIA_URL', default='/uploads/')
 MEDIA_ROOT = config('MEDIA_ROOT', default='uploads/')
 

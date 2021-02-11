@@ -59,6 +59,9 @@ class Medico(models.Model):
     telConsultorio = models.CharField(max_length=15, blank=True, db_column='tel_consultorio')
     email = models.CharField(max_length=50)
     emailAlterno = models.CharField(max_length=50, blank=True, db_column='email_alterno')
+    # historia-2 doc-1 pantalla-4
+    isExtranjero = models.BooleanField(default=False, db_column='is_extranjero')
+    nacionalidad = models.CharField(max_length=100, blank=True)
     # administracion interna
     aceptado = models.BooleanField(default=False)
     motivo = models.TextField(blank=True)
