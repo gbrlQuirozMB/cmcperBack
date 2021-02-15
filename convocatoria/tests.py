@@ -11,10 +11,13 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from .serializers import *
 import json
 
+from datetime import date
 
 import requests
 
 # Create your tests here.
+
+
 class PutEsExtranjero200Test(APITestCase):
     def setUp(self):
         Medico.objects.create(
@@ -99,7 +102,6 @@ class PostConvocatoria200Test(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         response = self.client.post('/api/convocatoria/create/', data=json.dumps(self.json), content_type="application/json")
-
         print(f'response JSON ===>>> \n {json.dumps(response.data)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -108,15 +110,35 @@ class PostConvocatoria200Test(APITestCase):
         print(f'\n --->>>#registros convocatoria: {Convocatoria.objects.count()}')
         print(f'\n --->>>#registros sede: {Sede.objects.count()}')
         print(f'\n --->>>#registros tipoExamenes: {TipoExamen.objects.count()}')
-        
+
         print(f'\n --->>>nombre: {Convocatoria.objects.get().nombre}')
         print(f'\n --->>>sede1: {Sede.objects.get(id=1).descripcion}')
         print(f'\n --->>>sede2: {Sede.objects.get(id=2).descripcion}')
         print(f'\n --->>>tipoExamen1: {TipoExamen.objects.get(id=1).descripcion}')
+
+
+class GetList200Test(APITestCase):
+    def setUp(self):
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1', precio=333.33)
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',horaExamen='09:09', nombre='convocatoria chingona2', detalles='detalles1', precio=333.33)
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-03-11', fechaExamen='2021-04-06',horaExamen='09:09', nombre='convocatoria chingona3', detalles='detalles1', precio=333.33)
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',horaExamen='09:09', nombre='convocatoria chingona4', detalles='detalles1', precio=333.33)
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',horaExamen='09:09', nombre='convocatoria chingona5', detalles='detalles1', precio=333.33)
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-15', fechaExamen='2021-04-06',horaExamen='09:09', nombre='convocatoria chingona6', detalles='detalles1', precio=333.33)
+
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/convocatoria/list/')
+        print(f'response JSON ===>>> \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         
-        
-        
-        
+
+        # data = Convocatoria.objects.filter(fechaTermino__gte=date.today())
+        # print(f'--->>>data: {data}')
+
 class baseDatosTest(APITestCase):
     def setUp(self):
         convocatoria = Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09',
@@ -126,7 +148,7 @@ class baseDatosTest(APITestCase):
     def test(self):
         datoConvocatoria = Convocatoria.objects.get(id=1)
         print(f'--->>>dato: {datoConvocatoria}')
-        serializer = ConvocatoriaReadSerializer(data=datoConvocatoria)
+        serializer = ConvocatoriaSerializer(data=datoConvocatoria)
         print(f'--->>>serializer: {serializer}')
         if serializer.is_valid():
             # print(f'--->>>dato: {serializer.data}')

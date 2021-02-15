@@ -99,6 +99,10 @@ class Post400Test(APITestCase):
 
 class GetList200Test(APITestCase):
     def setUp(self):
+        User.objects.create_user(username='limitado',email='limitado@cmcper.com',password='password',first_name='Juanito',last_name='Perez')
+        User.objects.create_user(username='normal',email='normal@cmcper.com',password='password',first_name='Panchito',last_name='Sanchez')
+        User.objects.create_user(username='admin',email='admin@cmcper.com',password='password',first_name='Enrique',last_name='Lucero', is_superuser=True, is_staff=True)
+        
         self.json = {
             "nombre": "gabriel",
             "apPaterno": "quiroz",
@@ -126,8 +130,13 @@ class GetList200Test(APITestCase):
             "telParticular": "7711234567",
             "email": "doctor@medico.com"
         }
+        
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+        
 
     def test(self):
+        self.client.force_authenticate(user=self.user)
+        
         self.client.post('/api/preregistro/create/', data=self.json)
         self.client.post('/api/preregistro/create/', data=self.json)
         self.client.post('/api/preregistro/create/', data=self.json)

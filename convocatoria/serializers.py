@@ -40,3 +40,9 @@ class ConvocatoriaSerializer(serializers.ModelSerializer):
             TipoExamen.objects.create(**tipoExameneData, convocatoria=convocatoria)
         # return validated_data # incompleto porque ya se le quito la llave 'sedes'
         return convocatoria
+
+
+class ConvocatoriaListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Convocatoria
+        fields = ['id', 'nombre']

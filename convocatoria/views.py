@@ -8,6 +8,8 @@ from api.logger import log
 from api.exceptions import *
 from rest_framework import permissions
 import json
+from datetime import date
+
 
 
 # import json
@@ -60,3 +62,8 @@ class ConvocatoriaCreateView(CreateAPIView):
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
+
+
+class ConvocatoriaListView(ListAPIView):
+    queryset = Convocatoria.objects.filter(fechaTermino__gte=date.today())
+    serializer_class = ConvocatoriaListSerializer
