@@ -1,9 +1,18 @@
+from convocatoria.models import Convocatoria
 from preregistro.models import Medico
 from django.test import TestCase
 from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
 from rest_framework import status
 
+from io import BytesIO, StringIO
+from PIL import Image
+from django.core.files.uploadedfile import SimpleUploadedFile
+from .serializers import *
+import json
+
+
+import requests
 
 # Create your tests here.
 class PutEsExtranjero200Test(APITestCase):
@@ -15,7 +24,7 @@ class PutEsExtranjero200Test(APITestCase):
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
 
         self.json = {
-            "isExtranjero": False,
+            "isExtranjero": "False",
             "nacionalidad": "Indio"
         }
 
@@ -62,3 +71,64 @@ class PutEstudioExtranjero200Test(APITestCase):
 
         dato = Medico.objects.get(id=1)
         print(f'--->>>DESPUES dato: {dato.id} - {dato.nombre} - {dato.estudioExtranjero} - {dato.escuelaExtranjero}')
+
+
+class PostConvocatoria200Test(APITestCase):
+    def setUp(self):
+
+        self.json = {
+            "fechaInicio": "2020-06-04",
+            "fechaTermino": "2021-02-11",
+            "fechaExamen": "2021-04-06",
+            "horaExamen": "09:09",
+            "nombre": "convocatoria chingona",
+            "detalles": "detalles",
+            "precio": 369.99,
+            "sedes": [
+                {"descripcion": "miSede3"},
+                {"descripcion": "miSede6"}
+            ],
+            "tipoExamenes": [
+                {"descripcion": "tipo9"}
+            ]
+        }
+
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post('/api/convocatoria/create/', data=json.dumps(self.json), content_type="application/json")
+
+        print(f'response JSON ===>>> \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        print(f'\n --->>> checando la DB <<<---')
+
+        print(f'\n --->>>#registros convocatoria: {Convocatoria.objects.count()}')
+        print(f'\n --->>>#registros sede: {Sede.objects.count()}')
+        print(f'\n --->>>#registros tipoExamenes: {TipoExamen.objects.count()}')
+        
+        print(f'\n --->>>nombre: {Convocatoria.objects.get().nombre}')
+        print(f'\n --->>>sede1: {Sede.objects.get(id=1).descripcion}')
+        print(f'\n --->>>sede2: {Sede.objects.get(id=2).descripcion}')
+        print(f'\n --->>>tipoExamen1: {TipoExamen.objects.get(id=1).descripcion}')
+        
+        
+        
+        
+class baseDatosTest(APITestCase):
+    def setUp(self):
+        convocatoria = Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09',
+                                                   nombre='convocatoria chingona', archivo='pdfFile', banner='pngFile', detalles='detalles', precio=369.99)
+        Sede.objects.create(descripcion='sede chingona', convocatoria=convocatoria)
+
+    def test(self):
+        datoConvocatoria = Convocatoria.objects.get(id=1)
+        print(f'--->>>dato: {datoConvocatoria}')
+        serializer = ConvocatoriaReadSerializer(data=datoConvocatoria)
+        print(f'--->>>serializer: {serializer}')
+        if serializer.is_valid():
+            # print(f'--->>>dato: {serializer.data}')
+            print(set(serializer.data.keys()))
+        print(f'--->>>dato: {serializer.errors}')
