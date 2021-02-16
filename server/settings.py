@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'chat',
     'notificaciones',
     'convocatoria',
+    'catalogos',
 ]
 
 MIDDLEWARE = [
