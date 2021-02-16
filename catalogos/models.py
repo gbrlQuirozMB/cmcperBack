@@ -13,3 +13,12 @@ class CatSedes(models.Model):
     class Meta:
         db_table = 'cat_sedes'
         ordering = ['descripcion']
+        
+        
+class CatTiposExamen(models.Model):
+    descripcion = models.CharField(max_length=200)
+    
+    class Meta:
+        db_table = 'cat_tipos_examen'
+    ordering = ['descripcion']
+    
