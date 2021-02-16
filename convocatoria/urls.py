@@ -11,5 +11,6 @@ urlpatterns = [
     path('medico/estudio-extranjero/<pk>/', EstudioExtranjeroUpdateView.as_view(), ),
     path('create/', ConvocatoriaCreateView.as_view(), ),
     path('list/', ConvocatoriaListView.as_view(), ),
+    path('detail/<pk>/', ConvocatoriaDetailView.as_view(), ),
     
 ]

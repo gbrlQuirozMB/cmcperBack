@@ -46,3 +46,13 @@ class ConvocatoriaListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Convocatoria
         fields = ['id', 'nombre']
+
+
+class ConvocatoriaGetDetailSerializer(serializers.ModelSerializer):
+    sedes = SedeSerializer(read_only=True, many=True)
+    tipoExamenes = SedeSerializer(read_only=True, required=False, many=True)
+
+    class Meta:
+        model = Convocatoria
+        fields = [f.name for f in model._meta.fields] + ['sedes'] + ['tipoExamenes']
+        

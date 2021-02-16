@@ -67,3 +67,8 @@ class ConvocatoriaCreateView(CreateAPIView):
 class ConvocatoriaListView(ListAPIView):
     queryset = Convocatoria.objects.filter(fechaTermino__gte=date.today())
     serializer_class = ConvocatoriaListSerializer
+    
+    
+class ConvocatoriaDetailView(RetrieveAPIView):
+    queryset = Convocatoria.objects.filter()
+    serializer_class =  ConvocatoriaGetDetailSerializer

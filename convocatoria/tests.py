@@ -119,12 +119,18 @@ class PostConvocatoria200Test(APITestCase):
 
 class GetList200Test(APITestCase):
     def setUp(self):
-        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1', precio=333.33)
-        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',horaExamen='09:09', nombre='convocatoria chingona2', detalles='detalles1', precio=333.33)
-        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-03-11', fechaExamen='2021-04-06',horaExamen='09:09', nombre='convocatoria chingona3', detalles='detalles1', precio=333.33)
-        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',horaExamen='09:09', nombre='convocatoria chingona4', detalles='detalles1', precio=333.33)
-        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',horaExamen='09:09', nombre='convocatoria chingona5', detalles='detalles1', precio=333.33)
-        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-15', fechaExamen='2021-04-06',horaExamen='09:09', nombre='convocatoria chingona6', detalles='detalles1', precio=333.33)
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1',
+                                    precio=333.33)
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona2', detalles='detalles1',
+                                    precio=333.33)
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-03-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona3', detalles='detalles1',
+                                    precio=333.33)
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona4', detalles='detalles1',
+                                    precio=333.33)
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona5', detalles='detalles1',
+                                    precio=333.33)
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-15', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona6', detalles='detalles1',
+                                    precio=333.33)
 
         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
 
@@ -134,10 +140,40 @@ class GetList200Test(APITestCase):
         response = self.client.get('/api/convocatoria/list/')
         print(f'response JSON ===>>> \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
 
         # data = Convocatoria.objects.filter(fechaTermino__gte=date.today())
         # print(f'--->>>data: {data}')
+
+
+class GetDetail200Test(APITestCase):
+    def setUp(self):
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1',
+                                    precio=333.33)
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona2', detalles='detalles1',
+                                    precio=333.33)
+        convocatoria = Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-03-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona3',
+                                                   detalles='detalles1', precio=333.33)
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona4', detalles='detalles1',
+                                    precio=333.33)
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona5', detalles='detalles1',
+                                    precio=333.33)
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-15', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona6', detalles='detalles1',
+                                    precio=333.33)
+
+        Sede.objects.create(descripcion='sedeXXX', convocatoria=convocatoria)
+        Sede.objects.create(descripcion='sedeYYY', convocatoria=convocatoria)
+
+        TipoExamen.objects.create(descripcion='tipo AAA', convocatoria=convocatoria)
+
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/convocatoria/detail/3/')
+        print(f'response JSON ===>>> \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
 
 class baseDatosTest(APITestCase):
     def setUp(self):
