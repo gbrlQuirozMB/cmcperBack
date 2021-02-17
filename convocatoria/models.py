@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
 from catalogos.models import *
+from preregistro.models import Medico
 # Create your models here.
 
 
@@ -38,3 +39,22 @@ class TipoExamen(models.Model):
     class Meta:
         db_table = 'tipo_examen'
         ordering = ['-catTiposExamen']
+        
+        
+class ConvocatoriaEnrolado(models.Model):
+    creado_en = models.DateTimeField(auto_now_add=True)
+    actualizado_en = models.DateTimeField(auto_now=True)
+    medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medico')
+    convocatoria = models.ForeignKey(Convocatoria, on_delete=models.CASCADE, related_name='convocatoria')
+    catSedes = models.ForeignKey(CatSedes, on_delete=models.CASCADE, null=True, related_name='catSedesE')
+    catTiposExamen = models.ForeignKey(CatTiposExamen, on_delete=models.CASCADE, null=True, related_name='catTiposExamenE')
+    comentario = models.TextField(blank=True)
+    isPagado = models.BooleanField(default=False, db_column='is_pagado')
+    isAceptado = models.BooleanField(default=False, db_column='is_aceptado')
+    
+    class Meta:
+        db_table = 'convocatorias_enrolados'
+        ordering = ['-actualizado_en']
+        
+    
+    

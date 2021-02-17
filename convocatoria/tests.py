@@ -78,13 +78,13 @@ class PutEstudioExtranjero200Test(APITestCase):
 
 class PostConvocatoria200Test(APITestCase):
     def setUp(self):
-        CatSedes.objects.create(descripcion='sedeDescripcion1', direccion='sedeDireccion1',latitud=11.235698,longitud=-111.235689)
-        CatSedes.objects.create(descripcion='sedeDescripcion2', direccion='sedeDireccion2',latitud=22.235698,longitud=-222.235689)
-        CatSedes.objects.create(descripcion='sedeDescripcion3', direccion='sedeDireccion3',latitud=33.235698,longitud=-333.235689)
-        
+        CatSedes.objects.create(descripcion='sedeDescripcion1', direccion='sedeDireccion1', latitud=11.235698, longitud=-111.235689)
+        CatSedes.objects.create(descripcion='sedeDescripcion2', direccion='sedeDireccion2', latitud=22.235698, longitud=-222.235689)
+        CatSedes.objects.create(descripcion='sedeDescripcion3', direccion='sedeDireccion3', latitud=33.235698, longitud=-333.235689)
+
         CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion1')
         CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion2')
-        
+
         self.json = {
             "fechaInicio": "2020-06-04",
             "fechaTermino": "2021-02-11",
@@ -153,19 +153,19 @@ class GetList200Test(APITestCase):
 
 class GetDetail200Test(APITestCase):
     def setUp(self):
-        catSedes1 = CatSedes.objects.create(descripcion='sedeDescripcion1', direccion='sedeDireccion1',latitud=11.235698,longitud=-111.235689)
-        catSedes2 = CatSedes.objects.create(descripcion='sedeDescripcion2', direccion='sedeDireccion2',latitud=22.235698,longitud=-222.235689)
-        catSedes3 = CatSedes.objects.create(descripcion='sedeDescripcion3', direccion='sedeDireccion3',latitud=33.235698,longitud=-333.235689)
-        
+        catSedes1 = CatSedes.objects.create(descripcion='sedeDescripcion1', direccion='sedeDireccion1', latitud=11.235698, longitud=-111.235689)
+        catSedes2 = CatSedes.objects.create(descripcion='sedeDescripcion2', direccion='sedeDireccion2', latitud=22.235698, longitud=-222.235689)
+        catSedes3 = CatSedes.objects.create(descripcion='sedeDescripcion3', direccion='sedeDireccion3', latitud=33.235698, longitud=-333.235689)
+
         catTiposExamen1 = CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion1')
         catTiposExamen2 = CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion2')
-        
+
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1',
                                     precio=333.33)
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona2', detalles='detalles1',
                                     precio=333.33)
         self.convocatoria = Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-03-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona3',
-                                                   detalles='detalles3', precio=333.33)
+                                                        detalles='detalles3', precio=333.33)
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona4', detalles='detalles1',
                                     precio=333.33)
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona5', detalles='detalles1',
@@ -175,12 +175,10 @@ class GetDetail200Test(APITestCase):
 
         Sede.objects.create(catSedes=catSedes1, convocatoria=self.convocatoria)
         Sede.objects.create(catSedes=catSedes3, convocatoria=self.convocatoria)
-        
 
         TipoExamen.objects.create(catTiposExamen=catTiposExamen1, convocatoria=self.convocatoria)
 
         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
-        
 
     def test(self):
         self.client.force_authenticate(user=self.user)
@@ -188,21 +186,20 @@ class GetDetail200Test(APITestCase):
         response = self.client.get('/api/convocatoria/detail/3/')
         print(f'response JSON ===>>> \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         # serializer = ConvocatoriaGetDetailSerializer(instance=self.convocatoria)
         # print(serializer.data)
-        
+
         # print(f'\n --->>>sede.count: {Sede.objects.count()} \n ---')
         # serializer = SedeSerializer(instance=Sede.objects.get(id=1))
         # print(serializer.data)
-
 
 
 class PutArchivo200Test(APITestCase):
     def setUp(self):
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona', detalles='detalles',
                                     precio=369.99)
-        
+
         streamPDF = BytesIO(
             b'%PDF-1.0\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj 2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1'
             b'>>endobj 3 0 obj<</Type/Page/MediaBox[0 0 3 3]>>endobj\nxref\n0 4\n0000000000 65535 f\n000000'
@@ -210,11 +207,11 @@ class PutArchivo200Test(APITestCase):
             b'f\n149\n%EOF\n')
 
         pdfFile = SimpleUploadedFile('./uploads/convocatoria.pdf', streamPDF.read(), content_type='application/pdf')
-        
+
         self.json = {
             "archivo": pdfFile
         }
-    
+
         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
 
     def test(self):
@@ -229,24 +226,23 @@ class PutArchivo200Test(APITestCase):
 
         dato = Convocatoria.objects.get(id=1)
         print(f'--->>>DESPUES dato: {dato.id} - {dato.nombre} - {dato.archivo}')
-        
 
 
 class PutBanner200Test(APITestCase):
     def setUp(self):
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona', detalles='detalles',
                                     precio=369.99)
-        
+
         stream = BytesIO()
         image = Image.new('RGB', (100, 100))
         image.save(stream, format='jpeg')
 
         pngFile = SimpleUploadedFile('./uploads/banner.png', stream.getvalue(), content_type='image/png')
-        
+
         self.json = {
             "banner": pngFile
         }
-    
+
         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
 
     def test(self):
@@ -262,6 +258,47 @@ class PutBanner200Test(APITestCase):
         dato = Convocatoria.objects.get(id=1)
         print(f'--->>>DESPUES dato: {dato.id} - {dato.nombre} - {dato.banner}')
 
+
+class PostEnrolar200Test(APITestCase):
+    def setUp(self):
+        CatSedes.objects.create(descripcion='sedeDescripcion1', direccion='sedeDireccion1', latitud=11.235698, longitud=-111.235689)
+        CatSedes.objects.create(descripcion='sedeDescripcion2', direccion='sedeDireccion2', latitud=22.235698, longitud=-222.235689)
+        CatSedes.objects.create(descripcion='sedeDescripcion3', direccion='sedeDireccion3', latitud=33.235698, longitud=-333.235689)
+
+        CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion1')
+        CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion2')
+        
+        Medico.objects.create(
+            id=1, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
+        
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1',
+                                    precio=333.33)
+        
+        self.json = {
+            "medico": 1,
+            "convocatoria": 1,
+            "catTiposExamen": 1,
+            "catSedes": 1,
+            "isPagado": False,
+            "comentario": "por que quiero",
+            "isAceptado": True
+        }
+
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post('/api/convocatoria/enrolar/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        
+        dato = ConvocatoriaEnrolado.objects.get(id=1)
+        print(f'--->>>dato: {dato.id} - {dato.isPagado} - {dato.comentario} - {dato.isAceptado}')
+        
 
 
 class baseDatosTest(APITestCase):

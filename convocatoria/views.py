@@ -11,7 +11,6 @@ import json
 from datetime import date
 
 
-
 # import json
 # from rest_framework.parsers import BaseParser, DataAndFiles
 # from django.conf import settings
@@ -69,16 +68,33 @@ class ConvocatoriaCreateView(CreateAPIView):
 class ConvocatoriaListView(ListAPIView):
     queryset = Convocatoria.objects.filter(fechaTermino__gte=date.today())
     serializer_class = ConvocatoriaListSerializer
-    
-    
+
+
 class ConvocatoriaDetailView(RetrieveAPIView):
     queryset = Convocatoria.objects.filter()
-    serializer_class =  ConvocatoriaGetDetailSerializer
-    
+    serializer_class = ConvocatoriaGetDetailSerializer
+
+
 class ConvocatoriaArchivoUpdateView(UpdateAPIView):
     queryset = Convocatoria.objects.filter()
     serializer_class = ConvocatoriaArchivoSerializer
-    
+
+
 class ConvocatoriaBannerUpdateView(UpdateAPIView):
     queryset = Convocatoria.objects.filter()
     serializer_class = ConvocatoriaBannerSerializer
+
+
+class ConvocatoriaEnroladoCreateView(CreateAPIView):
+    serializer_class = ConvocatoriaEnroladoSerializer
+    
+    def post(self, request, *args, **kwargs):
+        request.data['isPagado'] = False
+        request.data['comentario'] = ''
+        request.data['isAceptado'] = False
+        serializer = ConvocatoriaEnroladoSerializer(data=request.data)
+        if serializer.is_valid():
+
+            return self.create(request, *args, **kwargs)
+        log.info(f'campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
