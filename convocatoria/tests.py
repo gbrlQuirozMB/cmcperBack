@@ -231,6 +231,39 @@ class PutArchivo200Test(APITestCase):
         print(f'--->>>DESPUES dato: {dato.id} - {dato.nombre} - {dato.archivo}')
         
 
+
+class PutBanner200Test(APITestCase):
+    def setUp(self):
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona', detalles='detalles',
+                                    precio=369.99)
+        
+        stream = BytesIO()
+        image = Image.new('RGB', (100, 100))
+        image.save(stream, format='jpeg')
+
+        pngFile = SimpleUploadedFile('./uploads/banner.png', stream.getvalue(), content_type='image/png')
+        
+        self.json = {
+            "banner": pngFile
+        }
+    
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        dato = Convocatoria.objects.get(id=1)
+        print(f'--->>>ANTES dato: {dato.id} - {dato.nombre} - {dato.banner}')
+
+        response = self.client.put('/api/convocatoria/1/banner/', data=self.json, format='multipart')
+        print(f'response JSON ===>>> \n {response.data} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        dato = Convocatoria.objects.get(id=1)
+        print(f'--->>>DESPUES dato: {dato.id} - {dato.nombre} - {dato.banner}')
+
+
+
 class baseDatosTest(APITestCase):
     def setUp(self):
         convocatoria = Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09',

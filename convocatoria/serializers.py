@@ -106,3 +106,8 @@ class ConvocatoriaArchivoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Convocatoria
         fields = ['id','archivo']
+        
+class ConvocatoriaBannerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Convocatoria
+        fields = ['id','banner']
