@@ -78,7 +78,13 @@ class PutEstudioExtranjero200Test(APITestCase):
 
 class PostConvocatoria200Test(APITestCase):
     def setUp(self):
-
+        CatSedes.objects.create(descripcion='sedeDescripcion1', direccion='sedeDireccion1',latitud=11.235698,longitud=-111.235689)
+        CatSedes.objects.create(descripcion='sedeDescripcion2', direccion='sedeDireccion2',latitud=22.235698,longitud=-222.235689)
+        CatSedes.objects.create(descripcion='sedeDescripcion3', direccion='sedeDireccion3',latitud=33.235698,longitud=-333.235689)
+        
+        CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion1')
+        CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion2')
+        
         self.json = {
             "fechaInicio": "2020-06-04",
             "fechaTermino": "2021-02-11",
@@ -88,11 +94,11 @@ class PostConvocatoria200Test(APITestCase):
             "detalles": "detalles",
             "precio": 369.99,
             "sedes": [
-                {"descripcion": "miSede3"},
-                {"descripcion": "miSede6"}
+                {"catSedes": 1},
+                {"catSedes": 2},
             ],
-            "tipoExamenes": [
-                {"descripcion": "tipo9"}
+            "tiposExamen": [
+                {"catTiposExamen": 1}
             ]
         }
 
@@ -112,9 +118,9 @@ class PostConvocatoria200Test(APITestCase):
         print(f'\n --->>>#registros tipoExamenes: {TipoExamen.objects.count()}')
 
         print(f'\n --->>>nombre: {Convocatoria.objects.get().nombre}')
-        print(f'\n --->>>sede1: {Sede.objects.get(id=1).descripcion}')
-        print(f'\n --->>>sede2: {Sede.objects.get(id=2).descripcion}')
-        print(f'\n --->>>tipoExamen1: {TipoExamen.objects.get(id=1).descripcion}')
+        print(f'\n --->>>sede1: {Sede.objects.get(id=1).catSedes.descripcion}')
+        print(f'\n --->>>sede2: {Sede.objects.get(id=2).catSedes.descripcion}')
+        print(f'\n --->>>tipoExamen1: {TipoExamen.objects.get(id=1).catTiposExamen.descripcion}')
 
 
 class GetList200Test(APITestCase):
@@ -129,7 +135,7 @@ class GetList200Test(APITestCase):
                                     precio=333.33)
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona5', detalles='detalles1',
                                     precio=333.33)
-        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-15', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona6', detalles='detalles1',
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-03-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona6', detalles='detalles1',
                                     precio=333.33)
 
         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
@@ -147,12 +153,19 @@ class GetList200Test(APITestCase):
 
 class GetDetail200Test(APITestCase):
     def setUp(self):
+        catSedes1 = CatSedes.objects.create(descripcion='sedeDescripcion1', direccion='sedeDireccion1',latitud=11.235698,longitud=-111.235689)
+        catSedes2 = CatSedes.objects.create(descripcion='sedeDescripcion2', direccion='sedeDireccion2',latitud=22.235698,longitud=-222.235689)
+        catSedes3 = CatSedes.objects.create(descripcion='sedeDescripcion3', direccion='sedeDireccion3',latitud=33.235698,longitud=-333.235689)
+        
+        catTiposExamen1 = CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion1')
+        catTiposExamen2 = CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion2')
+        
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1',
                                     precio=333.33)
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona2', detalles='detalles1',
                                     precio=333.33)
-        convocatoria = Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-03-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona3',
-                                                   detalles='detalles1', precio=333.33)
+        self.convocatoria = Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-03-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona3',
+                                                   detalles='detalles3', precio=333.33)
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona4', detalles='detalles1',
                                     precio=333.33)
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona5', detalles='detalles1',
@@ -160,12 +173,14 @@ class GetDetail200Test(APITestCase):
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-15', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona6', detalles='detalles1',
                                     precio=333.33)
 
-        Sede.objects.create(descripcion='sedeXXX', convocatoria=convocatoria)
-        Sede.objects.create(descripcion='sedeYYY', convocatoria=convocatoria)
+        Sede.objects.create(catSedes=catSedes1, convocatoria=self.convocatoria)
+        Sede.objects.create(catSedes=catSedes3, convocatoria=self.convocatoria)
+        
 
-        TipoExamen.objects.create(descripcion='tipo AAA', convocatoria=convocatoria)
+        TipoExamen.objects.create(catTiposExamen=catTiposExamen1, convocatoria=self.convocatoria)
 
         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+        
 
     def test(self):
         self.client.force_authenticate(user=self.user)
@@ -173,6 +188,14 @@ class GetDetail200Test(APITestCase):
         response = self.client.get('/api/convocatoria/detail/3/')
         print(f'response JSON ===>>> \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        # serializer = ConvocatoriaGetDetailSerializer(instance=self.convocatoria)
+        # print(serializer.data)
+        
+        # print(f'\n --->>>sede.count: {Sede.objects.count()} \n ---')
+        # serializer = SedeSerializer(instance=Sede.objects.get(id=1))
+        # print(serializer.data)
+
 
 
 class baseDatosTest(APITestCase):

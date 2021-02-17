@@ -1,11 +1,12 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
+from catalogos.models import *
 # Create your models here.
 
 
 class Convocatoria(models.Model):
     creado_en = models.DateTimeField(auto_now_add=True)
-    actualzado_en = models.DateTimeField(auto_now=True)
+    actualizado_en = models.DateTimeField(auto_now=True)
     fechaInicio = models.DateField(db_column='fecha_inicio')
     fechaTermino = models.DateField(db_column='fecha_termino')
     fechaExamen = models.DateField(db_column='fecha_examen')
@@ -15,7 +16,6 @@ class Convocatoria(models.Model):
     banner = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'gif'])])
     detalles = models.TextField(blank=True)
     precio = models.DecimalField(max_digits=7, decimal_places=2)
-    
 
     class Meta:
         db_table = 'convocatoria'
@@ -23,18 +23,18 @@ class Convocatoria(models.Model):
 
 
 class Sede(models.Model):
-    descripcion = models.CharField(max_length=200)
+    catSedes = models.ForeignKey(CatSedes, on_delete=models.SET_NULL, null=True, related_name='catSedes')
     convocatoria = models.ForeignKey(Convocatoria, on_delete=models.CASCADE, related_name='sedes')
 
     class Meta:
         db_table = 'sede'
-        ordering = ['-descripcion']
+        ordering = ['-catSedes']
 
 
 class TipoExamen(models.Model):
-    descripcion = models.CharField(max_length=200)
-    convocatoria = models.ForeignKey(Convocatoria, on_delete=models.CASCADE, related_name='tipoExamenes')
+    catTiposExamen = models.ForeignKey(CatTiposExamen, on_delete=models.SET_NULL, null=True, related_name='catTiposExamen')
+    convocatoria = models.ForeignKey(Convocatoria, on_delete=models.CASCADE, related_name='tiposExamen')
 
     class Meta:
         db_table = 'tipo_examen'
-        ordering = ['-descripcion']
+        ordering = ['-catTiposExamen']

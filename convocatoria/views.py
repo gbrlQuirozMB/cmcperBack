@@ -54,10 +54,12 @@ class ConvocatoriaCreateView(CreateAPIView):
         serializer = ConvocatoriaSerializer(data=request.data)
         campoSedes = request.data.get('sedes')
         if campoSedes is None:
+            log.info(f'campos incorrectos: sedes')
             raise CamposIncorrectos({"sedes": ["Este campo es requerido"]})
-        campoTipoExamenes = request.data.get('tipoExamenes')
-        if campoTipoExamenes is None:
-            raise CamposIncorrectos({"tipoExamenes": ["Este campo es requerido"]})
+        campoTiposExamen = request.data.get('tiposExamen')
+        if campoTiposExamen is None:
+            log.info(f'campos incorrectos: tiposExamen')
+            raise CamposIncorrectos({"tiposExamen": ["Este campo es requerido"]})
         if serializer.is_valid():
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
