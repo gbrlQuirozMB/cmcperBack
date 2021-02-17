@@ -198,11 +198,43 @@ class GetDetail200Test(APITestCase):
 
 
 
+class PutArchivo200Test(APITestCase):
+    def setUp(self):
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona', detalles='detalles',
+                                    precio=369.99)
+        
+        streamPDF = BytesIO(
+            b'%PDF-1.0\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj 2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1'
+            b'>>endobj 3 0 obj<</Type/Page/MediaBox[0 0 3 3]>>endobj\nxref\n0 4\n0000000000 65535 f\n000000'
+            b'0010 00000 n\n0000000053 00000 n\n0000000102 00000 n\ntrailer<</Size 4/Root 1 0 R>>\nstartxre'
+            b'f\n149\n%EOF\n')
+
+        pdfFile = SimpleUploadedFile('./uploads/convocatoria.pdf', streamPDF.read(), content_type='application/pdf')
+        
+        self.json = {
+            "archivo": pdfFile
+        }
+    
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        dato = Convocatoria.objects.get(id=1)
+        print(f'--->>>ANTES dato: {dato.id} - {dato.nombre} - {dato.archivo}')
+
+        response = self.client.put('/api/convocatoria/1/archivo/', data=self.json, format='multipart')
+        print(f'response JSON ===>>> \n {response.data} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        dato = Convocatoria.objects.get(id=1)
+        print(f'--->>>DESPUES dato: {dato.id} - {dato.nombre} - {dato.archivo}')
+        
+
 class baseDatosTest(APITestCase):
     def setUp(self):
         convocatoria = Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09',
                                                    nombre='convocatoria chingona', archivo='pdfFile', banner='pngFile', detalles='detalles', precio=369.99)
-        Sede.objects.create(descripcion='sede chingona', convocatoria=convocatoria)
 
     def test(self):
         datoConvocatoria = Convocatoria.objects.get(id=1)

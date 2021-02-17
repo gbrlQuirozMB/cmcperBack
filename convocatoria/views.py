@@ -74,3 +74,7 @@ class ConvocatoriaListView(ListAPIView):
 class ConvocatoriaDetailView(RetrieveAPIView):
     queryset = Convocatoria.objects.filter()
     serializer_class =  ConvocatoriaGetDetailSerializer
+    
+class ConvocatoriaArchivoUpdateView(UpdateAPIView):
+    queryset = Convocatoria.objects.filter()
+    serializer_class = ConvocatoriaArchivoSerializer
