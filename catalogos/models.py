@@ -20,5 +20,24 @@ class CatTiposExamen(models.Model):
     
     class Meta:
         db_table = 'cat_tipos_examen'
-    ordering = ['descripcion']
+        ordering = ['descripcion']
     
+
+class CatTiposDocumento(models.Model):
+    descripcion = models.CharField(max_length=200)
+    
+    class Meta:
+        db_table = 'cat_tipos_documento'
+        ordering = ['descripcion']
+
+
+class CatMotivosRechazo(models.Model):
+    descripcion = models.CharField(max_length=300)
+    tipo = models.PositiveSmallIntegerField(blank=True, choices=(
+        (1,'Validación'),
+        (2,'Engargolado')
+    ))
+    
+    class Meta:
+        db_table = 'cat_motivos_rechazo'
+        ordering = ['descripcion']

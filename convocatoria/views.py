@@ -94,7 +94,6 @@ class ConvocatoriaEnroladoCreateView(CreateAPIView):
         request.data['isAceptado'] = False
         serializer = ConvocatoriaEnroladoSerializer(data=request.data)
         if serializer.is_valid():
-
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
