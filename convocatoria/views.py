@@ -109,6 +109,7 @@ class ConvocatoriaEnroladoDocumentoCreateView(CreateAPIView):
         request.data['notasEngargolado'] = ''
         request.data['rechazoValidado'] = ''
         request.data['rechazoEngargolado'] = ''
+        request.data['catTiposDocumento'] = 1
         serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
         if serializer.is_valid():
             return self.create(request, *args, **kwargs)

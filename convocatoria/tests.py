@@ -326,7 +326,7 @@ class PostDocumentoRevalidacion200Test(APITestCase):
         self.json = {
             "medico": 1,
             "convocatoria": 1,
-            "catTiposDocumento": 2,
+            "catTiposDocumento": 6,
             "documento": pngFile,
             "isValidado": True,
             "engargoladoOk": True,
