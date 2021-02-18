@@ -97,3 +97,24 @@ class ConvocatoriaEnroladoCreateView(CreateAPIView):
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
+    
+    
+class ConvocatoriaEnroladoDocumentoCreateView(CreateAPIView):
+    serializer_class = ConvocatoriaEnroladoDocumentoSerializer
+    
+    def post(self, request, *args, **kwargs):
+        request.data['isValidado'] = False
+        request.data['engargoladoOk'] = False
+        request.data['notasValidado'] = ''
+        request.data['notasEngargolado'] = ''
+        request.data['rechazoValidado'] = ''
+        request.data['rechazoEngargolado'] = ''
+        serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.info(f'campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
+        
+        
+        
+        

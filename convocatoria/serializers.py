@@ -117,3 +117,14 @@ class ConvocatoriaEnroladoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConvocatoriaEnrolado
         fields = '__all__'
+        
+class ConvocatoriaEnroladoDocumentoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConvocatoriaEnroladoDocumento
+        fields = '__all__'
+        
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        dato = CatTiposDocumento.objects.get(id=instance.catTiposDocumento.id)
+        repr['tipoDocumento'] = dato.descripcion
+        return repr

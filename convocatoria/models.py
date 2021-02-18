@@ -39,22 +39,38 @@ class TipoExamen(models.Model):
     class Meta:
         db_table = 'tipo_examen'
         ordering = ['-catTiposExamen']
-        
-        
+
+
 class ConvocatoriaEnrolado(models.Model):
     creado_en = models.DateTimeField(auto_now_add=True)
     actualizado_en = models.DateTimeField(auto_now=True)
-    medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medico')
-    convocatoria = models.ForeignKey(Convocatoria, on_delete=models.CASCADE, related_name='convocatoria')
+    medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medicoE')
+    convocatoria = models.ForeignKey(Convocatoria, on_delete=models.CASCADE, related_name='convocatoriaE')
     catSedes = models.ForeignKey(CatSedes, on_delete=models.CASCADE, null=True, related_name='catSedesE')
     catTiposExamen = models.ForeignKey(CatTiposExamen, on_delete=models.CASCADE, null=True, related_name='catTiposExamenE')
     comentario = models.TextField(blank=True)
     isPagado = models.BooleanField(default=False, db_column='is_pagado')
     isAceptado = models.BooleanField(default=False, db_column='is_aceptado')
-    
+
     class Meta:
         db_table = 'convocatorias_enrolados'
         ordering = ['-actualizado_en']
-        
-    
-    
+
+
+class ConvocatoriaEnroladoDocumento(models.Model):
+    creado_en = models.DateTimeField(auto_now_add=True)
+    actualizado_en = models.DateTimeField(auto_now=True)
+    medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medicoD')
+    convocatoria = models.ForeignKey(Convocatoria, on_delete=models.CASCADE, related_name='convocatoriaD')
+    catTiposDocumento = models.ForeignKey(CatTiposDocumento, on_delete=models.CASCADE, related_name='catTiposDocumentoD')
+    documento = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif'])])
+    isValidado = models.BooleanField(default=False, db_column='is_validado')
+    engargoladoOk = models.BooleanField(default=False, db_column='engargolado_ok')
+    notasValidado = models.TextField(blank=True, db_column='notas_validado')
+    notasEngargolado = models.TextField(blank=True, db_column='notas_engargolado')
+    rechazoValidado = models.CharField(max_length=200, blank=True, db_column='rechazo_validado')
+    rechazoEngargolado = models.CharField(max_length=200, blank=True, db_column='rechazo_engargolado')
+
+    class Meta:
+        db_table = 'convocatorias_enrolados_documentos'
+        ordering = ['-actualizado_en']

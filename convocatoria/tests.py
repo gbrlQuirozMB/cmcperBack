@@ -267,16 +267,16 @@ class PostEnrolar200Test(APITestCase):
 
         CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion1')
         CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion2')
-        
+
         Medico.objects.create(
             id=1, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
             deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
             cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
-        
+
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1',
                                     precio=333.33)
-        
+
         self.json = {
             "medico": 1,
             "convocatoria": 1,
@@ -295,11 +295,58 @@ class PostEnrolar200Test(APITestCase):
         response = self.client.post('/api/convocatoria/enrolar/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> \n {json.dumps(response.data)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        
+
         dato = ConvocatoriaEnrolado.objects.get(id=1)
         print(f'--->>>dato: {dato.id} - {dato.isPagado} - {dato.comentario} - {dato.isAceptado}')
-        
 
+
+class PostDocumentoRevalidacion200Test(APITestCase):
+    def setUp(self):
+        CatTiposDocumento.objects.create(descripcion='tiposDocumentoDescripcion1')
+        CatTiposDocumento.objects.create(descripcion='tiposDocumentoDescripcion2')
+        CatMotivosRechazo.objects.create(descripcion='descripcion1',tipo=1)
+        CatMotivosRechazo.objects.create(descripcion='descripcion2',tipo=2)
+
+        Medico.objects.create(
+            id=1, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
+
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1',
+                                    precio=333.33)
+        
+        stream = BytesIO()
+        image = Image.new('RGB', (100, 100))
+        image.save(stream, format='jpeg')
+
+        pngFile = SimpleUploadedFile('./uploads/banner.png', stream.getvalue(), content_type='image/png')
+
+        
+        self.json = {
+            "medico": 1,
+            "convocatoria": 1,
+            "catTiposDocumento": 2,
+            "documento": pngFile,
+            "isValidado": True,
+            "engargoladoOk": True,
+            "notasValidado": "notas de validacion",
+            "notasEngargolado": "notas de engargolado",
+            "rechazoValidado": "motivo de rechazo en validacion",
+            "rechazoEngargolado": "motivo de rechazo de engargolado"
+        }
+        
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+        
+        response = self.client.post('/api/convocatoria/documento/revalidacion/create/', data=self.json, format='multipart')
+        print(f'response JSON ===>>> \n {response.data} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # dato = ConvocatoriaEnroladoDocumento.objects.get(id=1)
+        # print(f'--->>>DESPUES dato: {dato.id} - {dato.isValidado} - {dato.notasEngargolado}')
 
 class baseDatosTest(APITestCase):
     def setUp(self):
