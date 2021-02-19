@@ -1,3 +1,4 @@
+import re
 from rest_framework import response, status
 from rest_framework.views import APIView
 from .serializers import *
@@ -87,7 +88,7 @@ class ConvocatoriaBannerUpdateView(UpdateAPIView):
 
 class ConvocatoriaEnroladoCreateView(CreateAPIView):
     serializer_class = ConvocatoriaEnroladoSerializer
-    
+
     def post(self, request, *args, **kwargs):
         request.data['isPagado'] = False
         request.data['comentario'] = ''
@@ -97,25 +98,39 @@ class ConvocatoriaEnroladoCreateView(CreateAPIView):
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
-    
-    
-class ConvocatoriaEnroladoDocumentoCreateView(CreateAPIView):
+
+
+def inicializaData(request):
+    request.data['isValidado'] = False
+    request.data['engargoladoOk'] = False
+    request.data['notasValidado'] = ''
+    request.data['notasEngargolado'] = ''
+    request.data['rechazoValidado'] = ''
+    request.data['rechazoEngargolado'] = ''
+    return request
+
+
+class DocumentoRevalidacionCreateView(CreateAPIView):
     serializer_class = ConvocatoriaEnroladoDocumentoSerializer
-    
+
     def post(self, request, *args, **kwargs):
-        request.data['isValidado'] = False
-        request.data['engargoladoOk'] = False
-        request.data['notasValidado'] = ''
-        request.data['notasEngargolado'] = ''
-        request.data['rechazoValidado'] = ''
-        request.data['rechazoEngargolado'] = ''
+        request = inicializaData(request)
         request.data['catTiposDocumento'] = 1
         serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
         if serializer.is_valid():
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
-        
-        
-        
-        
+
+
+class DocumentoCurpCreateView(CreateAPIView):
+    serializer_class = ConvocatoriaEnroladoDocumentoSerializer
+
+    def post(self, request, *args, **kwargs):
+        request = inicializaData(request)
+        request.data['catTiposDocumento'] = 2
+        serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.info(f'campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)

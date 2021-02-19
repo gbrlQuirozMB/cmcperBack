@@ -300,10 +300,10 @@ class PostEnrolar200Test(APITestCase):
         print(f'--->>>dato: {dato.id} - {dato.isPagado} - {dato.comentario} - {dato.isAceptado}')
 
 
-class PostDocumentoRevalidacion200Test(APITestCase):
+class PostDocumento200Test(APITestCase):
     def setUp(self):
-        CatTiposDocumento.objects.create(descripcion='tiposDocumentoDescripcion1')
-        CatTiposDocumento.objects.create(descripcion='tiposDocumentoDescripcion2')
+        CatTiposDocumento.objects.create(descripcion='Revalidación')
+        CatTiposDocumento.objects.create(descripcion='CURP')
         CatMotivosRechazo.objects.create(descripcion='descripcion1',tipo=1)
         CatMotivosRechazo.objects.create(descripcion='descripcion2',tipo=2)
 
@@ -341,9 +341,21 @@ class PostDocumentoRevalidacion200Test(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
         
-        response = self.client.post('/api/convocatoria/documento/revalidacion/create/', data=self.json, format='multipart')
-        print(f'response JSON ===>>> \n {response.data} \n ---')
+        # response = self.client.post('/api/convocatoria/documento/revalidacion/create/', data=self.json, format='multipart')
+        # print(f'Revalidación response JSON ===>>> \n {response.data} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        
+        # self.json['catTiposDocumento'] = 999999
+        
+        response = self.client.post('/api/convocatoria/documento/curp/create/', data=self.json, format='multipart')
+        print(f'CURP response JSON ===>>> \n {response.data} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+
+
+
+
+
 
         # dato = ConvocatoriaEnroladoDocumento.objects.get(id=1)
         # print(f'--->>>DESPUES dato: {dato.id} - {dato.isValidado} - {dato.notasEngargolado}')
