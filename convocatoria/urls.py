@@ -21,8 +21,6 @@ urlpatterns = [
     path('documento/constancia-posgrado/create/', DocumentoConstanciaPosgradoCreateView.as_view(), ),
     path('documento/cedula-especialidad/create/', DocumentoCedulaEspecialidadCreateView.as_view(), ),
     path('documento/titulo-licenciatura/create/', DocumentoTituloLicenciaturaCreateView.as_view(), ),
-    
-    
-    
-    
+    path('documento/cedula-profesional/create/', DocumentoCedulaProfesionalCreateView.as_view(), ),
+
 ]

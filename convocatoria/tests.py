@@ -309,12 +309,10 @@ class PostDocumento200Test(APITestCase):
         CatTiposDocumento.objects.create(descripcion='Constancia de Posgrado')
         CatTiposDocumento.objects.create(descripcion='Cédula de Especialidad')
         CatTiposDocumento.objects.create(descripcion='Título de la Licenciatura')
-        
-        
-        
-        
-        CatMotivosRechazo.objects.create(descripcion='descripcion1',tipo=1)
-        CatMotivosRechazo.objects.create(descripcion='descripcion2',tipo=2)
+        CatTiposDocumento.objects.create(descripcion='Cédula Profesional')
+
+        CatMotivosRechazo.objects.create(descripcion='descripcion1', tipo=1)
+        CatMotivosRechazo.objects.create(descripcion='descripcion2', tipo=2)
 
         Medico.objects.create(
             id=1, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
@@ -324,14 +322,13 @@ class PostDocumento200Test(APITestCase):
 
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1',
                                     precio=333.33)
-        
+
         stream = BytesIO()
         image = Image.new('RGB', (100, 100))
         image.save(stream, format='jpeg')
 
         pngFile = SimpleUploadedFile('./uploads/banner.png', stream.getvalue(), content_type='image/png')
 
-        
         self.json = {
             "medico": 1,
             "convocatoria": 1,
@@ -344,18 +341,18 @@ class PostDocumento200Test(APITestCase):
             "rechazoValidado": "motivo de rechazo en validacion",
             "rechazoEngargolado": "motivo de rechazo de engargolado"
         }
-        
+
         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
 
     def test(self):
         self.client.force_authenticate(user=self.user)
-        
+
         # response = self.client.post('/api/convocatoria/documento/revalidacion/create/', data=self.json, format='multipart')
         # print(f'response JSON ===>>> \n {response.data} \n ---')
         # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        
+
         # self.json['catTiposDocumento'] = 999999
-        
+
         # response = self.client.post('/api/convocatoria/documento/curp/create/', data=self.json, format='multipart')
         # print(f'response JSON ===>>> \n {response.data} \n ---')
         # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -375,15 +372,18 @@ class PostDocumento200Test(APITestCase):
         # response = self.client.post('/api/convocatoria/documento/cedula-especialidad/create/', data=self.json, format='multipart')
         # print(f'response JSON ===>>> \n {response.data} \n ---')
         # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        
-        response = self.client.post('/api/convocatoria/documento/titulo-licenciatura/create/', data=self.json, format='multipart')
+
+        # response = self.client.post('/api/convocatoria/documento/titulo-licenciatura/create/', data=self.json, format='multipart')
+        # print(f'response JSON ===>>> \n {response.data} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        response = self.client.post('/api/convocatoria/documento/cedula-profesional/create/', data=self.json, format='multipart')
         print(f'response JSON ===>>> \n {response.data} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        
-        
-        
+
         dato = ConvocatoriaEnroladoDocumento.objects.get(id=1)
         print(f'--->>>DESPUES dato: {dato.id} - {dato.isValidado} - {dato.notasEngargolado} - {dato.catTiposDocumento.descripcion}')
+
 
 class baseDatosTest(APITestCase):
     def setUp(self):
