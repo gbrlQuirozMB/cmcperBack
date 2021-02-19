@@ -312,8 +312,6 @@ class PostDocumento200Test(APITestCase):
         CatTiposDocumento.objects.create(descripcion='Cédula Profesional')
         CatTiposDocumento.objects.create(descripcion='Constancia de Cirugía General')
         CatTiposDocumento.objects.create(descripcion='Carta de Profesor Titular')
-        
-        
 
         CatMotivosRechazo.objects.create(descripcion='descripcion1', tipo=1)
         CatMotivosRechazo.objects.create(descripcion='descripcion2', tipo=2)
@@ -397,6 +395,58 @@ class PostDocumento200Test(APITestCase):
         print(f'--->>>DESPUES dato: {dato.id} - {dato.isValidado} - {dato.notasEngargolado} - {dato.catTiposDocumento.descripcion}')
 
 
+
+class GetDocumentosList200Test(APITestCase):
+    def setUp(self):
+        catTiposDocumento1 = CatTiposDocumento.objects.create(descripcion='Revalidación')
+        catTiposDocumento2 = CatTiposDocumento.objects.create(descripcion='CURP')
+        catTiposDocumento3 = CatTiposDocumento.objects.create(descripcion='Acta de Nacimiento')
+        catTiposDocumento4 = CatTiposDocumento.objects.create(descripcion='Carta de Solicitud de Examen')
+        catTiposDocumento5 = CatTiposDocumento.objects.create(descripcion='Constancia de Posgrado')
+        catTiposDocumento6 = CatTiposDocumento.objects.create(descripcion='Cédula de Especialidad')
+        catTiposDocumento7 = CatTiposDocumento.objects.create(descripcion='Título de la Licenciatura')
+        catTiposDocumento8 = CatTiposDocumento.objects.create(descripcion='Cédula Profesional')
+        catTiposDocumento9 = CatTiposDocumento.objects.create(descripcion='Constancia de Cirugía General')
+        catTiposDocumento10 = CatTiposDocumento.objects.create(descripcion='Carta de Profesor Titular')
+
+        CatMotivosRechazo.objects.create(descripcion='descripcion1', tipo=1)
+        CatMotivosRechazo.objects.create(descripcion='descripcion2', tipo=2)
+
+        medico = Medico.objects.create(
+            id=1, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
+
+        convocatoria = Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1',
+                                    precio=333.33)
+        
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento1, documento='revalidacion.pdf')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento2, documento='curp.pdf', isValidado=True)
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento3, documento='acta_nacimiento.pdf')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento4, documento='carta_solicitud_examen.pdf')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento5, documento='constancia_posgrago.pdf')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento6, documento='cedula_especialidad.pdf')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento7, documento='titulo_licenciatura.pdf')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento8, documento='cedula_profesional.pdf')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento9, documento='constancia_cirugia.pdf')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento10, documento='carta_profesor.pdf', isValidado=False, 
+                                                     notasValidado='me cae gordo', rechazoValidado='carta incorrecta')
+        
+        
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+        
+        response = self.client.get('/api/convocatoria/documentos/medico/1/list/')
+        print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        # dato = ConvocatoriaEnroladoDocumento.objects.filter(medico=1)
+        
+        
+        
 class baseDatosTest(APITestCase):
     def setUp(self):
         convocatoria = Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09',

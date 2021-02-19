@@ -24,7 +24,6 @@ urlpatterns = [
     path('documento/cedula-profesional/create/', DocumentoCedulaProfesionalCreateView.as_view(), ),
     path('documento/constancia-cirugia/create/', DocumentoConstanciaCirugiaCreateView.as_view(), ),
     path('documento/carta-profesor/create/', DocumentoCartaProfesorCreateView.as_view(), ),
-    
-
+    path('documentos/medico/<medicoId>/list/', DocumentosMedicoListView.as_view(), ),
 
 ]

@@ -238,3 +238,12 @@ class DocumentoCartaProfesorCreateView(CreateAPIView):
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
+
+
+class DocumentosMedicoListView(ListAPIView):
+    serializer_class = ConvocatoriaEnroladoDocumentoListSerializer
+
+    def get_queryset(self):
+        medicoId = self.kwargs['medicoId']
+        queryset = ConvocatoriaEnroladoDocumento.objects.filter(medico=medicoId)
+        return queryset
