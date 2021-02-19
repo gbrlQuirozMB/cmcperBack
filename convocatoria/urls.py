@@ -19,6 +19,8 @@ urlpatterns = [
     path('documento/acta-nacimiento/create/', DocumentoActaNacimientoCreateView.as_view(), ),
     path('documento/carta-solicitud/create/', DocumentoCartaSolicitudCreateView.as_view(), ),
     path('documento/constancia-posgrado/create/', DocumentoConstanciaPosgradoCreateView.as_view(), ),
+    path('documento/cedula-especialidad/create/', DocumentoCedulaEspecialidadCreateView.as_view(), ),
+    
     
     
 ]
