@@ -247,3 +247,8 @@ class DocumentosMedicoListView(ListAPIView):
         medicoId = self.kwargs['medicoId']
         queryset = ConvocatoriaEnroladoDocumento.objects.filter(medico=medicoId)
         return queryset
+
+
+class ConvocatoriaDocumentoUpdateView(UpdateAPIView):
+    queryset = ConvocatoriaEnroladoDocumento.objects.filter()
+    serializer_class = ConvocatoriaDocumentoSerializer

@@ -44,13 +44,13 @@ class ConvocatoriaSerializer(serializers.ModelSerializer):
             if not bool(dato):
                 log.info(f'campos incorrectos: catSedes')
                 raise CamposIncorrectos({"catSedes": ["Este campo es requerido"]})
-        
+
         tiposExameneData = validated_data.pop('tiposExamen')
         for dato in tiposExameneData:
             if not bool(dato):
                 log.info(f'campos incorrectos: catTiposExamen')
                 raise CamposIncorrectos({"catTiposExamen": ["Este campo es requerido"]})
-      
+
         convocatoria = Convocatoria.objects.create(**validated_data)
         for sedeData in sedesData:
             Sede.objects.create(**sedeData, convocatoria=convocatoria)
@@ -102,41 +102,50 @@ class ConvocatoriaGetDetailSerializer(serializers.ModelSerializer):
         model = Convocatoria
         fields = [f.name for f in model._meta.fields] + ['sedes'] + ['tiposExamen']
 
+
 class ConvocatoriaArchivoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Convocatoria
-        fields = ['id','archivo']
-        
+        fields = ['id', 'archivo']
+
+
 class ConvocatoriaBannerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Convocatoria
-        fields = ['id','banner']
-        
-        
+        fields = ['id', 'banner']
+
+
 class ConvocatoriaEnroladoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConvocatoriaEnrolado
         fields = '__all__'
-        
+
+
 class ConvocatoriaEnroladoDocumentoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConvocatoriaEnroladoDocumento
         fields = '__all__'
-        
+
     def to_representation(self, instance):
         repr = super().to_representation(instance)
         dato = CatTiposDocumento.objects.get(id=instance.catTiposDocumento.id)
         repr['tipoDocumento'] = dato.descripcion
         return repr
-    
-    
+
+
 class ConvocatoriaEnroladoDocumentoListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConvocatoriaEnroladoDocumento
-        fields = ['id', 'documento', 'isValidado','rechazoValidado','notasValidado']
-        
+        fields = ['id', 'documento', 'isValidado', 'rechazoValidado', 'notasValidado']
+
     def to_representation(self, instance):
         repr = super().to_representation(instance)
         dato = CatTiposDocumento.objects.get(id=instance.catTiposDocumento.id)
         repr['tipoDocumento'] = dato.descripcion
         return repr
+
+
+class ConvocatoriaDocumentoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConvocatoriaEnroladoDocumento
+        fields = ['id', 'documento']
