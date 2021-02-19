@@ -310,6 +310,8 @@ class PostDocumento200Test(APITestCase):
         CatTiposDocumento.objects.create(descripcion='Cédula de Especialidad')
         CatTiposDocumento.objects.create(descripcion='Título de la Licenciatura')
         CatTiposDocumento.objects.create(descripcion='Cédula Profesional')
+        CatTiposDocumento.objects.create(descripcion='Constancia de Cirugía General')
+        
 
         CatMotivosRechazo.objects.create(descripcion='descripcion1', tipo=1)
         CatMotivosRechazo.objects.create(descripcion='descripcion2', tipo=2)
@@ -377,7 +379,11 @@ class PostDocumento200Test(APITestCase):
         # print(f'response JSON ===>>> \n {response.data} \n ---')
         # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        response = self.client.post('/api/convocatoria/documento/cedula-profesional/create/', data=self.json, format='multipart')
+        # response = self.client.post('/api/convocatoria/documento/cedula-profesional/create/', data=self.json, format='multipart')
+        # print(f'response JSON ===>>> \n {response.data} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        
+        response = self.client.post('/api/convocatoria/documento/constancia-cirugia/create/', data=self.json, format='multipart')
         print(f'response JSON ===>>> \n {response.data} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
