@@ -16,5 +16,6 @@ urlpatterns = [
     path('enrolar/create/', ConvocatoriaEnroladoCreateView.as_view(), ),
     path('documento/revalidacion/create/', DocumentoRevalidacionCreateView.as_view(), ),
     path('documento/curp/create/', DocumentoCurpCreateView.as_view(), ),
+    path('documento/acta-nacimiento/create/', DocumentoActaNacimientoCreateView.as_view(), ),
     
 ]
