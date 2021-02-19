@@ -18,5 +18,7 @@ urlpatterns = [
     path('documento/curp/create/', DocumentoCurpCreateView.as_view(), ),
     path('documento/acta-nacimiento/create/', DocumentoActaNacimientoCreateView.as_view(), ),
     path('documento/carta-solicitud/create/', DocumentoCartaSolicitudCreateView.as_view(), ),
+    path('documento/constancia-posgrado/create/', DocumentoConstanciaPosgradoCreateView.as_view(), ),
+    
     
 ]

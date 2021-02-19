@@ -160,3 +160,16 @@ class DocumentoCartaSolicitudCreateView(CreateAPIView):
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
+
+
+class DocumentoConstanciaPosgradoCreateView(CreateAPIView):
+    serializer_class = ConvocatoriaEnroladoDocumentoSerializer
+
+    def post(self, request, *args, **kwargs):
+        request = inicializaData(request)
+        request.data['catTiposDocumento'] = 5
+        serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.info(f'campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)

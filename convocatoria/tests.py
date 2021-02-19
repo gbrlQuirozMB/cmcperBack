@@ -306,6 +306,8 @@ class PostDocumento200Test(APITestCase):
         CatTiposDocumento.objects.create(descripcion='CURP')
         CatTiposDocumento.objects.create(descripcion='Acta de Nacimiento')
         CatTiposDocumento.objects.create(descripcion='Carta de Solicitud de Examen')
+        CatTiposDocumento.objects.create(descripcion='Constancia de Posgrado')
+        
         
         CatMotivosRechazo.objects.create(descripcion='descripcion1',tipo=1)
         CatMotivosRechazo.objects.create(descripcion='descripcion2',tipo=2)
@@ -358,10 +360,13 @@ class PostDocumento200Test(APITestCase):
         # print(f'response JSON ===>>> \n {response.data} \n ---')
         # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        response = self.client.post('/api/convocatoria/documento/carta-solicitud/create/', data=self.json, format='multipart')
+        # response = self.client.post('/api/convocatoria/documento/carta-solicitud/create/', data=self.json, format='multipart')
+        # print(f'response JSON ===>>> \n {response.data} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        response = self.client.post('/api/convocatoria/documento/constancia-posgrado/create/', data=self.json, format='multipart')
         print(f'response JSON ===>>> \n {response.data} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
 
 
         dato = ConvocatoriaEnroladoDocumento.objects.get(id=1)
