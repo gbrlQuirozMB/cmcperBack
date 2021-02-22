@@ -15,6 +15,7 @@ urlpatterns = [
     path('<pk>/archivo/', ConvocatoriaArchivoUpdateView.as_view(), ),
     path('<pk>/banner/', ConvocatoriaBannerUpdateView.as_view(), ),
     path('update/<pk>/', ConvocatoriaUpdateView.as_view(), ),
+    path('delete/<pk>/', ConvocatoriaDeleteView.as_view(), ),
     
     path('enrolar/create/', ConvocatoriaEnroladoCreateView.as_view(), ),
     

@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from .serializers import *
 from preregistro.models import Medico
 from django.shortcuts import render
-from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView
+from rest_framework.generics import DestroyAPIView, ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView
 from api.logger import log
 from api.exceptions import *
 from rest_framework import permissions
@@ -12,6 +12,8 @@ import json
 from datetime import date
 
 # Create your views here.
+
+
 class EsExtranjeroUpdateView(UpdateAPIView):
     queryset = Medico.objects.filter()
     serializer_class = EsExtranjeroSerializer
@@ -80,9 +82,14 @@ class ConvocatoriaBannerUpdateView(UpdateAPIView):
 class ConvocatoriaUpdateView(UpdateAPIView):
     queryset = Convocatoria.objects.filter()
     serializer_class = ConvocatoriaSerializer
-    
+
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
+
+
+class ConvocatoriaDeleteView(DestroyAPIView):
+    queryset = Convocatoria.objects.filter()
+
 
 class ConvocatoriaEnroladoCreateView(CreateAPIView):
     serializer_class = ConvocatoriaEnroladoSerializer
