@@ -11,15 +11,6 @@ from rest_framework import permissions
 import json
 from datetime import date
 
-
-# import json
-# from rest_framework.parsers import BaseParser, DataAndFiles
-# from django.conf import settings
-# from django.http.multipartparser import MultiPartParser as DjangoMultiPartParser, MultiPartParserError
-# # from django.utils import six
-# from rest_framework.exceptions import ParseError
-
-
 # Create your views here.
 class EsExtranjeroUpdateView(UpdateAPIView):
     queryset = Medico.objects.filter()
@@ -85,6 +76,13 @@ class ConvocatoriaBannerUpdateView(UpdateAPIView):
     queryset = Convocatoria.objects.filter()
     serializer_class = ConvocatoriaBannerSerializer
 
+
+class ConvocatoriaUpdateView(UpdateAPIView):
+    queryset = Convocatoria.objects.filter()
+    serializer_class = ConvocatoriaSerializer
+    
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
 
 class ConvocatoriaEnroladoCreateView(CreateAPIView):
     serializer_class = ConvocatoriaEnroladoSerializer

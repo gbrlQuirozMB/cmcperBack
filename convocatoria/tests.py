@@ -259,6 +259,66 @@ class PutBanner200Test(APITestCase):
         print(f'--->>>DESPUES dato: {dato.id} - {dato.nombre} - {dato.banner}')
 
 
+class PutConvocatoria200Test(APITestCase):
+    def setUp(self):
+        catSedes = CatSedes.objects.create(descripcion='sedeDescripcion1', direccion='sedeDireccion1', latitud=11.235698, longitud=-111.235689)
+        CatSedes.objects.create(descripcion='sedeDescripcion2', direccion='sedeDireccion2', latitud=22.235698, longitud=-222.235689)
+        CatSedes.objects.create(descripcion='sedeDescripcion3', direccion='sedeDireccion3', latitud=33.235698, longitud=-333.235689)
+
+        catTiposExamen = CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion1')
+        CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion2')
+        
+        convocatoria = Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona', detalles='detalles',
+                            precio=369.99)
+        
+        Sede.objects.create(catSedes=catSedes, convocatoria=convocatoria)
+        TipoExamen.objects.create(catTiposExamen=catTiposExamen, convocatoria=convocatoria)
+        
+        self.json = {
+            "fechaInicio": "1999-06-04",
+            "fechaTermino": "1999-02-11",
+            "fechaExamen": "1999-04-06",
+            "horaExamen": "03:03",
+            "nombre": "convocatoria chingona modificada",
+            "detalles": "detalles modificados",
+            "precio": 963.33,
+            "sedes": [
+                {"catSedes": 2},
+                {"catSedes": 3},
+            ],
+            "tiposExamen": [
+                {"catTiposExamen": 2}
+            ]
+        }
+    
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+        
+        response = self.client.get('/api/convocatoria/detail/1/')
+        print(f'response JSON ===>>> \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        
+        dato = Convocatoria.objects.get(id=1)
+        print(f'--->>>ANTES dato: {dato.id} - {dato.nombre} - {dato.fechaInicio}')
+
+        response = self.client.put('/api/convocatoria/update/1/',data=json.dumps(self.json), content_type="application/json")
+        # print(f'response JSON ===>>> \n {response.data} \n ---')
+        print(f'response JSON ===>>> \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        dato = Convocatoria.objects.get(id=1)
+        print(f'--->>>DESPUES dato: {dato.id} - {dato.nombre} - {dato.fechaInicio}')
+        
+  
+        response = self.client.get('/api/convocatoria/detail/1/')
+        print(f'response JSON ===>>> \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)      
+        
+        
+
 class PostEnrolar200Test(APITestCase):
     def setUp(self):
         CatSedes.objects.create(descripcion='sedeDescripcion1', direccion='sedeDireccion1', latitud=11.235698, longitud=-111.235689)
