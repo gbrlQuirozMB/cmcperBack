@@ -96,26 +96,16 @@ class PreregistroAceptadoUpdateView(UpdateAPIView):
         Medico.objects.filter(id=pk).update(aceptado=True, numRegistro=pk, username=username)
         Notificacion.objects.create(titulo='Preregistro',mensaje='Su preregistro se aprobó',destinatario=pk,remitente=0)
         try:
-            # nl = '\n'
-            # textContent = f'Hola {datosMedico[0][0]} {datosMedico[0][1]}, {nl} Su preregistro ha sido aprobado. {nl} Usuario: {username} {nl} Contraseña: {password}'
-            # send_mail(
-            #     'Preregistro Aprobado',
-            #     textContent,
-            #     'gabriel@mb.company',
-            #     [email],
-            #     fail_silently=False,
-            # )
             datos = {
                 'nombre': datosMedico[0][0],
                 'apPaterno': datosMedico[0][1],
-                # 'apMaterno': convocatoriaEnrolado.medico.apMaterno,
                 'usuario': username,
                 'clave': password,
                 'aceptado': True
             }
             htmlContentAcept = render_to_string('email.html', datos)
             textContentAcept = strip_tags(htmlContentAcept)
-            emailAcep = EmailMultiAlternatives("CMCPER-Aceptado", textContentAcept, "no-reply@cmcper.mx", [email])
+            emailAcep = EmailMultiAlternatives("CMCPER Preregistro Aceptado", textContentAcept, "no-reply@cmcper.mx", [email])
             emailAcep.attach_alternative(htmlContentAcept, "text/html")
             # email.attach(filename, resultado.getvalue(), "application/pdf")
             emailAcep.send()
@@ -132,33 +122,24 @@ class PreregistroRechazadoUpdateView(UpdateAPIView):
     def put(self, request, *args, **kwargs):
         pk = kwargs['pk']
         Medico.objects.filter(id=pk).update(aceptado=False, numRegistro=0)
-        datosMedico = Medico.objects.filter(id=1).values_list('nombre','apPaterno','apMaterno','email','rfc')
+        datosMedico = Medico.objects.filter(id=pk).values_list('nombre','apPaterno','apMaterno','email','rfc')
         email = datosMedico[0][3]
         motivo = self.request.data.get('motivo')
         # no hay notificacion porque estas son dentro del sistema
         try:
-            # nl = '\n'
-            # textContent = f'Hola {datosMedico[0][0]} {datosMedico[0][1]}, {nl} Su preregistro ha sido rechazado. {nl} Motivo: {motivo}'
-            # send_mail(
-            #     'Preregistro Rechazado',
-            #     textContent,
-            #     'gabriel@mb.company',
-            #     [email],
-            #     fail_silently=False,
-            # )
             datos = {
                 'nombre': datosMedico[0][0],
                 'apPaterno': datosMedico[0][1],
-                # 'apMaterno': convocatoriaEnrolado.medico.apMaterno,
                 'motivo': motivo,
                 'aceptado': False
             }
             htmlContentRecha = render_to_string('email.html', datos)
             textContentRecha = strip_tags(htmlContentRecha)
-            emailRecha = EmailMultiAlternatives("CMCPER-Rechazado", textContentRecha, "no-reply@cmcper.mx", [email])
+            emailRecha = EmailMultiAlternatives("CMCPER Preregistro Rechazado", textContentRecha, "no-reply@cmcper.mx", [email])
             emailRecha.attach_alternative(htmlContentRecha, "text/html")
             # email.attach(filename, resultado.getvalue(), "application/pdf")
             emailRecha.send()
+            # Medico.objects.filter(id=pk).delete()
         except:
             raise ResponseError('Error al enviar correo', 500)
         return self.update(request, *args, **kwargs)
