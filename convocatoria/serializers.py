@@ -98,7 +98,8 @@ class ConvocatoriaSerializer(serializers.ModelSerializer):
 class ConvocatoriaListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Convocatoria
-        fields = ['id', 'nombre']
+        # fields = ['id', 'nombre']
+        fields = ['id', 'nombre', 'fechaInicio', 'fechaTermino', 'fechaExamen']
 
 
 class CatSedesSerializer(serializers.ModelSerializer):
