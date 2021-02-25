@@ -95,19 +95,23 @@ class PostConvocatoria200Test(APITestCase):
             "precio": 369.99,
             "sedes": [
                 {"catSedes": 1},
-                {"catSedes": 2},
+                {"catSedes": 2}
             ],
             "tiposExamen": [
                 {"catTiposExamen": 1}
             ]
         }
+        #  campos incorrectos: {'sedes': [{}, {'catSedes': [ErrorDetail(string='Tipo incorrecto. Se esperaba valor de clave primaria y se recibió str.', code='incorrect_type')]}]}
 
         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
 
     def test(self):
         self.client.force_authenticate(user=self.user)
 
+        # print(json.dumps(self.json))
+        # print(self.json)
         response = self.client.post('/api/convocatoria/create/', data=json.dumps(self.json), content_type="application/json")
+        # response = self.client.post('/api/convocatoria/create/', data=self.json)
         print(f'response JSON ===>>> \n {json.dumps(response.data)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -165,7 +169,7 @@ class GetDetail200Test(APITestCase):
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona2', detalles='detalles1',
                                     precio=333.33)
         self.convocatoria = Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-03-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona3',
-                                                        detalles='detalles3', precio=333.33)
+                                                        detalles='detalles3', precio=333.33, archivo='archivo.pdf', banner='banner.jpg')
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona4', detalles='detalles1',
                                     precio=333.33)
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona5', detalles='detalles1',
@@ -604,17 +608,65 @@ class PutDocumento200Test(APITestCase):
         # dato = ConvocatoriaEnroladoDocumento.objects.filter(medico=1)
 
 
+# ES DE PRUEBA NO USAR!!!
+# class PostConvocatoriaSede200Test(APITestCase):
+#     def setUp(self):
+#         CatSedes.objects.create(descripcion='sedeDescripcion1', direccion='sedeDireccion1', latitud=11.235698, longitud=-111.235689)
+#         CatSedes.objects.create(descripcion='sedeDescripcion2', direccion='sedeDireccion2', latitud=22.235698, longitud=-222.235689)
+#         CatSedes.objects.create(descripcion='sedeDescripcion3', direccion='sedeDireccion3', latitud=33.235698, longitud=-333.235689)
+
+#         CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion1')
+#         CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion2')
+
+#         self.convocatoria = Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1',
+#                                     precio=333.33)
+
+#         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+#         self.json = {
+#             "catSedes": [1, 2]
+#         }
+
+#     def test(self):
+#         self.client.force_authenticate(user=self.user)
+
+#         response = self.client.post('/api/convocatoria/1/sede/create/', data=json.dumps(self.json), content_type="application/json")
+#         # print(f'response JSON ===>>> \n {json.dumps(response.content)} \n ---')
+#         # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+#         datos = Sede.objects.filter(convocatoria=self.convocatoria)
+#         print(f'--->>>datos: {datos}')
+#         for dato in datos:
+#             print(dato.catSedes.descripcion)
+
 class baseDatosTest(APITestCase):
     def setUp(self):
+        CatSedes.objects.create(descripcion='sedeDescripcion1', direccion='sedeDireccion1', latitud=11.235698, longitud=-111.235689)
+        CatSedes.objects.create(descripcion='sedeDescripcion2', direccion='sedeDireccion2', latitud=22.235698, longitud=-222.235689)
+        catSedes=CatSedes.objects.create(descripcion='sedeDescripcion3', direccion='sedeDireccion3', latitud=33.235698, longitud=-333.235689)
+
+        catTiposExamen=CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion1')
+        CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion2')
+
         convocatoria = Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09',
                                                    nombre='convocatoria chingona', archivo='pdfFile', banner='pngFile', detalles='detalles', precio=369.99)
 
+        medico= Medico.objects.create(
+            id=1, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
+
+        ConvocatoriaEnrolado.objects.create(medico=medico, convocatoria=convocatoria,catSedes=catSedes,catTiposExamen=catTiposExamen)
+
     def test(self):
-        datoConvocatoria = Convocatoria.objects.get(id=1)
-        print(f'--->>>dato: {datoConvocatoria}')
-        serializer = ConvocatoriaSerializer(data=datoConvocatoria)
-        print(f'--->>>serializer: {serializer}')
-        if serializer.is_valid():
-            # print(f'--->>>dato: {serializer.data}')
-            print(set(serializer.data.keys()))
-        print(f'--->>>dato: {serializer.errors}')
+        # datoConvocatoria = Convocatoria.objects.get(id=1)
+        # print(f'--->>>dato: {datoConvocatoria}')
+        # serializer = ConvocatoriaSerializer(data=datoConvocatoria)
+        # print(f'--->>>serializer: {serializer}')
+        # if serializer.is_valid():
+        #     # print(f'--->>>dato: {serializer.data}')
+        #     print(set(serializer.data.keys()))
+        # print(f'--->>>dato: {serializer.errors}')
+
+        response = self.client.get('/api/convocatoria/ficha-registro-pdf/1/')

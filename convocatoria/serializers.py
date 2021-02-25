@@ -30,13 +30,16 @@ class TipoExamenSerializer(serializers.ModelSerializer):
 
 
 class ConvocatoriaSerializer(serializers.ModelSerializer):
-    sedes = SedeSerializer(required=False, many=True)
+    sedes = SedeSerializer(required=True, many=True)
     tiposExamen = TipoExamenSerializer(required=False, many=True)
 
     class Meta:
         model = Convocatoria
         # evito poner todo el listado de campos
-        fields = [f.name for f in model._meta.fields] + ['sedes'] + ['tiposExamen']
+        # fields = [f.name for f in model._meta.fields] + ['sedes'] + ['tiposExamen']
+        # read_only_fields = ['archivo','banner']
+        fields = ['id', 'fechaInicio', 'fechaTermino', 'fechaExamen', 'horaExamen', 'nombre', 'detalles', 'precio', 'sedes', 'tiposExamen']
+        # depth = 2
 
     def create(self, validated_data):
         sedesData = validated_data.pop('sedes')
@@ -56,12 +59,13 @@ class ConvocatoriaSerializer(serializers.ModelSerializer):
             Sede.objects.create(**sedeData, convocatoria=convocatoria)
         for tipoExamenData in tiposExameneData:
             TipoExamen.objects.create(**tipoExamenData, convocatoria=convocatoria)
-        # return validated_data # incompleto porque ya se le quito la llave 'sedes'
+        # return validated_data # incompleto porque ya se le quito la llave 'sedes' y 'tiposExamen'
         return convocatoria
 
     def update(self, instance, validated_data):
         sedesData = validated_data.pop('sedes')
         for dato in sedesData:
+            
             if not bool(dato):
                 log.info(f'campos incorrectos: catSedes')
                 raise CamposIncorrectos({"catSedes": ["Este campo es requerido"]})
@@ -71,25 +75,26 @@ class ConvocatoriaSerializer(serializers.ModelSerializer):
             if not bool(dato):
                 log.info(f'campos incorrectos: catTiposExamen')
                 raise CamposIncorrectos({"catTiposExamen": ["Este campo es requerido"]})
-        
-        instance.fechaInicio = validated_data.get('fechaInicio',instance.fechaInicio)
-        instance.fechaTermino = validated_data.get('fechaTermino',instance.fechaTermino)
-        instance.fechaExamen = validated_data.get('fechaExamen',instance.fechaExamen)
-        instance.horaExamen = validated_data.get('horaExamen',instance.horaExamen)
-        instance.nombre = validated_data.get('nombre',instance.nombre)
-        instance.detalles = validated_data.get('detalles',instance.detalles)
-        instance.precio = validated_data.get('precio',instance.precio)
+
+        instance.fechaInicio = validated_data.get('fechaInicio', instance.fechaInicio)
+        instance.fechaTermino = validated_data.get('fechaTermino', instance.fechaTermino)
+        instance.fechaExamen = validated_data.get('fechaExamen', instance.fechaExamen)
+        instance.horaExamen = validated_data.get('horaExamen', instance.horaExamen)
+        instance.nombre = validated_data.get('nombre', instance.nombre)
+        instance.detalles = validated_data.get('detalles', instance.detalles)
+        instance.precio = validated_data.get('precio', instance.precio)
         instance.save()
-        
+
         Sede.objects.filter(convocatoria=instance.id).delete()
         for sedeData in sedesData:
             Sede.objects.create(**sedeData, convocatoria=instance)
-            
+
         TipoExamen.objects.filter(convocatoria=instance.id).delete()
         for tipoExamenData in tiposExameneData:
-            TipoExamen.objects.create(**tipoExamenData, convocatoria=instance)   
+            TipoExamen.objects.create(**tipoExamenData, convocatoria=instance)
 
         return instance
+
 
 class ConvocatoriaListSerializer(serializers.ModelSerializer):
     class Meta:

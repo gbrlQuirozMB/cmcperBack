@@ -1,5 +1,4 @@
-import re
-from rest_framework import response, status
+from rest_framework import response, status, permissions
 from rest_framework.views import APIView
 from .serializers import *
 from preregistro.models import Medico
@@ -7,9 +6,17 @@ from django.shortcuts import render
 from rest_framework.generics import DestroyAPIView, ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView
 from api.logger import log
 from api.exceptions import *
-from rest_framework import permissions
 import json
 from datetime import date
+from rest_framework.parsers import JSONParser
+from django.http import HttpResponse, JsonResponse, Http404
+from rest_framework.response import Response
+
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from django.views import View
+import ssl
+
 
 # Create your views here.
 
@@ -42,6 +49,7 @@ class EstudioExtranjeroUpdateView(UpdateAPIView):
 
 class ConvocatoriaCreateView(CreateAPIView):
     serializer_class = ConvocatoriaSerializer
+    # parser_classes = [JSONParser]
 
     def post(self, request, *args, **kwargs):
         serializer = ConvocatoriaSerializer(data=request.data)
@@ -257,3 +265,73 @@ class DocumentosMedicoListView(ListAPIView):
 class ConvocatoriaDocumentoUpdateView(UpdateAPIView):
     queryset = ConvocatoriaEnroladoDocumento.objects.filter()
     serializer_class = ConvocatoriaDocumentoSerializer
+
+
+class FichaRegistroPDF(View):
+    
+    def get(self, request, *args, **kwargs):
+        id = self.kwargs['pk']
+        try:
+            convocatoriaEnrolado = ConvocatoriaEnrolado.objects.get(id=id)
+            datos = {
+                'id': convocatoriaEnrolado.id,
+                'nombre': convocatoriaEnrolado.medico.nombre,
+                'apPaterno': convocatoriaEnrolado.medico.apPaterno,
+                'apMaterno': convocatoriaEnrolado.medico.apMaterno,
+                'hospitalResi': convocatoriaEnrolado.medico.hospitalResi,
+                'sede': convocatoriaEnrolado.catSedes.descripcion,
+                'tipoExamen': convocatoriaEnrolado.catTiposExamen.descripcion,
+                'fechaExamen': convocatoriaEnrolado.convocatoria.fechaExamen,
+                'horaExamen': convocatoriaEnrolado.convocatoria.horaExamen
+            }
+            # print(datos)
+            return render_pdf_view(request,'pdf.html',datos)
+        except:
+            return HttpResponse('No se encontró el registro',content_type='text/plain')
+            
+
+
+
+def render_pdf_view(request, templateSrc, datosContexto):
+    template_path = templateSrc
+    context = datosContexto
+    # Create a Django response object, and specify content_type as pdf
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+    # find the template and render it.
+    template = get_template(template_path)
+    html = template.render(context)
+    ssl._create_default_https_context = ssl._create_unverified_context
+    # create a pdf
+    pisa_status = pisa.CreatePDF(
+    #    html, dest=response, link_callback=link_callback)
+       html, dest=response)
+    # if error then show some funy view
+    if pisa_status.err:
+       return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response
+    
+
+
+
+# ES DE PRUEBA NO USAR!!!
+# class ConvocatoriaSedeCreateView(CreateAPIView):
+#     def post(self, request, *args, **kwargs):
+#         print(f'--->>>reques.data: {request.data}')
+#         print(f'--->>>reques.data: {type(request.data)}')
+#         # lista =  list(request.POST.getlist('catSedes'))
+#         lista = list(request.data.get('catSedes'))
+#         # print(f'--->>>asd: {type(lista)}')
+#         # print(f'--->>>lista: {lista}')
+#         convocatoriaId = self.kwargs['convocatoriaId']
+#         # print(f'--->>>kwargs: {convocatoriaId}')
+#         convocatoria = Convocatoria.objects.get(id=convocatoriaId)
+#         Sede.objects.filter(convocatoria=convocatoria).delete()
+#         for dato in lista:
+#             print(dato)
+#             catSedes = CatSedes.objects.get(id=dato)
+#             Sede.objects.create(catSedes=catSedes, convocatoria=convocatoria)
+#         # return JsonResponse({"ok":"ok"}, status=status.HTTP_201_CREATED)
+#         return Response({"ok":"ok"}, status=status.HTTP_201_CREATED)
+
+

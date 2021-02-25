@@ -32,5 +32,12 @@ urlpatterns = [
     path('documentos/medico/<medicoId>/list/', DocumentosMedicoListView.as_view(), ),
     path('documento/update/<pk>/', ConvocatoriaDocumentoUpdateView.as_view(), ),
     
+    path('ficha-registro-pdf/<pk>/', FichaRegistroPDF.as_view(), ),
+    
+    
+    
+    # ES DE PRUEBA NO USAR!!!
+    # path('<convocatoriaId>/sede/create/', ConvocatoriaSedeCreateView.as_view(), ),
+    
 
 ]
