@@ -155,7 +155,7 @@ class PreregistroRechazadoUpdateView(UpdateAPIView):
             }
             html_content = render_to_string('email.html', datos)
             text_content = strip_tags(html_content)
-            email = EmailMultiAlternatives("CMCPER-Aceptado", text_content, "no-reply@cmcper.mx", [email])
+            email = EmailMultiAlternatives("CMCPER-Rechazado", text_content, "no-reply@cmcper.mx", [email])
             email.attach_alternative(html_content, "text/html")
             # email.attach(filename, resultado.getvalue(), "application/pdf")
             email.send()
