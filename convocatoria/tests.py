@@ -92,7 +92,6 @@ class PostConvocatoria200Test(APITestCase):
             "horaExamen": "09:09",
             "nombre": "convocatoria chingona",
             "detalles": "detalles",
-            "precio": 369.99,
             "sedes": [
                 {"catSedes": 1},
                 {"catSedes": 2}
@@ -130,17 +129,17 @@ class PostConvocatoria200Test(APITestCase):
 class GetList200Test(APITestCase):
     def setUp(self):
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1',
-                                    precio=333.33)
+                                    )
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona2', detalles='detalles1',
-                                    precio=333.33)
+                                    )
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-03-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona3', detalles='detalles1',
-                                    precio=333.33)
+                                    )
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona4', detalles='detalles1',
-                                    precio=333.33)
+                                    )
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona5', detalles='detalles1',
-                                    precio=333.33)
+                                    )
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-03-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona6', detalles='detalles1',
-                                    precio=333.33)
+                                    )
 
         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
 
@@ -165,17 +164,17 @@ class GetDetail200Test(APITestCase):
         catTiposExamen2 = CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion2')
 
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1',
-                                    precio=333.33)
+                                    )
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona2', detalles='detalles1',
-                                    precio=333.33)
+                                    )
         self.convocatoria = Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-03-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona3',
-                                                        detalles='detalles3', precio=333.33, archivo='archivo.pdf', banner='banner.jpg')
+                                                        detalles='detalles3', archivo='archivo.pdf', banner='banner.jpg')
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona4', detalles='detalles1',
-                                    precio=333.33)
+                                    )
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona5', detalles='detalles1',
-                                    precio=333.33)
+                                    )
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-15', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona6', detalles='detalles1',
-                                    precio=333.33)
+                                    )
 
         Sede.objects.create(catSedes=catSedes1, convocatoria=self.convocatoria)
         Sede.objects.create(catSedes=catSedes3, convocatoria=self.convocatoria)
@@ -202,7 +201,7 @@ class GetDetail200Test(APITestCase):
 class PutArchivo200Test(APITestCase):
     def setUp(self):
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona', detalles='detalles',
-                                    precio=369.99)
+                                    )
 
         streamPDF = BytesIO(
             b'%PDF-1.0\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj 2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1'
@@ -235,7 +234,7 @@ class PutArchivo200Test(APITestCase):
 class PutBanner200Test(APITestCase):
     def setUp(self):
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona', detalles='detalles',
-                                    precio=369.99)
+                                    )
 
         stream = BytesIO()
         image = Image.new('RGB', (100, 100))
@@ -273,7 +272,7 @@ class PutConvocatoria200Test(APITestCase):
         CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion2')
 
         convocatoria = Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',
-                                                   horaExamen='09:09', nombre='convocatoria chingona', detalles='detalles', precio=369.99)
+                                                   horaExamen='09:09', nombre='convocatoria chingona', detalles='detalles', )
 
         Sede.objects.create(catSedes=catSedes, convocatoria=convocatoria)
         TipoExamen.objects.create(catTiposExamen=catTiposExamen, convocatoria=convocatoria)
@@ -285,7 +284,6 @@ class PutConvocatoria200Test(APITestCase):
             "horaExamen": "03:03",
             "nombre": "convocatoria chingona modificada",
             "detalles": "detalles modificados",
-            "precio": 963.33,
             "sedes": [
                 {"catSedes": 2},
                 {"catSedes": 3},
@@ -330,7 +328,7 @@ class DeleteConvocatoria200Test(APITestCase):
         CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion2')
 
         convocatoria = Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',
-                                                   horaExamen='09:09', nombre='convocatoria chingona', detalles='detalles', precio=369.99)
+                                                   horaExamen='09:09', nombre='convocatoria chingona', detalles='detalles', )
 
         Sede.objects.create(catSedes=catSedes, convocatoria=convocatoria)
         TipoExamen.objects.create(catTiposExamen=catTiposExamen, convocatoria=convocatoria)
@@ -374,7 +372,7 @@ class PostEnrolar200Test(APITestCase):
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
 
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1',
-                                    precio=333.33)
+                                    )
 
         self.json = {
             "medico": 1,
@@ -422,7 +420,7 @@ class PostDocumento200Test(APITestCase):
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
 
         Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1',
-                                    precio=333.33)
+                                    )
 
         stream = BytesIO()
         image = Image.new('RGB', (100, 100))
@@ -517,7 +515,7 @@ class GetDocumentosList200Test(APITestCase):
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
 
         convocatoria = Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',
-                                                   horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1', precio=333.33)
+                                                   horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1', )
 
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento1, documento='revalidacion.pdf')
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento2, documento='curp.pdf', isValidado=True)
@@ -566,7 +564,7 @@ class PutDocumento200Test(APITestCase):
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
 
         convocatoria = Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',
-                                                   horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1', precio=333.33)
+                                                   horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1', )
 
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento1, documento='revalidacion.pdf')
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento2, documento='curp.pdf', isValidado=True)
@@ -619,7 +617,7 @@ class PutDocumento200Test(APITestCase):
 #         CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion2')
 
 #         self.convocatoria = Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1',
-#                                     precio=333.33)
+#                                     )
 
 #         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
 
@@ -649,7 +647,7 @@ class baseDatosTest(APITestCase):
         CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion2')
 
         convocatoria = Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09',
-                                                   nombre='convocatoria chingona', archivo='pdfFile', banner='pngFile', detalles='detalles', precio=369.99)
+                                                   nombre='convocatoria chingona', archivo='pdfFile', banner='pngFile', detalles='detalles', )
 
         medico= Medico.objects.create(
             id=1, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',

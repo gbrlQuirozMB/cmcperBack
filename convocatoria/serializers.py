@@ -38,7 +38,7 @@ class ConvocatoriaSerializer(serializers.ModelSerializer):
         # evito poner todo el listado de campos
         # fields = [f.name for f in model._meta.fields] + ['sedes'] + ['tiposExamen']
         # read_only_fields = ['archivo','banner']
-        fields = ['id', 'fechaInicio', 'fechaTermino', 'fechaExamen', 'horaExamen', 'nombre', 'detalles', 'precio', 'sedes', 'tiposExamen']
+        fields = ['id', 'fechaInicio', 'fechaTermino', 'fechaExamen', 'horaExamen', 'nombre', 'detalles', 'sedes', 'tiposExamen']
         # depth = 2
 
     def create(self, validated_data):
@@ -82,7 +82,6 @@ class ConvocatoriaSerializer(serializers.ModelSerializer):
         instance.horaExamen = validated_data.get('horaExamen', instance.horaExamen)
         instance.nombre = validated_data.get('nombre', instance.nombre)
         instance.detalles = validated_data.get('detalles', instance.detalles)
-        instance.precio = validated_data.get('precio', instance.precio)
         instance.save()
 
         Sede.objects.filter(convocatoria=instance.id).delete()

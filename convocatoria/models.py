@@ -16,7 +16,6 @@ class Convocatoria(models.Model):
     archivo = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf'])])
     banner = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'gif'])])
     detalles = models.TextField(blank=True)
-    precio = models.DecimalField(max_digits=7, decimal_places=2)
 
     class Meta:
         db_table = 'convocatoria'
