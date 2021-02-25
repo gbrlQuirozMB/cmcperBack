@@ -19,7 +19,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth.base_user import BaseUserManager
 from django.core.mail import send_mail
 
-
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.core.mail import EmailMultiAlternatives
 
 # ----------------------------------------------------------------------------------Preregistro
 class PreregistroCreateView(CreateAPIView):
@@ -94,15 +96,29 @@ class PreregistroAceptadoUpdateView(UpdateAPIView):
         Medico.objects.filter(id=pk).update(aceptado=True, numRegistro=pk, username=username)
         Notificacion.objects.create(titulo='Preregistro',mensaje='Su preregistro se aprobó',destinatario=pk,remitente=0)
         try:
-            nl = '\n'
-            textContent = f'Hola {datosMedico[0][0]} {datosMedico[0][1]}, {nl} Su preregistro ha sido aprobado. {nl} Usuario: {username} {nl} Contraseña: {password}'
-            send_mail(
-                'Preregistro Aprobado',
-                textContent,
-                'gabriel@mb.company',
-                [email],
-                fail_silently=False,
-            )
+            # nl = '\n'
+            # textContent = f'Hola {datosMedico[0][0]} {datosMedico[0][1]}, {nl} Su preregistro ha sido aprobado. {nl} Usuario: {username} {nl} Contraseña: {password}'
+            # send_mail(
+            #     'Preregistro Aprobado',
+            #     textContent,
+            #     'gabriel@mb.company',
+            #     [email],
+            #     fail_silently=False,
+            # )
+            datos = {
+                'nombre': datosMedico[0][0],
+                'apPaterno': datosMedico[0][1],
+                # 'apMaterno': convocatoriaEnrolado.medico.apMaterno,
+                'usuario': username,
+                'clave': password,
+                'aceptado': True
+            }
+            html_content = render_to_string('email.html', datos)
+            text_content = strip_tags(html_content)
+            email = EmailMultiAlternatives("CMCPER-Aceptado", text_content, "no-reply@cmcper.mx", [email])
+            email.attach_alternative(html_content, "text/html")
+            # email.attach(filename, resultado.getvalue(), "application/pdf")
+            email.send()
         except:
             raise ResponseError('Error al enviar correo', 500)
         
@@ -121,15 +137,28 @@ class PreregistroRechazadoUpdateView(UpdateAPIView):
         motivo = self.request.data.get('motivo')
         # no hay notificacion porque estas son dentro del sistema
         try:
-            nl = '\n'
-            textContent = f'Hola {datosMedico[0][0]} {datosMedico[0][1]}, {nl} Su preregistro ha sido rechazado. {nl} Motivo: {motivo}'
-            send_mail(
-                'Preregistro Rechazado',
-                textContent,
-                'gabriel@mb.company',
-                [email],
-                fail_silently=False,
-            )
+            # nl = '\n'
+            # textContent = f'Hola {datosMedico[0][0]} {datosMedico[0][1]}, {nl} Su preregistro ha sido rechazado. {nl} Motivo: {motivo}'
+            # send_mail(
+            #     'Preregistro Rechazado',
+            #     textContent,
+            #     'gabriel@mb.company',
+            #     [email],
+            #     fail_silently=False,
+            # )
+            datos = {
+                'nombre': datosMedico[0][0],
+                'apPaterno': datosMedico[0][1],
+                # 'apMaterno': convocatoriaEnrolado.medico.apMaterno,
+                'motivo': motivo,
+                'aceptado': False
+            }
+            html_content = render_to_string('email.html', datos)
+            text_content = strip_tags(html_content)
+            email = EmailMultiAlternatives("CMCPER-Aceptado", text_content, "no-reply@cmcper.mx", [email])
+            email.attach_alternative(html_content, "text/html")
+            # email.attach(filename, resultado.getvalue(), "application/pdf")
+            email.send()
         except:
             raise ResponseError('Error al enviar correo', 500)
         return self.update(request, *args, **kwargs)
