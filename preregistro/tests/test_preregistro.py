@@ -237,9 +237,11 @@ class PutRechazar200Test(APITestCase):
         self.json = {
             "motivo": "este es el motivo de rechazo"
         }
-        
     
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
     def test(self):
+        self.client.force_authenticate(user=self.user)
         # response = self.client.get('/api/preregistro/detail/1/')
         # print(f'response JSON ===>>> {nl} {response.data} {nl} ---')
         

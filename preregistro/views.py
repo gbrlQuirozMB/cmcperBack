@@ -113,12 +113,12 @@ class PreregistroAceptadoUpdateView(UpdateAPIView):
                 'clave': password,
                 'aceptado': True
             }
-            html_content = render_to_string('email.html', datos)
-            text_content = strip_tags(html_content)
-            email = EmailMultiAlternatives("CMCPER-Aceptado", text_content, "no-reply@cmcper.mx", [email])
-            email.attach_alternative(html_content, "text/html")
+            htmlContentAcept = render_to_string('email.html', datos)
+            textContentAcept = strip_tags(htmlContentAcept)
+            emailAcep = EmailMultiAlternatives("CMCPER-Aceptado", textContentAcept, "no-reply@cmcper.mx", [email])
+            emailAcep.attach_alternative(htmlContentAcept, "text/html")
             # email.attach(filename, resultado.getvalue(), "application/pdf")
-            email.send()
+            emailAcep.send()
         except:
             raise ResponseError('Error al enviar correo', 500)
         
@@ -153,12 +153,12 @@ class PreregistroRechazadoUpdateView(UpdateAPIView):
                 'motivo': motivo,
                 'aceptado': False
             }
-            html_content = render_to_string('email.html', datos)
-            text_content = strip_tags(html_content)
-            email = EmailMultiAlternatives("CMCPER-Rechazado", text_content, "no-reply@cmcper.mx", [email])
-            email.attach_alternative(html_content, "text/html")
+            htmlContentRecha = render_to_string('email.html', datos)
+            textContentRecha = strip_tags(htmlContentRecha)
+            emailRecha = EmailMultiAlternatives("CMCPER-Rechazado", textContentRecha, "no-reply@cmcper.mx", [email])
+            emailRecha.attach_alternative(htmlContentRecha, "text/html")
             # email.attach(filename, resultado.getvalue(), "application/pdf")
-            email.send()
+            emailRecha.send()
         except:
             raise ResponseError('Error al enviar correo', 500)
         return self.update(request, *args, **kwargs)
