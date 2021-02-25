@@ -103,7 +103,7 @@ class PreregistroAceptadoUpdateView(UpdateAPIView):
                 'clave': password,
                 'aceptado': True
             }
-            htmlContentAcept = render_to_string('email.html', datos)
+            htmlContentAcept = render_to_string('emailAcepRecha.html', datos)
             textContentAcept = strip_tags(htmlContentAcept)
             emailAcep = EmailMultiAlternatives("CMCPER Preregistro Aceptado", textContentAcept, "no-reply@cmcper.mx", [email])
             emailAcep.attach_alternative(htmlContentAcept, "text/html")
@@ -133,7 +133,7 @@ class PreregistroRechazadoUpdateView(UpdateAPIView):
                 'motivo': motivo,
                 'aceptado': False
             }
-            htmlContentRecha = render_to_string('email.html', datos)
+            htmlContentRecha = render_to_string('emailAcepRecha.html', datos)
             textContentRecha = strip_tags(htmlContentRecha)
             emailRecha = EmailMultiAlternatives("CMCPER Preregistro Rechazado", textContentRecha, "no-reply@cmcper.mx", [email])
             emailRecha.attach_alternative(htmlContentRecha, "text/html")
