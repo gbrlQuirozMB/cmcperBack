@@ -17,6 +17,8 @@ class CatSedes(models.Model):
         
 class CatTiposExamen(models.Model):
     descripcion = models.CharField(max_length=200)
+    precio = models.DecimalField(max_digits=7, decimal_places=2, null=True)
+    precioExtrangero = models.DecimalField(max_digits=7, decimal_places=2, null=True)
     
     class Meta:
         db_table = 'cat_tipos_examen'
