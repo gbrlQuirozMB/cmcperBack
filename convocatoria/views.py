@@ -267,8 +267,28 @@ class ConvocatoriaDocumentoUpdateView(UpdateAPIView):
     serializer_class = ConvocatoriaDocumentoSerializer
 
 
+def render_pdf_view(request, templateSrc, datosContexto):
+    template_path = templateSrc
+    context = datosContexto
+    # Create a Django response object, and specify content_type as pdf
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+    # find the template and render it.
+    template = get_template(template_path)
+    html = template.render(context)
+    ssl._create_default_https_context = ssl._create_unverified_context
+    # create a pdf
+    pisa_status = pisa.CreatePDF(
+        #    html, dest=response, link_callback=link_callback)
+        html, dest=response)
+    # if error then show some funy view
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response
+
+
 class FichaRegistroPDF(View):
-    
+
     def get(self, request, *args, **kwargs):
         id = self.kwargs['pk']
         try:
@@ -285,34 +305,21 @@ class FichaRegistroPDF(View):
                 'horaExamen': convocatoriaEnrolado.convocatoria.horaExamen
             }
             # print(datos)
-            return render_pdf_view(request,'pdf.html',datos)
+            return render_pdf_view(request, 'pdf.html', datos)
         except:
-            return HttpResponse('No se encontró el registro',content_type='text/plain')
-            
+            return HttpResponse('No se encontró el registro', content_type='text/plain')
 
 
-
-def render_pdf_view(request, templateSrc, datosContexto):
-    template_path = templateSrc
-    context = datosContexto
-    # Create a Django response object, and specify content_type as pdf
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="report.pdf"'
-    # find the template and render it.
-    template = get_template(template_path)
-    html = template.render(context)
-    ssl._create_default_https_context = ssl._create_unverified_context
-    # create a pdf
-    pisa_status = pisa.CreatePDF(
-    #    html, dest=response, link_callback=link_callback)
-       html, dest=response)
-    # if error then show some funy view
-    if pisa_status.err:
-       return HttpResponse('We had some errors <pre>' + html + '</pre>')
-    return response
+class ConvocatoriaEnroladoMedicoDetailView(RetrieveAPIView):
+    serializer_class = ConvocatoriaEnroladoMedicoDetailSerializer
+    lookup_field = 'medico'
+    lookup_url_kwarg = 'medicoId'
     
-
-
+    def get_queryset(self):
+        # medicoId = self.kwargs['medicoId']
+        # queryset = ConvocatoriaEnrolado.objects.filter(medico=medicoId)
+        queryset = ConvocatoriaEnrolado.objects.filter()
+        return queryset
 
 # ES DE PRUEBA NO USAR!!!
 # class ConvocatoriaSedeCreateView(CreateAPIView):
@@ -333,5 +340,3 @@ def render_pdf_view(request, templateSrc, datosContexto):
 #             Sede.objects.create(catSedes=catSedes, convocatoria=convocatoria)
 #         # return JsonResponse({"ok":"ok"}, status=status.HTTP_201_CREATED)
 #         return Response({"ok":"ok"}, status=status.HTTP_201_CREATED)
-
-
