@@ -164,8 +164,9 @@ class ConvocatoriaEnroladoDocumentoSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         repr = super().to_representation(instance)
-        dato = CatTiposDocumento.objects.get(id=instance.catTiposDocumento.id)
-        repr['tipoDocumento'] = dato.descripcion
+        # dato = CatTiposDocumento.objects.get(id=instance.catTiposDocumento.id)
+        # repr['tipoDocumento'] = dato.descripcion
+        repr['tipoDocumento'] = instance.catTiposDocumento.descripcion
         return repr
 
 
@@ -176,8 +177,9 @@ class ConvocatoriaEnroladoDocumentoListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         repr = super().to_representation(instance)
-        dato = CatTiposDocumento.objects.get(id=instance.catTiposDocumento.id)
-        repr['tipoDocumento'] = dato.descripcion
+        # dato = CatTiposDocumento.objects.get(id=instance.catTiposDocumento.id)
+        # repr['tipoDocumento'] = dato.descripcion
+        repr['tipoDocumento'] = instance.catTiposDocumento.descripcion
         return repr
 
 
