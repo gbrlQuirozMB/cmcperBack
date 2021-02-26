@@ -713,7 +713,6 @@ class PutEnroladoComentario200Test(APITestCase):
             cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
 
-
         convocatoria6 = Convocatoria.objects.create(id=6, fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',
                                                     horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1')
 
@@ -739,9 +738,6 @@ class PutEnroladoComentario200Test(APITestCase):
         print(f'--->>>ANTES dato: {dato.id} - {dato.comentario}')
 
 
-        
-        
-        
 # ES DE PRUEBA NO USAR!!!
 # class PostConvocatoriaSede200Test(APITestCase):
 #     def setUp(self):

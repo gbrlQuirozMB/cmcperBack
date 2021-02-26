@@ -391,12 +391,12 @@ class ConvocatoriaEnroladosMedicoEndPoint(APIView):
         }
         return Response(respuesta)
 
+
 class ConvocatoriaEnroladoComentarioUpdateView(UpdateAPIView):
     queryset = ConvocatoriaEnrolado.objects.filter()
     serializer_class = ConvocatoriaEnroladoComentarioSerializer
-    
-    
-    
+
+
 # ES DE PRUEBA NO USAR!!!
 # class ConvocatoriaSedeCreateView(CreateAPIView):
 #     def post(self, request, *args, **kwargs):
