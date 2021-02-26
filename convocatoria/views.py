@@ -398,6 +398,19 @@ class ConvocatoriaEnroladoComentarioUpdateView(UpdateAPIView):
     serializer_class = ConvocatoriaEnroladoComentarioSerializer
 
 
+class ConvocatoriaEnroladoDocumentoAceptarUpdateView(UpdateAPIView):
+    queryset = ConvocatoriaEnroladoDocumento.objects.filter()
+    serializer_class = ConvocatoriaEnroladoDocumentoAceptarSerializer
+
+    def put(self, request, *args, **kwargs):
+        # para poder modificar el dato que llega
+        # request.data._mutable = True
+        request.data['isValidado'] = True
+        # request.data._mutable = False
+
+        return self.update(request, *args, **kwargs)
+
+
 # ES DE PRUEBA NO USAR!!!
 # class ConvocatoriaSedeCreateView(CreateAPIView):
 #     def post(self, request, *args, **kwargs):

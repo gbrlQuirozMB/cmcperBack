@@ -36,6 +36,7 @@ urlpatterns = [
     # path('documentos/medico/<medicoId>/list/', DocumentosMedicoListView.as_view(), ), # se va a cambiar por la siguiente
     path('<convocatoriaId>/medico/<medicoId>/documentos/list/', DocumentosMedicoListView.as_view(), ),
     path('documento/update/<pk>/', ConvocatoriaDocumentoUpdateView.as_view(), ),
+    path('documento/aceptar/<pk>/', ConvocatoriaEnroladoDocumentoAceptarUpdateView.as_view(), ),
 
     path('ficha-registro-pdf/<pk>/', FichaRegistroPDF.as_view(), ),
 
