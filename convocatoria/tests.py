@@ -697,7 +697,51 @@ class GetMedicoEnroladoList200Test(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
+class PutEnroladoComentario200Test(APITestCase):
+    def setUp(self):
+        CatSedes.objects.create(descripcion='sedeDescripcion1', direccion='sedeDireccion1', latitud=11.235698, longitud=-111.235689)
+        CatSedes.objects.create(descripcion='sedeDescripcion2', direccion='sedeDireccion2', latitud=22.235698, longitud=-222.235689)
+        catSedes3 = CatSedes.objects.create(descripcion='sedeDescripcion3', direccion='sedeDireccion3', latitud=33.235698, longitud=-333.235689)
 
+        CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion1')
+        CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion2')
+        catTiposExamen3 = CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion3')
+
+        medico3 = Medico.objects.create(
+            id=3, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
+
+
+        convocatoria6 = Convocatoria.objects.create(id=6, fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',
+                                                    horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1')
+
+        ConvocatoriaEnrolado.objects.create(medico=medico3, convocatoria=convocatoria6, catSedes=catSedes3, catTiposExamen=catTiposExamen3,)
+
+        self.json = {
+            "comentario": "Este es el comentario modificado"
+        }
+
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        dato = ConvocatoriaEnrolado.objects.get(id=1)
+        print(f'--->>>ANTES dato: {dato.id} - {dato.comentario}')
+
+        response = self.client.put('/api/convocatoria/enrolar/comentario/update/1/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> \n {response.data} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        dato = ConvocatoriaEnrolado.objects.get(id=1)
+        print(f'--->>>ANTES dato: {dato.id} - {dato.comentario}')
+
+
+        
+        
+        
 # ES DE PRUEBA NO USAR!!!
 # class PostConvocatoriaSede200Test(APITestCase):
 #     def setUp(self):

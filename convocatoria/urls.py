@@ -21,6 +21,7 @@ urlpatterns = [
     path('enrolar/medico/<medicoId>/detail/', ConvocatoriaEnroladoMedicoDetailView.as_view(), ),
     path('<convocatoriaId>/enrolados/<isAceptado>/<nombre>/<apPaterno>/list/', ConvocatoriaEnroladosMedicoListView.as_view(), ),  # normal
     # path('<convocatoriaId>/enrolados/<isAceptado>/<nombre>/<apPaterno>/list/', ConvocatoriaEnroladosMedicoEndPoint.as_view(), ), # paginado
+    path('enrolar/comentario/update/<pk>/', ConvocatoriaEnroladoComentarioUpdateView.as_view(), ), 
 
     path('documento/revalidacion/create/', DocumentoRevalidacionCreateView.as_view(), ),
     path('documento/curp/create/', DocumentoCurpCreateView.as_view(), ),

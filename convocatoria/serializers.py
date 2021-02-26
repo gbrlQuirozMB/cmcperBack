@@ -215,3 +215,9 @@ class ConvocatoriaEnroladosMedicoListSerializer(serializers.ModelSerializer):
         repr['convocatoria'] = instance.convocatoria.nombre
         repr['medico'] = instance.medico.nombre + ' ' + instance.medico.apPaterno
         return repr
+
+
+class ConvocatoriaEnroladoComentarioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConvocatoriaEnrolado
+        fields = ['id', 'comentario']
