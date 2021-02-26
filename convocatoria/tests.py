@@ -663,9 +663,9 @@ class GetMedicoEnroladoList200Test(APITestCase):
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
 
         convocatoria1 = Convocatoria.objects.create(id=1, fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',
-                                                   horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1')
+                                                    horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1')
         convocatoria6 = Convocatoria.objects.create(id=6, fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',
-                                                   horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1')
+                                                    horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1')
 
         ConvocatoriaEnrolado.objects.create(medico=medico1, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=catTiposExamen1,)
         ConvocatoriaEnrolado.objects.create(medico=medico2, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=catTiposExamen1)
@@ -675,30 +675,28 @@ class GetMedicoEnroladoList200Test(APITestCase):
 
     def test(self):
         self.client.force_authenticate(user=self.user)
-        
-        response = self.client.get('/api/convocatoria/6/enrolados/false/all/all/list/') #regresa TODOS
+
+        response = self.client.get('/api/convocatoria/6/enrolados/false/all/all/list/')  # regresa TODOS
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         Medico.objects.filter(id=3).update(nombre='gabriel')
-        response = self.client.get('/api/convocatoria/6/enrolados/false/GabRiel/all/list/') #regresa gabriel quiroz y gabriel tolentino
+        response = self.client.get('/api/convocatoria/6/enrolados/false/GabRiel/all/list/')  # regresa gabriel quiroz y gabriel tolentino
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         Medico.objects.filter(id=3).update(nombre='laura', apPaterno='olvera')
         Medico.objects.filter(id=9).update(apPaterno='olvera')
-        response = self.client.get('/api/convocatoria/6/enrolados/false/all/olVera/list/') #regresa laura olvera y gabriel olvera
+        response = self.client.get('/api/convocatoria/6/enrolados/false/all/olVera/list/')  # regresa laura olvera y gabriel olvera
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
-        Medico.objects.filter(id=9).update(nombre='gabriel', apPaterno='quiroz')
-        response = self.client.get('/api/convocatoria/6/enrolados/false/GABRIEL/Quiroz/list/') #regresa laura olvera y gabriel olvera
-        print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
-        
 
-        
+        Medico.objects.filter(id=9).update(nombre='gabriel', apPaterno='quiroz')
+        response = self.client.get('/api/convocatoria/6/enrolados/false/GABRIEL/Quiroz/list/')  # regresa laura olvera y gabriel olvera
+        print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
 
 # ES DE PRUEBA NO USAR!!!
 # class PostConvocatoriaSede200Test(APITestCase):

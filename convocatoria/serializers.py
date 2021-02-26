@@ -65,7 +65,7 @@ class ConvocatoriaSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         sedesData = validated_data.pop('sedes')
         for dato in sedesData:
-            
+
             if not bool(dato):
                 log.info(f'campos incorrectos: catSedes')
                 raise CamposIncorrectos({"catSedes": ["Este campo es requerido"]})
@@ -193,7 +193,7 @@ class ConvocatoriaEnroladoMedicoDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConvocatoriaEnrolado
         fields = '__all__'
-        
+
     def to_representation(self, instance):
         repr = super().to_representation(instance)
         repr['catTiposExamen'] = instance.catTiposExamen.descripcion
@@ -201,13 +201,13 @@ class ConvocatoriaEnroladoMedicoDetailSerializer(serializers.ModelSerializer):
         repr['convocatoria'] = instance.convocatoria.nombre
         repr['medico'] = instance.medico.nombre + ' ' + instance.medico.apPaterno
         return repr
-    
-    
+
+
 class ConvocatoriaEnroladosMedicoListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConvocatoriaEnrolado
         fields = '__all__'
-        
+
     def to_representation(self, instance):
         repr = super().to_representation(instance)
         repr['catTiposExamen'] = instance.catTiposExamen.descripcion
