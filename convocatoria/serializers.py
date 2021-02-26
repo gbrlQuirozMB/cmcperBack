@@ -1,6 +1,6 @@
 from preregistro.models import Medico
 from .models import *
-from rest_framework import serializers
+from rest_framework import fields, serializers
 from api.logger import log
 from api.exceptions import *
 
@@ -190,6 +190,20 @@ class ConvocatoriaDocumentoSerializer(serializers.ModelSerializer):
 
 
 class ConvocatoriaEnroladoMedicoDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConvocatoriaEnrolado
+        fields = '__all__'
+        
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        repr['catTiposExamen'] = instance.catTiposExamen.descripcion
+        repr['catSedes'] = instance.catSedes.descripcion
+        repr['convocatoria'] = instance.convocatoria.nombre
+        repr['medico'] = instance.medico.nombre + ' ' + instance.medico.apPaterno
+        return repr
+    
+    
+class ConvocatoriaEnroladosMedicoListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConvocatoriaEnrolado
         fields = '__all__'

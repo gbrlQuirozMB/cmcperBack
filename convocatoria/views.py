@@ -17,6 +17,8 @@ from xhtml2pdf import pisa
 from django.views import View
 import ssl
 
+from api.Paginacion import Paginacion
+
 
 # Create your views here.
 
@@ -314,12 +316,81 @@ class ConvocatoriaEnroladoMedicoDetailView(RetrieveAPIView):
     serializer_class = ConvocatoriaEnroladoMedicoDetailSerializer
     lookup_field = 'medico'
     lookup_url_kwarg = 'medicoId'
-    
+
     def get_queryset(self):
         # medicoId = self.kwargs['medicoId']
         # queryset = ConvocatoriaEnrolado.objects.filter(medico=medicoId)
         queryset = ConvocatoriaEnrolado.objects.filter()
         return queryset
+
+
+def getQuerysetEnroladosMedico(convocatoriaId, isAceptado, nombre, apPaterno):
+    if nombre != 'all' and apPaterno != 'all':
+        queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId, isAceptado=isAceptado, medico__nombre__iexact=nombre, medico__apPaterno__iexact=apPaterno)
+        return queryset
+
+    if nombre != 'all':
+        queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId, isAceptado=isAceptado, medico__nombre__iexact=nombre)
+        return queryset
+
+    if apPaterno != 'all':
+        queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId, isAceptado=isAceptado, medico__apPaterno__iexact=apPaterno)
+        return queryset
+
+    queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId, isAceptado=isAceptado)
+    return queryset
+
+
+class ConvocatoriaEnroladosMedicoListView(ListAPIView):
+    serializer_class = ConvocatoriaEnroladosMedicoListSerializer
+
+    def get_queryset(self):
+        convocatoriaId = self.kwargs['convocatoriaId']
+        isAceptado = self.kwargs['isAceptado']
+        if isAceptado == 'true':
+            isAceptado = True
+        else:
+            isAceptado = False
+        nombre = self.kwargs['nombre']
+        apPaterno = self.kwargs['apPaterno']
+        log.info(f'se busca por: convocatoriaId: {convocatoriaId} - isAceptado: {isAceptado} - nombre: {nombre} - apPaterno: {apPaterno}')
+
+        return getQuerysetEnroladosMedico(convocatoriaId, isAceptado, nombre, apPaterno)
+
+
+class ConvocatoriaEnroladosMedicoEndPoint(APIView):
+    def get(self, request, *args, **kwargs):
+        # queryset = Medico.objects.all().filter(aceptado=False)
+        convocatoriaId = kwargs['convocatoriaId']
+        isAceptado = kwargs['isAceptado']
+        if isAceptado == 'true':
+            isAceptado = True
+        else:
+            isAceptado = False
+        nombre = kwargs['nombre']
+        apPaterno = kwargs['apPaterno']
+        log.info(f'se busca por: convocatoriaId: {convocatoriaId} - isAceptado: {isAceptado} - nombre: {nombre} - apPaterno: {apPaterno}')
+
+        queryset = getQuerysetEnroladosMedico(convocatoriaId, isAceptado, nombre, apPaterno)
+
+        size = self.request.query_params.get('size', None)
+        direc = self.request.query_params.get('direc', None)
+        orderby = self.request.query_params.get('orderby', None)
+        page = self.request.query_params.get('page', None)
+
+        paginacion = Paginacion(queryset, ConvocatoriaEnroladosMedicoListSerializer, size, direc, orderby, page)
+        serializer = paginacion.paginar()
+
+        respuesta = {
+            "totalElements": paginacion.totalElements,
+            "totalPages": paginacion.totalPages,
+            "sort": paginacion.orderby,
+            "direction": paginacion.direc,
+            "size": paginacion.size,
+            "content": serializer.data
+        }
+        return Response(respuesta)
+
 
 # ES DE PRUEBA NO USAR!!!
 # class ConvocatoriaSedeCreateView(CreateAPIView):
