@@ -18,6 +18,7 @@ urlpatterns = [
     path('delete/<pk>/', ConvocatoriaDeleteView.as_view(), ),
     
     path('enrolar/create/', ConvocatoriaEnroladoCreateView.as_view(), ),
+    path('enrolar/medico/<medicoId>/detail/', ConvocatoriaEnroladoMedicoDetailView.as_view(), ),
     
     path('documento/revalidacion/create/', DocumentoRevalidacionCreateView.as_view(), ),
     path('documento/curp/create/', DocumentoCurpCreateView.as_view(), ),
