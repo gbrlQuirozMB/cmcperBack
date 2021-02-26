@@ -33,7 +33,8 @@ urlpatterns = [
     path('documento/cedula-profesional/create/', DocumentoCedulaProfesionalCreateView.as_view(), ),
     path('documento/constancia-cirugia/create/', DocumentoConstanciaCirugiaCreateView.as_view(), ),
     path('documento/carta-profesor/create/', DocumentoCartaProfesorCreateView.as_view(), ),
-    path('documentos/medico/<medicoId>/list/', DocumentosMedicoListView.as_view(), ),
+    # path('documentos/medico/<medicoId>/list/', DocumentosMedicoListView.as_view(), ), # se va a cambiar por la siguiente
+    path('<convocatoriaId>/medico/<medicoId>/documentos/list/', DocumentosMedicoListView.as_view(), ),
     path('documento/update/<pk>/', ConvocatoriaDocumentoUpdateView.as_view(), ),
 
     path('ficha-registro-pdf/<pk>/', FichaRegistroPDF.as_view(), ),

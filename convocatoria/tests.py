@@ -534,7 +534,8 @@ class GetDocumentosList200Test(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        response = self.client.get('/api/convocatoria/documentos/medico/1/list/')
+        # response = self.client.get('/api/convocatoria/documentos/medico/1/list/')
+        response = self.client.get('/api/convocatoria/1/medico/1/documentos/list/')
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

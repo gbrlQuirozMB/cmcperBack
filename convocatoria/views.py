@@ -259,8 +259,9 @@ class DocumentosMedicoListView(ListAPIView):
     serializer_class = ConvocatoriaEnroladoDocumentoListSerializer
 
     def get_queryset(self):
+        convocatoriaId = self.kwargs['convocatoriaId']
         medicoId = self.kwargs['medicoId']
-        queryset = ConvocatoriaEnroladoDocumento.objects.filter(medico=medicoId)
+        queryset = ConvocatoriaEnroladoDocumento.objects.filter(convocatoria=convocatoriaId, medico=medicoId)
         return queryset
 
 
