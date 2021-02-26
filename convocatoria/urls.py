@@ -8,7 +8,7 @@ app_name = 'convocatoria'
 urlpatterns = [
     path('medico/es-extranjero/<pk>/', EsExtranjeroUpdateView.as_view(), ),
     path('medico/estudio-extranjero/<pk>/', EstudioExtranjeroUpdateView.as_view(), ),
-    
+
     path('create/', ConvocatoriaCreateView.as_view(), ),
     path('list/', ConvocatoriaListView.as_view(), ),
     path('detail/<pk>/', ConvocatoriaDetailView.as_view(), ),
@@ -16,12 +16,13 @@ urlpatterns = [
     path('<pk>/banner/', ConvocatoriaBannerUpdateView.as_view(), ),
     path('update/<pk>/', ConvocatoriaUpdateView.as_view(), ),
     path('delete/<pk>/', ConvocatoriaDeleteView.as_view(), ),
-    
+
     path('enrolar/create/', ConvocatoriaEnroladoCreateView.as_view(), ),
     path('enrolar/medico/<medicoId>/detail/', ConvocatoriaEnroladoMedicoDetailView.as_view(), ),
-    path('<convocatoriaId>/enrolados/<isAceptado>/<nombre>/<apPaterno>/list/', ConvocatoriaEnroladosMedicoListView.as_view(), ), #normal
-    # path('<convocatoriaId>/enrolados/<isAceptado>/<nombre>/<apPaterno>/list/', ConvocatoriaEnroladosMedicoEndPoint.as_view(), ), #paginado
-    
+    path('<convocatoriaId>/enrolados/<isAceptado>/<nombre>/<apPaterno>/list/', ConvocatoriaEnroladosMedicoListView.as_view(), ),  # normal
+    # path('<convocatoriaId>/enrolados/<isAceptado>/<nombre>/<apPaterno>/list/', ConvocatoriaEnroladosMedicoEndPoint.as_view(), ), # paginado
+    path('enrolar/comentario/update/<pk>/', ConvocatoriaEnroladoComentarioUpdateView.as_view(), ), 
+
     path('documento/revalidacion/create/', DocumentoRevalidacionCreateView.as_view(), ),
     path('documento/curp/create/', DocumentoCurpCreateView.as_view(), ),
     path('documento/acta-nacimiento/create/', DocumentoActaNacimientoCreateView.as_view(), ),
@@ -34,13 +35,13 @@ urlpatterns = [
     path('documento/carta-profesor/create/', DocumentoCartaProfesorCreateView.as_view(), ),
     path('documentos/medico/<medicoId>/list/', DocumentosMedicoListView.as_view(), ),
     path('documento/update/<pk>/', ConvocatoriaDocumentoUpdateView.as_view(), ),
-    
+
     path('ficha-registro-pdf/<pk>/', FichaRegistroPDF.as_view(), ),
-    
-    
-    
+
+
+
     # ES DE PRUEBA NO USAR!!!
     # path('<convocatoriaId>/sede/create/', ConvocatoriaSedeCreateView.as_view(), ),
-    
+
 
 ]
