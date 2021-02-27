@@ -226,4 +226,10 @@ class ConvocatoriaEnroladoComentarioSerializer(serializers.ModelSerializer):
 class ConvocatoriaEnroladoDocumentoAceptarSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConvocatoriaEnroladoDocumento
-        fields = ['id', "isValidado"]
+        fields = ['id', 'isValidado']
+
+
+class ConvocatoriaEnroladoDocumentoRechazarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConvocatoriaEnroladoDocumento
+        fields = ['id', 'isValidado', 'notasValidado', 'rechazoValidado']
