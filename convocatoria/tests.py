@@ -395,6 +395,11 @@ class PostEnrolar200Test(APITestCase):
 
         dato = ConvocatoriaEnrolado.objects.get(id=1)
         print(f'--->>>dato: {dato.id} - {dato.isPagado} - {dato.comentario} - {dato.isAceptado}')
+        
+        response = self.client.post('/api/convocatoria/enrolar/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+        
 
 
 class PostDocumento200Test(APITestCase):

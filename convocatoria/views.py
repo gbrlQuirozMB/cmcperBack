@@ -105,6 +105,12 @@ class ConvocatoriaEnroladoCreateView(CreateAPIView):
     serializer_class = ConvocatoriaEnroladoSerializer
 
     def post(self, request, *args, **kwargs):
+        medicoId = request.data['medico']
+        convocatoriaId = request.data['convocatoria']
+        cuenta = ConvocatoriaEnrolado.objects.filter(medico=medicoId, convocatoria=convocatoriaId).count()
+        if cuenta > 0:
+            log.info('Ya existe el medico enrolado a esta convocatoria')
+            raise ResponseError('Ya existe el medico enrolado a esta convocatoria', 409)
         request.data['isPagado'] = False
         request.data['comentario'] = ''
         request.data['isAceptado'] = False
