@@ -992,7 +992,7 @@ class PutEngargoladoRechazar200Test(APITestCase):
         # print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         # self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-
+    
 # ES DE PRUEBA NO USAR!!!
 # class PostConvocatoriaSede200Test(APITestCase):
 #     def setUp(self):
