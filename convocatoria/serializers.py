@@ -239,3 +239,9 @@ class ConvocatoriaEnroladoEngargoladoAceptarSerializer(serializers.ModelSerializ
     class Meta:
         model = ConvocatoriaEnroladoDocumento
         fields = ['id', 'engargoladoOk']
+
+
+class ConvocatoriaEnroladoEngargoladoRechazarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConvocatoriaEnroladoDocumento
+        fields = ['id', 'engargoladoOk', 'notasEngargolado', 'rechazoEngargolado']
