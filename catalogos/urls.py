@@ -7,5 +7,5 @@ app_name = 'catalogo'
 
 urlpatterns = [
     path('motivo-rechazo/<textoBusqueda>/', MotivoRechazoListView.as_view(), ),
-    
+
 ]
