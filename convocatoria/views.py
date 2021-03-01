@@ -109,8 +109,8 @@ class ConvocatoriaEnroladoCreateView(CreateAPIView):
         convocatoriaId = request.data['convocatoria']
         cuenta = ConvocatoriaEnrolado.objects.filter(medico=medicoId, convocatoria=convocatoriaId).count()
         if cuenta > 0:
-            log.info('Ya existe el medico enrolado a esta convocatoria')
-            raise ResponseError('Ya existe el medico enrolado a esta convocatoria', 409)
+            log.info('Ya existe el médico enrolado a esta convocatoria')
+            raise ResponseError('Ya existe el médico enrolado a esta convocatoria', 409)
         request.data['isPagado'] = False
         request.data['comentario'] = ''
         request.data['isAceptado'] = False
@@ -429,6 +429,20 @@ class ConvocatoriaEnroladoDocumentoRechazarUpdateView(UpdateAPIView):
 
         return self.update(request, *args, **kwargs)
 
+
+class ConvocatoriaEnroladoEngargoladoAceptarUpdateView(UpdateAPIView):
+    queryset = ConvocatoriaEnroladoDocumento.objects.filter()
+    serializer_class = ConvocatoriaEnroladoEngargoladoAceptarSerializer
+
+    def put(self, request, *args, **kwargs):
+        # para poder modificar el dato que llega
+        # request.data._mutable = True
+        request.data['engargoladoOk'] = True
+        # request.data._mutable = False
+
+        return self.update(request, *args, **kwargs)
+    
+    
 # ES DE PRUEBA NO USAR!!!
 # class ConvocatoriaSedeCreateView(CreateAPIView):
 #     def post(self, request, *args, **kwargs):
