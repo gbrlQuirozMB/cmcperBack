@@ -29,9 +29,9 @@ class EsExtranjeroUpdateView(UpdateAPIView):
 
     def put(self, request, *args, **kwargs):
         # para poder modificar el dato que llega
-        request.data._mutable = True
+        # request.data._mutable = True
         request.data['isExtranjero'] = True
-        request.data._mutable = False
+        # request.data._mutable = False
 
         return self.update(request, *args, **kwargs)
 
@@ -42,9 +42,9 @@ class EstudioExtranjeroUpdateView(UpdateAPIView):
 
     def put(self, request, *args, **kwargs):
         # para poder modificar el dato que llega
-        request.data._mutable = True
+        # request.data._mutable = True
         request.data['estudioExtranjero'] = True
-        request.data._mutable = False
+        # request.data._mutable = False
 
         return self.update(request, *args, **kwargs)
 
