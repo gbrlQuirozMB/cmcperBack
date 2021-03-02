@@ -262,3 +262,9 @@ class ConvocatoriaEnroladoMedicoAPagarDetailSerializer(serializers.ModelSerializ
         if instance.medico.estudioExtranjero:
             repr['aPagar'] = instance.catTiposExamen.precioExtrangero
         return repr
+
+
+class ConvocatoriaEnroladoMedicoPagadoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConvocatoriaEnrolado
+        fields = ['id', 'isPagado']

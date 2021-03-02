@@ -492,6 +492,17 @@ class ConvocatoriaEnroladoMedicoAPagarEndPoint(APIView):
         return Response(serializer.data)
 
 
+class ConvocatoriaEnroladoMedicoPagadoUpdateView(UpdateAPIView):
+    queryset = ConvocatoriaEnrolado.objects.filter()
+    serializer_class = ConvocatoriaEnroladoMedicoPagadoSerializer
+
+    def put(self, request, *args, **kwargs):
+        # para poder modificar el dato que llega
+        request.data['isPagado'] = True
+
+        return self.update(request, *args, **kwargs)
+
+
 # ES DE PRUEBA NO USAR!!!
 
 # https://www.django-rest-framework.org/api-guide/filtering/

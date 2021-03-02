@@ -43,6 +43,7 @@ urlpatterns = [
 
     path('ficha-registro-pdf/<pk>/', FichaRegistroPDF.as_view(), ),
     path('<convocatoriaId>/medico/<medicoId>/a-pagar/', ConvocatoriaEnroladoMedicoAPagarEndPoint.as_view(), ),
+    path('enrolar/<pk>/pagado/', ConvocatoriaEnroladoMedicoPagadoUpdateView.as_view(), ),
 
 
 
