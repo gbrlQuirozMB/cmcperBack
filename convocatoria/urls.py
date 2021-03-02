@@ -42,6 +42,7 @@ urlpatterns = [
     path('engargolado/rechazar/<pk>/', ConvocatoriaEnroladoEngargoladoRechazarUpdateView.as_view(), ),
 
     path('ficha-registro-pdf/<pk>/', FichaRegistroPDF.as_view(), ),
+    path('<convocatoriaId>/medico/<medicoId>/a-pagar/', ConvocatoriaEnroladoMedicoAPagarEndPoint.as_view(), ),
 
 
 

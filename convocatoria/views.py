@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from .serializers import *
 from preregistro.models import Medico
 from django.shortcuts import render
-from rest_framework.generics import DestroyAPIView, ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView
+from rest_framework.generics import DestroyAPIView, ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView, get_object_or_404
 from api.logger import log
 from api.exceptions import *
 import json
@@ -454,6 +454,41 @@ class ConvocatoriaEnroladoEngargoladoRechazarUpdateView(UpdateAPIView):
         # request.data._mutable = False
 
         return self.update(request, *args, **kwargs)
+
+
+class MultipleFieldLookupMixin:
+    """
+    Apply this mixin to any view or viewset to get multiple field filtering
+    based on a `lookup_fields` attribute, instead of the default single field filtering.
+    """
+
+    def get_object(self):
+        queryset = self.get_queryset()             # Get the base queryset
+        queryset = self.filter_queryset(queryset)  # Apply any filter backends
+        filter = {}
+        for field in self.lookup_fields:
+            if self.kwargs[field]:  # Ignore empty fields.
+                filter[field] = self.kwargs[field]
+        obj = get_object_or_404(queryset, **filter)  # Lookup the object
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+
+class ConvocatoriaEnroladoMedicoAPagarEndPoint(APIView):
+    def getQuerySet(self, medicoId, convocatoriaId):
+        try:
+            return ConvocatoriaEnrolado.objects.get(medico=medicoId, convocatoria=convocatoriaId)
+        except ConvocatoriaEnrolado.DoesNotExist:
+            log.info(f'No existe registro con convocatoriaId: {convocatoriaId} y medicoId: {medicoId}')
+            raise ResponseError(f'No existe registro con convocatoriaId: {convocatoriaId} y medicoId: {medicoId}', 404)
+
+    def get(self, request, *args, **kwargs):
+        convocatoriaId = kwargs['convocatoriaId']
+        medicoId = kwargs['medicoId']
+        queryset = self.getQuerySet(medicoId, convocatoriaId)
+        serializer = ConvocatoriaEnroladoMedicoAPagarDetailSerializer(queryset)
+        return Response(serializer.data)
+
 
 # ES DE PRUEBA NO USAR!!!
 # class ConvocatoriaSedeCreateView(CreateAPIView):
