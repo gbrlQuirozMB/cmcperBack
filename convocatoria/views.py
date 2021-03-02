@@ -19,6 +19,8 @@ import ssl
 
 from api.Paginacion import Paginacion
 
+# from django_filters import rest_framework
+# from django_filters import rest_framework as filters
 
 # Create your views here.
 
@@ -491,6 +493,14 @@ class ConvocatoriaEnroladoMedicoAPagarEndPoint(APIView):
 
 
 # ES DE PRUEBA NO USAR!!!
+
+# https://www.django-rest-framework.org/api-guide/filtering/
+# class prueba(ListAPIView):
+#     queryset = ConvocatoriaEnrolado.objects.filter()
+#     serializer_class = ConvocatoriaEnroladosMedicoListSerializer
+#     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
+#     filter_fields = ('medico', 'convocatoria')
+
 # class ConvocatoriaSedeCreateView(CreateAPIView):
 #     def post(self, request, *args, **kwargs):
 #         print(f'--->>>reques.data: {request.data}')
