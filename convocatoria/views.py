@@ -409,12 +409,12 @@ class ConvocatoriaEnroladoComentarioUpdateView(UpdateAPIView):
 class ConvocatoriaEnroladoDocumentoAceptarUpdateView(UpdateAPIView):
     queryset = ConvocatoriaEnroladoDocumento.objects.filter()
     serializer_class = ConvocatoriaEnroladoDocumentoAceptarSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    
 
     def put(self, request, *args, **kwargs):
         # para poder modificar el dato que llega
-        # request.data._mutable = True
         request.data['isValidado'] = True
-        # request.data._mutable = False
 
         return self.update(request, *args, **kwargs)
 
@@ -422,12 +422,12 @@ class ConvocatoriaEnroladoDocumentoAceptarUpdateView(UpdateAPIView):
 class ConvocatoriaEnroladoDocumentoRechazarUpdateView(UpdateAPIView):
     queryset = ConvocatoriaEnroladoDocumento.objects.filter()
     serializer_class = ConvocatoriaEnroladoDocumentoRechazarSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    
 
     def put(self, request, *args, **kwargs):
         # para poder modificar el dato que llega
-        # request.data._mutable = True
         request.data['isValidado'] = False
-        # request.data._mutable = False
 
         return self.update(request, *args, **kwargs)
 
@@ -435,12 +435,12 @@ class ConvocatoriaEnroladoDocumentoRechazarUpdateView(UpdateAPIView):
 class ConvocatoriaEnroladoEngargoladoAceptarUpdateView(UpdateAPIView):
     queryset = ConvocatoriaEnroladoDocumento.objects.filter()
     serializer_class = ConvocatoriaEnroladoEngargoladoAceptarSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    
 
     def put(self, request, *args, **kwargs):
         # para poder modificar el dato que llega
-        # request.data._mutable = True
         request.data['engargoladoOk'] = True
-        # request.data._mutable = False
 
         return self.update(request, *args, **kwargs)
 
@@ -448,40 +448,25 @@ class ConvocatoriaEnroladoEngargoladoAceptarUpdateView(UpdateAPIView):
 class ConvocatoriaEnroladoEngargoladoRechazarUpdateView(UpdateAPIView):
     queryset = ConvocatoriaEnroladoDocumento.objects.filter()
     serializer_class = ConvocatoriaEnroladoEngargoladoRechazarSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    
 
     def put(self, request, *args, **kwargs):
         # para poder modificar el dato que llega
-        # request.data._mutable = True
         request.data['engargoladoOk'] = False
-        # request.data._mutable = False
 
         return self.update(request, *args, **kwargs)
-
-
-class MultipleFieldLookupMixin:
-    """
-    Apply this mixin to any view or viewset to get multiple field filtering
-    based on a `lookup_fields` attribute, instead of the default single field filtering.
-    """
-
-    def get_object(self):
-        queryset = self.get_queryset()             # Get the base queryset
-        queryset = self.filter_queryset(queryset)  # Apply any filter backends
-        filter = {}
-        for field in self.lookup_fields:
-            if self.kwargs[field]:  # Ignore empty fields.
-                filter[field] = self.kwargs[field]
-        obj = get_object_or_404(queryset, **filter)  # Lookup the object
-        self.check_object_permissions(self.request, obj)
-        return obj
-
 
 class ConvocatoriaEnroladoMedicoAPagarEndPoint(APIView):
     def getQuerySet(self, medicoId, convocatoriaId):
         try:
-            return ConvocatoriaEnrolado.objects.get(medico=medicoId, convocatoria=convocatoriaId)
+            return ConvocatoriaEnrolado.objects.get(medico=medicoId, convocatoria=convocatoriaId, isAceptado=True)
         except ConvocatoriaEnrolado.DoesNotExist:
-            log.info(f'No existe registro con convocatoriaId: {convocatoriaId} y medicoId: {medicoId}')
+            cuenta = ConvocatoriaEnrolado.objects.filter(medico=medicoId, convocatoria=convocatoriaId).count()
+            if cuenta == 1:
+                log.info(f'No tiene permitido pagar - convocatoriaId: {convocatoriaId} y medicoId: {medicoId}')
+                raise ResponseError(f'No tiene permitido pagar - convocatoriaId: {convocatoriaId} y medicoId: {medicoId}', 409)
+            log.info(f'No existe registro - convocatoriaId: {convocatoriaId} y medicoId: {medicoId}')
             raise ResponseError(f'No existe registro con convocatoriaId: {convocatoriaId} y medicoId: {medicoId}', 404)
 
     def get(self, request, *args, **kwargs):
@@ -497,9 +482,22 @@ class ConvocatoriaEnroladoMedicoPagadoUpdateView(UpdateAPIView):
     serializer_class = ConvocatoriaEnroladoMedicoPagadoSerializer
 
     def put(self, request, *args, **kwargs):
+        medicoId = request.data['medicoId']
+        convocatoriaId = request.data['convocatoriaId']
+        try:
+            cuenta = ConvocatoriaEnrolado.objects.filter(medico=medicoId, convocatoria=convocatoriaId, isAceptado=True).count()
+            print(f'--->>>medicoId: {medicoId} - convocatoriaId: {convocatoriaId} - cuenta: {cuenta}')
+        except:
+            cuenta = ConvocatoriaEnrolado.objects.filter(medico=medicoId, convocatoria=convocatoriaId).count()
+            if cuenta == 1:
+                log.info(f'No tiene permitido pagar - convocatoriaId: {convocatoriaId} y medicoId: {medicoId}')
+                raise ResponseError(f'No tiene permitido pagar - convocatoriaId: {convocatoriaId} y medicoId: {medicoId}', 409)
+            log.info(f'No existe registro - convocatoriaId: {convocatoriaId} y medicoId: {medicoId}')
+            raise ResponseError(f'No existe registro con convocatoriaId: {convocatoriaId} y medicoId: {medicoId}', 404)
+        
         # para poder modificar el dato que llega
         request.data['isPagado'] = True
-
+        
         return self.update(request, *args, **kwargs)
 
 

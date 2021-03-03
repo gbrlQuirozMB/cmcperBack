@@ -784,7 +784,7 @@ class PutDocumentoAceptar200Test(APITestCase):
             "isValidado": False
         }
 
-        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated - IsAdminUser
 
     def test(self):
         self.client.force_authenticate(user=self.user)
@@ -1026,17 +1026,25 @@ class GetCostoAPagar200Test(APITestCase):
 
         ConvocatoriaEnrolado.objects.create(medico=medico3, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=catTiposExamen1)
         ConvocatoriaEnrolado.objects.create(medico=medico6, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=catTiposExamen1)
-        ConvocatoriaEnrolado.objects.create(medico=medico9, convocatoria=convocatoria6, catSedes=catSedes3, catTiposExamen=catTiposExamen3)
+        ConvocatoriaEnrolado.objects.create(medico=medico9, convocatoria=convocatoria6, catSedes=catSedes3, catTiposExamen=catTiposExamen3, isAceptado=True)
 
         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
 
     def test(self):
         self.client.force_authenticate(user=self.user)
 
+        # Si puede pagar
         response = self.client.get('/api/convocatoria/6/medico/9/a-pagar/')
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+        # no puede pagar
+        ConvocatoriaEnrolado.objects.filter(id=3).update(isAceptado=False)
+        response = self.client.get('/api/convocatoria/6/medico/9/a-pagar/')
+        print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+
+        # no se encuentra el registro
         response = self.client.get('/api/convocatoria/6/medico/2/a-pagar/')
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -1075,7 +1083,12 @@ class PutPagado200Test(APITestCase):
 
         ConvocatoriaEnrolado.objects.create(medico=medico3, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=catTiposExamen1)
         ConvocatoriaEnrolado.objects.create(medico=medico6, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=catTiposExamen1)
-        ConvocatoriaEnrolado.objects.create(medico=medico9, convocatoria=convocatoria6, catSedes=catSedes3, catTiposExamen=catTiposExamen3)
+        ConvocatoriaEnrolado.objects.create(medico=medico9, convocatoria=convocatoria6, catSedes=catSedes3, catTiposExamen=catTiposExamen3, isAceptado=True)
+        
+        self.json = {
+            "medicoId": 9,
+            "convocatoriaId": 6
+        }
 
         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
 
@@ -1085,13 +1098,24 @@ class PutPagado200Test(APITestCase):
         dato = ConvocatoriaEnrolado.objects.get(id=3)
         print(f'--->>>ANTES dato: {dato.id} - {dato.isPagado}')
 
-        # response = self.client.put('/api/convocatoria/enrolar/3/pagado/', data=json.dumps(self.json), content_type="application/json")
-        response = self.client.put('/api/convocatoria/enrolar/3/pagado/', content_type="application/json")
+        response = self.client.put('/api/convocatoria/enrolar/3/pagado/', data=json.dumps(self.json), content_type="application/json")
+        # response = self.client.put('/api/convocatoria/enrolar/3/pagado/', content_type="application/json")
         print(f'response JSON ===>>> \n {json.dumps(response.data)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         dato = ConvocatoriaEnrolado.objects.get(id=3)
         print(f'--->>>DESPUES dato: {dato.id} - {dato.isPagado}')
+        
+        # no puede pagar
+        ConvocatoriaEnrolado.objects.filter(id=3).update(isAceptado=False)
+        response = self.client.put('/api/convocatoria/enrolar/3/pagado/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+
+        # no se encuentra el registro
+        response = self.client.put('/api/convocatoria/enrolar/4/pagado/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 # ES DE PRUEBA NO USAR!!!
 # class PostConvocatoriaSede200Test(APITestCase):
