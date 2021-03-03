@@ -26,4 +26,5 @@ urlpatterns = [
     path('api/notificaciones/', include('notificaciones.urls')),
     path('api/convocatoria/', include('convocatoria.urls')),
     path('api/catalogo/', include('catalogos.urls')),
+    path('api/front/', include('front.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

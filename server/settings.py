@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'notificaciones',
     'convocatoria',
     'catalogos',
+    'front',
 ]
 
 MIDDLEWARE = [
