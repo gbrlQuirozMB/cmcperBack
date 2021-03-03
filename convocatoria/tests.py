@@ -403,28 +403,40 @@ class PostEnrolar200Test(APITestCase):
 
 class PostDocumento200Test(APITestCase):
     def setUp(self):
-        CatTiposDocumento.objects.create(descripcion='Revalidación')
-        CatTiposDocumento.objects.create(descripcion='CURP')
-        CatTiposDocumento.objects.create(descripcion='Acta de Nacimiento')
-        CatTiposDocumento.objects.create(descripcion='Carta de Solicitud de Examen')
-        CatTiposDocumento.objects.create(descripcion='Constancia de Posgrado')
-        CatTiposDocumento.objects.create(descripcion='Cédula de Especialidad')
-        CatTiposDocumento.objects.create(descripcion='Título de la Licenciatura')
-        CatTiposDocumento.objects.create(descripcion='Cédula Profesional')
-        CatTiposDocumento.objects.create(descripcion='Constancia de Cirugía General')
-        CatTiposDocumento.objects.create(descripcion='Carta de Profesor Titular')
+        catTiposDocumento1 = CatTiposDocumento.objects.create(descripcion='Revalidación')
+        catTiposDocumento2 = CatTiposDocumento.objects.create(descripcion='CURP')
+        catTiposDocumento3 = CatTiposDocumento.objects.create(descripcion='Acta de Nacimiento')
+        catTiposDocumento4 = CatTiposDocumento.objects.create(descripcion='Carta de Solicitud de Examen')
+        catTiposDocumento5 = CatTiposDocumento.objects.create(descripcion='Constancia de Posgrado')
+        catTiposDocumento6 = CatTiposDocumento.objects.create(descripcion='Cédula de Especialidad')
+        catTiposDocumento7 = CatTiposDocumento.objects.create(descripcion='Título de la Licenciatura')
+        catTiposDocumento8 = CatTiposDocumento.objects.create(descripcion='Cédula Profesional')
+        catTiposDocumento9 = CatTiposDocumento.objects.create(descripcion='Constancia de Cirugía General')
+        catTiposDocumento10 = CatTiposDocumento.objects.create(descripcion='Carta de Profesor Titular')
 
         CatMotivosRechazo.objects.create(descripcion='descripcion1', tipo=1)
         CatMotivosRechazo.objects.create(descripcion='descripcion2', tipo=2)
 
-        Medico.objects.create(
+        medico = Medico.objects.create(
             id=1, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
             deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
             cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
 
-        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1',
-                                    )
+        convocatoria = Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',
+                                                   horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1')
+
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento1, documento='revalidacion.pdf')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento2, documento='curp.pdf', isValidado=True)
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento3, documento='acta_nacimiento.pdf')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento4, documento='carta_solicitud_examen.pdf')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento5, documento='constancia_posgrago.pdf')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento6, documento='cedula_especialidad.pdf')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento7, documento='titulo_licenciatura.pdf')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento8, documento='cedula_profesional.pdf')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento9, documento='constancia_cirugia.pdf')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento10, documento='carta_profesor.pdf', isValidado=False,
+                                                     notasValidado='me cae gordo', rechazoValidado='carta incorrecta')
 
         stream = BytesIO()
         image = Image.new('RGB', (100, 100))
@@ -450,50 +462,88 @@ class PostDocumento200Test(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
+        # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=1).count()
+        # print(f'--->>>cuenta: {cuenta}')
         # response = self.client.post('/api/convocatoria/documento/revalidacion/create/', data=self.json, format='multipart')
         # print(f'response JSON ===>>> \n {response.data} \n ---')
         # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=1).count()
+        # print(f'--->>>cuenta: {cuenta}')
 
-        # self.json['catTiposDocumento'] = 999999
-
+        # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=2).count()
+        # print(f'--->>>cuenta: {cuenta}')
         # response = self.client.post('/api/convocatoria/documento/curp/create/', data=self.json, format='multipart')
         # print(f'response JSON ===>>> \n {response.data} \n ---')
         # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=2).count()
+        # print(f'--->>>cuenta: {cuenta}')
 
+        # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=3).count()
+        # print(f'--->>>cuenta: {cuenta}')
         # response = self.client.post('/api/convocatoria/documento/acta-nacimiento/create/', data=self.json, format='multipart')
         # print(f'response JSON ===>>> \n {response.data} \n ---')
         # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=3).count()
+        # print(f'--->>>cuenta: {cuenta}')
 
+        # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=4).count()
+        # print(f'--->>>cuenta: {cuenta}')
         # response = self.client.post('/api/convocatoria/documento/carta-solicitud/create/', data=self.json, format='multipart')
         # print(f'response JSON ===>>> \n {response.data} \n ---')
         # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=4).count()
+        # print(f'--->>>cuenta: {cuenta}')
 
+        # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=5).count()
+        # print(f'--->>>cuenta: {cuenta}')
         # response = self.client.post('/api/convocatoria/documento/constancia-posgrado/create/', data=self.json, format='multipart')
         # print(f'response JSON ===>>> \n {response.data} \n ---')
         # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=5).count()
+        # print(f'--->>>cuenta: {cuenta}')
 
+        # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=6).count()
+        # print(f'--->>>cuenta: {cuenta}')
         # response = self.client.post('/api/convocatoria/documento/cedula-especialidad/create/', data=self.json, format='multipart')
         # print(f'response JSON ===>>> \n {response.data} \n ---')
         # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=6).count()
+        # print(f'--->>>cuenta: {cuenta}')
 
+        # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=7).count()
+        # print(f'--->>>cuenta: {cuenta}')
         # response = self.client.post('/api/convocatoria/documento/titulo-licenciatura/create/', data=self.json, format='multipart')
         # print(f'response JSON ===>>> \n {response.data} \n ---')
         # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=7).count()
+        # print(f'--->>>cuenta: {cuenta}')
 
+        # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=8).count()
+        # print(f'--->>>cuenta: {cuenta}')
         # response = self.client.post('/api/convocatoria/documento/cedula-profesional/create/', data=self.json, format='multipart')
         # print(f'response JSON ===>>> \n {response.data} \n ---')
         # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=8).count()
+        # print(f'--->>>cuenta: {cuenta}')
 
-        # response = self.client.post('/api/convocatoria/documento/constancia-cirugia/create/', data=self.json, format='multipart')
-        # print(f'response JSON ===>>> \n {response.data} \n ---')
-        # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-        response = self.client.post('/api/convocatoria/documento/carta-profesor/create/', data=self.json, format='multipart')
+        cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=9).count()
+        print(f'--->>>cuenta: {cuenta}')
+        response = self.client.post('/api/convocatoria/documento/constancia-cirugia/create/', data=self.json, format='multipart')
         print(f'response JSON ===>>> \n {response.data} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=9).count()
+        print(f'--->>>cuenta: {cuenta}')
 
-        dato = ConvocatoriaEnroladoDocumento.objects.get(id=1)
-        print(f'--->>>DESPUES dato: {dato.id} - {dato.isValidado} - {dato.notasEngargolado} - {dato.catTiposDocumento.descripcion}')
+        # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=10).count()
+        # print(f'--->>>cuenta: {cuenta}')
+        # response = self.client.post('/api/convocatoria/documento/carta-profesor/create/', data=self.json, format='multipart')
+        # print(f'response JSON ===>>> \n {response.data} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=10).count()
+        # print(f'--->>>cuenta: {cuenta}')
+
+        # dato = ConvocatoriaEnroladoDocumento.objects.get(id=11)
+        # print(f'--->>>DESPUES dato: {dato.id} - {dato.isValidado} - {dato.notasEngargolado} - {dato.catTiposDocumento.descripcion}')
 
 
 class GetDocumentosList200Test(APITestCase):
@@ -1084,7 +1134,7 @@ class PutPagado200Test(APITestCase):
         ConvocatoriaEnrolado.objects.create(medico=medico3, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=catTiposExamen1)
         ConvocatoriaEnrolado.objects.create(medico=medico6, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=catTiposExamen1)
         ConvocatoriaEnrolado.objects.create(medico=medico9, convocatoria=convocatoria6, catSedes=catSedes3, catTiposExamen=catTiposExamen3, isAceptado=True)
-        
+
         self.json = {
             "medicoId": 9,
             "convocatoriaId": 6
@@ -1105,7 +1155,7 @@ class PutPagado200Test(APITestCase):
 
         dato = ConvocatoriaEnrolado.objects.get(id=3)
         print(f'--->>>DESPUES dato: {dato.id} - {dato.isPagado}')
-        
+
         # no puede pagar
         ConvocatoriaEnrolado.objects.filter(id=3).update(isAceptado=False)
         response = self.client.put('/api/convocatoria/enrolar/3/pagado/', data=json.dumps(self.json), content_type="application/json")

@@ -133,10 +133,17 @@ def inicializaData(request):
     return request
 
 
+def borraExistentes(request, tipoDocumento):
+    medicoId = request.data['medico']
+    convocatoriaId = request.data['convocatoria']
+    ConvocatoriaEnroladoDocumento.objects.filter(medico=medicoId, convocatoria=convocatoriaId, catTiposDocumento=tipoDocumento).delete()
+
+
 class DocumentoRevalidacionCreateView(CreateAPIView):
     serializer_class = ConvocatoriaEnroladoDocumentoSerializer
 
     def post(self, request, *args, **kwargs):
+        borraExistentes(request, 1)
         request = inicializaData(request)
         request.data['catTiposDocumento'] = 1
         serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
@@ -150,6 +157,7 @@ class DocumentoCurpCreateView(CreateAPIView):
     serializer_class = ConvocatoriaEnroladoDocumentoSerializer
 
     def post(self, request, *args, **kwargs):
+        borraExistentes(request, 2)
         request = inicializaData(request)
         request.data['catTiposDocumento'] = 2
         serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
@@ -163,6 +171,7 @@ class DocumentoActaNacimientoCreateView(CreateAPIView):
     serializer_class = ConvocatoriaEnroladoDocumentoSerializer
 
     def post(self, request, *args, **kwargs):
+        borraExistentes(request, 3)
         request = inicializaData(request)
         request.data['catTiposDocumento'] = 3
         serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
@@ -176,6 +185,7 @@ class DocumentoCartaSolicitudCreateView(CreateAPIView):
     serializer_class = ConvocatoriaEnroladoDocumentoSerializer
 
     def post(self, request, *args, **kwargs):
+        borraExistentes(request, 4)
         request = inicializaData(request)
         request.data['catTiposDocumento'] = 4
         serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
@@ -189,6 +199,7 @@ class DocumentoConstanciaPosgradoCreateView(CreateAPIView):
     serializer_class = ConvocatoriaEnroladoDocumentoSerializer
 
     def post(self, request, *args, **kwargs):
+        borraExistentes(request, 5)
         request = inicializaData(request)
         request.data['catTiposDocumento'] = 5
         serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
@@ -202,6 +213,7 @@ class DocumentoCedulaEspecialidadCreateView(CreateAPIView):
     serializer_class = ConvocatoriaEnroladoDocumentoSerializer
 
     def post(self, request, *args, **kwargs):
+        borraExistentes(request, 6)
         request = inicializaData(request)
         request.data['catTiposDocumento'] = 6
         serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
@@ -215,6 +227,7 @@ class DocumentoTituloLicenciaturaCreateView(CreateAPIView):
     serializer_class = ConvocatoriaEnroladoDocumentoSerializer
 
     def post(self, request, *args, **kwargs):
+        borraExistentes(request, 7)
         request = inicializaData(request)
         request.data['catTiposDocumento'] = 7
         serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
@@ -228,6 +241,7 @@ class DocumentoCedulaProfesionalCreateView(CreateAPIView):
     serializer_class = ConvocatoriaEnroladoDocumentoSerializer
 
     def post(self, request, *args, **kwargs):
+        borraExistentes(request, 8)
         request = inicializaData(request)
         request.data['catTiposDocumento'] = 8
         serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
@@ -241,6 +255,7 @@ class DocumentoConstanciaCirugiaCreateView(CreateAPIView):
     serializer_class = ConvocatoriaEnroladoDocumentoSerializer
 
     def post(self, request, *args, **kwargs):
+        borraExistentes(request, 9)
         request = inicializaData(request)
         request.data['catTiposDocumento'] = 9
         serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
@@ -254,6 +269,7 @@ class DocumentoCartaProfesorCreateView(CreateAPIView):
     serializer_class = ConvocatoriaEnroladoDocumentoSerializer
 
     def post(self, request, *args, **kwargs):
+        borraExistentes(request, 10)
         request = inicializaData(request)
         request.data['catTiposDocumento'] = 10
         serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
@@ -410,7 +426,6 @@ class ConvocatoriaEnroladoDocumentoAceptarUpdateView(UpdateAPIView):
     queryset = ConvocatoriaEnroladoDocumento.objects.filter()
     serializer_class = ConvocatoriaEnroladoDocumentoAceptarSerializer
     permission_classes = (permissions.IsAdminUser,)
-    
 
     def put(self, request, *args, **kwargs):
         # para poder modificar el dato que llega
@@ -423,7 +438,6 @@ class ConvocatoriaEnroladoDocumentoRechazarUpdateView(UpdateAPIView):
     queryset = ConvocatoriaEnroladoDocumento.objects.filter()
     serializer_class = ConvocatoriaEnroladoDocumentoRechazarSerializer
     permission_classes = (permissions.IsAdminUser,)
-    
 
     def put(self, request, *args, **kwargs):
         # para poder modificar el dato que llega
@@ -436,7 +450,6 @@ class ConvocatoriaEnroladoEngargoladoAceptarUpdateView(UpdateAPIView):
     queryset = ConvocatoriaEnroladoDocumento.objects.filter()
     serializer_class = ConvocatoriaEnroladoEngargoladoAceptarSerializer
     permission_classes = (permissions.IsAdminUser,)
-    
 
     def put(self, request, *args, **kwargs):
         # para poder modificar el dato que llega
@@ -449,13 +462,13 @@ class ConvocatoriaEnroladoEngargoladoRechazarUpdateView(UpdateAPIView):
     queryset = ConvocatoriaEnroladoDocumento.objects.filter()
     serializer_class = ConvocatoriaEnroladoEngargoladoRechazarSerializer
     permission_classes = (permissions.IsAdminUser,)
-    
 
     def put(self, request, *args, **kwargs):
         # para poder modificar el dato que llega
         request.data['engargoladoOk'] = False
 
         return self.update(request, *args, **kwargs)
+
 
 class ConvocatoriaEnroladoMedicoAPagarEndPoint(APIView):
     def getQuerySet(self, medicoId, convocatoriaId):
@@ -494,10 +507,10 @@ class ConvocatoriaEnroladoMedicoPagadoUpdateView(UpdateAPIView):
                 raise ResponseError(f'No tiene permitido pagar - convocatoriaId: {convocatoriaId} y medicoId: {medicoId}', 409)
             log.info(f'No existe registro - convocatoriaId: {convocatoriaId} y medicoId: {medicoId}')
             raise ResponseError(f'No existe registro con convocatoriaId: {convocatoriaId} y medicoId: {medicoId}', 404)
-        
+
         # para poder modificar el dato que llega
         request.data['isPagado'] = True
-        
+
         return self.update(request, *args, **kwargs)
 
 
