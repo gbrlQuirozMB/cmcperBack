@@ -517,13 +517,37 @@ class ConvocatoriaEnroladoMedicoPagadoUpdateView(UpdateAPIView):
         return self.update(request, *args, **kwargs)
 
 
-def enviaCorreo(datos, titulo, email):
-    htmlContent = render_to_string('emailDocsAR.html', datos)
-    textContent = strip_tags(htmlContent)
-    emailAcep = EmailMultiAlternatives(titulo, textContent, "no-reply@cmcper.mx", [email])
-    emailAcep.attach_alternative(htmlContent, "text/html")
-    emailAcep.send()
-    # print(f'--->correo enviado')
+def preparaDatos(datos, medicoId, convocatoriaId):
+    estudioExtranjero = datos['estudioExtranjero']
+    cuentaDocumentos = datos['cuentaDocumentos']
+    if estudioExtranjero:
+        if cuentaDocumentos == 10:
+            datos['mensaje'] = 'correo enviado a medico estudio extranjero con todos sus documentos validados'
+            datos['aceptado'] = True
+            datos['titulo'] = 'CMCPER Validación de Documentos - OK'
+            return datos
+        datos['mensaje'] = 'correo enviado a medico estudio extranjero con documentos faltantes'
+        datos['aceptado'] = False
+        datos['titulo'] = 'CMCPER Validación de Documentos - Rechazado'
+        rechazados = ConvocatoriaEnroladoDocumento.objects.filter(medico=medicoId, convocatoria=convocatoriaId, engargoladoOk=False)
+        rechazadosDic = [{'notasEngargolado': rechazado.notasEngargolado, 'rechazoEngargolado': rechazado.rechazoEngargolado,
+                          'documento': rechazado.catTiposDocumento.descripcion} for rechazado in rechazados]
+        datos['rechazados'] = rechazadosDic
+        return datos
+    else:
+        if cuentaDocumentos == 9:
+            datos['mensaje'] = 'correo enviado a medico con todos sus documentos validados'
+            datos['aceptado'] = True
+            datos['titulo'] = 'CMCPER Validación de Documentos - OK'
+            return datos
+        datos['mensaje'] = 'correo enviado a medico documentos faltantes'
+        datos['aceptado'] = False
+        datos['titulo'] = 'CMCPER Validación de Documentos - Rechazado'
+        rechazados = ConvocatoriaEnroladoDocumento.objects.filter(medico=medicoId, convocatoria=convocatoriaId, engargoladoOk=False)
+        rechazadosDic = [{'notasEngargolado': rechazado.notasEngargolado, 'rechazoEngargolado': rechazado.rechazoEngargolado,
+                          'documento': rechazado.catTiposDocumento.descripcion} for rechazado in rechazados]
+        datos['rechazados'] = rechazadosDic
+        return datos
 
 
 class CorreoDocumentosEndPoint(APIView):
@@ -531,43 +555,22 @@ class CorreoDocumentosEndPoint(APIView):
         convocatoriaId = kwargs['convocatoriaId']
         medicoId = kwargs['medicoId']
         cuentaDocumentos = ConvocatoriaEnroladoDocumento.objects.filter(medico=medicoId, convocatoria=convocatoriaId, engargoladoOk=True).count()
-        cuentaMedico = Medico.objects.filter(id=medicoId, estudioExtranjero=True).count()
-        datosMedico = Medico.objects.filter(id=medicoId).values_list('nombre', 'apPaterno', 'apMaterno', 'email', 'rfc')
-        email = datosMedico[0][3]
+        # cuentaMedico = Medico.objects.filter(id=medicoId, estudioExtranjero=True).count()
+        datosMedico = Medico.objects.filter(id=medicoId).values_list('nombre', 'apPaterno', 'apMaterno', 'email', 'estudioExtranjero')
         datos = {
             'nombre': datosMedico[0][0],
             'apPaterno': datosMedico[0][1],
-            # 'cuentaDocumentos': cuentaDocumentos, # fines de control
+            'estudioExtranjero': datosMedico[0][4],
+            'email': datosMedico[0][3],
+            'cuentaDocumentos': cuentaDocumentos,  # fines de control
             # 'cuentaMedico': cuentaMedico # fines de control
         }
-        if cuentaMedico == 1:
-            if cuentaDocumentos == 10:
-                datos['mensaje'] = 'correo enviado a medico estudio extranjero con todos sus documentos validados'
-                datos['aceptado'] = True
-                enviaCorreo(datos, 'CMCPER Validación de Documentos - OK', email)
-                return Response(datos)
-            datos['mensaje'] = 'correo enviado a medico estudio extranjero con documentos faltantes'
-            rechazados = ConvocatoriaEnroladoDocumento.objects.filter(medico=medicoId, convocatoria=convocatoriaId, engargoladoOk=False)
-            valores = [{'notasEngargolado': rechazado.notasEngargolado, 'rechazoEngargolado': rechazado.rechazoEngargolado,
-                        'documento': rechazado.catTiposDocumento.descripcion} for rechazado in rechazados]
-            datos['rechazados'] = valores
-            datos['aceptado'] = False
-            enviaCorreo(datos, 'CMCPER - Validación de Documentos - Rechazado', email)
-            return Response(datos)
-        else:
-            if cuentaDocumentos == 9:
-                datos['mensaje'] = 'correo enviado a medico con todos sus documentos validados'
-                datos['aceptado'] = True
-                enviaCorreo(datos, 'CMCPER Validación de Documentos - OK', email)
-                return Response(datos)
-            datos['mensaje'] = 'correo enviado a medico con documentos faltantes'
-            rechazados = ConvocatoriaEnroladoDocumento.objects.filter(medico=medicoId, convocatoria=convocatoriaId, engargoladoOk=False)
-            valores = [{'notasEngargolado': rechazado.notasEngargolado, 'rechazoEngargolado': rechazado.rechazoEngargolado,
-                        'documento': rechazado.catTiposDocumento.descripcion} for rechazado in rechazados]
-            datos['rechazados'] = valores
-            datos['aceptado'] = False
-            enviaCorreo(datos, 'CMCPER - Validación de Documentos - Rechazado', email)
-            return Response(datos)
+        preparaDatos(datos, medicoId, convocatoriaId)
+        htmlContent = render_to_string('emailDocsAR.html', datos)
+        textContent = strip_tags(htmlContent)
+        emailAcep = EmailMultiAlternatives(datos['titulo'], textContent, "no-reply@cmcper.mx", [datos['email']])
+        emailAcep.attach_alternative(htmlContent, "text/html")
+        emailAcep.send()
 
         return Response(datos)
 

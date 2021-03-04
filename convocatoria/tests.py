@@ -1222,10 +1222,10 @@ class GetEnviarCorreoDocumentos200Test(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        # # 10 documentos porque estudio en el extranjero envia correo de OK
-        # response = self.client.get('/api/convocatoria/1/medico/1/correo-documentos/')
-        # print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
-        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # 10 documentos porque estudio en el extranjero envia correo de OK
+        response = self.client.get('/api/convocatoria/1/medico/1/correo-documentos/')
+        print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # menos de  10 documentos porque estudio en el extranjero envia correo faltantes
         ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=9).update(engargoladoOk=False)
@@ -1234,21 +1234,21 @@ class GetEnviarCorreoDocumentos200Test(APITestCase):
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        # # 9 documentos porque  es nacional envia correo de OK
-        # ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=9).update(engargoladoOk=True)
-        # ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=6).update(engargoladoOk=True)
-        # ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=1).delete()
-        # Medico.objects.filter(id=1).update(estudioExtranjero=False)
-        # response = self.client.get('/api/convocatoria/1/medico/1/correo-documentos/')
-        # print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
-        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # 9 documentos porque  es nacional envia correo de OK
+        ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=9).update(engargoladoOk=True)
+        ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=6).update(engargoladoOk=True)
+        ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=1).delete()
+        Medico.objects.filter(id=1).update(estudioExtranjero=False)
+        response = self.client.get('/api/convocatoria/1/medico/1/correo-documentos/')
+        print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        # # menos de 9 documentos porque  es nacional envia correo faltantes
-        # ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=9).update(engargoladoOk=False)
-        # ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=6).update(engargoladoOk=False)
-        # response = self.client.get('/api/convocatoria/1/medico/1/correo-documentos/')
-        # print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
-        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # menos de 9 documentos porque  es nacional envia correo faltantes
+        ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=9).update(engargoladoOk=False)
+        ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=6).update(engargoladoOk=False)
+        response = self.client.get('/api/convocatoria/1/medico/1/correo-documentos/')
+        print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(medico=1,convocatoria=1,isValidado=True).count()
         # print(f'--->>>cuenta: {cuenta}')
