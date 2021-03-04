@@ -492,15 +492,15 @@
 													<br/>
 													<ul>
 														{% for rechazado in rechazados %}
-															<li> {{rechazado.documento}} - {{rechazado.rechazoEngargolado}} - {{rechazado.notasEngargolado}} </li>
+															<li> {{rechazado.documento}} ---&#62; {{rechazado.rechazoEngargolado}} ---&#62; {{rechazado.notasEngargolado}} </li>
 														{% endfor %}
 													</ul>
-													<table>
+													<table align="center" border="1" cellpadding="3px" cellspacing="0" height="100%" width="100%" >
 														{% for rechazado in rechazados %}
 															<tr> 
-																<td> {{rechazado.documento}} </td>
-																<td> {{rechazado.rechazoEngargolado}} </td>
-																<td> {{rechazado.notasEngargolado}} </td>
+																<td align="center" valign="top"> {{rechazado.documento}} </td>
+																<td align="center" valign="top"> {{rechazado.rechazoEngargolado}} </td>
+																<tdalign="center" valign="top"> {{rechazado.notasEngargolado}} </td>
 															</tr>
 														{% endfor %}
 													</table>
