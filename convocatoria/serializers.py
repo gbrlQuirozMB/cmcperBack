@@ -198,6 +198,7 @@ class ConvocatoriaEnroladoMedicoDetailSerializer(serializers.ModelSerializer):
         repr = super().to_representation(instance)
         repr['catTiposExamen'] = instance.catTiposExamen.descripcion
         repr['catSedes'] = instance.catSedes.descripcion
+        repr['convocatoriaId'] = instance.convocatoria.id
         repr['convocatoria'] = instance.convocatoria.nombre
         repr['medico'] = instance.medico.nombre + ' ' + instance.medico.apPaterno
         return repr

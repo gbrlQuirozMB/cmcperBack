@@ -680,7 +680,7 @@ class GetMedicoEnroladoDetails200Test(APITestCase):
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
 
         convocatoria6 = Convocatoria.objects.create(id=6, fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',
-                                                    horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1')
+                                                    horaExamen='09:09', nombre='convocatoria chingona6', detalles='detalles6')
 
         ConvocatoriaEnrolado.objects.create(id=99, medico=medico9, convocatoria=convocatoria6, catSedes=catSedes3, catTiposExamen=catTiposExamen1)
 
