@@ -546,7 +546,7 @@ class CorreoDocumentosEndPoint(APIView):
                 datos['aceptado'] = True
                 enviaCorreo(datos, 'CMCPER Validación de Documentos - OK', email)
                 return Response(datos)
-            datos['mensaje'] = 'correo enviado a medico estudio extranjero con todos sus documentos faltantes'
+            datos['mensaje'] = 'correo enviado a medico estudio extranjero con documentos faltantes'
             rechazados = ConvocatoriaEnroladoDocumento.objects.filter(medico=medicoId, convocatoria=convocatoriaId, engargoladoOk=False)
             valores = [{'notasEngargolado': rechazado.notasEngargolado, 'rechazoEngargolado': rechazado.rechazoEngargolado,
                         'documento': rechazado.catTiposDocumento.descripcion} for rechazado in rechazados]
@@ -560,7 +560,7 @@ class CorreoDocumentosEndPoint(APIView):
                 datos['aceptado'] = True
                 enviaCorreo(datos, 'CMCPER Validación de Documentos - OK', email)
                 return Response(datos)
-            datos['mensaje'] = 'correo enviado a medico con todos sus documentos faltantes'
+            datos['mensaje'] = 'correo enviado a medico con documentos faltantes'
             rechazados = ConvocatoriaEnroladoDocumento.objects.filter(medico=medicoId, convocatoria=convocatoriaId, engargoladoOk=False)
             valores = [{'notasEngargolado': rechazado.notasEngargolado, 'rechazoEngargolado': rechazado.rechazoEngargolado,
                         'documento': rechazado.catTiposDocumento.descripcion} for rechazado in rechazados]

@@ -490,17 +490,17 @@
 													Algunos documentos que se enviaron no son válidos, atienda las observaciones y reenvíelos por favor, gracias.
 													<br/>
 													<br/>
-													<ul>
+													{% comment %} <ul>
 														{% for rechazado in rechazados %}
 															<li> {{rechazado.documento}} ---&#62; {{rechazado.rechazoEngargolado}} ---&#62; {{rechazado.notasEngargolado}} </li>
 														{% endfor %}
-													</ul>
+													</ul> {% endcomment %}
 													<table align="center" border="1" cellpadding="3px" cellspacing="0" height="100%" width="100%" >
 														{% for rechazado in rechazados %}
 															<tr> 
-																<td align="left" valign="top"> {{rechazado.documento}} </td>
-																<td align="left" valign="top"> {{rechazado.rechazoEngargolado}} </td>
-																<td align="left" valign="top"> {{rechazado.notasEngargolado}} </td>
+																<td align="left" valign="top" width="20%"> {{rechazado.documento}} </td>
+																<td align="left" valign="top" width="40%"> {{rechazado.rechazoEngargolado}} </td>
+																<td align="left" valign="top" width="40%"> {{rechazado.notasEngargolado}} </td>
 															</tr>
 														{% endfor %}
 													</table>
