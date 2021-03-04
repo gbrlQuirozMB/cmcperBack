@@ -185,7 +185,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = config('STATIC_ROOT')
-MEDIA_URL = '/media/'
+MEDIA_URL = '/uploads/'
 MEDIA_ROOT = config('MEDIA_ROOT')
 
 
