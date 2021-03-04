@@ -27,7 +27,7 @@ class PutEsExtranjero200Test(APITestCase):
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
 
         self.json = {
-            "isExtranjero": "False",
+            "isExtranjero": "True",
             "nacionalidad": "Indio"
         }
 
@@ -580,7 +580,7 @@ class GetDocumentosList200Test(APITestCase):
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento7, documento='titulo_licenciatura.pdf')
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento8, documento='cedula_profesional.pdf')
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento9, documento='constancia_cirugia.pdf')
-        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento10, documento='carta_profesor.pdf', isValidado=False,
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento10, documento='carta_profesor.pdf', isValidado=True,
                                                      notasValidado='me cae gordo', rechazoValidado='carta incorrecta')
 
         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
@@ -592,6 +592,9 @@ class GetDocumentosList200Test(APITestCase):
         response = self.client.get('/api/convocatoria/1/medico/1/documentos/list/')
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        cuenta = ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, isValidado=True).count()
+        print(f'--->>>cuenta: {cuenta}')
 
         # dato = ConvocatoriaEnroladoDocumento.objects.filter(medico=1)
 
@@ -665,21 +668,21 @@ class GetMedicoEnroladoDetails200Test(APITestCase):
     def setUp(self):
         CatSedes.objects.create(descripcion='sedeDescripcion1', direccion='sedeDireccion1', latitud=11.235698, longitud=-111.235689)
         CatSedes.objects.create(descripcion='sedeDescripcion2', direccion='sedeDireccion2', latitud=22.235698, longitud=-222.235689)
-        catSedes = CatSedes.objects.create(descripcion='sedeDescripcion3', direccion='sedeDireccion3', latitud=33.235698, longitud=-333.235689)
+        catSedes3 = CatSedes.objects.create(descripcion='sedeDescripcion3', direccion='sedeDireccion3', latitud=33.235698, longitud=-333.235689)
 
-        catTiposExamen = CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion1')
+        catTiposExamen1 = CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion1')
         CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion2')
 
-        medico = Medico.objects.create(
+        medico9 = Medico.objects.create(
             id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
             deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
             cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
 
-        convocatoria = Convocatoria.objects.create(id=6, fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',
-                                                   horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1')
+        convocatoria6 = Convocatoria.objects.create(id=6, fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',
+                                                    horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1')
 
-        ConvocatoriaEnrolado.objects.create(medico=medico, convocatoria=convocatoria, catSedes=catSedes, catTiposExamen=catTiposExamen)
+        ConvocatoriaEnrolado.objects.create(id=99, medico=medico9, convocatoria=convocatoria6, catSedes=catSedes3, catTiposExamen=catTiposExamen1)
 
         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
 
@@ -1166,6 +1169,90 @@ class PutPagado200Test(APITestCase):
         response = self.client.put('/api/convocatoria/enrolar/4/pagado/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class GetEnviarCorreoDocumentos200Test(APITestCase):
+    def setUp(self):
+        catTiposDocumento1 = CatTiposDocumento.objects.create(descripcion='Revalidación')
+        catTiposDocumento2 = CatTiposDocumento.objects.create(descripcion='CURP')
+        catTiposDocumento3 = CatTiposDocumento.objects.create(descripcion='Acta de Nacimiento')
+        catTiposDocumento4 = CatTiposDocumento.objects.create(descripcion='Carta de Solicitud de Examen')
+        catTiposDocumento5 = CatTiposDocumento.objects.create(descripcion='Constancia de Posgrado')
+        catTiposDocumento6 = CatTiposDocumento.objects.create(descripcion='Cédula de Especialidad')
+        catTiposDocumento7 = CatTiposDocumento.objects.create(descripcion='Título de la Licenciatura')
+        catTiposDocumento8 = CatTiposDocumento.objects.create(descripcion='Cédula Profesional')
+        catTiposDocumento9 = CatTiposDocumento.objects.create(descripcion='Constancia de Cirugía General')
+        catTiposDocumento10 = CatTiposDocumento.objects.create(descripcion='Carta de Profesor Titular')
+
+        CatMotivosRechazo.objects.create(descripcion='descripcion1', tipo=1)
+        CatMotivosRechazo.objects.create(descripcion='descripcion2', tipo=2)
+
+        medico = Medico.objects.create(
+            id=1, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', estudioExtranjero=True)
+
+        convocatoria = Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',
+                                                   horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1', )
+
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento1,
+                                                     documento='revalidacion.pdf', engargoladoOk=True, notasEngargolado='rev-NE', rechazoEngargolado='rev-RE')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento2,
+                                                     documento='curp.pdf', engargoladoOk=True, notasEngargolado='curp-NE', rechazoEngargolado='curp-RE')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento3,
+                                                     documento='acta_nacimiento.pdf', engargoladoOk=True, notasEngargolado='actN-NE', rechazoEngargolado='actN-RE')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento4,
+                                                     documento='carta_solicitud_examen.pdf', engargoladoOk=True, notasEngargolado='carS-NE', rechazoEngargolado='carS-RE')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento5,
+                                                     documento='constancia_posgrago.pdf', engargoladoOk=True, notasEngargolado='conP-NE', rechazoEngargolado='conP-RE')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento6,
+                                                     documento='cedula_especialidad.pdf', engargoladoOk=True, notasEngargolado='cedE-NE', rechazoEngargolado='cedE-RE')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento7,
+                                                     documento='titulo_licenciatura.pdf', engargoladoOk=True, notasEngargolado='titL-NE', rechazoEngargolado='titL-RE')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento8,
+                                                     documento='cedula_profesional.pdf', engargoladoOk=True, notasEngargolado='cedP-NE', rechazoEngargolado='cedP-RE')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento9,
+                                                     documento='constancia_cirugia.pdf', engargoladoOk=True, notasEngargolado='conC-NE', rechazoEngargolado='conC-RE')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento10,
+                                                     documento='carta_profesor.pdf', engargoladoOk=True, notasEngargolado='carP-NE', rechazoEngargolado='carP-RE')
+
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        # # 10 documentos porque estudio en el extranjero envia correo de OK
+        # response = self.client.get('/api/convocatoria/1/medico/1/correo-documentos/')
+        # print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # menos de  10 documentos porque estudio en el extranjero envia correo faltantes
+        ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=9).update(engargoladoOk=False)
+        ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=6).update(engargoladoOk=False)
+        response = self.client.get('/api/convocatoria/1/medico/1/correo-documentos/')
+        print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # # 9 documentos porque  es nacional envia correo de OK
+        # ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=9).update(engargoladoOk=True)
+        # ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=6).update(engargoladoOk=True)
+        # ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=1).delete()
+        # Medico.objects.filter(id=1).update(estudioExtranjero=False)
+        # response = self.client.get('/api/convocatoria/1/medico/1/correo-documentos/')
+        # print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # # menos de 9 documentos porque  es nacional envia correo faltantes
+        # ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=9).update(engargoladoOk=False)
+        # ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=6).update(engargoladoOk=False)
+        # response = self.client.get('/api/convocatoria/1/medico/1/correo-documentos/')
+        # print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(medico=1,convocatoria=1,isValidado=True).count()
+        # print(f'--->>>cuenta: {cuenta}')
+
 
 # ES DE PRUEBA NO USAR!!!
 # class PostConvocatoriaSede200Test(APITestCase):
