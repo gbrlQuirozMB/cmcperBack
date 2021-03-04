@@ -566,6 +566,7 @@ class CorreoDocumentosEndPoint(APIView):
             # 'cuentaMedico': cuentaMedico # fines de control
         }
         preparaDatos(datos, medicoId, convocatoriaId)
+        ConvocatoriaEnrolado.objects.filter(medico=medicoId, convocatoria=convocatoriaId).update(isAceptado=datos['aceptado'])  # setteado para que pueda pagar o no
         htmlContent = render_to_string('emailDocsAR.html', datos)
         textContent = strip_tags(htmlContent)
         emailAcep = EmailMultiAlternatives(datos['titulo'], textContent, "no-reply@cmcper.mx", [datos['email']])

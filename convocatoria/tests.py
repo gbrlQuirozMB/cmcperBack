@@ -1186,6 +1186,9 @@ class GetEnviarCorreoDocumentos200Test(APITestCase):
 
         CatMotivosRechazo.objects.create(descripcion='descripcion1', tipo=1)
         CatMotivosRechazo.objects.create(descripcion='descripcion2', tipo=2)
+        
+        catSedes3 = CatSedes.objects.create(descripcion='sedeDescripcion3', direccion='sedeDireccion3', latitud=33.235698, longitud=-333.235689)
+        catTiposExamen1 = CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion1')
 
         medico = Medico.objects.create(
             id=1, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
@@ -1216,6 +1219,9 @@ class GetEnviarCorreoDocumentos200Test(APITestCase):
                                                      documento='constancia_cirugia.pdf', engargoladoOk=True, notasEngargolado='conC-NE', rechazoEngargolado='conC-RE')
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento10,
                                                      documento='carta_profesor.pdf', engargoladoOk=True, notasEngargolado='carP-NE', rechazoEngargolado='carP-RE')
+        
+        ConvocatoriaEnrolado.objects.create(id=99, medico=medico, convocatoria=convocatoria, catSedes=catSedes3, catTiposExamen=catTiposExamen1)
+
 
         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
 
@@ -1226,6 +1232,8 @@ class GetEnviarCorreoDocumentos200Test(APITestCase):
         response = self.client.get('/api/convocatoria/1/medico/1/correo-documentos/')
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        dato = ConvocatoriaEnrolado.objects.get(medico=1, convocatoria=1)
+        print(f'--->>>isAceptado: {dato.isAceptado}')
 
         # menos de  10 documentos porque estudio en el extranjero envia correo faltantes
         ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=9).update(engargoladoOk=False)
@@ -1233,6 +1241,8 @@ class GetEnviarCorreoDocumentos200Test(APITestCase):
         response = self.client.get('/api/convocatoria/1/medico/1/correo-documentos/')
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        dato = ConvocatoriaEnrolado.objects.get(medico=1, convocatoria=1)
+        print(f'--->>>isAceptado: {dato.isAceptado}')
 
         # 9 documentos porque  es nacional envia correo de OK
         ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=9).update(engargoladoOk=True)
@@ -1242,6 +1252,8 @@ class GetEnviarCorreoDocumentos200Test(APITestCase):
         response = self.client.get('/api/convocatoria/1/medico/1/correo-documentos/')
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        dato = ConvocatoriaEnrolado.objects.get(medico=1, convocatoria=1)
+        print(f'--->>>isAceptado: {dato.isAceptado}')
 
         # menos de 9 documentos porque  es nacional envia correo faltantes
         ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=9).update(engargoladoOk=False)
@@ -1249,6 +1261,8 @@ class GetEnviarCorreoDocumentos200Test(APITestCase):
         response = self.client.get('/api/convocatoria/1/medico/1/correo-documentos/')
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        dato = ConvocatoriaEnrolado.objects.get(medico=1, convocatoria=1)
+        print(f'--->>>isAceptado: {dato.isAceptado}')
 
         # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(medico=1,convocatoria=1,isValidado=True).count()
         # print(f'--->>>cuenta: {cuenta}')
