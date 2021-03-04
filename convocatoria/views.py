@@ -523,7 +523,7 @@ def enviaCorreo(datos, titulo, email):
     emailAcep = EmailMultiAlternatives(titulo, textContent, "no-reply@cmcper.mx", [email])
     emailAcep.attach_alternative(htmlContent, "text/html")
     emailAcep.send()
-    print(f'--->correo enviado')
+    # print(f'--->correo enviado')
 
 
 class CorreoDocumentosEndPoint(APIView):
