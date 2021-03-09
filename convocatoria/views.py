@@ -23,6 +23,10 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
 
+from notificaciones.models import Notificacion
+from django.contrib.auth.models import User
+
+
 # from django_filters import rest_framework
 # from django_filters import rest_framework as filters
 
@@ -143,6 +147,20 @@ def borraExistentes(request, tipoDocumento):
     ConvocatoriaEnroladoDocumento.objects.filter(medico=medicoId, convocatoria=convocatoriaId, catTiposDocumento=tipoDocumento).delete()
 
 
+def totalDocumentosNotifica(request):
+    medicoId = request.data['medico']
+    convocatoriaId = request.data['convocatoria']
+    estudioExtranjero = Medico.objects.filter(id=medicoId).values_list('estudioExtranjero')
+    cuentaDocumentos = ConvocatoriaEnroladoDocumento.objects.filter(medico=medicoId, convocatoria=convocatoriaId).count()
+    # print(f'--->>>estudioExtranjero: {estudioExtranjero[0][0]} - cuentaDocumentos: {cuentaDocumentos}')
+    if estudioExtranjero[0][0] and cuentaDocumentos == 9:  # porque ya borro antes el que ya existia
+        datoUser = User.objects.filter(is_superuser=True, is_staff=True).values_list('id')
+        Notificacion.objects.create(titulo='Convocatoria',mensaje='Hay documentos que validar',destinatario=datoUser[0][0],remitente=0)
+    if not estudioExtranjero[0][0] and cuentaDocumentos == 8:  # porque ya borro antes el que ya existia
+        datoUser = User.objects.filter(is_superuser=True, is_staff=True).values_list('id')
+        Notificacion.objects.create(titulo='Convocatoria',mensaje='Hay documentos que validar',destinatario=datoUser[0][0],remitente=0)
+
+
 class DocumentoRevalidacionCreateView(CreateAPIView):
     serializer_class = ConvocatoriaEnroladoDocumentoSerializer
 
@@ -166,6 +184,7 @@ class DocumentoCurpCreateView(CreateAPIView):
         request.data['catTiposDocumento'] = 2
         serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
         if serializer.is_valid():
+            totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
@@ -180,6 +199,7 @@ class DocumentoActaNacimientoCreateView(CreateAPIView):
         request.data['catTiposDocumento'] = 3
         serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
         if serializer.is_valid():
+            totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
@@ -194,6 +214,7 @@ class DocumentoCartaSolicitudCreateView(CreateAPIView):
         request.data['catTiposDocumento'] = 4
         serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
         if serializer.is_valid():
+            totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
@@ -208,6 +229,7 @@ class DocumentoConstanciaPosgradoCreateView(CreateAPIView):
         request.data['catTiposDocumento'] = 5
         serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
         if serializer.is_valid():
+            totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
@@ -222,6 +244,7 @@ class DocumentoCedulaEspecialidadCreateView(CreateAPIView):
         request.data['catTiposDocumento'] = 6
         serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
         if serializer.is_valid():
+            totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
@@ -236,6 +259,7 @@ class DocumentoTituloLicenciaturaCreateView(CreateAPIView):
         request.data['catTiposDocumento'] = 7
         serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
         if serializer.is_valid():
+            totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
@@ -250,6 +274,7 @@ class DocumentoCedulaProfesionalCreateView(CreateAPIView):
         request.data['catTiposDocumento'] = 8
         serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
         if serializer.is_valid():
+            totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
@@ -264,6 +289,7 @@ class DocumentoConstanciaCirugiaCreateView(CreateAPIView):
         request.data['catTiposDocumento'] = 9
         serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
         if serializer.is_valid():
+            totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
@@ -278,6 +304,7 @@ class DocumentoCartaProfesorCreateView(CreateAPIView):
         request.data['catTiposDocumento'] = 10
         serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
         if serializer.is_valid():
+            totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
@@ -296,6 +323,11 @@ class DocumentosMedicoListView(ListAPIView):
 class ConvocatoriaDocumentoUpdateView(UpdateAPIView):
     queryset = ConvocatoriaEnroladoDocumento.objects.filter()
     serializer_class = ConvocatoriaDocumentoSerializer
+    
+    def put(self, request, *args, **kwargs):
+        datoUser = User.objects.filter(is_superuser=True, is_staff=True).values_list('id')
+        Notificacion.objects.create(titulo='Convocatoria',mensaje='Se modificó un documento previamente rechazado',destinatario=datoUser[0][0],remitente=0)
+        return self.update(request, *args, **kwargs)
 
 
 def render_pdf_view(request, templateSrc, datosContexto):

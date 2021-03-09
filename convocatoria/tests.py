@@ -15,6 +15,9 @@ from datetime import date
 
 import requests
 
+from notificaciones.models import Notificacion
+
+
 # Create your tests here.
 
 
@@ -403,6 +406,8 @@ class PostEnrolar200Test(APITestCase):
 
 class PostDocumento200Test(APITestCase):
     def setUp(self):
+        User.objects.create_user(username='admin',email='admin@cmcper.com',password='password',first_name='Enrique',last_name='Lucero', is_superuser=True, is_staff=True)
+        
         catTiposDocumento1 = CatTiposDocumento.objects.create(descripcion='Revalidación')
         catTiposDocumento2 = CatTiposDocumento.objects.create(descripcion='CURP')
         catTiposDocumento3 = CatTiposDocumento.objects.create(descripcion='Acta de Nacimiento')
@@ -421,7 +426,7 @@ class PostDocumento200Test(APITestCase):
             id=1, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
             deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
             cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', estudioExtranjero=True)
 
         convocatoria = Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',
                                                    horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1')
@@ -470,13 +475,13 @@ class PostDocumento200Test(APITestCase):
         # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=1).count()
         # print(f'--->>>cuenta: {cuenta}')
 
-        # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=2).count()
-        # print(f'--->>>cuenta: {cuenta}')
-        # response = self.client.post('/api/convocatoria/documento/curp/create/', data=self.json, format='multipart')
-        # print(f'response JSON ===>>> \n {response.data} \n ---')
-        # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=2).count()
-        # print(f'--->>>cuenta: {cuenta}')
+        cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=2).count()
+        print(f'--->>>cuenta: {cuenta}')
+        response = self.client.post('/api/convocatoria/documento/curp/create/', data=self.json, format='multipart')
+        print(f'response JSON ===>>> \n {response.data} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=2).count()
+        print(f'--->>>cuenta: {cuenta}')
 
         # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=3).count()
         # print(f'--->>>cuenta: {cuenta}')
@@ -526,13 +531,13 @@ class PostDocumento200Test(APITestCase):
         # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=8).count()
         # print(f'--->>>cuenta: {cuenta}')
 
-        cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=9).count()
-        print(f'--->>>cuenta: {cuenta}')
-        response = self.client.post('/api/convocatoria/documento/constancia-cirugia/create/', data=self.json, format='multipart')
-        print(f'response JSON ===>>> \n {response.data} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=9).count()
-        print(f'--->>>cuenta: {cuenta}')
+        # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=9).count()
+        # print(f'--->>>cuenta: {cuenta}')
+        # response = self.client.post('/api/convocatoria/documento/constancia-cirugia/create/', data=self.json, format='multipart')
+        # print(f'response JSON ===>>> \n {response.data} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=9).count()
+        # print(f'--->>>cuenta: {cuenta}')
 
         # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=10).count()
         # print(f'--->>>cuenta: {cuenta}')
@@ -544,6 +549,11 @@ class PostDocumento200Test(APITestCase):
 
         # dato = ConvocatoriaEnroladoDocumento.objects.get(id=11)
         # print(f'--->>>DESPUES dato: {dato.id} - {dato.isValidado} - {dato.notasEngargolado} - {dato.catTiposDocumento.descripcion}')
+        
+        cuenta = Notificacion.objects.count()
+        if cuenta != 0:
+            dato = Notificacion.objects.get(id=1)
+            print(f'--->>>dato: titulo: {dato.titulo}, mensaje: {dato.mensaje}, destinatario: {dato.destinatario}, remitente: {dato.remitente}')
 
 
 class GetDocumentosList200Test(APITestCase):
@@ -601,6 +611,8 @@ class GetDocumentosList200Test(APITestCase):
 
 class PutDocumento200Test(APITestCase):
     def setUp(self):
+        User.objects.create_user(username='admin',email='admin@cmcper.com',password='password',first_name='Enrique',last_name='Lucero', is_superuser=True, is_staff=True)
+        
         catTiposDocumento1 = CatTiposDocumento.objects.create(descripcion='Revalidación')
         catTiposDocumento2 = CatTiposDocumento.objects.create(descripcion='CURP')
         catTiposDocumento3 = CatTiposDocumento.objects.create(descripcion='Acta de Nacimiento')
@@ -661,7 +673,10 @@ class PutDocumento200Test(APITestCase):
         dato = ConvocatoriaEnroladoDocumento.objects.get(id=1)
         print(f'--->>>DESPUES dato: {dato.id} - {dato.documento}')
 
-        # dato = ConvocatoriaEnroladoDocumento.objects.filter(medico=1)
+        cuenta = Notificacion.objects.count()
+        if cuenta != 0:
+            dato = Notificacion.objects.get(id=1)
+            print(f'--->>>dato: titulo: {dato.titulo}, mensaje: {dato.mensaje}, destinatario: {dato.destinatario}, remitente: {dato.remitente}')
 
 
 class GetMedicoEnroladoDetails200Test(APITestCase):
@@ -1266,6 +1281,9 @@ class GetEnviarCorreoDocumentos200Test(APITestCase):
 
         # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(medico=1,convocatoria=1,isValidado=True).count()
         # print(f'--->>>cuenta: {cuenta}')
+
+
+
 
 
 # ES DE PRUEBA NO USAR!!!
