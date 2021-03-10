@@ -48,6 +48,9 @@ urlpatterns = [
 
     path('<convocatoriaId>/enrolados/bajar-excel/list/', ConvocatoriaEnroladosDownExcel.as_view(), ),
     path('<convocatoriaId>/enrolados/cargar-excel/update/', ConvocatoriaEnroladosUpExcel.as_view(), ),
+    
+    path('transferencia-bancaria/create/', DocumentoCurpCreateView.as_view(), ),
+    
 
 
     # ES DE PRUEBA NO USAR!!!

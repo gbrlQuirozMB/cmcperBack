@@ -532,24 +532,15 @@ class ConvocatoriaEnroladoMedicoPagadoUpdateView(UpdateAPIView):
     serializer_class = ConvocatoriaEnroladoMedicoPagadoSerializer
 
     def put(self, request, *args, **kwargs):
-        medicoId = request.data['medicoId']
-        convocatoriaId = request.data['convocatoriaId']
-        try:
-            cuenta = ConvocatoriaEnrolado.objects.filter(medico=medicoId, convocatoria=convocatoriaId, isAceptado=True).count()
-            print(f'--->>>medicoId: {medicoId} - convocatoriaId: {convocatoriaId} - cuenta: {cuenta}')
-        except:
-            cuenta = ConvocatoriaEnrolado.objects.filter(medico=medicoId, convocatoria=convocatoriaId).count()
-            if cuenta == 1:
-                log.info(f'No tiene permitido pagar - convocatoriaId: {convocatoriaId} y medicoId: {medicoId}')
-                raise ResponseError(f'No tiene permitido pagar - convocatoriaId: {convocatoriaId} y medicoId: {medicoId}', 409)
-            log.info(f'No existe registro - convocatoriaId: {convocatoriaId} y medicoId: {medicoId}')
-            raise ResponseError(f'No existe registro con convocatoriaId: {convocatoriaId} y medicoId: {medicoId}', 404)
-
-        # para poder modificar el dato que llega
-        request.data['isPagado'] = True
-
-        return self.update(request, *args, **kwargs)
-
+        id = kwargs['pk']
+        cuenta = ConvocatoriaEnrolado.objects.filter(id=id, isAceptado=True).count()
+        if cuenta == 1:
+            request.data['isPagado'] = True
+            return self.update(request, *args, **kwargs)
+        cuenta = ConvocatoriaEnrolado.objects.filter(id=id).count()
+        if cuenta == 1:
+            raise ResponseError(f'No tiene permitido pagar', 409)
+        raise ResponseError(f'No existe registro', 404)
 
 def preparaDatos(datos, medicoId, convocatoriaId):
     estudioExtranjero = datos['estudioExtranjero']

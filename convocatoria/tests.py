@@ -1153,10 +1153,10 @@ class PutPagado200Test(APITestCase):
         ConvocatoriaEnrolado.objects.create(medico=medico6, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=catTiposExamen1)
         ConvocatoriaEnrolado.objects.create(medico=medico9, convocatoria=convocatoria6, catSedes=catSedes3, catTiposExamen=catTiposExamen3, isAceptado=True)
 
-        self.json = {
-            "medicoId": 9,
-            "convocatoriaId": 6
-        }
+        # self.json = {
+        #     "medicoId": 9,
+        #     "convocatoriaId": 6
+        # }
 
         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
 
@@ -1166,8 +1166,7 @@ class PutPagado200Test(APITestCase):
         dato = ConvocatoriaEnrolado.objects.get(id=3)
         print(f'--->>>ANTES dato: {dato.id} - {dato.isPagado}')
 
-        response = self.client.put('/api/convocatoria/enrolar/3/pagado/', data=json.dumps(self.json), content_type="application/json")
-        # response = self.client.put('/api/convocatoria/enrolar/3/pagado/', content_type="application/json")
+        response = self.client.put('/api/convocatoria/enrolar/3/pagado/')
         print(f'response JSON ===>>> \n {json.dumps(response.data)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -1176,12 +1175,14 @@ class PutPagado200Test(APITestCase):
 
         # no puede pagar
         ConvocatoriaEnrolado.objects.filter(id=3).update(isAceptado=False)
-        response = self.client.put('/api/convocatoria/enrolar/3/pagado/', data=json.dumps(self.json), content_type="application/json")
+        # response = self.client.put('/api/convocatoria/enrolar/3/pagado/', data=json.dumps(self.json), content_type="application/json")
+        response = self.client.put('/api/convocatoria/enrolar/3/pagado/')
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
 
         # no se encuentra el registro
-        response = self.client.put('/api/convocatoria/enrolar/4/pagado/', data=json.dumps(self.json), content_type="application/json")
+        # response = self.client.put('/api/convocatoria/enrolar/4/pagado/', data=json.dumps(self.json), content_type="application/json")
+        response = self.client.put('/api/convocatoria/enrolar/4/pagado/')
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
