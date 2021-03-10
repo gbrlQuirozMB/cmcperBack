@@ -1,3 +1,4 @@
+from django.db.models.query import EmptyQuerySet
 from rest_framework import response, status, permissions
 from rest_framework.views import APIView
 from .serializers import *
@@ -26,6 +27,8 @@ from django.core.mail import EmailMultiAlternatives
 from notificaciones.models import Notificacion
 from django.contrib.auth.models import User
 
+import csv
+import codecs
 
 # from django_filters import rest_framework
 # from django_filters import rest_framework as filters
@@ -155,10 +158,10 @@ def totalDocumentosNotifica(request):
     # print(f'--->>>estudioExtranjero: {estudioExtranjero[0][0]} - cuentaDocumentos: {cuentaDocumentos}')
     if estudioExtranjero[0][0] and cuentaDocumentos == 9:  # porque ya borro antes el que ya existia
         datoUser = User.objects.filter(is_superuser=True, is_staff=True).values_list('id')
-        Notificacion.objects.create(titulo='Convocatoria',mensaje='Hay documentos que validar',destinatario=datoUser[0][0],remitente=0)
+        Notificacion.objects.create(titulo='Convocatoria', mensaje='Hay documentos que validar', destinatario=datoUser[0][0], remitente=0)
     if not estudioExtranjero[0][0] and cuentaDocumentos == 8:  # porque ya borro antes el que ya existia
         datoUser = User.objects.filter(is_superuser=True, is_staff=True).values_list('id')
-        Notificacion.objects.create(titulo='Convocatoria',mensaje='Hay documentos que validar',destinatario=datoUser[0][0],remitente=0)
+        Notificacion.objects.create(titulo='Convocatoria', mensaje='Hay documentos que validar', destinatario=datoUser[0][0], remitente=0)
 
 
 class DocumentoRevalidacionCreateView(CreateAPIView):
@@ -323,14 +326,14 @@ class DocumentosMedicoListView(ListAPIView):
 class ConvocatoriaDocumentoUpdateView(UpdateAPIView):
     queryset = ConvocatoriaEnroladoDocumento.objects.filter()
     serializer_class = ConvocatoriaDocumentoSerializer
-    
+
     def put(self, request, *args, **kwargs):
         datoUser = User.objects.filter(is_superuser=True, is_staff=True).values_list('id')
-        Notificacion.objects.create(titulo='Convocatoria',mensaje='Se modificó un documento previamente rechazado',destinatario=datoUser[0][0],remitente=0)
+        Notificacion.objects.create(titulo='Convocatoria', mensaje='Se modificó un documento previamente rechazado', destinatario=datoUser[0][0], remitente=0)
         return self.update(request, *args, **kwargs)
 
 
-def render_pdf_view(request, templateSrc, datosContexto):
+def renderPdfView(request, templateSrc, datosContexto):
     template_path = templateSrc
     context = datosContexto
     # Create a Django response object, and specify content_type as pdf
@@ -351,7 +354,6 @@ def render_pdf_view(request, templateSrc, datosContexto):
 
 
 class FichaRegistroPDF(View):
-
     def get(self, request, *args, **kwargs):
         id = self.kwargs['pk']
         try:
@@ -368,7 +370,7 @@ class FichaRegistroPDF(View):
                 'horaExamen': convocatoriaEnrolado.convocatoria.horaExamen
             }
             # print(datos)
-            return render_pdf_view(request, 'pdf.html', datos)
+            return renderPdfView(request, 'pdf.html', datos)
         except:
             return HttpResponse('No se encontró el registro', content_type='text/plain')
 
@@ -606,6 +608,59 @@ class CorreoDocumentosEndPoint(APIView):
         emailAcep.send()
 
         return Response(datos)
+
+
+class ConvocatoriaEnroladosExcelListView(ListAPIView):
+    serializer_class = ConvocatoriaEnroladosMedicoListSerializer
+
+    def get_queryset(self):
+        convocatoriaId = self.kwargs['convocatoriaId']
+        queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId)
+
+        return queryset
+
+
+def renderCsvView(request, queryset):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="medicos.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['NO TOCAR', 'Num. de Registro', 'Nombre', 'Apellido Paterno', 'Apellido Materno', 'Calificacion'])
+    for dato in queryset:
+        writer.writerow(dato)
+
+    return response
+
+
+class ConvocatoriaEnroladosDownExcel(APIView):
+    def get(self, request, *args, **kwargs):
+        convocatoriaId = self.kwargs['convocatoriaId']
+        try:
+            queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId).values_list('id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno')
+            # print(f'--->>>queryset como tupla(values_list): {queryset}')
+            if not queryset:
+                respuesta = {"detail": "Registros no encontrados"}
+                return Response(respuesta, status=status.HTTP_404_NOT_FOUND)
+
+            return renderCsvView(request, queryset)
+        except Exception as e:
+            respuesta = {"detail": str(e)}
+            return Response(respuesta, status=status.HTTP_409_CONFLICT)
+
+
+class ConvocatoriaEnroladosUpExcel(APIView):
+    def put(self, request, *args, **kwargs):
+        # archivo = request.FILES['archivo']
+        archivo = request.data['archivo']
+        datosList = list(csv.reader(codecs.iterdecode(archivo, 'utf-8'), delimiter=','))
+        datosList.pop(0)
+        try:
+            for row in datosList:
+                ConvocatoriaEnrolado.objects.filter(id=row[0]).update(calificacion=row[5])
+            respuesta = {"detail": "Datos subidos correctamente"}
+            return Response(respuesta, status=status.HTTP_200_OK)
+        except Exception as e:
+            respuesta = {"detail": str(e)}
+            return Response(respuesta, status=status.HTTP_409_CONFLICT)
 
 
 # ES DE PRUEBA NO USAR!!!

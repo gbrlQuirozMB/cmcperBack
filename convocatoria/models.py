@@ -50,6 +50,9 @@ class ConvocatoriaEnrolado(models.Model):
     comentario = models.TextField(blank=True)
     isPagado = models.BooleanField(default=False, db_column='is_pagado')
     isAceptado = models.BooleanField(default=False, db_column='is_aceptado')
+    calificacion = models.PositiveSmallIntegerField(blank=True, null=True)
+    certificado = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif'])])
+    
 
     class Meta:
         db_table = 'convocatorias_enrolados'
