@@ -539,8 +539,9 @@ class ConvocatoriaEnroladoMedicoPagadoUpdateView(UpdateAPIView):
             return self.update(request, *args, **kwargs)
         cuenta = ConvocatoriaEnrolado.objects.filter(id=id).count()
         if cuenta == 1:
-            raise ResponseError(f'No tiene permitido pagar', 409)
-        raise ResponseError(f'No existe registro', 404)
+            raise ResponseError('No tiene permitido pagar', 409)
+        raise ResponseError('No existe registro', 404)
+
 
 def preparaDatos(datos, medicoId, convocatoriaId):
     estudioExtranjero = datos['estudioExtranjero']
@@ -652,6 +653,20 @@ class ConvocatoriaEnroladosUpExcel(APIView):
         except Exception as e:
             respuesta = {"detail": str(e)}
             return Response(respuesta, status=status.HTTP_409_CONFLICT)
+
+
+class SubirPagoCreateView(CreateAPIView):
+    serializer_class = ConvocatoriaPagoSerializer
+
+    def post(self, request, *args, **kwargs):
+        request.data['estatus'] = 3
+        serializer = ConvocatoriaPagoSerializer(data=request.data)
+        if serializer.is_valid():
+            datoUser = User.objects.filter(is_superuser=True, is_staff=True).values_list('id')
+            Notificacion.objects.create(titulo='Convocatoria', mensaje='Se subió un pago', destinatario=datoUser[0][0], remitente=0)
+            return self.create(request, *args, **kwargs)
+        log.info(f'campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
 
 
 # ES DE PRUEBA NO USAR!!!
