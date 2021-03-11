@@ -50,6 +50,7 @@ urlpatterns = [
     path('<convocatoriaId>/enrolados/cargar-excel/update/', ConvocatoriaEnroladosUpExcel.as_view(), ),
 
     path('subir-pago/create/', SubirPagoCreateView.as_view(), ),
+    path('pagos/<int:estatus>/list/', PagosListView.as_view(), ),
 
 
 

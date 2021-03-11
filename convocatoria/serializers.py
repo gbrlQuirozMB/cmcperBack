@@ -275,3 +275,17 @@ class ConvocatoriaPagoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pago
         fields = '__all__'
+
+
+class PagosListSerializer(serializers.ModelSerializer):
+    estatus = serializers.CharField(source='get_estatus_display')
+
+    class Meta:
+        model = Pago
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        repr['convocatoriaEnrolado'] = instance.convocatoriaEnrolado.convocatoria.nombre
+        repr['medico'] = instance.medico.nombre + ' ' + instance.medico.apPaterno
+        return repr

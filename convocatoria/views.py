@@ -669,6 +669,24 @@ class SubirPagoCreateView(CreateAPIView):
         raise CamposIncorrectos(serializer.errors)
 
 
+def getQuerysetEstatus(estatus):
+    if estatus == 0:
+        queryset = Pago.objects.all()
+        return queryset
+
+    queryset = Pago.objects.filter(estatus=estatus)
+    return queryset
+
+
+class PagosListView(ListAPIView):
+    serializer_class = PagosListSerializer
+
+    def get_queryset(self):
+        estatus = self.kwargs['estatus']
+        log.info(f'se busca por: estatus: {estatus}')
+
+        return getQuerysetEstatus(estatus)
+
 # ES DE PRUEBA NO USAR!!!
 
 # https://www.django-rest-framework.org/api-guide/filtering/
