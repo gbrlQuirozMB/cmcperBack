@@ -49,6 +49,10 @@ urlpatterns = [
     path('<convocatoriaId>/enrolados/bajar-excel/list/', ConvocatoriaEnroladosDownExcel.as_view(), ),
     path('<convocatoriaId>/enrolados/cargar-excel/update/', ConvocatoriaEnroladosUpExcel.as_view(), ),
 
+    path('subir-pago/create/', SubirPagoCreateView.as_view(), ),
+
+
+
 
     # ES DE PRUEBA NO USAR!!!
     # path('<convocatoriaId>/sede/create/', ConvocatoriaSedeCreateView.as_view(), ),

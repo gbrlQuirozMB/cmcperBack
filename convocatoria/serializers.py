@@ -269,3 +269,9 @@ class ConvocatoriaEnroladoMedicoPagadoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConvocatoriaEnrolado
         fields = ['id', 'isPagado']
+
+
+class ConvocatoriaPagoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pago
+        fields = '__all__'
