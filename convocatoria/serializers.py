@@ -289,3 +289,9 @@ class PagosListSerializer(serializers.ModelSerializer):
         repr['convocatoriaEnrolado'] = instance.convocatoriaEnrolado.convocatoria.nombre
         repr['medico'] = instance.medico.nombre + ' ' + instance.medico.apPaterno
         return repr
+
+
+class PagoAceptarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pago
+        fields = ['id', 'estatus']

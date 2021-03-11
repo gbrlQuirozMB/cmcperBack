@@ -530,6 +530,7 @@ class ConvocatoriaEnroladoMedicoAPagarEndPoint(APIView):
 class ConvocatoriaEnroladoMedicoPagadoUpdateView(UpdateAPIView):
     queryset = ConvocatoriaEnrolado.objects.filter()
     serializer_class = ConvocatoriaEnroladoMedicoPagadoSerializer
+    # permission_classes = (permissions.IsAdminUser,) # No porque se utiliza desde un usuario normal
 
     def put(self, request, *args, **kwargs):
         id = kwargs['pk']
@@ -686,6 +687,30 @@ class PagosListView(ListAPIView):
         log.info(f'se busca por: estatus: {estatus}')
 
         return getQuerysetEstatus(estatus)
+
+
+class PagoAceptarUpdateView(UpdateAPIView):
+    queryset = Pago.objects.filter()
+    serializer_class = PagoAceptarSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+    def put(self, request, *args, **kwargs):
+        id = kwargs['pk']
+        try:
+            dato = Pago.objects.get(id=id)
+        except Exception as e:
+            raise ResponseError('No existe registro', 404)
+        
+        cuenta = ConvocatoriaEnrolado.objects.filter(id=dato.convocatoriaEnrolado.id, isAceptado=True).count()
+        if cuenta == 1:
+            request.data['estatus'] = 1
+            ConvocatoriaEnrolado.objects.filter(id=dato.convocatoriaEnrolado.id).update(isPagado=True)
+            return self.update(request, *args, **kwargs)
+        cuenta = ConvocatoriaEnrolado.objects.filter(id=dato.convocatoriaEnrolado.id).count()
+        if cuenta == 1:
+            raise ResponseError('No tiene permitido pagar', 409)
+        
+        
 
 # ES DE PRUEBA NO USAR!!!
 
