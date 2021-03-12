@@ -18,6 +18,9 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
+from django.contrib.auth import views as auth_views
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
@@ -27,4 +30,11 @@ urlpatterns = [
     path('api/convocatoria/', include('convocatoria.urls')),
     path('api/catalogo/', include('catalogos.urls')),
     path('api/front/', include('front.urls')),
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+    # path('admin/', include('django.contrib.auth.urls')),
+    path('admin/password_reset/', auth_views.PasswordResetView.as_view(template_name='admin/password_reset.html'), name='password_reset'),
+    path('admin/password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='admin/password_reset_done.html'), name='password_reset_done'),
+    path('admin/password_reset_confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='admin/password_reset_confirm.html'), name='password_reset_confirm'),
+    path('admin/reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='admin/password_reset_complete.html'), name='password_reset_complete'),
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
