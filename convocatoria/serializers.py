@@ -291,7 +291,7 @@ class PagosListSerializer(serializers.ModelSerializer):
         return repr
 
 
-class PagoAceptarSerializer(serializers.ModelSerializer):
+class PagoAceptarRechazarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pago
         fields = ['id', 'estatus']
