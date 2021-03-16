@@ -12,6 +12,6 @@ urlpatterns = [
     # path('api-token-auth/', urls_rest.LoginView.as_view()),   
     path('api-token-auth/', CustomAuthToken.as_view()),  
     
-    path("password_reset", password_reset_request, name="password_reset") 
+    path("password_reset/", password_reset_request, name="password_reset") 
     
 ]
