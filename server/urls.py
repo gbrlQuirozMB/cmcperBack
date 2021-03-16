@@ -31,7 +31,6 @@ urlpatterns = [
     path('api/catalogo/', include('catalogos.urls')),
     path('api/front/', include('front.urls')),
 
-    # path('admin/', include('django.contrib.auth.urls')),
     path('api/admin/password_reset/', auth_views.PasswordResetView.as_view(template_name='admin/password_reset.html'), name='password_reset'),
     path('api/admin/password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='admin/password_reset_done.html'), name='password_reset_done'),
     path('api/admin/password_reset_confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='admin/password_reset_confirm.html'), name='password_reset_confirm'),

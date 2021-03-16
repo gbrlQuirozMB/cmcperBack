@@ -105,7 +105,7 @@ class PreregistroAceptadoUpdateView(UpdateAPIView):
             }
             htmlContentAcept = render_to_string('emailAcepRecha.html', datos)
             textContentAcept = strip_tags(htmlContentAcept)
-            emailAcep = EmailMultiAlternatives("CMCPER Preregistro Aceptado", textContentAcept, "no-reply@cmcper.mx", [email])
+            emailAcep = EmailMultiAlternatives("CMCPER - Preregistro Aceptado", textContentAcept, "no-reply@cmcper.mx", [email])
             emailAcep.attach_alternative(htmlContentAcept, "text/html")
             # email.attach(filename, resultado.getvalue(), "application/pdf")
             emailAcep.send()
@@ -135,7 +135,7 @@ class PreregistroRechazadoUpdateView(UpdateAPIView):
             }
             htmlContentRecha = render_to_string('emailAcepRecha.html', datos)
             textContentRecha = strip_tags(htmlContentRecha)
-            emailRecha = EmailMultiAlternatives("CMCPER Preregistro Rechazado", textContentRecha, "no-reply@cmcper.mx", [email])
+            emailRecha = EmailMultiAlternatives("CMCPER - Preregistro Rechazado", textContentRecha, "no-reply@cmcper.mx", [email])
             emailRecha.attach_alternative(htmlContentRecha, "text/html")
             # email.attach(filename, resultado.getvalue(), "application/pdf")
             emailRecha.send()
