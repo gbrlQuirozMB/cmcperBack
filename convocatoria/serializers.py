@@ -214,7 +214,9 @@ class ConvocatoriaEnroladosMedicoListSerializer(serializers.ModelSerializer):
         repr['catTiposExamen'] = instance.catTiposExamen.descripcion
         repr['catSedes'] = instance.catSedes.descripcion
         repr['convocatoria'] = instance.convocatoria.nombre
+        repr['convocatoriaId'] = instance.convocatoria.id
         repr['medico'] = instance.medico.nombre + ' ' + instance.medico.apPaterno
+        repr['medicoId'] = instance.medico.id
         return repr
 
 
