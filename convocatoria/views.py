@@ -156,10 +156,10 @@ def totalDocumentosNotifica(request):
     estudioExtranjero = Medico.objects.filter(id=medicoId).values_list('estudioExtranjero')
     cuentaDocumentos = ConvocatoriaEnroladoDocumento.objects.filter(medico=medicoId, convocatoria=convocatoriaId).count()
     # print(f'--->>>estudioExtranjero: {estudioExtranjero[0][0]} - cuentaDocumentos: {cuentaDocumentos}')
-    if estudioExtranjero[0][0] and cuentaDocumentos == 9:  # porque ya borro antes el que ya existia
+    if estudioExtranjero[0][0] and cuentaDocumentos == 8:  # porque ya borro antes el que ya existia
         datoUser = User.objects.filter(is_superuser=True, is_staff=True).values_list('id')
         Notificacion.objects.create(titulo='Convocatoria', mensaje='Hay documentos que validar', destinatario=datoUser[0][0], remitente=0)
-    if not estudioExtranjero[0][0] and cuentaDocumentos == 8:  # porque ya borro antes el que ya existia
+    if not estudioExtranjero[0][0] and cuentaDocumentos == 7:  # porque ya borro antes el que ya existia
         datoUser = User.objects.filter(is_superuser=True, is_staff=True).values_list('id')
         Notificacion.objects.create(titulo='Convocatoria', mensaje='Hay documentos que validar', destinatario=datoUser[0][0], remitente=0)
 
