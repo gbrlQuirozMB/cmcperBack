@@ -612,11 +612,14 @@ class CorreoEngargoladoEndPoint(APIView):
         }
         preparaDatos(datos, medicoId, convocatoriaId, 'Engargolado')
         ConvocatoriaEnrolado.objects.filter(medico=medicoId, convocatoria=convocatoriaId).update(isAceptado=datos['aceptado'])  # setteado para que pueda pagar o no
-        htmlContent = render_to_string('engar-a-r.html', datos)
-        textContent = strip_tags(htmlContent)
-        emailAcep = EmailMultiAlternatives(datos['titulo'], textContent, "no-reply@cmcper.mx", [datos['email']])
-        emailAcep.attach_alternative(htmlContent, "text/html")
-        emailAcep.send()
+        try:
+            htmlContent = render_to_string('engar-a-r.html', datos)
+            textContent = strip_tags(htmlContent)
+            emailAcep = EmailMultiAlternatives(datos['titulo'], textContent, "no-reply@cmcper.mx", [datos['email']])
+            emailAcep.attach_alternative(htmlContent, "text/html")
+            emailAcep.send()
+        except:
+            raise ResponseError('Error al enviar correo', 500)
 
         return Response(datos)
 
@@ -637,11 +640,14 @@ class CorreoDocumentosEndPoint(APIView):
             # 'cuentaMedico': cuentaMedico # fines de control
         }
         preparaDatos(datos, medicoId, convocatoriaId, 'Documentos')
-        htmlContent = render_to_string('doc-dig-a-r.html', datos)
-        textContent = strip_tags(htmlContent)
-        emailAcep = EmailMultiAlternatives(datos['titulo'], textContent, "no-reply@cmcper.mx", [datos['email']])
-        emailAcep.attach_alternative(htmlContent, "text/html")
-        emailAcep.send()
+        try:
+            htmlContent = render_to_string('doc-dig-a-r.html', datos)
+            textContent = strip_tags(htmlContent)
+            emailAcep = EmailMultiAlternatives(datos['titulo'], textContent, "no-reply@cmcper.mx", [datos['email']])
+            emailAcep.attach_alternative(htmlContent, "text/html")
+            emailAcep.send()
+        except:
+            raise ResponseError('Error al enviar correo', 500)
 
         return Response(datos)
 
