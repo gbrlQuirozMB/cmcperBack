@@ -74,24 +74,55 @@ class CustomAuthToken(ObtainAuthToken):
 # class MyPasswordResetForm(PasswordResetForm):
 # 	field_order = ['email']
 
+# def password_reset_request(request):
+#     if request.method == 'POST':
+#         password_reset_form = PasswordResetForm(request.POST)
+#         if password_reset_form.is_valid():
+#             data = password_reset_form.cleaned_data['email']
+#             associated_users = User.objects.filter(Q(email=data))
+#             if associated_users.exists():
+#                 for user in associated_users:
+#                     subject = 'CMCPER - Solicitud de cambio de contraseña'
+#                     email_template_name = 'admin/password_reset_email.txt'
+#                     current_site = get_current_site(request)
+#                     c = {
+#                         'email': user.email,
+#                         'domain': request.META['HTTP_HOST'],
+#                         # 'site_name': current_site.name,
+#                         # 'domain_dos': current_site.domain,
+#                         'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+#                         'user': user,
+#                         'token': default_token_generator.make_token(user),
+#                         'protocol': 'http',
+#                     }
+#                     email = render_to_string(email_template_name, c)
+#                     try:
+#                         send_mail(subject, email, 'no-reply@cmcper.mx', [user.email], fail_silently=False)
+#                     except BadHeaderError:
+#                         return HttpResponse('Header incorrecto')
+#                     return redirect('/api/admin/password_reset/done/')
+#     password_reset_form = PasswordResetForm()
+#     return render(request=request, template_name='admin/password_reset.html', context={'password_reset_form': password_reset_form})
+
+
 def password_reset_request(request):
-    if request.method == "POST":
+    if request.method == 'POST':
         password_reset_form = PasswordResetForm(request.POST)
         if password_reset_form.is_valid():
             data = password_reset_form.cleaned_data['email']
             associated_users = User.objects.filter(Q(email=data))
             if associated_users.exists():
                 for user in associated_users:
-                    subject = "CMCPER - Solicitud de cambio de contraseña"
-                    email_template_name = "admin/password_reset_email.txt"
+                    subject = 'CMCPER - Solicitud de cambio de contraseña'
+                    email_template_name = 'admin/password_reset_email.html'
                     current_site = get_current_site(request)
                     c = {
-                        "email": user.email,
+                        'email': user.email,
                         'domain': request.META['HTTP_HOST'],
                         # 'site_name': current_site.name,
                         # 'domain_dos': current_site.domain,
-                        "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-                        "user": user,
+                        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                        'user': user,
                         'token': default_token_generator.make_token(user),
                         'protocol': 'http',
                     }
@@ -100,6 +131,6 @@ def password_reset_request(request):
                         send_mail(subject, email, 'no-reply@cmcper.mx', [user.email], fail_silently=False)
                     except BadHeaderError:
                         return HttpResponse('Header incorrecto')
-                    return redirect("/api/admin/password_reset/done/")
+                    return redirect('/api/admin/password_reset/done/')
     password_reset_form = PasswordResetForm()
-    return render(request=request, template_name="admin/password_reset.html", context={"password_reset_form": password_reset_form})
+    return render(request=request, template_name='admin/password_reset.html', context={'password_reset_form': password_reset_form})
