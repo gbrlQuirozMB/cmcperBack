@@ -470,6 +470,8 @@ class ConvocatoriaEnroladoDocumentoAceptarUpdateView(UpdateAPIView):
     def put(self, request, *args, **kwargs):
         # para poder modificar el dato que llega
         request.data['isValidado'] = True
+        request.data['notasValidado'] = ''
+        request.data['rechazoValidado'] = ''
 
         return self.update(request, *args, **kwargs)
 
@@ -494,6 +496,8 @@ class ConvocatoriaEnroladoEngargoladoAceptarUpdateView(UpdateAPIView):
     def put(self, request, *args, **kwargs):
         # para poder modificar el dato que llega
         request.data['engargoladoOk'] = True
+        request.data['notasEngargolado'] = ''
+        request.data['rechazoEngargolado'] = ''
 
         return self.update(request, *args, **kwargs)
 

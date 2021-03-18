@@ -841,7 +841,7 @@ class PutDocumentoAceptar200Test(APITestCase):
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento3, documento='acta_nacimiento.pdf')
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento4, documento='carta_solicitud_examen.pdf')
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento5, documento='constancia_posgrago.pdf')
-        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento6, documento='cedula_especialidad.pdf')
+        # ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento6, documento='cedula_especialidad.pdf')
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento7, documento='titulo_licenciatura.pdf')
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento8, documento='cedula_profesional.pdf')
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento9, documento='constancia_cirugia.pdf')
@@ -858,14 +858,14 @@ class PutDocumentoAceptar200Test(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         dato = ConvocatoriaEnroladoDocumento.objects.get(id=9)
-        print(f'--->>>ANTES dato: {dato.id} - {dato.isValidado}')
+        print(f'--->>>ANTES dato: {dato.id} - {dato.isValidado} - {dato.notasValidado} - {dato.rechazoValidado}')
 
         response = self.client.put('/api/convocatoria/documento/aceptar/9/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> \n {json.dumps(response.data)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         dato = ConvocatoriaEnroladoDocumento.objects.get(id=9)
-        print(f'--->>>DESPUES dato: {dato.id} - {dato.isValidado}')
+        print(f'--->>>DESPUES dato: {dato.id} - {dato.isValidado} - {dato.notasValidado} - {dato.rechazoValidado}')
 
         # response = self.client.get('/api/convocatoria/1/medico/1/documentos/list/')
         # print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
@@ -966,12 +966,12 @@ class PutEngargoladoAceptar200Test(APITestCase):
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento3, documento='acta_nacimiento.pdf')
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento4, documento='carta_solicitud_examen.pdf')
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento5, documento='constancia_posgrago.pdf')
-        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento6, documento='cedula_especialidad.pdf')
+        # ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento6, documento='cedula_especialidad.pdf')
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento7, documento='titulo_licenciatura.pdf')
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento8, documento='cedula_profesional.pdf')
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento9, documento='constancia_cirugia.pdf')
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento10, documento='carta_profesor.pdf', isValidado=False,
-                                                     notasValidado='me cae gordo', rechazoValidado='carta incorrecta')
+                                                     notasEngargolado='me cae gordo', rechazoEngargolado='carta incorrecta')
 
         self.json = {
             "engargoladoOk": False
@@ -983,14 +983,14 @@ class PutEngargoladoAceptar200Test(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         dato = ConvocatoriaEnroladoDocumento.objects.get(id=9)
-        print(f'--->>>ANTES dato: {dato.id} - {dato.isValidado}')
+        print(f'--->>>ANTES dato: {dato.id} - {dato.isValidado} - {dato.notasEngargolado} - {dato.rechazoEngargolado}')
 
         response = self.client.put('/api/convocatoria/engargolado/aceptar/9/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> \n {json.dumps(response.data)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         dato = ConvocatoriaEnroladoDocumento.objects.get(id=9)
-        print(f'--->>>DESPUES dato: {dato.id} - {dato.isValidado}')
+        print(f'--->>>DESPUES dato: {dato.id} - {dato.isValidado} - {dato.notasEngargolado} - {dato.rechazoEngargolado}')
 
         # response = self.client.get('/api/convocatoria/1/medico/1/documentos/list/')
         # print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
