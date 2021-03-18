@@ -605,15 +605,11 @@ def preparaDatos(datos, medicoId, convocatoriaId, param): #param -  Documentos/E
         if cuentaDocumentos == totalDocumentosExtranjero:
             datos['mensaje'] = 'correo enviado a medico estudio extranjero con todos sus documentos validados'
             datos['aceptado'] = True
-            datos['titulo'] = f'CMCPER Validación de {param} - OK'
+            datos['titulo'] = f'CMCPER - Validación de {param} - OK'
             return datos
         datos['mensaje'] = 'correo enviado a medico estudio extranjero con documentos faltantes'
         datos['aceptado'] = False
-        datos['titulo'] = f'CMCPER Validación de {param} - Rechazado'
-        rechazados = ConvocatoriaEnroladoDocumento.objects.filter(medico=medicoId, convocatoria=convocatoriaId, isValidado=False)
-        rechazadosDic = [{'notasValidado': rechazado.notasValidado, 'rechazoValidado': rechazado.rechazoValidado,
-                          'documento': rechazado.catTiposDocumento.descripcion} for rechazado in rechazados]
-        datos['rechazados'] = rechazadosDic
+        datos['titulo'] = f'CMCPER - Validación de {param} - Rechazado'
         if param == 'Documentos':
             digitalEngargolado(datos, medicoId, convocatoriaId, 'digital')
         else:
@@ -623,11 +619,11 @@ def preparaDatos(datos, medicoId, convocatoriaId, param): #param -  Documentos/E
         if cuentaDocumentos == totalDocumentosNacional:
             datos['mensaje'] = 'correo enviado a medico con todos sus documentos validados'
             datos['aceptado'] = True
-            datos['titulo'] = f'CMCPER Validación de {param} - OK'
+            datos['titulo'] = f'CMCPER - Validación de {param} - OK'
             return datos
         datos['mensaje'] = 'correo enviado a medico documentos faltantes'
         datos['aceptado'] = False
-        datos['titulo'] = f'CMCPER Validación de {param} - Rechazado'
+        datos['titulo'] = f'CMCPER - Validación de {param} - Rechazado'
         if param == 'Documentos':
             digitalEngargolado(datos, medicoId, convocatoriaId, 'digital')
         else:
@@ -716,7 +712,7 @@ class CorreoDocumentosEndPoint(APIView):
         # preparaDatosDocumentos(datos, medicoId, convocatoriaId)
         preparaDatos(datos, medicoId, convocatoriaId, 'Documentos')
         # ConvocatoriaEnrolado.objects.filter(medico=medicoId, convocatoria=convocatoriaId).update(isAceptado=datos['aceptado'])  # setteado para que pueda pagar o no
-        htmlContent = render_to_string('engar-a-r.html', datos)
+        htmlContent = render_to_string('doc-dig-a-r.html', datos)
         textContent = strip_tags(htmlContent)
         emailAcep = EmailMultiAlternatives(datos['titulo'], textContent, "no-reply@cmcper.mx", [datos['email']])
         emailAcep.attach_alternative(htmlContent, "text/html")
