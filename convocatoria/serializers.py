@@ -173,7 +173,7 @@ class ConvocatoriaEnroladoDocumentoSerializer(serializers.ModelSerializer):
 class ConvocatoriaEnroladoDocumentoListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConvocatoriaEnroladoDocumento
-        fields = ['id', 'documento', 'isValidado', 'rechazoValidado', 'notasValidado']
+        fields = ['id', 'documento', 'isValidado', 'rechazoValidado', 'notasValidado', 'rechazoEngargolado', 'notasEngargolado']
 
     def to_representation(self, instance):
         repr = super().to_representation(instance)
