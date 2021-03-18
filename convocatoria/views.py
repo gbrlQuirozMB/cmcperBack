@@ -35,7 +35,8 @@ import codecs
 
 # Create your views here.
 
-
+totalDocumentosExtranjero = 9
+totalDocumentosNacional = 8
 class EsExtranjeroUpdateView(UpdateAPIView):
     queryset = Medico.objects.filter()
     serializer_class = EsExtranjeroSerializer
@@ -156,10 +157,10 @@ def totalDocumentosNotifica(request):
     estudioExtranjero = Medico.objects.filter(id=medicoId).values_list('estudioExtranjero')
     cuentaDocumentos = ConvocatoriaEnroladoDocumento.objects.filter(medico=medicoId, convocatoria=convocatoriaId).count()
     # print(f'--->>>estudioExtranjero: {estudioExtranjero[0][0]} - cuentaDocumentos: {cuentaDocumentos}')
-    if estudioExtranjero[0][0] and cuentaDocumentos == 8:  # porque ya borro antes el que ya existia
+    if estudioExtranjero[0][0] and cuentaDocumentos == totalDocumentosExtranjero - 1:  # porque ya borro antes el que ya existia
         datoUser = User.objects.filter(is_superuser=True, is_staff=True).values_list('id')
         Notificacion.objects.create(titulo='Convocatoria', mensaje='Hay documentos que validar', destinatario=datoUser[0][0], remitente=0)
-    if not estudioExtranjero[0][0] and cuentaDocumentos == 7:  # porque ya borro antes el que ya existia
+    if not estudioExtranjero[0][0] and cuentaDocumentos == totalDocumentosNacional - 1:  # porque ya borro antes el que ya existia
         datoUser = User.objects.filter(is_superuser=True, is_staff=True).values_list('id')
         Notificacion.objects.create(titulo='Convocatoria', mensaje='Hay documentos que validar', destinatario=datoUser[0][0], remitente=0)
 
@@ -544,40 +545,101 @@ class ConvocatoriaEnroladoMedicoPagadoUpdateView(UpdateAPIView):
         raise ResponseError('No existe registro', 404)
 
 
-def preparaDatos(datos, medicoId, convocatoriaId):
+# def preparaDatosEngargolado(datos, medicoId, convocatoriaId):
+#     estudioExtranjero = datos['estudioExtranjero']
+#     cuentaDocumentos = datos['cuentaDocumentos']
+#     if estudioExtranjero:
+#         if cuentaDocumentos == totalDocumentosExtranjero:
+#             datos['mensaje'] = 'correo enviado a medico estudio extranjero con todos sus documentos validados'
+#             datos['aceptado'] = True
+#             datos['titulo'] = 'CMCPER Validación de Engargolado - OK'
+#             return datos
+#         datos['mensaje'] = 'correo enviado a medico estudio extranjero con documentos faltantes'
+#         datos['aceptado'] = False
+#         datos['titulo'] = 'CMCPER Validación de Engargolado - Rechazado'
+#         rechazados = ConvocatoriaEnroladoDocumento.objects.filter(medico=medicoId, convocatoria=convocatoriaId, engargoladoOk=False)
+#         rechazadosDic = [{'notasEngargolado': rechazado.notasEngargolado, 'rechazoEngargolado': rechazado.rechazoEngargolado,
+#                           'documento': rechazado.catTiposDocumento.descripcion} for rechazado in rechazados]
+#         datos['rechazados'] = rechazadosDic
+#         return datos
+#     else:
+#         if cuentaDocumentos == totalDocumentosNacional:
+#             datos['mensaje'] = 'correo enviado a medico con todos sus documentos validados'
+#             datos['aceptado'] = True
+#             datos['titulo'] = 'CMCPER Validación de Engargolado - OK'
+#             return datos
+#         datos['mensaje'] = 'correo enviado a medico documentos faltantes'
+#         datos['aceptado'] = False
+#         datos['titulo'] = 'CMCPER Validación de Engargolado - Rechazado'
+#         rechazados = ConvocatoriaEnroladoDocumento.objects.filter(medico=medicoId, convocatoria=convocatoriaId, engargoladoOk=False)
+#         rechazadosDic = [{'notasEngargolado': rechazado.notasEngargolado, 'rechazoEngargolado': rechazado.rechazoEngargolado,
+#                           'documento': rechazado.catTiposDocumento.descripcion} for rechazado in rechazados]
+#         datos['rechazados'] = rechazadosDic
+#         return datos
+
+
+
+
+
+# -----------------------------------------------------
+def digitalEngargolado(datos, medicoId, convocatoriaId, digEng):
+    if digEng == 'digital':
+        rechazados = ConvocatoriaEnroladoDocumento.objects.filter(medico=medicoId, convocatoria=convocatoriaId, isValidado=False)
+        rechazadosDic = [{'notasValidado': rechazado.notasValidado, 'rechazoValidado': rechazado.rechazoValidado,
+                          'documento': rechazado.catTiposDocumento.descripcion} for rechazado in rechazados]
+        datos['rechazados'] = rechazadosDic
+    else:
+        rechazados = ConvocatoriaEnroladoDocumento.objects.filter(medico=medicoId, convocatoria=convocatoriaId, engargoladoOk=False)
+        rechazadosDic = [{'notasEngargolado': rechazado.notasEngargolado, 'rechazoEngargolado': rechazado.rechazoEngargolado,
+                          'documento': rechazado.catTiposDocumento.descripcion} for rechazado in rechazados]
+        datos['rechazados'] = rechazadosDic
+        
+    return datos
+        
+        
+        
+def preparaDatos(datos, medicoId, convocatoriaId, param): #param -  Documentos/Engargolado
     estudioExtranjero = datos['estudioExtranjero']
     cuentaDocumentos = datos['cuentaDocumentos']
     if estudioExtranjero:
-        if cuentaDocumentos == 10:
+        if cuentaDocumentos == totalDocumentosExtranjero:
             datos['mensaje'] = 'correo enviado a medico estudio extranjero con todos sus documentos validados'
             datos['aceptado'] = True
-            datos['titulo'] = 'CMCPER Validación de Documentos - OK'
+            datos['titulo'] = f'CMCPER Validación de {param} - OK'
             return datos
         datos['mensaje'] = 'correo enviado a medico estudio extranjero con documentos faltantes'
         datos['aceptado'] = False
-        datos['titulo'] = 'CMCPER Validación de Documentos - Rechazado'
-        rechazados = ConvocatoriaEnroladoDocumento.objects.filter(medico=medicoId, convocatoria=convocatoriaId, engargoladoOk=False)
-        rechazadosDic = [{'notasEngargolado': rechazado.notasEngargolado, 'rechazoEngargolado': rechazado.rechazoEngargolado,
+        datos['titulo'] = f'CMCPER Validación de {param} - Rechazado'
+        rechazados = ConvocatoriaEnroladoDocumento.objects.filter(medico=medicoId, convocatoria=convocatoriaId, isValidado=False)
+        rechazadosDic = [{'notasValidado': rechazado.notasValidado, 'rechazoValidado': rechazado.rechazoValidado,
                           'documento': rechazado.catTiposDocumento.descripcion} for rechazado in rechazados]
         datos['rechazados'] = rechazadosDic
+        if param == 'Documentos':
+            digitalEngargolado(datos, medicoId, convocatoriaId, 'digital')
+        else:
+            digitalEngargolado(datos, medicoId, convocatoriaId, 'no digital')
         return datos
     else:
-        if cuentaDocumentos == 9:
+        if cuentaDocumentos == totalDocumentosNacional:
             datos['mensaje'] = 'correo enviado a medico con todos sus documentos validados'
             datos['aceptado'] = True
-            datos['titulo'] = 'CMCPER Validación de Documentos - OK'
+            datos['titulo'] = f'CMCPER Validación de {param} - OK'
             return datos
         datos['mensaje'] = 'correo enviado a medico documentos faltantes'
         datos['aceptado'] = False
-        datos['titulo'] = 'CMCPER Validación de Documentos - Rechazado'
-        rechazados = ConvocatoriaEnroladoDocumento.objects.filter(medico=medicoId, convocatoria=convocatoriaId, engargoladoOk=False)
-        rechazadosDic = [{'notasEngargolado': rechazado.notasEngargolado, 'rechazoEngargolado': rechazado.rechazoEngargolado,
-                          'documento': rechazado.catTiposDocumento.descripcion} for rechazado in rechazados]
-        datos['rechazados'] = rechazadosDic
+        datos['titulo'] = f'CMCPER Validación de {param} - Rechazado'
+        if param == 'Documentos':
+            digitalEngargolado(datos, medicoId, convocatoriaId, 'digital')
+        else:
+            digitalEngargolado(datos, medicoId, convocatoriaId, 'no digital')
         return datos
+# -----------------------------------------------------
 
 
-class CorreoDocumentosEndPoint(APIView):
+
+
+
+class CorreoEngargoladoEndPoint(APIView):
     def get(self, request, *args, **kwargs):
         convocatoriaId = kwargs['convocatoriaId']
         medicoId = kwargs['medicoId']
@@ -592,9 +654,10 @@ class CorreoDocumentosEndPoint(APIView):
             'cuentaDocumentos': cuentaDocumentos,  # fines de control
             # 'cuentaMedico': cuentaMedico # fines de control
         }
-        preparaDatos(datos, medicoId, convocatoriaId)
+        # preparaDatosEngargolado(datos, medicoId, convocatoriaId)
+        preparaDatos(datos, medicoId, convocatoriaId, 'Engargolado')
         ConvocatoriaEnrolado.objects.filter(medico=medicoId, convocatoria=convocatoriaId).update(isAceptado=datos['aceptado'])  # setteado para que pueda pagar o no
-        htmlContent = render_to_string('emailDocsAR.html', datos)
+        htmlContent = render_to_string('engar-a-r.html', datos)
         textContent = strip_tags(htmlContent)
         emailAcep = EmailMultiAlternatives(datos['titulo'], textContent, "no-reply@cmcper.mx", [datos['email']])
         emailAcep.attach_alternative(htmlContent, "text/html")
@@ -602,6 +665,64 @@ class CorreoDocumentosEndPoint(APIView):
 
         return Response(datos)
 
+
+# def preparaDatosDocumentos(datos, medicoId, convocatoriaId):
+#     estudioExtranjero = datos['estudioExtranjero']
+#     cuentaDocumentos = datos['cuentaDocumentos']
+#     if estudioExtranjero:
+#         if cuentaDocumentos == totalDocumentosExtranjero:
+#             datos['mensaje'] = 'correo enviado a medico estudio extranjero con todos sus documentos validados'
+#             datos['aceptado'] = True
+#             datos['titulo'] = 'CMCPER Validación de Documentos - OK'
+#             return datos
+#         datos['mensaje'] = 'correo enviado a medico estudio extranjero con documentos faltantes'
+#         datos['aceptado'] = False
+#         datos['titulo'] = 'CMCPER Validación de Documentos - Rechazado'
+#         rechazados = ConvocatoriaEnroladoDocumento.objects.filter(medico=medicoId, convocatoria=convocatoriaId, isValidado=False)
+#         rechazadosDic = [{'notasValidado': rechazado.notasValidado, 'rechazoValidado': rechazado.rechazoValidado,
+#                           'documento': rechazado.catTiposDocumento.descripcion} for rechazado in rechazados]
+#         datos['rechazados'] = rechazadosDic
+#         return datos
+#     else:
+#         if cuentaDocumentos == totalDocumentosNacional:
+#             datos['mensaje'] = 'correo enviado a medico con todos sus documentos validados'
+#             datos['aceptado'] = True
+#             datos['titulo'] = 'CMCPER Validación de Documentos - OK'
+#             return datos
+#         datos['mensaje'] = 'correo enviado a medico documentos faltantes'
+#         datos['aceptado'] = False
+#         datos['titulo'] = 'CMCPER Validación de Documentos - Rechazado'
+#         rechazados = ConvocatoriaEnroladoDocumento.objects.filter(medico=medicoId, convocatoria=convocatoriaId, isValidado=False)
+#         rechazadosDic = [{'notasValidado': rechazado.notasValidado, 'rechazoValidado': rechazado.rechazoValidado,
+#                           'documento': rechazado.catTiposDocumento.descripcion} for rechazado in rechazados]
+#         datos['rechazados'] = rechazadosDic
+#         return datos
+
+class CorreoDocumentosEndPoint(APIView):
+    def get(self, request, *args, **kwargs):
+        convocatoriaId = kwargs['convocatoriaId']
+        medicoId = kwargs['medicoId']
+        cuentaDocumentos = ConvocatoriaEnroladoDocumento.objects.filter(medico=medicoId, convocatoria=convocatoriaId, isValidado=True).count()
+        # cuentaMedico = Medico.objects.filter(id=medicoId, estudioExtranjero=True).count()
+        datosMedico = Medico.objects.filter(id=medicoId).values_list('nombre', 'apPaterno', 'apMaterno', 'email', 'estudioExtranjero')
+        datos = {
+            'nombre': datosMedico[0][0],
+            'apPaterno': datosMedico[0][1],
+            'estudioExtranjero': datosMedico[0][4],
+            'email': datosMedico[0][3],
+            'cuentaDocumentos': cuentaDocumentos,  # fines de control
+            # 'cuentaMedico': cuentaMedico # fines de control
+        }
+        # preparaDatosDocumentos(datos, medicoId, convocatoriaId)
+        preparaDatos(datos, medicoId, convocatoriaId, 'Documentos')
+        # ConvocatoriaEnrolado.objects.filter(medico=medicoId, convocatoria=convocatoriaId).update(isAceptado=datos['aceptado'])  # setteado para que pueda pagar o no
+        htmlContent = render_to_string('engar-a-r.html', datos)
+        textContent = strip_tags(htmlContent)
+        emailAcep = EmailMultiAlternatives(datos['titulo'], textContent, "no-reply@cmcper.mx", [datos['email']])
+        emailAcep.attach_alternative(htmlContent, "text/html")
+        emailAcep.send()
+
+        return Response(datos)
 
 class ConvocatoriaEnroladosExcelListView(ListAPIView):
     serializer_class = ConvocatoriaEnroladosMedicoListSerializer

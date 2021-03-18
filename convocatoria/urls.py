@@ -40,6 +40,7 @@ urlpatterns = [
     path('documento/rechazar/<pk>/', ConvocatoriaEnroladoDocumentoRechazarUpdateView.as_view(), ),
     path('engargolado/aceptar/<pk>/', ConvocatoriaEnroladoEngargoladoAceptarUpdateView.as_view(), ),
     path('engargolado/rechazar/<pk>/', ConvocatoriaEnroladoEngargoladoRechazarUpdateView.as_view(), ),
+    path('<convocatoriaId>/medico/<medicoId>/correo-engargolado/', CorreoEngargoladoEndPoint.as_view(), ),
     path('<convocatoriaId>/medico/<medicoId>/correo-documentos/', CorreoDocumentosEndPoint.as_view(), ),
 
     path('ficha-registro-pdf/<pk>/', FichaRegistroPDF.as_view(), ),
