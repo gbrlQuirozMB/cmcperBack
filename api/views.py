@@ -25,6 +25,11 @@ from django.utils.encoding import force_bytes
 
 from django.contrib.sites.shortcuts import get_current_site
 
+from django.utils.html import strip_tags
+from django.core.mail import EmailMultiAlternatives
+
+
+
 
 class SwaggerSchemaView(APIView):
     permission_classes = [AllowAny]
@@ -126,9 +131,17 @@ def password_reset_request(request):
                         'token': default_token_generator.make_token(user),
                         'protocol': 'http',
                     }
-                    email = render_to_string(email_template_name, c)
+                    # email = render_to_string(email_template_name, c)
                     try:
-                        send_mail(subject, email, 'no-reply@cmcper.mx', [user.email], fail_silently=False)
+                        htmlContent = render_to_string(email_template_name, c)
+                        textContent = strip_tags(htmlContent)
+                        emailAcep = EmailMultiAlternatives(subject, textContent, "no-reply@cmcper.mx", [user.email])
+                        emailAcep.attach_alternative(htmlContent, "text/html")
+                        emailAcep.send()
+                                        
+                        
+                        
+                        # send_mail(subject, email, 'no-reply@cmcper.mx', [user.email], fail_silently=False)
                     except BadHeaderError:
                         return HttpResponse('Header incorrecto')
                     return redirect('/api/admin/password_reset/done/')
