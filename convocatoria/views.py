@@ -372,10 +372,13 @@ class FichaRegistroPDF(View):
                 'fechaExamen': convocatoriaEnrolado.convocatoria.fechaExamen,
                 'horaExamen': convocatoriaEnrolado.convocatoria.horaExamen
             }
-            # print(datos)
+            # para evitar que se presenten duplicados
+            ConvocatoriaEnroladoDocumento.objects.filter(medico=convocatoriaEnrolado.medico, convocatoria=convocatoriaEnrolado.convocatoria, catTiposDocumento_id=11).delete()
+            # crea un registro en documentos, porque este no se sube manual
+            ConvocatoriaEnroladoDocumento.objects.create(medico=convocatoriaEnrolado.medico, convocatoria=convocatoriaEnrolado.convocatoria, catTiposDocumento_id=11)
             return renderPdfView(request, 'pdf.html', datos)
-        except:
-            return HttpResponse('No se encontró el registro', content_type='text/plain')
+        except Exception as e:
+            return HttpResponse('Error: ' + str(e), content_type='text/plain')
 
 
 class ConvocatoriaEnroladoMedicoDetailView(RetrieveAPIView):
@@ -566,9 +569,12 @@ def digitalEngargolado(datos, medicoId, convocatoriaId, digEng):
     return datos
 
 
-def preparaDatos(datos, medicoId, convocatoriaId, param):  # param -  Documentos/Engargolado
+def preparaDatos(datos, medicoId, convocatoriaId, param, totalDocumentosExtranjero, totalDocumentosNacional):  # param -  Documentos/Engargolado
     estudioExtranjero = datos['estudioExtranjero']
     cuentaDocumentos = datos['cuentaDocumentos']
+    if param == 'Engargolado':  # tiene un documento extra el cual es la ficha de registro que se genera al descargarla
+        totalDocumentosExtranjero = totalDocumentosExtranjero + 1
+        totalDocumentosNacional = totalDocumentosNacional + 1
     if estudioExtranjero:
         if cuentaDocumentos == totalDocumentosExtranjero:
             datos['mensaje'] = 'correo enviado a medico estudio extranjero con todos sus documentos validados'
@@ -614,7 +620,7 @@ class CorreoEngargoladoEndPoint(APIView):
             'cuentaDocumentos': cuentaDocumentos,  # fines de control
             # 'cuentaMedico': cuentaMedico # fines de control
         }
-        preparaDatos(datos, medicoId, convocatoriaId, 'Engargolado')
+        preparaDatos(datos, medicoId, convocatoriaId, 'Engargolado', totalDocumentosExtranjero, totalDocumentosNacional)
         ConvocatoriaEnrolado.objects.filter(medico=medicoId, convocatoria=convocatoriaId).update(isAceptado=datos['aceptado'])  # setteado para que pueda pagar o no
         try:
             htmlContent = render_to_string('engar-a-r.html', datos)
@@ -643,7 +649,7 @@ class CorreoDocumentosEndPoint(APIView):
             'cuentaDocumentos': cuentaDocumentos,  # fines de control
             # 'cuentaMedico': cuentaMedico # fines de control
         }
-        preparaDatos(datos, medicoId, convocatoriaId, 'Documentos')
+        preparaDatos(datos, medicoId, convocatoriaId, 'Documentos', totalDocumentosExtranjero, totalDocumentosNacional)
         try:
             htmlContent = render_to_string('doc-dig-a-r.html', datos)
             textContent = strip_tags(htmlContent)

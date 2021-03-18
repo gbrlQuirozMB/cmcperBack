@@ -1199,6 +1199,7 @@ class GetEnviarCorreoEngargolado200Test(APITestCase):
         catTiposDocumento8 = CatTiposDocumento.objects.create(descripcion='Cédula Profesional')
         catTiposDocumento9 = CatTiposDocumento.objects.create(descripcion='Constancia de Cirugía General')
         catTiposDocumento10 = CatTiposDocumento.objects.create(descripcion='Carta de Profesor Titular')
+        catTiposDocumento11 = CatTiposDocumento.objects.create(descripcion='Ficha de Registro')
 
         CatMotivosRechazo.objects.create(descripcion='descripcion1', tipo=1)
         CatMotivosRechazo.objects.create(descripcion='descripcion2', tipo=2)
@@ -1235,6 +1236,8 @@ class GetEnviarCorreoEngargolado200Test(APITestCase):
                                                      documento='constancia_cirugia.pdf', engargoladoOk=True, notasEngargolado='conC-NE', rechazoEngargolado='conC-RE')
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento10,
                                                      documento='carta_profesor.pdf', engargoladoOk=True, notasEngargolado='carP-NE', rechazoEngargolado='carP-RE')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento11,
+                                                     documento='ficha_registro.pdf', engargoladoOk=True, notasEngargolado='fichR-NE', rechazoEngargolado='fichR-RE')
 
         ConvocatoriaEnrolado.objects.create(id=99, medico=medico, convocatoria=convocatoria, catSedes=catSedes3, catTiposExamen=catTiposExamen1)
 
@@ -1243,7 +1246,7 @@ class GetEnviarCorreoEngargolado200Test(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        # 10 documentos porque estudio en el extranjero envia correo de OK
+        # 10 documentos porque estudio en el extranjero y agrega ficha de registro envia correo de OK
         response = self.client.get('/api/convocatoria/1/medico/1/correo-engargolado/')
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -1281,7 +1284,6 @@ class GetEnviarCorreoEngargolado200Test(APITestCase):
 
         # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(medico=1,convocatoria=1,isValidado=True).count()
         # print(f'--->>>cuenta: {cuenta}')
-
 
 
 class GetEnviarCorreoDocumentos200Test(APITestCase):
@@ -1340,14 +1342,14 @@ class GetEnviarCorreoDocumentos200Test(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        # 10 documentos porque estudio en el extranjero envia correo de OK
+        # 9 documentos porque estudio en el extranjero envia correo de OK
         response = self.client.get('/api/convocatoria/1/medico/1/correo-documentos/')
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         dato = ConvocatoriaEnrolado.objects.get(medico=1, convocatoria=1)
         print(f'--->>>isAceptado: {dato.isAceptado}')
 
-        # menos de  10 documentos porque estudio en el extranjero envia correo faltantes
+        # menos de  9 documentos porque estudio en el extranjero envia correo faltantes
         ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=9).update(isValidado=False)
         ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=6).update(isValidado=False)
         response = self.client.get('/api/convocatoria/1/medico/1/correo-documentos/')
@@ -1356,7 +1358,7 @@ class GetEnviarCorreoDocumentos200Test(APITestCase):
         dato = ConvocatoriaEnrolado.objects.get(medico=1, convocatoria=1)
         print(f'--->>>isAceptado: {dato.isAceptado}')
 
-        # 9 documentos porque  es nacional envia correo de OK
+        # 8 documentos porque  es nacional envia correo de OK
         ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=9).update(isValidado=True)
         ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=6).update(isValidado=True)
         ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=1).delete()
@@ -1367,7 +1369,7 @@ class GetEnviarCorreoDocumentos200Test(APITestCase):
         dato = ConvocatoriaEnrolado.objects.get(medico=1, convocatoria=1)
         print(f'--->>>isAceptado: {dato.isAceptado}')
 
-        # menos de 9 documentos porque  es nacional envia correo faltantes
+        # menos de 8 documentos porque  es nacional envia correo faltantes
         ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=9).update(isValidado=False)
         ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=6).update(isValidado=False)
         response = self.client.get('/api/convocatoria/1/medico/1/correo-documentos/')
@@ -1378,7 +1380,6 @@ class GetEnviarCorreoDocumentos200Test(APITestCase):
 
         # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(medico=1,convocatoria=1,isValidado=True).count()
         # print(f'--->>>cuenta: {cuenta}')
-
 
 
 class GetDescargarExcel200Test(APITestCase):
