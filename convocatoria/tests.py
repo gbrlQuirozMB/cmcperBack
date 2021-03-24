@@ -1158,7 +1158,8 @@ class PutPagado200Test(APITestCase):
         #     "convocatoriaId": 6
         # }
 
-        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated - IsAdminUser
+        # self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated - IsAdminUser
+        self.user = User.objects.create_user(username='gabriel', is_staff=False)  # IsAuthenticated - IsAdminUser
 
     def test(self):
         self.client.force_authenticate(user=self.user)
