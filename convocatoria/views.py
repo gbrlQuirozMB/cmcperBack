@@ -30,6 +30,8 @@ from django.contrib.auth.models import User
 import csv
 import codecs
 
+import locale
+
 # from django_filters import rest_framework
 # from django_filters import rest_framework as filters
 
@@ -356,7 +358,7 @@ def renderPdfView(request, templateSrc, datosContexto):
     context = datosContexto
     # Create a Django response object, and specify content_type as pdf
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+    response['Content-Disposition'] = 'attachment; filename="ficha-registro.pdf"'
     # find the template and render it.
     template = get_template(template_path)
     html = template.render(context)
@@ -367,7 +369,7 @@ def renderPdfView(request, templateSrc, datosContexto):
         html, dest=response)
     # if error then show some funy view
     if pisa_status.err:
-        return HttpResponse('We had some errors <pre>' + html + '</pre>')
+        return HttpResponse('Error: ' + html )
     return response
 
 
@@ -376,6 +378,7 @@ class FichaRegistroPDF(View):
         id = self.kwargs['pk']
         try:
             convocatoriaEnrolado = ConvocatoriaEnrolado.objects.get(id=id)
+            locale.setlocale(locale.LC_TIME, '')
             datos = {
                 'id': convocatoriaEnrolado.id,
                 'nombre': convocatoriaEnrolado.medico.nombre,
@@ -385,13 +388,16 @@ class FichaRegistroPDF(View):
                 'sede': convocatoriaEnrolado.catSedes.descripcion,
                 'tipoExamen': convocatoriaEnrolado.catTiposExamen.descripcion,
                 'fechaExamen': convocatoriaEnrolado.convocatoria.fechaExamen,
-                'horaExamen': convocatoriaEnrolado.convocatoria.horaExamen
+                'horaExamen': convocatoriaEnrolado.convocatoria.horaExamen,
+                'fechaResolucion': convocatoriaEnrolado.convocatoria.fechaResolucion
+                # 'fechaResolucion': convocatoriaEnrolado.convocatoria.fechaResolucion.strftime('%d/%b/%Y').upper()
+                # 'fechaResolucion': convocatoriaEnrolado.convocatoria.fechaResolucion.strftime('%d %B %Y').upper()
             }
             # para evitar que se presenten duplicados
             ConvocatoriaEnroladoDocumento.objects.filter(medico=convocatoriaEnrolado.medico, convocatoria=convocatoriaEnrolado.convocatoria, catTiposDocumento_id=11).delete()
             # crea un registro en documentos, porque este no se sube manual
             ConvocatoriaEnroladoDocumento.objects.create(medico=convocatoriaEnrolado.medico, convocatoria=convocatoriaEnrolado.convocatoria, catTiposDocumento_id=11)
-            return renderPdfView(request, 'pdf.html', datos)
+            return renderPdfView(request, 'ficha-registro.html', datos)
         except Exception as e:
             return HttpResponse('Error: ' + str(e), content_type='text/plain')
 
