@@ -16,6 +16,7 @@ class Convocatoria(models.Model):
     archivo = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf'])])
     banner = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'gif'])])
     detalles = models.TextField(blank=True)
+    fechaResolucion = models.DateField(blank=True, null=True, db_column='fecha_resolucion')
 
     class Meta:
         db_table = 'convocatoria'

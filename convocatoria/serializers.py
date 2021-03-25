@@ -38,7 +38,7 @@ class ConvocatoriaSerializer(serializers.ModelSerializer):
         # evito poner todo el listado de campos
         # fields = [f.name for f in model._meta.fields] + ['sedes'] + ['tiposExamen']
         # read_only_fields = ['archivo','banner']
-        fields = ['id', 'fechaInicio', 'fechaTermino', 'fechaExamen', 'horaExamen', 'nombre', 'detalles', 'sedes', 'tiposExamen']
+        fields = ['id', 'fechaInicio', 'fechaTermino', 'fechaExamen', 'horaExamen', 'nombre', 'detalles', 'sedes', 'tiposExamen', 'fechaResolucion']
         # depth = 2
 
     def create(self, validated_data):

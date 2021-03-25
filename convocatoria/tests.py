@@ -101,7 +101,8 @@ class PostConvocatoria200Test(APITestCase):
             ],
             "tiposExamen": [
                 {"catTiposExamen": 1}
-            ]
+            ],
+            "fechaResolucion": "2021-06-06"
         }
         #  campos incorrectos: {'sedes': [{}, {'catSedes': [ErrorDetail(string='Tipo incorrecto. Se esperaba valor de clave primaria y se recibió str.', code='incorrect_type')]}]}
 
@@ -127,6 +128,7 @@ class PostConvocatoria200Test(APITestCase):
         print(f'\n --->>>sede1: {Sede.objects.get(id=1).catSedes.descripcion}')
         print(f'\n --->>>sede2: {Sede.objects.get(id=2).catSedes.descripcion}')
         print(f'\n --->>>tipoExamen1: {TipoExamen.objects.get(id=1).catTiposExamen.descripcion}')
+        print(f'\n --->>>fechaResolucion: {Convocatoria.objects.get().fechaResolucion}')
 
 
 class GetList200Test(APITestCase):
