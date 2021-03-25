@@ -35,8 +35,8 @@ import codecs
 
 # Create your views here.
 
-totalDocumentosExtranjero = 9
-totalDocumentosNacional = 8
+totalDocumentosExtranjero = 10
+totalDocumentosNacional = 9
 
 
 class EsExtranjeroUpdateView(UpdateAPIView):
@@ -308,6 +308,21 @@ class DocumentoCartaProfesorCreateView(CreateAPIView):
         borraExistentes(request, 10)
         request = inicializaData(request)
         request.data['catTiposDocumento'] = 10
+        serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
+        if serializer.is_valid():
+            totalDocumentosNotifica(request)
+            return self.create(request, *args, **kwargs)
+        log.info(f'campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
+
+
+class DocumentoFotoCreateView(CreateAPIView):
+    serializer_class = ConvocatoriaEnroladoDocumentoSerializer
+
+    def post(self, request, *args, **kwargs):
+        borraExistentes(request, 12)
+        request = inicializaData(request)
+        request.data['catTiposDocumento'] = 12
         serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
         if serializer.is_valid():
             totalDocumentosNotifica(request)

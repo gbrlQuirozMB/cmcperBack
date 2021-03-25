@@ -420,6 +420,8 @@ class PostDocumento200Test(APITestCase):
         catTiposDocumento8 = CatTiposDocumento.objects.create(descripcion='Cédula Profesional')
         catTiposDocumento9 = CatTiposDocumento.objects.create(descripcion='Constancia de Cirugía General')
         catTiposDocumento10 = CatTiposDocumento.objects.create(descripcion='Carta de Profesor Titular')
+        catTiposDocumento11 = CatTiposDocumento.objects.create(descripcion='Ficha de Registro')
+        catTiposDocumento12 = CatTiposDocumento.objects.create(descripcion='Fotografía')
 
         CatMotivosRechazo.objects.create(descripcion='descripcion1', tipo=1)
         CatMotivosRechazo.objects.create(descripcion='descripcion2', tipo=2)
@@ -444,6 +446,8 @@ class PostDocumento200Test(APITestCase):
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento9, documento='constancia_cirugia.pdf')
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento10, documento='carta_profesor.pdf', isValidado=False,
                                                      notasValidado='me cae gordo', rechazoValidado='carta incorrecta')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento12, documento='fotografia.jpg')
+        
 
         stream = BytesIO()
         image = Image.new('RGB', (100, 100))
@@ -477,13 +481,13 @@ class PostDocumento200Test(APITestCase):
         # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=1).count()
         # print(f'--->>>cuenta: {cuenta}')
 
-        cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=2).count()
-        print(f'--->>>cuenta: {cuenta}')
-        response = self.client.post('/api/convocatoria/documento/curp/create/', data=self.json, format='multipart')
-        print(f'response JSON ===>>> \n {response.data} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=2).count()
-        print(f'--->>>cuenta: {cuenta}')
+        # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=2).count()
+        # print(f'--->>>cuenta: {cuenta}')
+        # response = self.client.post('/api/convocatoria/documento/curp/create/', data=self.json, format='multipart')
+        # print(f'response JSON ===>>> \n {response.data} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=2).count()
+        # print(f'--->>>cuenta: {cuenta}')
 
         # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=3).count()
         # print(f'--->>>cuenta: {cuenta}')
@@ -548,7 +552,17 @@ class PostDocumento200Test(APITestCase):
         # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=10).count()
         # print(f'--->>>cuenta: {cuenta}')
-
+        
+        
+        cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=12).count()
+        print(f'--->>>cuenta: {cuenta}')
+        response = self.client.post('/api/convocatoria/documento/foto/create/', data=self.json, format='multipart')
+        print(f'response JSON ===>>> \n {response.data} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        cuenta = ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__id=12).count()
+        print(f'--->>>cuenta: {cuenta}')
+        
+        
         # dato = ConvocatoriaEnroladoDocumento.objects.get(id=11)
         # print(f'--->>>DESPUES dato: {dato.id} - {dato.isValidado} - {dato.notasEngargolado} - {dato.catTiposDocumento.descripcion}')
 
@@ -570,6 +584,9 @@ class GetDocumentosList200Test(APITestCase):
         catTiposDocumento8 = CatTiposDocumento.objects.create(descripcion='Cédula Profesional')
         catTiposDocumento9 = CatTiposDocumento.objects.create(descripcion='Constancia de Cirugía General')
         catTiposDocumento10 = CatTiposDocumento.objects.create(descripcion='Carta de Profesor Titular')
+        catTiposDocumento11 = CatTiposDocumento.objects.create(descripcion='Ficha de Registro')
+        catTiposDocumento12 = CatTiposDocumento.objects.create(descripcion='Fotografía')
+
 
         CatMotivosRechazo.objects.create(descripcion='descripcion1', tipo=1)
         CatMotivosRechazo.objects.create(descripcion='descripcion2', tipo=2)
@@ -594,6 +611,9 @@ class GetDocumentosList200Test(APITestCase):
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento9, documento='constancia_cirugia.pdf')
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento10, documento='carta_profesor.pdf', isValidado=True,
                                                      notasValidado='me cae gordo', rechazoValidado='carta incorrecta')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento11, documento='ficha_registro.pdf')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento12, documento='foto.jpg')
+        
 
         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
 
@@ -625,6 +645,8 @@ class PutDocumento200Test(APITestCase):
         catTiposDocumento8 = CatTiposDocumento.objects.create(descripcion='Cédula Profesional')
         catTiposDocumento9 = CatTiposDocumento.objects.create(descripcion='Constancia de Cirugía General')
         catTiposDocumento10 = CatTiposDocumento.objects.create(descripcion='Carta de Profesor Titular')
+        catTiposDocumento11 = CatTiposDocumento.objects.create(descripcion='Ficha de Registro')
+        catTiposDocumento12 = CatTiposDocumento.objects.create(descripcion='Fotografía')
 
         CatMotivosRechazo.objects.create(descripcion='descripcion1', tipo=1)
         CatMotivosRechazo.objects.create(descripcion='descripcion2', tipo=2)
@@ -1301,6 +1323,8 @@ class GetEnviarCorreoDocumentos200Test(APITestCase):
         catTiposDocumento8 = CatTiposDocumento.objects.create(descripcion='Cédula Profesional')
         catTiposDocumento9 = CatTiposDocumento.objects.create(descripcion='Constancia de Cirugía General')
         catTiposDocumento10 = CatTiposDocumento.objects.create(descripcion='Carta de Profesor Titular')
+        catTiposDocumento11 = CatTiposDocumento.objects.create(descripcion='Ficha de Registro')
+        catTiposDocumento12 = CatTiposDocumento.objects.create(descripcion='Fotografía')
 
         CatMotivosRechazo.objects.create(descripcion='descripcion1', tipo=1)
         CatMotivosRechazo.objects.create(descripcion='descripcion2', tipo=2)
@@ -1337,6 +1361,8 @@ class GetEnviarCorreoDocumentos200Test(APITestCase):
                                                      documento='constancia_cirugia.pdf', isValidado=True, notasValidado='conC-NE', rechazoValidado='conC-RE')
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento10,
                                                      documento='carta_profesor.pdf', isValidado=True, notasValidado='carP-NE', rechazoValidado='carP-RE')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento12,
+                                                     documento='foto.jpg', isValidado=True, notasValidado='foto-NE', rechazoValidado='foto-RE')
 
         ConvocatoriaEnrolado.objects.create(id=99, medico=medico, convocatoria=convocatoria, catSedes=catSedes3, catTiposExamen=catTiposExamen1)
 
@@ -1345,14 +1371,14 @@ class GetEnviarCorreoDocumentos200Test(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        # 9 documentos porque estudio en el extranjero envia correo de OK
+        # 10 documentos porque estudio en el extranjero envia correo de OK, se agrego la foto
         response = self.client.get('/api/convocatoria/1/medico/1/correo-documentos/')
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         dato = ConvocatoriaEnrolado.objects.get(medico=1, convocatoria=1)
         print(f'--->>>isAceptado: {dato.isAceptado}')
 
-        # menos de  9 documentos porque estudio en el extranjero envia correo faltantes
+        # menos de  10 documentos porque estudio en el extranjero envia correo faltantes
         ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=9).update(isValidado=False)
         ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=6).update(isValidado=False)
         response = self.client.get('/api/convocatoria/1/medico/1/correo-documentos/')
@@ -1361,7 +1387,7 @@ class GetEnviarCorreoDocumentos200Test(APITestCase):
         dato = ConvocatoriaEnrolado.objects.get(medico=1, convocatoria=1)
         print(f'--->>>isAceptado: {dato.isAceptado}')
 
-        # 8 documentos porque  es nacional envia correo de OK
+        # 9 documentos porque  es nacional envia correo de OK, se agrego la foto
         ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=9).update(isValidado=True)
         ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=6).update(isValidado=True)
         ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=1).delete()
@@ -1372,7 +1398,7 @@ class GetEnviarCorreoDocumentos200Test(APITestCase):
         dato = ConvocatoriaEnrolado.objects.get(medico=1, convocatoria=1)
         print(f'--->>>isAceptado: {dato.isAceptado}')
 
-        # menos de 8 documentos porque  es nacional envia correo faltantes
+        # menos de 9 documentos porque  es nacional envia correo faltantes
         ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=9).update(isValidado=False)
         ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=6).update(isValidado=False)
         response = self.client.get('/api/convocatoria/1/medico/1/correo-documentos/')
