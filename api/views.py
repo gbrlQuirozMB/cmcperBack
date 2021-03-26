@@ -54,7 +54,7 @@ class CustomAuthToken(ObtainAuthToken):
         # permisos en version django 2.2
         # permissions = Permission.objects.filter(user=request.user)
         # permissions = Permission.objects.filter(user=user).values_list('name', flat=True)
-        if user.is_superuser:
+        if user.is_superuser or user.is_staff:
             idMedico = 'No es medico'
         else:
             datoMedico = Medico.objects.filter(username=user).values_list('id')
