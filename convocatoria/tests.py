@@ -1813,7 +1813,7 @@ class GetPublicarCalificaciones200Test(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        response = self.client.get('/api/convocatoria/6/enrolados/publicar/list/')  # regresa TODOS
+        response = self.client.get('/api/convocatoria/66/enrolados/publicar/list/')  # regresa TODOS
         print(f'response JSON ===>>> \n {response.content} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

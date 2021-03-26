@@ -835,7 +835,7 @@ class PublicarCalificaciones(APIView):
                     'aceptado': True if dato[6] > 5 else False,
                     'email': dato[7]
                 }
-                print(f'--->>>datos: {datos}')
+                # print(f'--->>>datos: {datos}')
                 try:
                     htmlContent = render_to_string('exam-a-r.html', datos)
                     textContent = strip_tags(htmlContent)
