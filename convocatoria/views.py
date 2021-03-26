@@ -378,7 +378,6 @@ class FichaRegistroPDF(View):
         id = self.kwargs['pk']
         try:
             convocatoriaEnrolado = ConvocatoriaEnrolado.objects.get(id=id)
-            locale.setlocale(locale.LC_TIME, '')
             datos = {
                 'id': convocatoriaEnrolado.id,
                 'nombre': convocatoriaEnrolado.medico.nombre,
@@ -695,6 +694,7 @@ class ConvocatoriaEnroladosExcelListView(ListAPIView):
 
 def renderCsvView(request, queryset):
     response = HttpResponse(content_type='text/csv')
+    # response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename="medicos.csv"'
     writer = csv.writer(response)
     writer.writerow(['NO TOCAR', 'Num. de Registro', 'Nombre', 'Apellido Paterno', 'Apellido Materno', 'Calificacion'])
@@ -704,7 +704,7 @@ def renderCsvView(request, queryset):
     return response
 
 
-class ConvocatoriaEnroladosDownExcel(APIView):
+class ConvocatoriaEnroladosDownExcel(View):
     def get(self, request, *args, **kwargs):
         convocatoriaId = self.kwargs['convocatoriaId']
         try:
@@ -811,6 +811,43 @@ class PagoRechazarUpdateView(UpdateAPIView):
         cuenta = ConvocatoriaEnrolado.objects.filter(id=dato.convocatoriaEnrolado.id).count()
         if cuenta == 1:
             raise ResponseError('No tiene permitido pagar', 409)
+
+
+
+class PublicarCalificaciones(APIView):
+    def get(self, request, *args, **kwargs):
+        convocatoriaId = self.kwargs['convocatoriaId']
+        try:
+            queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId).values_list('id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno',
+                                                                                                    'convocatoria__fechaExamen', 'calificacion', 'medico__email')
+            # print(f'--->>>queryset como tupla(values_list): {queryset}')
+            if not queryset:
+                respuesta = {"detail": "Registros no encontrados"}
+                return Response(respuesta, status=status.HTTP_404_NOT_FOUND)
+            
+            for dato in queryset:
+                datos = {
+                    'nombre': dato[2],
+                    'apPaterno': dato[3],
+                    'apMaterno': dato[4],
+                    'fechaExamen': dato[5],
+                    'anioExamen': dato[5].strftime("%Y"),
+                    'aceptado': True if dato[6] > 5 else False,
+                    'email': dato[7]
+                }
+                print(f'--->>>datos: {datos}')
+                try:
+                    htmlContent = render_to_string('exam-a-r.html', datos)
+                    textContent = strip_tags(htmlContent)
+                    emailAcep = EmailMultiAlternatives('CMCPER - Resultado de Examen', textContent, "no-reply@cmcper.mx", [datos['email']])
+                    emailAcep.attach_alternative(htmlContent, "text/html")
+                    emailAcep.send()
+                except:
+                    raise ResponseError('Error al enviar correo', 500)
+            return Response(status=status.HTTP_200_OK)
+        except Exception as e:
+            respuesta = {"detail": str(e)}
+            return Response(respuesta, status=status.HTTP_409_CONFLICT)
 
 
 # ES DE PRUEBA NO USAR!!!

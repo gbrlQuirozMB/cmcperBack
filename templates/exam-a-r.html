@@ -451,9 +451,9 @@
                                         <tr>
                                             <td valign="top" class="headerContent">
                                             {% if aceptado %}
-                                            	<img src="https://cmcper.sandboxmb.com/static/img/prer-acept.png" style="max-width:600px;" id="headerImage" mc:label="header_image" mc:edit="header_image" mc:allowdesigner mc:allowtext />
+                                            	<img src="https://cmcper.sandboxmb.com/static/img/examen-a-r.png" style="max-width:600px;" id="headerImage" mc:label="header_image" mc:edit="header_image" mc:allowdesigner mc:allowtext />
 											{% else %}
-                                            	<img src="https://cmcper.sandboxmb.com/static/img/prer-recha.png" style="max-width:600px;" id="headerImage" mc:label="header_image" mc:edit="header_image" mc:allowdesigner mc:allowtext />
+                                            	<img src="https://cmcper.sandboxmb.com/static/img/examen-a-r.png" style="max-width:600px;" id="headerImage" mc:label="header_image" mc:edit="header_image" mc:allowdesigner mc:allowtext />
 											{% endif %}
                                             </td>
                                         </tr>
@@ -469,18 +469,18 @@
                                             <td valign="top" class="bodyContent" mc:edit="body_content">
                                             {% if aceptado %}
 												<p>
-													Estimado(a): {{ nombre }} {{apPaterno}}
+													{{ nombre }} {{ apPaterno }} {{ apMaterno }}
+													<br/>
+													P R E S E N T E.
 													<br/>
 													<br/>
-													Los datos que proporcionaste han sido validados y aceptados
+													El Consejo Mexicano de Cirugía Plástica, Estética y Reconstructiva, A. C., tiene el gusto de notificarle que en el Examen de Certificación {{ anioExamen }}, ha sido Usted:
+													<br/>
+													<p style="color: #1EB7CE; font-size: 15px; text-align: center"> APROBADO </p>
+													Le notificamos que a partir del <strong>{{ fechaExamen }}</strong>, cuenta usted con el registro de Certificación por este Consejo.
 													<br/>
 													<br/>
-													Ya puede ingresar al sistema en la dirección: www.cmcper.org.mx
-													<br/>
-													<br/>
-													Usuario: <strong> {{ usuario }} </strong>
-													<br/>
-													Contraseña: <strong> {{ clave }} </strong>
+													A sí mismo, le informamos que recibirá por correo electrónico carta documento oficial por parte del CMCPER de aprobado con su número de Certificación y registrado ante el Comité Normativo Nacional de Consejos de Especialidades Médicas (CONACEM).
 													<br/>
 													<br/>
 													<br/>
@@ -493,13 +493,21 @@
 												</p>
 											{% else %}
 												<p>
-													Estimado(a): {{ nombre }} {{apPaterno}}
+													{{ nombre }} {{ apPaterno }} {{ apMaterno }}
+													<br/>
+													P R E S E N T E.
 													<br/>
 													<br/>
-													Los datos que proporcionaste han sido validados y rechazados
+													EL  Consejo Mexicano de Cirugía Plástica, Estética y Reconstructiva, A. C.,  le notifica que en el Examen de Certificación sustentado por usted, el pasado <strong>{{ fechaExamen }}</strong>, resultó:
+													<br/>
+													<p style="color: rgb(252, 59, 59); font-size: 15px; text-align: center"> NO APROBADO </p>
+													Situación que lamentamos, conminándole a incrementar sus esfuerzos de estudio y desarrollo, para presentarse nuevamente en el próximo período de exámenes, mismo que oportunamente podrá usted corroborar en la página de nuestro Consejo: www.cmcper.org.mx 
 													<br/>
 													<br/>
-													Motivo: <strong> {{ motivo }} </strong>
+													A sí mismo, le informamos que recibirá por correo electrónico la revisión detallada de la evaluación de su examen.
+													<br/>
+													<br/>
+													Sin más por el momento, reciba un cordial saludo. 
 													<br/>
 													<br/>
 													<br/>
