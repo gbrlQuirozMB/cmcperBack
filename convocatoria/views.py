@@ -815,6 +815,8 @@ class PagoRechazarUpdateView(UpdateAPIView):
 
 
 class PublicarCalificaciones(APIView):
+    permission_classes = (permissions.IsAdminUser,)
+    
     def get(self, request, *args, **kwargs):
         convocatoriaId = self.kwargs['convocatoriaId']
         try:
