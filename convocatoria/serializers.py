@@ -289,7 +289,7 @@ class PagosListSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         repr = super().to_representation(instance)
         repr['convocatoriaEnrolado'] = instance.convocatoriaEnrolado.convocatoria.nombre
-        repr['medico'] = instance.medico.nombre + ' ' + instance.medico.apPaterno
+        repr['medicoNombreApPaterno'] = instance.medico.nombre + ' ' + instance.medico.apPaterno
         return repr
 
 
