@@ -143,3 +143,8 @@ class PreregistroRechazadoUpdateView(UpdateAPIView):
         except:
             raise ResponseError('Error al enviar correo', 500)
         return self.update(request, *args, **kwargs)
+    
+    
+class FotoPerfilUpdateView(UpdateAPIView):
+    queryset = Medico.objects.filter()
+    serializer_class = FotoPerfilSerializer 

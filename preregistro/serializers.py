@@ -20,3 +20,9 @@ class MedicoAceptadoRechazadoSerializer(serializers.ModelSerializer):
         model = Medico
         fields = ['id', 'motivo', 'aceptado', 'numRegistro', 'nombre', 'apPaterno', 'apMaterno', 'rfc', 'telCelular']
         read_only_fields = ['aceptado', 'numRegistro','nombre','apPaterno', 'apMaterno', 'rfc', 'telCelular']
+        
+        
+class FotoPerfilSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Medico
+        fields = ['id', 'fotoPerfil']
