@@ -49,10 +49,12 @@ class ConvocatoriaEnrolado(models.Model):
     catSedes = models.ForeignKey(CatSedes, on_delete=models.CASCADE, null=True, related_name='catSedesE')
     catTiposExamen = models.ForeignKey(CatTiposExamen, on_delete=models.CASCADE, null=True, related_name='catTiposExamenE')
     comentario = models.TextField(blank=True)
-    isPagado = models.BooleanField(default=False, db_column='is_pagado')
-    isAceptado = models.BooleanField(default=False, db_column='is_aceptado')
+    isPagado = models.BooleanField(default=False, db_column='is_pagado') # verificar si ya pago
+    isAceptado = models.BooleanField(default=False, db_column='is_aceptado') # se activa para validar que aceptaron todos sus documentos y engargolados
     calificacion = models.PositiveSmallIntegerField(blank=True, null=True)
     certificado = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif'])])
+    isAprobado = models.BooleanField(default=False, db_column='is_aprobado') # verificar si se le da su certificado
+    
 
     class Meta:
         db_table = 'convocatorias_enrolados'

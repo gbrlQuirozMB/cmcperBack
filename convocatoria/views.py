@@ -695,9 +695,9 @@ class ConvocatoriaEnroladosExcelListView(ListAPIView):
 def renderCsvView(request, queryset):
     response = HttpResponse(content_type='text/csv')
     # response = HttpResponse(content_type='application/ms-excel')
-    response['Content-Disposition'] = 'attachment; filename="medicos.csv"'
+    response['Content-Disposition'] = 'attachment; filename="calificaciones-medicos.csv"'
     writer = csv.writer(response)
-    writer.writerow(['NO TOCAR', 'Num. de Registro', 'Nombre', 'Apellido Paterno', 'Apellido Materno', 'Calificacion'])
+    writer.writerow(['NO TOCAR', 'Num. de Registro', 'Nombre', 'Apellido Paterno', 'Apellido Materno', 'Calificacion','Aprobado'])
     for dato in queryset:
         writer.writerow(dato)
 
@@ -708,7 +708,8 @@ class ConvocatoriaEnroladosDownExcel(View):
     def get(self, request, *args, **kwargs):
         convocatoriaId = self.kwargs['convocatoriaId']
         try:
-            queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId).values_list('id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno')
+            queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId).values_list('id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno',
+                                                                                                    'calificacion', 'isAprobado')
             # print(f'--->>>queryset como tupla(values_list): {queryset}')
             if not queryset:
                 respuesta = {"detail": "Registros no encontrados"}
@@ -728,7 +729,7 @@ class ConvocatoriaEnroladosUpExcel(APIView):
         datosList.pop(0)
         try:
             for row in datosList:
-                ConvocatoriaEnrolado.objects.filter(id=row[0]).update(calificacion=row[5])
+                ConvocatoriaEnrolado.objects.filter(id=row[0]).update(calificacion=row[5],isAprobado=row[6])
             respuesta = {"detail": "Datos subidos correctamente"}
             return Response(respuesta, status=status.HTTP_200_OK)
         except Exception as e:
@@ -821,7 +822,7 @@ class PublicarCalificaciones(APIView):
         convocatoriaId = self.kwargs['convocatoriaId']
         try:
             queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId).values_list('id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno',
-                                                                                                    'convocatoria__fechaExamen', 'calificacion', 'medico__email')
+                                                                                                    'convocatoria__fechaExamen', 'calificacion', 'medico__email', 'isAprobado')
             # print(f'--->>>queryset como tupla(values_list): {queryset}')
             if not queryset:
                 respuesta = {"detail": "Registros no encontrados"}
@@ -834,7 +835,8 @@ class PublicarCalificaciones(APIView):
                     'apMaterno': dato[4],
                     'fechaExamen': dato[5],
                     'anioExamen': dato[5].strftime("%Y"),
-                    'aceptado': True if dato[6] > 5 else False,
+                    # 'aceptado': True if dato[6] > 5 else False,
+                    'aceptado': dato[8],
                     'email': dato[7]
                 }
                 # print(f'--->>>datos: {datos}')
