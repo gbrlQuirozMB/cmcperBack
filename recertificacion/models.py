@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import FileExtensionValidator
 from preregistro.models import Medico
 from catalogos.models import *
+import datetime
 
 
 # Create your models here.
@@ -53,4 +54,20 @@ class RecertificacionDocumento(models.Model):
 
     class Meta:
         db_table = 'recertificacion_documentos'
+        ordering = ['-actualizado_en']
+
+
+class Certificado(models.Model):
+    creado_en = models.DateTimeField(auto_now_add=True)
+    actualizado_en = models.DateTimeField(auto_now=True)
+    medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medicoC')
+    catTiposDocumento = models.ForeignKey(CatTiposDocumento, on_delete=models.CASCADE, related_name='catTiposDocumentoC')
+    documento = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif'])])
+    descripcion = models.CharField(max_length=300)
+    isVencido = models.BooleanField(default=False, db_column='is_vencido')
+    anioInicio = models.SmallIntegerField(db_column='anio_inicio')
+
+
+    class Meta:
+        db_table = 'certificados'
         ordering = ['-actualizado_en']
