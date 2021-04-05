@@ -52,7 +52,7 @@ class ConvocatoriaEnrolado(models.Model):
     isPagado = models.BooleanField(default=False, db_column='is_pagado') # verificar si ya pago
     isAceptado = models.BooleanField(default=False, db_column='is_aceptado') # se activa para validar que aceptaron todos sus documentos y engargolados
     calificacion = models.PositiveSmallIntegerField(blank=True, null=True)
-    certificado = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif'])])
+    # certificado = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif'])])
     isAprobado = models.BooleanField(default=False, db_column='is_aprobado') # verificar si se le da su certificado
     
 
