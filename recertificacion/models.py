@@ -43,7 +43,6 @@ class Certificado(models.Model):
     creado_en = models.DateTimeField(auto_now_add=True)
     actualizado_en = models.DateTimeField(auto_now=True)
     medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medicoC')
-    catTiposDocumento = models.ForeignKey(CatTiposDocumento, on_delete=models.CASCADE, related_name='catTiposDocumentoC')
     documento = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif'])])
     descripcion = models.CharField(max_length=300)
     isVencido = models.BooleanField(default=False, db_column='is_vencido')
@@ -74,7 +73,6 @@ class PorExamen(models.Model):
 class PorExamenDocumento(models.Model):
     creado_en = models.DateTimeField(auto_now_add=True)
     actualizado_en = models.DateTimeField(auto_now=True)
-    medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medicoPED')
     catTiposDocumento = models.ForeignKey(CatTiposDocumento, on_delete=models.CASCADE, related_name='catTiposDocumentoPED')
     porExamen = models.ForeignKey(PorExamen, on_delete=models.CASCADE, related_name='porExamenD')
     documento = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif'])])
@@ -103,3 +101,6 @@ class RecertificacionItemDocumento(models.Model):
     notasRechazo = models.TextField(blank=True, db_column='notas_rechzo')
     razonRechazo = models.CharField(max_length=200, blank=True, db_column='razon_rechazo')
     
+    class Meta:
+        db_table = 'recertificacion_item_documentos'
+        ordering = ['-actualizado_en']
