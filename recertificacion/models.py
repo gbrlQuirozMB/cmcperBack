@@ -22,7 +22,7 @@ class Capitulo(models.Model):
 class Subcapitulo(models.Model):
     descripcion = models.CharField(max_length=300)
     comentarios = models.TextField(blank=True, null=True)
-    capitulo = models.ForeignKey(Capitulo, on_delete=models.CASCADE, related_name='subcapituloC')
+    capitulo = models.ForeignKey(Capitulo, on_delete=models.CASCADE, related_name='capituloS')
 
     class Meta:
         db_table = 'subcapitulos'
@@ -32,7 +32,7 @@ class Subcapitulo(models.Model):
 class Item(models.Model):
     descripcion = models.CharField(max_length=300)
     puntos = models.DecimalField(max_digits=6, decimal_places=2)
-    subcapitulo = models.ForeignKey(Subcapitulo, on_delete=models.CASCADE, related_name='itemS')
+    subcapitulo = models.ForeignKey(Subcapitulo, on_delete=models.CASCADE, related_name='subcapituloI')
 
     class Meta:
         db_table = 'items'
@@ -74,8 +74,8 @@ class PorExamen(models.Model):
 class PorExamenDocumento(models.Model):
     creado_en = models.DateTimeField(auto_now_add=True)
     actualizado_en = models.DateTimeField(auto_now=True)
-    medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medicoD')
-    catTiposDocumento = models.ForeignKey(CatTiposDocumento, on_delete=models.CASCADE, related_name='catTiposDocumentoD')
+    medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medicoPED')
+    catTiposDocumento = models.ForeignKey(CatTiposDocumento, on_delete=models.CASCADE, related_name='catTiposDocumentoPED')
     porExamen = models.ForeignKey(PorExamen, on_delete=models.CASCADE, related_name='porExamenD')
     documento = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif'])])
     isAceptado = models.BooleanField(default=False, db_column='is_aceptado')
@@ -83,3 +83,23 @@ class PorExamenDocumento(models.Model):
     class Meta:
         db_table = 'recertificacion_por_examen_documentos'
         ordering = ['-actualizado_en']
+
+
+class RecertificacionItemDocumento(models.Model):
+    creado_en = models.DateTimeField(auto_now_add=True)
+    actualizado_en = models.DateTimeField(auto_now=True)
+    medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medicoRID')
+    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='itemRID')
+    documento = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif'])])
+    tituloDescripcion = models.CharField(max_length=300, db_column='titulo_descripcion')
+    fechaEmision = models.DateField(db_column='fecha_emision')
+    puntosOtorgados = models.DecimalField(max_digits=6, decimal_places=2, db_column='puntos_otorgados')
+    estatus = models.PositiveSmallIntegerField(blank=True, choices=(
+        (1, 'Aceptado'),
+        (2, 'Rechazado'),
+        (3, 'Pendiente')
+    ))
+    observaciones = models.TextField(blank=True, db_column='observaciones')
+    notasRechazo = models.TextField(blank=True, db_column='notas_rechzo')
+    razonRechazo = models.CharField(max_length=200, blank=True, db_column='razon_rechazo')
+    
