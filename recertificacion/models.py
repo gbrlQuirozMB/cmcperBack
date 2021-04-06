@@ -45,8 +45,8 @@ class Certificado(models.Model):
     medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medicoC')
     documento = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif'])])
     descripcion = models.CharField(max_length=300)
-    isVencido = models.BooleanField(default=False, db_column='is_vencido')
-    anioInicio = models.SmallIntegerField(db_column='anio_inicio')
+    isVencido = models.BooleanField(default=False, db_column='is_vencido') # posiblemente necesario para el cron que verifique los que ya esten evncidos y les ponga ese estatus
+    anioCertificacion = models.SmallIntegerField(default=0, db_column='anio_certificacion')
 
     class Meta:
         db_table = 'certificados'
