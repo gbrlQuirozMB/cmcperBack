@@ -45,7 +45,7 @@ class Certificado(models.Model):
     medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medicoC')
     documento = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif'])])
     descripcion = models.CharField(max_length=300)
-    isVencido = models.BooleanField(default=False, db_column='is_vencido') # posiblemente necesario para el cron que verifique los que ya esten evncidos y les ponga ese estatus
+    isVencido = models.BooleanField(default=False, db_column='is_vencido')  # posiblemente necesario para el cron que verifique los que ya esten evncidos y les ponga ese estatus
     anioCertificacion = models.SmallIntegerField(default=0, db_column='anio_certificacion')
 
     class Meta:
@@ -100,7 +100,15 @@ class RecertificacionItemDocumento(models.Model):
     observaciones = models.TextField(blank=True, db_column='observaciones')
     notasRechazo = models.TextField(blank=True, db_column='notas_rechzo')
     razonRechazo = models.CharField(max_length=200, blank=True, db_column='razon_rechazo')
-    
+
     class Meta:
         db_table = 'recertificacion_item_documentos'
         ordering = ['-actualizado_en']
+
+
+class AvanceMedicoCapitulo:
+    def __init__(self, capituloDescripcion, capituloPuntos, puntosOtorgados, avance):
+        self.capituloDescripcion = capituloDescripcion
+        self.capituloPuntos = capituloPuntos
+        self.puntosOtorgados = puntosOtorgados
+        self.avance = avance
