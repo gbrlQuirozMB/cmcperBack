@@ -52,3 +52,16 @@ class PuntosCapituloDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Capitulo
         fields = '__all__'
+
+
+class PorcentajeGeneralMedicoSerializer(serializers.Serializer):
+    nombre = serializers.CharField(max_length=200)
+    numRegistro = serializers.IntegerField()
+    porcentaje = serializers.DecimalField(max_digits=6, decimal_places=2)
+    puntosObtenidos = serializers.DecimalField(max_digits=6, decimal_places=2)
+    puntosAReunir = serializers.DecimalField(max_digits=6, decimal_places=2)
+
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        repr['porcentaje'] = str(instance.porcentaje) + '%'
+        return repr

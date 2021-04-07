@@ -125,3 +125,12 @@ class AvanceMedicoCapitulo:
         self.capituloPuntos = capituloPuntos
         self.puntosOtorgados = puntosOtorgados
         self.avance = avance
+
+
+class PorcentajeGeneralMedico:
+    def __init__(self, nombre, numRegistro, porcentaje, puntosObtenidos, puntosAReunir):
+        self.nombre = nombre
+        self.numRegistro = numRegistro
+        self.porcentaje = porcentaje
+        self.puntosObtenidos = puntosObtenidos
+        self.puntosAReunir = puntosAReunir

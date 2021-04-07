@@ -43,8 +43,7 @@ class AvanceMedicoCapituloDetailView(RetrieveAPIView):
             datosCapitulo = Capitulo.objects.get(id=capituloId)
             queryset = RecertificacionItemDocumento.objects.filter(medico=medicoId, item__subcapitulo__capitulo=1, estatus=1).aggregate(Sum('puntosOtorgados'))
             if queryset['puntosOtorgados__sum'] is None:
-                respuesta = {"detail": "Médico no encontrado"}
-                return Response(respuesta, status=status.HTTP_404_NOT_FOUND)
+                raise ResponseError('Médico no ecnontrado', 404)
             puntosOtorgados = queryset['puntosOtorgados__sum']
             avance = round(puntosOtorgados * 100 / datosCapitulo.puntos, 2)
             avanceMedicoCapitulo = AvanceMedicoCapitulo(datosCapitulo.descripcion, datosCapitulo.puntos, puntosOtorgados, avance)
@@ -52,8 +51,7 @@ class AvanceMedicoCapituloDetailView(RetrieveAPIView):
             # return Response(JSONRenderer().render(serializer.data))
             return Response(serializer.data)
         except Capitulo.DoesNotExist:
-            respuesta = {"detail": "Capítulo no encontrado"}
-            return Response(respuesta, status=status.HTTP_404_NOT_FOUND)
+            raise ResponseError('Capítulo no encontrado', 404)
 
 
 class PuntosCapituloListView(ListAPIView):
@@ -64,3 +62,25 @@ class PuntosCapituloListView(ListAPIView):
 class PuntosCapituloDetailView(RetrieveAPIView):
     queryset = Capitulo.objects.filter()
     serializer_class = PuntosCapituloDetailSerializer
+
+
+class PorcentajeGeneralMedicoDetailView(RetrieveAPIView):
+    def get(self, request, *args, **kwargs):
+        medicoId = kwargs['medicoId']
+        try:
+            datosMedico = Medico.objects.get(id=medicoId)
+            querysetPAR = Capitulo.objects.aggregate(Sum('puntos'))
+            if querysetPAR['puntos__sum'] is None:
+                raise ResponseError('No hay capítulos', 404)
+            puntosAReunir = querysetPAR['puntos__sum']
+            querysetPO = RecertificacionItemDocumento.objects.filter(medico=1, estatus=1).aggregate(Sum('puntosOtorgados'))
+            if querysetPO['puntosOtorgados__sum'] is None:
+                raise ResponseError('No hay documentos', 404)
+            puntosObtenidos = querysetPO['puntosOtorgados__sum']
+            porcentaje = round(puntosObtenidos * 100 / puntosAReunir, 2)
+            nombreCompleto = datosMedico.nombre + ' ' + datosMedico.apPaterno + ' ' + datosMedico.apMaterno
+            porcentageGeneralMedico = PorcentajeGeneralMedico(nombreCompleto, datosMedico.numRegistro, porcentaje, puntosObtenidos, puntosAReunir)
+            serializer = PorcentajeGeneralMedicoSerializer(porcentageGeneralMedico)
+            return Response(serializer.data)
+        except Medico.DoesNotExist:
+            raise ResponseError('Médico no encontrado', 404)

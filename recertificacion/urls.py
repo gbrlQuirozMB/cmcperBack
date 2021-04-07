@@ -10,6 +10,7 @@ urlpatterns = [
     path('medico/<medicoId>/capitulo/<capituloId>/avance/', AvanceMedicoCapituloDetailView.as_view(), ),
     path('puntos-capitulo/list/', PuntosCapituloListView.as_view(), ),
     path('puntos-capitulo/<pk>/detail/', PuntosCapituloDetailView.as_view(), ),
+    path('porcentaje/medico/<medicoId>/', PorcentajeGeneralMedicoDetailView.as_view(), ),
 
 
 ]
