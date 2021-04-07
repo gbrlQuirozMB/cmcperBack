@@ -13,14 +13,28 @@ from rest_framework import status, permissions
 
 
 # Create your views here.
-class CertificadoDatosDetailView(RetrieveAPIView):
-    serializer_class = CertificadoDatosSerializer
-    lookup_field = 'medico'
-    lookup_url_kwarg = 'medicoId'
+# class CertificadoDatosDetailView(RetrieveAPIView):
+#     serializer_class = CertificadoDatosSerializer
+#     lookup_field = 'medico'
+#     lookup_url_kwarg = 'medicoId'
 
-    def get_queryset(self):
-        queryset = Certificado.objects.filter(isVencido=False)
-        return queryset
+#     def get_queryset(self):
+#         # queryset = Certificado.objects.filter(isVencido=False)
+#         # queryset = Certificado.objects.filter(estatus=1)
+#         # queryset = Certificado.objects.order_by('-actualizado_en')[0]
+#         queryset = Certificado.objects.filter()
+#         return queryset
+
+
+class CertificadoDatosDetailView(RetrieveAPIView):
+    def get(self, request, *args, **kwargs):
+        medicoId = kwargs['medicoId']
+        queryset = Certificado.objects.filter(medico=medicoId)[0]
+        serializer = CertificadoDatosSerializer(queryset)
+        return Response(serializer.data)
+
+
+
 
 
 class AvanceMedicoCapituloDetailView(RetrieveAPIView):

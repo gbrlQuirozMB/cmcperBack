@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ["*"]
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:8000',
-    'http://3ee808afab7a.ngrok.io',  # back
+    'http://1c50dea41ab2.ngrok.io',  # back
     'http://localhost:4200',
     'http://54625c39d9d4.ngrok.io',  # front
 )
