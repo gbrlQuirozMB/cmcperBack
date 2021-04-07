@@ -41,7 +41,7 @@ class AvanceMedicoCapituloDetailView(RetrieveAPIView):
         capituloId = kwargs['capituloId']
         try:
             datosCapitulo = Capitulo.objects.get(id=capituloId)
-            queryset = RecertificacionItemDocumento.objects.filter(medico=medicoId, item__subcapitulo__capitulo=1, estatus=1).aggregate(Sum('puntosOtorgados'))
+            queryset = RecertificacionItemDocumento.objects.filter(medico=medicoId, item__subcapitulo__capitulo=capituloId, estatus=1).aggregate(Sum('puntosOtorgados'))
             if queryset['puntosOtorgados__sum'] is None:
                 raise ResponseError('Médico no ecnontrado', 404)
             puntosOtorgados = queryset['puntosOtorgados__sum']
@@ -73,7 +73,7 @@ class PorcentajeGeneralMedicoDetailView(RetrieveAPIView):
             if querysetPAR['puntos__sum'] is None:
                 raise ResponseError('No hay capítulos', 404)
             puntosAReunir = querysetPAR['puntos__sum']
-            querysetPO = RecertificacionItemDocumento.objects.filter(medico=1, estatus=1).aggregate(Sum('puntosOtorgados'))
+            querysetPO = RecertificacionItemDocumento.objects.filter(medico=medicoId, estatus=1).aggregate(Sum('puntosOtorgados'))
             if querysetPO['puntosOtorgados__sum'] is None:
                 raise ResponseError('No hay documentos', 404)
             puntosObtenidos = querysetPO['puntosOtorgados__sum']

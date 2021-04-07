@@ -52,7 +52,7 @@ class GetCertificadoDatos200Test(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-class GetAvanceCapituloMedico200Test(APITestCase):
+class GetAvanceMedicoCapitulo200Test(APITestCase):
     def setUp(self):
         medico1 = Medico.objects.create(
             id=1, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
@@ -178,7 +178,7 @@ class GetPorcentajeGeneralMedico200Test(APITestCase):
         RecertificacionItemDocumento.objects.create(medico=medico1, item=item5, documento='doc5.pdf', tituloDescripcion='tituloDescripcion 5', fechaEmision='2023-04-06', puntosOtorgados=9.0,
                                                     estatus=1, observaciones='observaciones 5', notasRechazo='notasRechazo 5', razonRechazo='razonRechazo 5')
         RecertificacionItemDocumento.objects.create(medico=medico1, item=item6, documento='doc6.pdf', tituloDescripcion='tituloDescripcion 6', fechaEmision='2023-04-06', puntosOtorgados=9.0,
-                                                    estatus=1, observaciones='observaciones 6', notasRechazo='notasRechazo 6', razonRechazo='razonRechazo 6')
+                                                    estatus=2, observaciones='observaciones 6', notasRechazo='notasRechazo 6', razonRechazo='razonRechazo 6')
 
         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
 
