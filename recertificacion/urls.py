@@ -8,6 +8,7 @@ app_name = 'recertificacion'
 urlpatterns = [
     path('medico/<medicoId>/', CertificadoDatosDetailView.as_view(), ),
     path('medico/<medicoId>/capitulo/<capituloId>/avance/', AvanceMedicoCapituloDetailView.as_view(), ),
+    path('puntos-capitulo/list/', PuntosCapituloListView.as_view(), ),
     
     
 ]

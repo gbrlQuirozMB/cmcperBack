@@ -11,7 +11,6 @@ from rest_framework.response import Response
 from rest_framework import status, permissions
 
 
-
 # Create your views here.
 # class CertificadoDatosDetailView(RetrieveAPIView):
 #     serializer_class = CertificadoDatosSerializer
@@ -34,9 +33,6 @@ class CertificadoDatosDetailView(RetrieveAPIView):
         return Response(serializer.data)
 
 
-
-
-
 class AvanceMedicoCapituloDetailView(RetrieveAPIView):
     # serializer_class = AvanceMedicoCapituloSerializer
 
@@ -50,14 +46,16 @@ class AvanceMedicoCapituloDetailView(RetrieveAPIView):
                 respuesta = {"detail": "Médico no encontrado"}
                 return Response(respuesta, status=status.HTTP_404_NOT_FOUND)
             puntosOtorgados = queryset['puntosOtorgados__sum']
-            avance = round(puntosOtorgados * 100 / datosCapitulo.puntos,2)
+            avance = round(puntosOtorgados * 100 / datosCapitulo.puntos, 2)
             avanceMedicoCapitulo = AvanceMedicoCapitulo(datosCapitulo.descripcion, datosCapitulo.puntos, puntosOtorgados, avance)
-            serializer = AvanceMedicoCapituloSerializer(avanceMedicoCapitulo)    
+            serializer = AvanceMedicoCapituloSerializer(avanceMedicoCapitulo)
             # return Response(JSONRenderer().render(serializer.data))
-            return Response(serializer.data)    
+            return Response(serializer.data)
         except Capitulo.DoesNotExist:
             respuesta = {"detail": "Capítulo no encontrado"}
             return Response(respuesta, status=status.HTTP_404_NOT_FOUND)
-        
-        
-        
+
+
+class PuntosCapituloListView(ListAPIView):
+    queryset = Capitulo.objects.all()
+    serializer_class = PuntosCapituloSerializer

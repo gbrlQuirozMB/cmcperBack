@@ -40,3 +40,9 @@ class AvanceMedicoCapituloSerializer(serializers.Serializer):
         repr = super().to_representation(instance)
         repr['avance'] = str(instance.avance) + '%'
         return repr
+    
+
+class PuntosCapituloSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Capitulo
+        fields = '__all__'
