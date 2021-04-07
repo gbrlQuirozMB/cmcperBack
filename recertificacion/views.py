@@ -58,4 +58,9 @@ class AvanceMedicoCapituloDetailView(RetrieveAPIView):
 
 class PuntosCapituloListView(ListAPIView):
     queryset = Capitulo.objects.all()
-    serializer_class = PuntosCapituloSerializer
+    serializer_class = PuntosCapituloListSerializer
+
+
+class PuntosCapituloDetailView(RetrieveAPIView):
+    queryset = Capitulo.objects.filter()
+    serializer_class = PuntosCapituloDetailSerializer

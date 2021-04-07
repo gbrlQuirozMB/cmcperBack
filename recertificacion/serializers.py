@@ -10,6 +10,7 @@ from django.db.models import Sum
 
 class CertificadoDatosSerializer(serializers.ModelSerializer):
     estatus = serializers.CharField(source='get_estatus_display')
+
     class Meta:
         model = Certificado
         fields = '__all__'
@@ -29,20 +30,25 @@ class CertificadoDatosSerializer(serializers.ModelSerializer):
         return repr
 
 
-
 class AvanceMedicoCapituloSerializer(serializers.Serializer):
     capituloDescripcion = serializers.CharField(max_length=300)
     capituloPuntos = serializers.DecimalField(max_digits=6, decimal_places=2)
     puntosOtorgados = serializers.DecimalField(max_digits=6, decimal_places=2)
-    avance = serializers.DecimalField(max_digits=6, decimal_places=2) 
-    
+    avance = serializers.DecimalField(max_digits=6, decimal_places=2)
+
     def to_representation(self, instance):
         repr = super().to_representation(instance)
         repr['avance'] = str(instance.avance) + '%'
         return repr
-    
 
-class PuntosCapituloSerializer(serializers.ModelSerializer):
+
+class PuntosCapituloListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Capitulo
+        fields = '__all__'
+
+
+class PuntosCapituloDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Capitulo
         fields = '__all__'
