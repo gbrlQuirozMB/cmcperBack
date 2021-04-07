@@ -369,7 +369,7 @@ def renderPdfView(request, templateSrc, datosContexto):
         html, dest=response)
     # if error then show some funy view
     if pisa_status.err:
-        return HttpResponse('Error: ' + html )
+        return HttpResponse('Error: ' + html)
     return response
 
 
@@ -697,7 +697,7 @@ def renderCsvView(request, queryset):
     # response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename="calificaciones-medicos.csv"'
     writer = csv.writer(response)
-    writer.writerow(['NO TOCAR', 'Num. de Registro', 'Nombre', 'Apellido Paterno', 'Apellido Materno', 'Calificacion','Aprobado'])
+    writer.writerow(['NO TOCAR', 'Num. de Registro', 'Nombre', 'Apellido Paterno', 'Apellido Materno', 'Calificacion', 'Aprobado'])
     for dato in queryset:
         writer.writerow(dato)
 
@@ -721,6 +721,23 @@ class ConvocatoriaEnroladosDownExcel(View):
             return Response(respuesta, status=status.HTTP_409_CONFLICT)
 
 
+class ConvocatoriaAprobadosDownExcel(View):
+    def get(self, request, *args, **kwargs):
+        convocatoriaId = self.kwargs['convocatoriaId']
+        try:
+            queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId, isAprobado=True).values_list(
+                'id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno', 'calificacion', 'isAprobado')
+            # print(f'--->>>queryset como tupla(values_list): {queryset}')
+            if not queryset:
+                respuesta = {"detail": "Registros no encontrados"}
+                return Response(respuesta, status=status.HTTP_404_NOT_FOUND)
+
+            return renderCsvView(request, queryset)
+        except Exception as e:
+            respuesta = {"detail": str(e)}
+            return Response(respuesta, status=status.HTTP_409_CONFLICT)
+
+
 class ConvocatoriaEnroladosUpExcel(APIView):
     def put(self, request, *args, **kwargs):
         # archivo = request.FILES['archivo']
@@ -729,7 +746,7 @@ class ConvocatoriaEnroladosUpExcel(APIView):
         datosList.pop(0)
         try:
             for row in datosList:
-                ConvocatoriaEnrolado.objects.filter(id=row[0]).update(calificacion=row[5],isAprobado=row[6])
+                ConvocatoriaEnrolado.objects.filter(id=row[0]).update(calificacion=row[5], isAprobado=row[6])
             respuesta = {"detail": "Datos subidos correctamente"}
             return Response(respuesta, status=status.HTTP_200_OK)
         except Exception as e:
@@ -814,10 +831,9 @@ class PagoRechazarUpdateView(UpdateAPIView):
             raise ResponseError('No tiene permitido pagar', 409)
 
 
-
 class PublicarCalificaciones(APIView):
     permission_classes = (permissions.IsAdminUser,)
-    
+
     def get(self, request, *args, **kwargs):
         convocatoriaId = self.kwargs['convocatoriaId']
         try:
@@ -827,7 +843,7 @@ class PublicarCalificaciones(APIView):
             if not queryset:
                 respuesta = {"detail": "Registros no encontrados"}
                 return Response(respuesta, status=status.HTTP_404_NOT_FOUND)
-            
+
             for dato in queryset:
                 datos = {
                     'nombre': dato[2],
