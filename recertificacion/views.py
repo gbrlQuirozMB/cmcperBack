@@ -84,3 +84,24 @@ class PorcentajeGeneralMedicoDetailView(RetrieveAPIView):
             return Response(serializer.data)
         except Medico.DoesNotExist:
             raise ResponseError('Médico no encontrado', 404)
+
+
+class PuntosPorCapituloMedicoDetailView(RetrieveAPIView):
+    def get(self, request, *args, **kwargs):
+        medicoId = kwargs['medicoId']
+        capituloId = kwargs['capituloId']
+        try:
+            queryset = Capitulo.objects.get(id=capituloId)
+            puntos = queryset.puntos
+            querysetPO = RecertificacionItemDocumento.objects.filter(medico=medicoId, item__subcapitulo__capitulo=capituloId, estatus=1).aggregate(Sum('puntosOtorgados'))
+            if querysetPO['puntosOtorgados__sum'] is None:
+                raise ResponseError('Médico no encontrado', 404)
+            reunidos = querysetPO['puntosOtorgados__sum']
+            isExcedido = True if reunidos > puntos else False
+            faltantes = round(puntos - reunidos, 2) if not isExcedido else 0
+            excedentes = abs(round(puntos - reunidos, 2)) if isExcedido else 0
+            puntosPorCapituloMedico = PuntosPorCapituloMedico(queryset.titulo, queryset.descripcion, reunidos, faltantes, isExcedido, excedentes, puntos)
+            serializer = PuntosPorCapituloMedicoSerializer(puntosPorCapituloMedico)
+            return Response(serializer.data)
+        except Capitulo.DoesNotExist:
+            raise ResponseError('Capítulo no encontrado', 404)

@@ -213,6 +213,81 @@ class GetPorcentajeGeneralMedico200Test(APITestCase):
         # print(f'--->>>avance: {porcentaje}')
 
 
+class GetPuntosPorCapituloMedico200Test(APITestCase):
+    def setUp(self):
+        medico1 = Medico.objects.create(
+            id=1, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=369)
+
+        capitulo1 = Capitulo.objects.create(titulo='titulo 1', descripcion='capitulo descripcion 1', puntos=33.0, maximo=50.0, minimo=50.0, isOpcional=False)
+        subcapitulo1 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo1)
+        item1 = Item.objects.create(descripcion='item descripcion 1', puntos=3, subcapitulo=subcapitulo1)
+        item2 = Item.objects.create(descripcion='item descripcion 2', puntos=6, subcapitulo=subcapitulo1)
+        item3 = Item.objects.create(descripcion='item descripcion 3', puntos=9, subcapitulo=subcapitulo1)
+
+        capitulo2 = Capitulo.objects.create(titulo='titulo 2', descripcion='capitulo descripcion 2', puntos=66.0, maximo=50.0, minimo=50.0, isOpcional=False)
+        subcapitulo2 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo2)
+        item4 = Item.objects.create(descripcion='item descripcion 1', puntos=10, subcapitulo=subcapitulo2)
+        item5 = Item.objects.create(descripcion='item descripcion 2', puntos=20, subcapitulo=subcapitulo2)
+        item6 = Item.objects.create(descripcion='item descripcion 3', puntos=30, subcapitulo=subcapitulo2)
+
+        RecertificacionItemDocumento.objects.create(medico=medico1, item=item1, documento='doc1.pdf', tituloDescripcion='tituloDescripcion 1', fechaEmision='2021-04-06', puntosOtorgados=3.0,
+                                                    estatus=1, observaciones='observaciones 1', notasRechazo='notasRechazo 1', razonRechazo='razonRechazo 1')
+        RecertificacionItemDocumento.objects.create(medico=medico1, item=item2, documento='doc2.pdf', tituloDescripcion='tituloDescripcion 2', fechaEmision='2022-04-06', puntosOtorgados=6.0,
+                                                    estatus=1, observaciones='observaciones 2', notasRechazo='notasRechazo 2', razonRechazo='razonRechazo 2')
+        RecertificacionItemDocumento.objects.create(medico=medico1, item=item3, documento='doc3.pdf', tituloDescripcion='tituloDescripcion 3', fechaEmision='2023-04-06', puntosOtorgados=9.0,
+                                                    estatus=1, observaciones='observaciones 3', notasRechazo='notasRechazo 3', razonRechazo='razonRechazo 3')
+
+        RecertificacionItemDocumento.objects.create(medico=medico1, item=item4, documento='doc4.pdf', tituloDescripcion='tituloDescripcion 4', fechaEmision='2023-04-06', puntosOtorgados=9.0,
+                                                    estatus=1, observaciones='observaciones 4', notasRechazo='notasRechazo 4', razonRechazo='razonRechazo 4')
+        RecertificacionItemDocumento.objects.create(medico=medico1, item=item5, documento='doc5.pdf', tituloDescripcion='tituloDescripcion 5', fechaEmision='2023-04-06', puntosOtorgados=9.0,
+                                                    estatus=1, observaciones='observaciones 5', notasRechazo='notasRechazo 5', razonRechazo='razonRechazo 5')
+        RecertificacionItemDocumento.objects.create(medico=medico1, item=item6, documento='doc6.pdf', tituloDescripcion='tituloDescripcion 6', fechaEmision='2023-04-06', puntosOtorgados=9.0,
+                                                    estatus=1, observaciones='observaciones 6', notasRechazo='notasRechazo 6', razonRechazo='razonRechazo 6')
+
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/recertificacion/puntos/capitulo/1/medico/1/')
+        print(f'response JSON ===>>> OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/recertificacion/puntos/capitulo/2/medico/1/')
+        print(f'response JSON ===>>> OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/recertificacion/puntos/capitulo/22/medico/1/')
+        print(f'response JSON ===>>> capitulo no encontrado \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        response = self.client.get('/api/recertificacion/puntos/capitulo/2/medico/11/')
+        print(f'response JSON ===>>> medico no encontrado \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        RecertificacionItemDocumento.objects.filter(id=1).update(puntosOtorgados=100)
+        response = self.client.get('/api/recertificacion/puntos/capitulo/1/medico/1/')
+        print(f'response JSON ===>>> esta excedido \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # queryset = Capitulo.objects.get(id=1)
+        # print(f'--->>>puntos: {queryset.puntos}')
+
+        # querysetPO = RecertificacionItemDocumento.objects.filter(medico=1, item__subcapitulo__capitulo=1, estatus=1).aggregate(Sum('puntosOtorgados'))
+        # reunidos = querysetPO['puntosOtorgados__sum']
+        # print(f'--->>>reunidos: {reunidos}')
+
+        # faltantes = round(queryset.puntos - reunidos,2)
+        # print(f'--->>>faltantes: {faltantes}')
+
+        # reunidos = reunidos + 100
+        # isExcedido = True if reunidos > queryset.puntos else False
+        # print(f'--->>>isExcedido: {isExcedido}')
+
+
 class variosTest(APITestCase):
     def setUp(self):
         pass

@@ -65,3 +65,13 @@ class PorcentajeGeneralMedicoSerializer(serializers.Serializer):
         repr = super().to_representation(instance)
         repr['porcentaje'] = str(instance.porcentaje) + '%'
         return repr
+
+
+class PuntosPorCapituloMedicoSerializer(serializers.Serializer):
+    titulo = serializers.CharField(max_length=150)
+    descripcion = serializers.CharField(max_length=300)
+    reunidos = serializers.DecimalField(max_digits=6, decimal_places=2)
+    faltantes = serializers.DecimalField(max_digits=6, decimal_places=2)
+    excedentes = serializers.DecimalField(max_digits=6, decimal_places=2)
+    puntosCapitulo = serializers.DecimalField(max_digits=6, decimal_places=2)
+    isExcedido = serializers.BooleanField()
