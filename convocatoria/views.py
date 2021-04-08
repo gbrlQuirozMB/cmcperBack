@@ -325,6 +325,7 @@ class DocumentoFotoCreateView(CreateAPIView):
         borraExistentes(request, 12)
         request = inicializaData(request)
         request.data['catTiposDocumento'] = 12
+        request.data['engargoladoOk'] = True
         serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
         if serializer.is_valid():
             totalDocumentosNotifica(request)
@@ -392,10 +393,15 @@ class FichaRegistroPDF(View):
                 # 'fechaResolucion': convocatoriaEnrolado.convocatoria.fechaResolucion.strftime('%d/%b/%Y').upper()
                 # 'fechaResolucion': convocatoriaEnrolado.convocatoria.fechaResolucion.strftime('%d %B %Y').upper()
             }
-            # para evitar que se presenten duplicados
-            ConvocatoriaEnroladoDocumento.objects.filter(medico=convocatoriaEnrolado.medico, convocatoria=convocatoriaEnrolado.convocatoria, catTiposDocumento_id=11).delete()
-            # crea un registro en documentos, porque este no se sube manual
-            ConvocatoriaEnroladoDocumento.objects.create(medico=convocatoriaEnrolado.medico, convocatoria=convocatoriaEnrolado.convocatoria, catTiposDocumento_id=11)
+            
+            # ay que contar si existe para permitir el generarla multiples veces
+            cuenta = ConvocatoriaEnroladoDocumento.objects.filter(medico=convocatoriaEnrolado.medico, convocatoria=convocatoriaEnrolado.convocatoria, catTiposDocumento_id=11).count()
+            if cuenta <= 0:
+                # para evitar que se presenten duplicados
+                ConvocatoriaEnroladoDocumento.objects.filter(medico=convocatoriaEnrolado.medico, convocatoria=convocatoriaEnrolado.convocatoria, catTiposDocumento_id=11).delete()
+                # crea un registro en documentos, porque este no se sube manual
+                ConvocatoriaEnroladoDocumento.objects.create(medico=convocatoriaEnrolado.medico, convocatoria=convocatoriaEnrolado.convocatoria, catTiposDocumento_id=11)
+                
             return renderPdfView(request, 'ficha-registro.html', datos)
         except Exception as e:
             return HttpResponse('Error: ' + str(e), content_type='text/plain')
