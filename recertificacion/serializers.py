@@ -75,3 +75,25 @@ class PuntosPorCapituloMedicoSerializer(serializers.Serializer):
     excedentes = serializers.DecimalField(max_digits=6, decimal_places=2)
     puntosCapitulo = serializers.DecimalField(max_digits=6, decimal_places=2)
     isExcedido = serializers.BooleanField()
+
+
+class ItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Item
+        fields = '__all__'
+
+
+class SubcapituloSerializer(serializers.ModelSerializer):
+    items = ItemSerializer(source='subcapituloI', read_only=True, many=True)
+
+    class Meta:
+        model = Subcapitulo
+        fields = [f.name for f in model._meta.fields] + ['items']
+
+
+class DetallesCapituloSerializer(serializers.ModelSerializer):
+    subcapitulos = SubcapituloSerializer(source='capituloS', read_only=True, many=True)
+
+    class Meta:
+        model = Capitulo
+        fields = [f.name for f in model._meta.fields] + ['subcapitulos']

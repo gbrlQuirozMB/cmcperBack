@@ -105,3 +105,8 @@ class PuntosPorCapituloMedicoDetailView(RetrieveAPIView):
             return Response(serializer.data)
         except Capitulo.DoesNotExist:
             raise ResponseError('Capítulo no encontrado', 404)
+
+
+class DetallesCapituloDetailView(RetrieveAPIView):
+    queryset = Capitulo.objects.filter()
+    serializer_class = DetallesCapituloSerializer
