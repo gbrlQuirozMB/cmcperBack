@@ -99,10 +99,17 @@ class DetallesCapituloSerializer(serializers.ModelSerializer):
         fields = [f.name for f in model._meta.fields] + ['subcapitulos']
 
 
-
 class ItemDocumentosSerializer(serializers.ModelSerializer):
     estatus = serializers.CharField(source='get_estatus_display')
-    
+
     class Meta:
         model = RecertificacionItemDocumento
         fields = '__all__'
+
+
+class ItemDocumentoSerializer(serializers.ModelSerializer):
+    estatusDescripcion = serializers.CharField(source='get_estatus_display', read_only=True)
+
+    class Meta:
+        model = RecertificacionItemDocumento
+        fields = [f.name for f in model._meta.fields] + ['estatusDescripcion']

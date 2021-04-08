@@ -123,3 +123,19 @@ class ItemDocumentosListView(ListAPIView):
         # print(f'--->>>queryset: {queryset is None}')
         # print(f'--->>>queryset: {not queryset}')
         return queryset
+
+
+class ItemDocumentosCreateView(CreateAPIView):
+    serializer_class = ItemDocumentoSerializer
+
+    def post(self, request, *args, **kwargs):
+        request.data['estatus'] = 3
+        request.data['puntosOtorgados'] = 0
+        request.data['observaciones'] = ''
+        request.data['notasRechazo'] = ''
+        request.data['razonRechazo'] = ''
+        serializer = ItemDocumentoSerializer(data=request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.info(f'campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)

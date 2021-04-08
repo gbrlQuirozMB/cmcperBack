@@ -14,6 +14,7 @@ urlpatterns = [
     path('puntos/capitulo/<capituloId>/medico/<medicoId>/', PuntosPorCapituloMedicoDetailView.as_view(), ),
     path('capitulo/<pk>/detail/', DetallesCapituloDetailView.as_view(), ),
     path('item/<itemId>/documentos/list/', ItemDocumentosListView.as_view(), ),
+    path('documento/create/', ItemDocumentosCreateView.as_view(), ),
 
 
 ]
