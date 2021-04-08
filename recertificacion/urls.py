@@ -13,6 +13,7 @@ urlpatterns = [
     path('porcentaje/medico/<medicoId>/', PorcentajeGeneralMedicoDetailView.as_view(), ),
     path('puntos/capitulo/<capituloId>/medico/<medicoId>/', PuntosPorCapituloMedicoDetailView.as_view(), ),
     path('capitulo/<pk>/detail/', DetallesCapituloDetailView.as_view(), ),
+    path('item/<itemId>/documentos/list/', ItemDocumentosListView.as_view(), ),
 
 
 ]

@@ -110,3 +110,16 @@ class PuntosPorCapituloMedicoDetailView(RetrieveAPIView):
 class DetallesCapituloDetailView(RetrieveAPIView):
     queryset = Capitulo.objects.filter()
     serializer_class = DetallesCapituloSerializer
+
+
+class ItemDocumentosListView(ListAPIView):
+    serializer_class = ItemDocumentosSerializer
+
+    def get_queryset(self):
+        itemId = self.kwargs['itemId']
+        queryset = RecertificacionItemDocumento.objects.filter(item=itemId)
+        if not queryset:
+            raise ResponseError('No hay documentos', 404)
+        # print(f'--->>>queryset: {queryset is None}')
+        # print(f'--->>>queryset: {not queryset}')
+        return queryset
