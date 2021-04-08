@@ -134,3 +134,14 @@ class PorcentajeGeneralMedico:
         self.porcentaje = porcentaje
         self.puntosObtenidos = puntosObtenidos
         self.puntosAReunir = puntosAReunir
+
+
+class PuntosPorCapituloMedico:
+    def __init__(self, titulo, descripcion, reunidos, faltantes, isExcedido, excedentes, puntosCapitulo):
+        self.titulo = titulo
+        self.descripcion = descripcion
+        self.reunidos = reunidos
+        self.faltantes = faltantes
+        self.isExcedido = isExcedido
+        self.excedentes = excedentes
+        self.puntosCapitulo = puntosCapitulo

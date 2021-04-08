@@ -11,6 +11,7 @@ urlpatterns = [
     path('puntos-capitulo/list/', PuntosCapituloListView.as_view(), ),
     path('puntos-capitulo/<pk>/detail/', PuntosCapituloDetailView.as_view(), ),
     path('porcentaje/medico/<medicoId>/', PorcentajeGeneralMedicoDetailView.as_view(), ),
+    path('puntos/capitulo/<capituloId>/medico/<medicoId>/', PuntosPorCapituloMedicoDetailView.as_view(), ),
 
 
 ]
