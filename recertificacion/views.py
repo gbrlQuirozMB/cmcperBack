@@ -55,7 +55,7 @@ class AvanceMedicoCapituloDetailView(RetrieveAPIView):
 
 
 class PuntosCapituloListView(ListAPIView):
-    queryset = Capitulo.objects.all()
+    queryset = Capitulo.objects.all().order_by('id')
     serializer_class = PuntosCapituloListSerializer
 
 
@@ -150,3 +150,50 @@ class CertificadosMedicoListView(ListAPIView):
         if not queryset:
             raise ResponseError('No hay certificados', 404)
         return queryset
+
+
+def getQuerysetItemDocumentosFiltered(estatus, nombre, apPaterno):
+    # queryset = RecertificacionItemDocumento.objects.filter(estatus=estatus, medico__nombre__iexact=nombre, medico__apPaterno__iexact=apPaterno)
+    if nombre == 'all' and apPaterno == 'all' and estatus == '0':
+        queryset = RecertificacionItemDocumento.objects.filter()
+        return queryset
+
+    if nombre == 'all' and apPaterno == 'all' and estatus != '0':
+        queryset = RecertificacionItemDocumento.objects.filter(estatus=estatus)
+        return queryset
+
+    if nombre == 'all' and apPaterno != 'all' and estatus == '0':
+        queryset = RecertificacionItemDocumento.objects.filter(medico__apPaterno__iexact=apPaterno)
+        return queryset
+
+    if nombre == 'all' and apPaterno != 'all' and estatus != '0':
+        queryset = RecertificacionItemDocumento.objects.filter(medico__apPaterno__iexact=apPaterno, estatus=estatus)
+        return queryset
+
+    if nombre != 'all' and apPaterno == 'all' and estatus == '0':
+        queryset = RecertificacionItemDocumento.objects.filter(medico__nombre__iexact=nombre)
+        return queryset
+
+    if nombre != 'all' and apPaterno == 'all' and estatus != '0':
+        queryset = RecertificacionItemDocumento.objects.filter(medico__nombre__iexact=nombre, estatus=estatus)
+        return queryset
+
+    if nombre != 'all' and apPaterno != 'all' and estatus == '0':
+        queryset = RecertificacionItemDocumento.objects.filter(medico__nombre__iexact=nombre, medico__apPaterno__iexact=apPaterno)
+        return queryset
+
+    if nombre != 'all' and apPaterno != 'all' and estatus != '0':
+        queryset = RecertificacionItemDocumento.objects.filter(medico__nombre__iexact=nombre, medico__apPaterno__iexact=apPaterno, estatus=estatus)
+        return queryset
+
+
+class ItemDocumentosFilteredListView(ListAPIView):
+    serializer_class = ItemDocumentoFilteredSerializer
+
+    def get_queryset(self):
+        estatus = self.kwargs['estatus']
+        nombre = self.kwargs['nombre']
+        apPaterno = self.kwargs['apPaterno']
+        log.info(f'se busca por:  estatus: {estatus} - nombre: {nombre} - apPaterno: {apPaterno}')
+
+        return getQuerysetItemDocumentosFiltered(estatus, nombre, apPaterno)

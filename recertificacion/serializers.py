@@ -121,3 +121,24 @@ class CertificadosMedicoListSerialializer(serializers.ModelSerializer):
     class Meta:
         model = Certificado
         fields = '__all__'
+
+
+class ItemDocumentoFilteredSerializer(serializers.ModelSerializer):
+    estatus = serializers.CharField(source='get_estatus_display', read_only=True)
+
+    class Meta:
+        model = RecertificacionItemDocumento
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        repr['capitulo'] = instance.item.subcapitulo.capitulo.descripcion
+        repr['medico'] = instance.medico.nombre + ' ' + instance.medico.apPaterno
+        repr['medicoId'] = instance.medico.id
+        try:
+            certificadoMedico = Certificado.objects.filter(medico=instance.medico, isVencido=False)[0]
+            repr['fechaCertificacion'] = certificadoMedico.fechaCertificacion
+        except:
+            repr['fechaCertificacion'] = 'no existe certificado'
+
+        return repr
