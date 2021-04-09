@@ -113,3 +113,11 @@ class ItemDocumentoSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecertificacionItemDocumento
         fields = [f.name for f in model._meta.fields] + ['estatusDescripcion']
+
+
+class CertificadosMedicoListSerialializer(serializers.ModelSerializer):
+    estatus = serializers.CharField(source='get_estatus_display')
+
+    class Meta:
+        model = Certificado
+        fields = '__all__'

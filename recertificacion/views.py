@@ -139,3 +139,14 @@ class ItemDocumentosCreateView(CreateAPIView):
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
+
+
+class CertificadosMedicoListView(ListAPIView):
+    serializer_class = CertificadosMedicoListSerialializer
+
+    def get_queryset(self):
+        medicoId = self.kwargs['medicoId']
+        queryset = Certificado.objects.filter(medico=medicoId)
+        if not queryset:
+            raise ResponseError('No hay certificados', 404)
+        return queryset

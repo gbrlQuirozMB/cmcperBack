@@ -15,6 +15,7 @@ urlpatterns = [
     path('capitulo/<pk>/detail/', DetallesCapituloDetailView.as_view(), ),
     path('item/<itemId>/documentos/list/', ItemDocumentosListView.as_view(), ),
     path('documento/create/', ItemDocumentosCreateView.as_view(), ),
+    path('medico/<medicoId>/certificados/list/', CertificadosMedicoListView.as_view(), ),
 
 
 ]

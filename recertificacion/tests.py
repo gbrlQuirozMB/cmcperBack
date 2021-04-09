@@ -427,6 +427,44 @@ class PostItemDocumentosCreate201Test(APITestCase):
         print(f'--->>>cuenta: {cuenta}')
 
 
+class GetCertificadosMedicoList200Test(APITestCase):
+    def setUp(self):
+        medico1 = Medico.objects.create(
+            id=1, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=369)
+        medico2 = Medico.objects.create(
+            id=2, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=369)
+
+        Certificado.objects.create(medico=medico1, documento='certificado_de_chingon1.PDF', descripcion='es un chingon el tipo1', isVencido=False, fechaCertificacion='2021-04-06',
+                                   fechaCaducidad='2026-04-06', estatus=1)
+        Certificado.objects.create(medico=medico2, documento='certificado_de_chingon2.PDF', descripcion='es un chingon el tipo2', isVencido=True, fechaCertificacion='2000-05-06',
+                                   fechaCaducidad='2005-05-06', estatus=3)
+        Certificado.objects.create(medico=medico1, documento='certificado_de_chingon3.PDF', descripcion='es un chingon el tipo3', isVencido=True, fechaCertificacion='2016-06-06',
+                                   fechaCaducidad='2021-06-06', estatus=2)
+
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/recertificacion/medico/1/certificados/list/')
+        print(f'response JSON ===>>> OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/recertificacion/medico/2/certificados/list/')
+        print(f'response JSON ===>>> OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/recertificacion/medico/3/certificados/list/')
+        print(f'response JSON ===>>> no hay \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
 class variosTest(APITestCase):
     def setUp(self):
         pass
