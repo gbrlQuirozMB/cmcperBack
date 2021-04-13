@@ -169,4 +169,4 @@ class ItemDocumentoDetailSerializer(serializers.ModelSerializer):
 class ItemDocumentoAceptarRechazarSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecertificacionItemDocumento
-        fields = ['id', 'puntosOtorgados', 'estatus', 'notasRechazo', 'razonRechazo']
+        fields = ['id', 'puntosOtorgados', 'estatus', 'notasRechazo', 'razonRechazo', 'observaciones']

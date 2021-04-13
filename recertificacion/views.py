@@ -219,3 +219,15 @@ class ItemDocumentosAceptar(UpdateAPIView):
         request.data['razonRechazo'] = ''
 
         return self.update(request, *args, **kwargs)
+
+
+class ItemDocumentosRechazar(UpdateAPIView):
+    queryset = RecertificacionItemDocumento.objects.filter()
+    serializer_class = ItemDocumentoAceptarRechazarSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+    def put(self, request, *args, **kwargs):
+        request.data['estatus'] = 2
+        request.data['puntosOtorgados'] = 0
+
+        return self.update(request, *args, **kwargs)
