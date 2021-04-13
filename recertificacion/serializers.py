@@ -142,3 +142,26 @@ class ItemDocumentoFilteredSerializer(serializers.ModelSerializer):
             repr['fechaCertificacion'] = 'no existe certificado'
 
         return repr
+
+
+
+class ItemDocumentoDetailSerializer(serializers.ModelSerializer):
+    estatusDescripcion = serializers.CharField(source='get_estatus_display', read_only=True)
+
+    class Meta:
+        model = RecertificacionItemDocumento
+        fields = [f.name for f in model._meta.fields] + ['estatusDescripcion']
+        
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        repr['capitulo'] = instance.item.subcapitulo.capitulo.descripcion
+        repr['subcapitulo'] = instance.item.subcapitulo.descripcion
+        repr['nombreCompleto'] = instance.medico.nombre + ' ' + instance.medico.apPaterno + ' ' + instance.medico.apPaterno
+        repr['puntosItem'] = instance.item.puntos
+        # try:
+        #     certificadoMedico = Certificado.objects.filter(medico=instance.medico, isVencido=False)[0]
+        #     repr['fechaCertificacion'] = certificadoMedico.fechaCertificacion
+        # except:
+        #     repr['fechaCertificacion'] = 'no existe certificado'
+
+        return repr

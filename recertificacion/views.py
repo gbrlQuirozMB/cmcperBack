@@ -197,3 +197,8 @@ class ItemDocumentosFilteredListView(ListAPIView):
         log.info(f'se busca por:  estatus: {estatus} - nombre: {nombre} - apPaterno: {apPaterno}')
 
         return getQuerysetItemDocumentosFiltered(estatus, nombre, apPaterno)
+
+
+class ItemDocumentosDetailView(RetrieveAPIView):
+    queryset = RecertificacionItemDocumento.objects.filter()
+    serializer_class = ItemDocumentoDetailSerializer

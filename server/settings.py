@@ -32,9 +32,9 @@ ALLOWED_HOSTS = ["*"]
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:8000',
-    'http://d751d876118a.ngrok.io',  # back
+    'http://e7434e841fcf.ngrok.io',  # back
     'http://localhost:4200',
-    'http://54625c39d9d4.ngrok.io',  # front
+    # 'http://54625c39d9d4.ngrok.io',  # front
 )
 
 # Application definition
@@ -84,6 +84,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    'COERCE_DECIMAL_TO_STRING': False,  # quita que se los campos de tipo Decimal se regresen como string
 }
 
 # SWAGGER_SETTINGS = {
