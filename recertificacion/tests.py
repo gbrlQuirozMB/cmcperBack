@@ -543,8 +543,6 @@ class GetItemDocumentosFilteredList200Test(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-
-
 class GetItemDocumentosDetail200Test(APITestCase):
     def setUp(self):
         medico3 = Medico.objects.create(
@@ -599,7 +597,7 @@ class GetItemDocumentosDetail200Test(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        response = self.client.get('/api/recertificacion/documento/1/detail/') # regresa TODOS
+        response = self.client.get('/api/recertificacion/documento/1/detail/')  # regresa TODOS
         print(f'response JSON ===>>> OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -621,8 +619,6 @@ class GetItemDocumentosDetail200Test(APITestCase):
         # response = self.client.get('/api/recertificacion/all/all/3/list/')  # regresa el que esta Pendiente
         # print(f'response JSON ===>>> N:all - A:all - E:3 \n {json.dumps(response.json())} \n ---')
         # self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-
 
 
 class variosTest(APITestCase):

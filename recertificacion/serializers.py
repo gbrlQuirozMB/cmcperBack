@@ -144,14 +144,13 @@ class ItemDocumentoFilteredSerializer(serializers.ModelSerializer):
         return repr
 
 
-
 class ItemDocumentoDetailSerializer(serializers.ModelSerializer):
     estatusDescripcion = serializers.CharField(source='get_estatus_display', read_only=True)
 
     class Meta:
         model = RecertificacionItemDocumento
         fields = [f.name for f in model._meta.fields] + ['estatusDescripcion']
-        
+
     def to_representation(self, instance):
         repr = super().to_representation(instance)
         repr['capitulo'] = instance.item.subcapitulo.capitulo.descripcion
