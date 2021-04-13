@@ -164,3 +164,9 @@ class ItemDocumentoDetailSerializer(serializers.ModelSerializer):
         #     repr['fechaCertificacion'] = 'no existe certificado'
 
         return repr
+
+
+class ItemDocumentoAceptarRechazarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RecertificacionItemDocumento
+        fields = ['id', 'puntosOtorgados', 'estatus', 'notasRechazo', 'razonRechazo']

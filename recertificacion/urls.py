@@ -18,6 +18,7 @@ urlpatterns = [
     path('medico/<medicoId>/certificados/list/', CertificadosMedicoListView.as_view(), ),
     path('<nombre>/<apPaterno>/<estatus>/list/', ItemDocumentosFilteredListView.as_view(), ),
     path('documento/<pk>/detail/', ItemDocumentosDetailView.as_view(), ),
+    path('documento/aceptar/<pk>/', ItemDocumentosAceptar.as_view(), ),
 
 
 ]
