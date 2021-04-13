@@ -32,10 +32,9 @@ class CertificadoDatosDetailView(RetrieveAPIView):
             queryset = Certificado.objects.filter(medico=medicoId)[0]
             serializer = CertificadoDatosSerializer(queryset)
         except:
-            raise ResponseError('No hay certificado para el ID de Medico dado',404)
-        
-        return Response(serializer.data)
+            raise ResponseError('No hay certificado para el ID de Medico dado', 404)
 
+        return Response(serializer.data)
 
 
 class AvanceMedicoCapituloDetailView(RetrieveAPIView):
@@ -207,3 +206,16 @@ class ItemDocumentosFilteredListView(ListAPIView):
 class ItemDocumentosDetailView(RetrieveAPIView):
     queryset = RecertificacionItemDocumento.objects.filter()
     serializer_class = ItemDocumentoDetailSerializer
+
+
+class ItemDocumentosAceptar(UpdateAPIView):
+    queryset = RecertificacionItemDocumento.objects.filter()
+    serializer_class = ItemDocumentoAceptarRechazarSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+    def put(self, request, *args, **kwargs):
+        request.data['estatus'] = 1
+        request.data['notasRechazo'] = ''
+        request.data['razonRechazo'] = ''
+
+        return self.update(request, *args, **kwargs)
