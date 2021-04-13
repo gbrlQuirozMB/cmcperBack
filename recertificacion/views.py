@@ -28,9 +28,14 @@ from rest_framework import status, permissions
 class CertificadoDatosDetailView(RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         medicoId = kwargs['medicoId']
-        queryset = Certificado.objects.filter(medico=medicoId)[0]
-        serializer = CertificadoDatosSerializer(queryset)
+        try:
+            queryset = Certificado.objects.filter(medico=medicoId)[0]
+            serializer = CertificadoDatosSerializer(queryset)
+        except:
+            raise ResponseError('No hay certificado para el ID de Medico dado',404)
+        
         return Response(serializer.data)
+
 
 
 class AvanceMedicoCapituloDetailView(RetrieveAPIView):

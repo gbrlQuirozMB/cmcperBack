@@ -52,6 +52,9 @@ class GetCertificadoDatos200Test(APITestCase):
         print(f'response JSON ===>>> \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+        response = self.client.get('/api/recertificacion/medico/11/')
+        print(f'response JSON ===>>> \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 class GetAvanceMedicoCapitulo200Test(APITestCase):
     def setUp(self):
