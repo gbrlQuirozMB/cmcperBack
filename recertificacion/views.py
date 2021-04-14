@@ -244,3 +244,8 @@ class ItemDocumentosReasignar(UpdateAPIView):
         request.data['razonRechazo'] = ''
 
         return self.update(request, *args, **kwargs)
+
+
+class CapituloListView(ListAPIView):
+    queryset = Capitulo.objects.all()
+    serializer_class = CapituloListSerializer

@@ -176,3 +176,9 @@ class ItemDocumentoReasignarSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecertificacionItemDocumento
         fields = ['id', 'puntosOtorgados', 'estatus', 'notasRechazo', 'razonRechazo', 'observaciones', 'item']
+
+
+class CapituloListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Capitulo
+        fields = ['id', 'titulo', 'descripcion']
