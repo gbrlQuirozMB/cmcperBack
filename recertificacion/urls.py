@@ -20,6 +20,7 @@ urlpatterns = [
     path('documento/<pk>/detail/', ItemDocumentosDetailView.as_view(), ),
     path('documento/aceptar/<pk>/', ItemDocumentosAceptar.as_view(), ),
     path('documento/rechazar/<pk>/', ItemDocumentosRechazar.as_view(), ),
+    path('documento/reasignar/<pk>/', ItemDocumentosReasignar.as_view(), ),
 
 
 ]
