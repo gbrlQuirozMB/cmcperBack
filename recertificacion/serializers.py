@@ -188,3 +188,9 @@ class SubcapituloListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subcapitulo
         fields = '__all__'
+
+
+class ItemListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Item
+        fields = '__all__'

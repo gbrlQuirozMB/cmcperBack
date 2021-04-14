@@ -260,3 +260,14 @@ class SubcapituloListView(ListAPIView):
         if not queryset:
             raise ResponseError('No existen subcapitulos con el capituloId proporcionado', 404)
         return queryset
+
+
+class ItemListView(ListAPIView):
+    serializer_class = ItemListSerializer
+
+    def get_queryset(self):
+        subcapituloId = self.kwargs['subcapituloId']
+        queryset = Item.objects.filter(subcapitulo=subcapituloId)
+        if not queryset:
+            raise ResponseError('No existen items con el subcapituloId proporcionado', 404)
+        return queryset
