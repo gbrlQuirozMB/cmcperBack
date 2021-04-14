@@ -22,6 +22,7 @@ urlpatterns = [
     path('documento/rechazar/<pk>/', ItemDocumentosRechazar.as_view(), ),
     path('documento/reasignar/<pk>/', ItemDocumentosReasignar.as_view(), ),
     path('capitulo/list/', CapituloListView.as_view(), ),
+    path('subcapitulo/<capituloId>/list/', SubcapituloListView.as_view(), ),
 
 
 ]

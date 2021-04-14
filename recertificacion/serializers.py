@@ -182,3 +182,9 @@ class CapituloListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Capitulo
         fields = ['id', 'titulo', 'descripcion']
+
+
+class SubcapituloListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subcapitulo
+        fields = '__all__'

@@ -249,3 +249,14 @@ class ItemDocumentosReasignar(UpdateAPIView):
 class CapituloListView(ListAPIView):
     queryset = Capitulo.objects.all()
     serializer_class = CapituloListSerializer
+
+
+class SubcapituloListView(ListAPIView):
+    serializer_class = SubcapituloListSerializer
+
+    def get_queryset(self):
+        capituloId = self.kwargs['capituloId']
+        queryset = Subcapitulo.objects.filter(capitulo=capituloId)
+        if not queryset:
+            raise ResponseError('No existen subcapitulos con el capituloId proporcionado', 404)
+        return queryset

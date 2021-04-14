@@ -862,11 +862,19 @@ class GetSeveralSelectList200Test(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        response = self.client.get('/api/recertificacion/capitulo/list/')  # regresa TODOS
+        # capitulos
+        response = self.client.get('/api/recertificacion/capitulo/list/')  
         print(f'response JSON ===>>> OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-
+        #  subcapitulos
+        response = self.client.get('/api/recertificacion/subcapitulo/2/list/')  
+        print(f'response JSON ===>>> OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        response = self.client.get('/api/recertificacion/subcapitulo/3/list/')  
+        print(f'response JSON ===>>> no existe \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 class variosTest(APITestCase):
     def setUp(self):
         pass
