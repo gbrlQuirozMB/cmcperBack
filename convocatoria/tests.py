@@ -16,6 +16,7 @@ from datetime import date
 import requests
 
 from notificaciones.models import Notificacion
+from recertificacion.models import Certificado
 
 
 # Create your tests here.
@@ -1843,18 +1844,29 @@ class GetPublicarCalificaciones200Test(APITestCase):
         convocatoria6 = Convocatoria.objects.create(id=6, fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',
                                                     horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1')
 
-        ConvocatoriaEnrolado.objects.create(medico=medico3, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=catTiposExamen1, calificacion=10)
-        ConvocatoriaEnrolado.objects.create(medico=medico6, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=catTiposExamen1, calificacion=5)
-        ConvocatoriaEnrolado.objects.create(medico=medico9, convocatoria=convocatoria6, catSedes=catSedes3, catTiposExamen=catTiposExamen3, calificacion=69)
+        ConvocatoriaEnrolado.objects.create(medico=medico3, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=catTiposExamen1, calificacion=9, isAprobado=True, isPublicado=True)
+        ConvocatoriaEnrolado.objects.create(medico=medico6, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=catTiposExamen1, calificacion=5, isAprobado=False, isPublicado=False)
+        ConvocatoriaEnrolado.objects.create(medico=medico9, convocatoria=convocatoria6, catSedes=catSedes3, catTiposExamen=catTiposExamen3, calificacion=6, isAprobado=True, isPublicado=False)
 
-        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
 
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        response = self.client.get('/api/convocatoria/66/enrolados/publicar/list/')  # regresa TODOS
+        cuentaCertificados =  Certificado.objects.count()
+        print(f'--->>>cuentaCertificados: {cuentaCertificados}')
+        
+        response = self.client.get('/api/convocatoria/6/enrolados/publicar/list/')  # regresa TODOS
         print(f'response JSON ===>>> \n {response.content} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        cuentaCertificados =  Certificado.objects.count()
+        print(f'--->>>cuentaCertificados: {cuentaCertificados}')
+        
+
+        # response = self.client.get('/api/convocatoria/66/enrolados/publicar/list/')  
+        # print(f'response JSON ===>>> no encntrados \n {response.content} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
 # ES DE PRUEBA NO USAR!!!

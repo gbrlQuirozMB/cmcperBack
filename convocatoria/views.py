@@ -32,6 +32,8 @@ import codecs
 
 import locale
 
+from recertificacion.models import Certificado
+
 # from django_filters import rest_framework
 # from django_filters import rest_framework as filters
 
@@ -393,7 +395,7 @@ class FichaRegistroPDF(View):
                 # 'fechaResolucion': convocatoriaEnrolado.convocatoria.fechaResolucion.strftime('%d/%b/%Y').upper()
                 # 'fechaResolucion': convocatoriaEnrolado.convocatoria.fechaResolucion.strftime('%d %B %Y').upper()
             }
-            
+
             # ay que contar si existe para permitir el generarla multiples veces
             cuenta = ConvocatoriaEnroladoDocumento.objects.filter(medico=convocatoriaEnrolado.medico, convocatoria=convocatoriaEnrolado.convocatoria, catTiposDocumento_id=11).count()
             if cuenta <= 0:
@@ -401,7 +403,7 @@ class FichaRegistroPDF(View):
                 ConvocatoriaEnroladoDocumento.objects.filter(medico=convocatoriaEnrolado.medico, convocatoria=convocatoriaEnrolado.convocatoria, catTiposDocumento_id=11).delete()
                 # crea un registro en documentos, porque este no se sube manual
                 ConvocatoriaEnroladoDocumento.objects.create(medico=convocatoriaEnrolado.medico, convocatoria=convocatoriaEnrolado.convocatoria, catTiposDocumento_id=11)
-                
+
             return renderPdfView(request, 'ficha-registro.html', datos)
         except Exception as e:
             return HttpResponse('Error: ' + str(e), content_type='text/plain')
@@ -844,13 +846,20 @@ class PublicarCalificaciones(APIView):
         convocatoriaId = self.kwargs['convocatoriaId']
         try:
             queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId).values_list('id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno',
-                                                                                                    'convocatoria__fechaExamen', 'calificacion', 'medico__email', 'isAprobado')
+                                                                                                    'convocatoria__fechaExamen', 'calificacion', 'medico__email', 'isAprobado', 'medico__id',
+                                                                                                    'isPublicado')
             # print(f'--->>>queryset como tupla(values_list): {queryset}')
             if not queryset:
                 respuesta = {"detail": "Registros no encontrados"}
                 return Response(respuesta, status=status.HTTP_404_NOT_FOUND)
 
             for dato in queryset:
+                if dato[8] and not dato[10]:  # se checa que este aprobado y no publicado
+                    # hay que crear un nuevo campo de isPublicado y con ese verificar si se crea o no un certificado nuevo
+                    medico = Medico.objects.get(id=dato[9])
+                    Certificado.objects.create(medico=medico, documento='', descripcion='generado automaticamente', isVencido=False, estatus=1)
+                    ConvocatoriaEnrolado.objects.filter(medico=dato[9]).update(isPublicado=True)
+
                 datos = {
                     'nombre': dato[2],
                     'apPaterno': dato[3],

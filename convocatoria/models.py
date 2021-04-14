@@ -54,6 +54,7 @@ class ConvocatoriaEnrolado(models.Model):
     calificacion = models.PositiveSmallIntegerField(blank=True, null=True)
     # certificado = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif'])])
     isAprobado = models.BooleanField(default=False, db_column='is_aprobado') # verificar si se le da su certificado
+    isPublicado = models.BooleanField(default=False, db_column='is_publicado') # verificar si se le da su certificado por primera vez
     
 
     class Meta:
