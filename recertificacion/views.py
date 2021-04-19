@@ -10,6 +10,8 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework import status, permissions
 
+from datetime import date
+from dateutil.relativedelta import relativedelta
 
 # Create your views here.
 # class CertificadoDatosDetailView(RetrieveAPIView):
@@ -271,3 +273,17 @@ class ItemListView(ListAPIView):
         if not queryset:
             raise ResponseError('No existen items con el subcapituloId proporcionado', 404)
         return queryset
+
+
+class ActualizaVigenciaCertificados(UpdateAPIView):
+    def put(self, request, *args, **kwargs):
+        cuentaVencidos = Certificado.objects.filter(isVencido=False, fechaCaducidad__lt=date.today()).update(estatus=3, isVencido=True)
+        cuentaVigentes = Certificado.objects.filter(isVencido=False, fechaCaducidad__gte=date.today()).update(estatus=1, isVencido=False)
+        cuentaPorVencer = Certificado.objects.filter(isVencido=False, fechaCaducidad__range=[date.today(), date.today()+relativedelta(years=1)]).update(estatus=2, isVencido=False)
+
+        respuesta = {
+            "cuentaVencidos": cuentaVencidos,
+            "cuentaVigentes": cuentaVigentes,
+            "cuentaPorVencer": cuentaPorVencer
+        }
+        return Response(respuesta, status=status.HTTP_200_OK)
