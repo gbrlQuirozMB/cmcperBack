@@ -992,6 +992,8 @@ class PostSolicitarExamen201Test(APITestCase):
 
 class PostDocumento201Test(APITestCase):
     def setUp(self):
+        User.objects.create_user(username='admin', email='admin@cmcper.com', password='password', first_name='Enrique', last_name='Lucero', is_superuser=True, is_staff=True)
+        
         catTiposDocumento1 = CatTiposDocumento.objects.create(descripcion='Revalidación')
         catTiposDocumento2 = CatTiposDocumento.objects.create(descripcion='CURP')
         catTiposDocumento3 = CatTiposDocumento.objects.create(descripcion='Acta de Nacimiento')
@@ -1006,13 +1008,13 @@ class PostDocumento201Test(APITestCase):
         catTiposDocumento12 = CatTiposDocumento.objects.create(descripcion='Fotografía')
         catTiposDocumento13 = CatTiposDocumento.objects.create(descripcion='Certificado')
         
-        medico9 = Medico.objects.create(
+        self.medico9 = Medico.objects.create(
             id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
             deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
             cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
         
-        PorExamen.objects.create(medico=medico9, estatus=3, isAprobado=False, calificacion=0)
+        PorExamen.objects.create(medico=self.medico9, estatus=3, isAprobado=False, calificacion=0)
         
         archivo = open('./uploads/testUnit.png', 'rb')
         documento = SimpleUploadedFile(archivo.name, archivo.read(), content_type='image/png')
@@ -1024,12 +1026,26 @@ class PostDocumento201Test(APITestCase):
             # "isAceptado": True,
         }
         
+        archivoO = open('./uploads/testUnit.png', 'rb')
+        documentoO = SimpleUploadedFile(archivoO.name, archivoO.read(), content_type='image/png')
+        
+        self.jsonO = {
+            "documento": documentoO,
+            "porExamen": 1,
+            # "catTiposDocumento": 6,
+            # "isAceptado": True,
+        }
+        
         self.user = User.objects.create_user(username='gabriel') #, is_staff=True)  # IsAuthenticated
         
     def test(self):
         self.client.force_authenticate(user=self.user)
         
         response = self.client.post('/api/recertificacion/documento/cedula-especialidad/create/', data=self.json, format='multipart')
+        print(f'response JSON ===>>> OK \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        
+        response = self.client.post('/api/recertificacion/documento/certificado/create/', data=self.jsonO, format='multipart')
         print(f'response JSON ===>>> OK \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         

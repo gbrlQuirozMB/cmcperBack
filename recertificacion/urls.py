@@ -31,6 +31,7 @@ urlpatterns = [
     path('solicitud-examen/create/', SolicitudExamenCreateView.as_view(), ),
     
     path('documento/cedula-especialidad/create/', DocumentoCedulaEspecialidadCreateView.as_view(), ),
+    path('documento/certificado/create/', DocumentoCertificadoCreateView.as_view(), ),
     
 
 

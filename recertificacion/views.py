@@ -351,15 +351,15 @@ def inicializaData(request):
 def borraExistentes(request, tipoDocumento):
     porExamenId = request.data['porExamen']
     PorExamenDocumento.objects.filter(porExamen=porExamenId, catTiposDocumento=tipoDocumento).delete()
-    
-    
+
+
 def totalDocumentosNotifica(request):
     porExamenId = request.data['porExamen']
     cuentaDocumentos = PorExamenDocumento.objects.filter(porExamen=porExamenId).count()
     if cuentaDocumentos == 1:  # porque ya borro antes el que ya existia
         datoUser = User.objects.filter(is_superuser=True, is_staff=True).values_list('id')
         Notificacion.objects.create(titulo='Recertificación', mensaje='Hay documentos que validar', destinatario=datoUser[0][0], remitente=0)
-    
+
 
 class DocumentoCedulaEspecialidadCreateView(CreateAPIView):
     serializer_class = PorExamenDocumentoSerializer
@@ -368,6 +368,21 @@ class DocumentoCedulaEspecialidadCreateView(CreateAPIView):
         borraExistentes(request, 6)
         request = inicializaData(request)
         request.data['catTiposDocumento'] = 6
+        serializer = PorExamenDocumentoSerializer(data=request.data)
+        if serializer.is_valid():
+            totalDocumentosNotifica(request)
+            return self.create(request, *args, **kwargs)
+        log.info(f'campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
+
+
+class DocumentoCertificadoCreateView(CreateAPIView):
+    serializer_class = PorExamenDocumentoSerializer
+
+    def post(self, request, *args, **kwargs):
+        borraExistentes(request, 13)
+        request = inicializaData(request)
+        request.data['catTiposDocumento'] = 13
         serializer = PorExamenDocumentoSerializer(data=request.data)
         if serializer.is_valid():
             totalDocumentosNotifica(request)
