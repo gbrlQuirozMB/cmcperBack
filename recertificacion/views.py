@@ -13,6 +13,13 @@ from rest_framework import status, permissions
 from datetime import date
 from dateutil.relativedelta import relativedelta
 
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.core.mail import EmailMultiAlternatives
+
+from rest_framework.views import APIView
+
+
 # Create your views here.
 # class CertificadoDatosDetailView(RetrieveAPIView):
 #     serializer_class = CertificadoDatosSerializer
@@ -275,15 +282,59 @@ class ItemListView(ListAPIView):
         return queryset
 
 
-class ActualizaVigenciaCertificados(UpdateAPIView):
-    def put(self, request, *args, **kwargs):
-        cuentaVencidos = Certificado.objects.filter(isVencido=False, fechaCaducidad__lt=date.today()).update(estatus=3, isVencido=True)
-        cuentaVigentes = Certificado.objects.filter(isVencido=False, fechaCaducidad__gte=date.today()).update(estatus=1, isVencido=False)
-        cuentaPorVencer = Certificado.objects.filter(isVencido=False, fechaCaducidad__range=[date.today(), date.today()+relativedelta(years=1)]).update(estatus=2, isVencido=False)
+class ActualizaVigenciaCertificados(APIView):
+    permission_classes = (permissions.IsAdminUser,)
 
-        respuesta = {
-            "cuentaVencidos": cuentaVencidos,
-            "cuentaVigentes": cuentaVigentes,
-            "cuentaPorVencer": cuentaPorVencer
-        }
-        return Response(respuesta, status=status.HTTP_200_OK)
+    def put(self, request, *args, **kwargs):
+        try:
+            cuentaVencidos = Certificado.objects.filter(isVencido=False, fechaCaducidad__lt=date.today()).update(estatus=3, isVencido=True)
+            cuentaVigentes = Certificado.objects.filter(isVencido=False, fechaCaducidad__gte=date.today()).update(estatus=1, isVencido=False)
+            cuentaPorVencer = Certificado.objects.filter(isVencido=False, fechaCaducidad__range=[date.today(), date.today()+relativedelta(years=1)]).update(estatus=2, isVencido=False)
+
+            respuesta = {
+                "cuentaVencidos": cuentaVencidos,
+                "cuentaVigentes": cuentaVigentes,
+                "cuentaPorVencer": cuentaPorVencer
+            }
+            return Response(respuesta, status=status.HTTP_200_OK)
+        except Exception as e:
+            # respuesta = {"detail": str(e)}
+            # return Response(respuesta, status=status.HTTP_409_CONFLICT)
+            raise ResponseError(f'Error grave: {str(e)}, 409')
+
+
+class SolicitudExamenCreateView(CreateAPIView):
+    serializer_class = SolicitudExamenSerializer
+
+    def post(self, request, *args, **kwargs):
+
+        request.data['estatus'] = 3
+        request.data['isAprobado'] = False
+        request.data['calificacion'] = 0
+        serializer = SolicitudExamenSerializer(data=request.data)
+        if serializer.is_valid():
+            medicoId = request.data.get('medico')
+            cuenta = PorExamen.objects.filter(medico=medicoId, isAprobado=False).count()
+            if cuenta > 0:
+                raise ResponseError('El medico tiene una solicitud de examen pendiente', 409)
+            datosMedico = Medico.objects.filter(id=medicoId).values_list('nombre', 'apPaterno', 'apMaterno', 'email')
+            queryset = FechasExamenRecertificacion.objects.filter(fechaExamen__gte=date.today())
+            queryset = queryset.order_by('fechaExamen')[:1]
+            datos = {
+                'nombre': datosMedico[0][0],
+                'apPaterno': datosMedico[0][1],
+                'email': datosMedico[0][3],
+                'fechaExamen': queryset[0].fechaExamen
+            }
+            try:
+                htmlContent = render_to_string('cert-vig-exam.html', datos)
+                textContent = strip_tags(htmlContent)
+                emailAcep = EmailMultiAlternatives('CMCPER - Solicitud de Certificacón Vigente por Examen', textContent, "no-reply@cmcper.mx", [datos['email']])
+                emailAcep.attach_alternative(htmlContent, "text/html")
+                emailAcep.send()
+            except:
+                raise ResponseError('Error al enviar correo', 500)
+
+            return self.create(request, *args, **kwargs)
+        log.info(f'campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)

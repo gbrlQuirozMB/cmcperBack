@@ -942,6 +942,56 @@ class PutActualizaVigenciaCertificados200Test(APITestCase):
             print(f'--->>>dato: {dato[0]} - {dato[1]} - {dato[2]} - {dato[3]} - {dato[4]}')
 
 
+
+class PostSolicitarExamen201Test(APITestCase):
+    def setUp(self):
+        self.medico9 = Medico.objects.create(
+            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
+        
+        FechasExamenRecertificacion.objects.create(fechaExamen='2021-04-01', descripcion='primer fecha')
+        FechasExamenRecertificacion.objects.create(fechaExamen='2021-08-01', descripcion='segunda fecha')
+        FechasExamenRecertificacion.objects.create(fechaExamen='2021-12-01', descripcion='tercer fecha')
+        
+        self.json = {
+            "medico": 9,
+        }
+        
+        self.user = User.objects.create_user(username='gabriel') #, is_staff=True)  # IsAuthenticated
+        
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+        
+        cuenta = PorExamen.objects.count()
+        print(f'--->>>cuenta: {cuenta}')
+        
+        response = self.client.post('/api/recertificacion/solicitud-examen/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> OK \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        
+        PorExamen.objects.create(medico=self.medico9, estatus=3, isAprobado=False, calificacion=0)
+        response = self.client.post('/api/recertificacion/solicitud-examen/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> ya se genero una solicitud de examen \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)        
+        
+        self.json = {
+            "medico": 4,
+        }
+        response = self.client.post('/api/recertificacion/solicitud-examen/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> no existe medico \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        
+        
+
+        
+        cuenta = PorExamen.objects.count()
+        print(f'--->>>cuenta: {cuenta}')
+
+
+
+
 class variosTest(APITestCase):
     def setUp(self):
         pass
@@ -976,72 +1026,108 @@ class variosTest(APITestCase):
         # print(f'--->>>fechaCertificacion: {datos.fechaCertificacion} - fechaCaducidad: {datos.fechaCaducidad}')
         # -----------------------------------------------------
 
-        medico3 = Medico.objects.create(
-            id=3, nombre='elianid', apPaterno='tolentino', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
-            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
-            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
-        medico6 = Medico.objects.create(
-            id=6, nombre='laura', apPaterno='cabrera', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
-            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
-            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
-        medico9 = Medico.objects.create(
-            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
-            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
-            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
+        # medico3 = Medico.objects.create(
+        #     id=3, nombre='elianid', apPaterno='tolentino', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+        #     deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+        #     cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+        #     telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
+        # medico6 = Medico.objects.create(
+        #     id=6, nombre='laura', apPaterno='cabrera', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+        #     deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+        #     cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+        #     telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
+        # medico9 = Medico.objects.create(
+        #     id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+        #     deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+        #     cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+        #     telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
         
         
-        Certificado.objects.create(medico=medico9, documento='certificado_de_chingon3.PDF', descripcion='vigente(1) false', isVencido=False, fechaCertificacion='2016-06-06',
-                                   fechaCaducidad=date.today()+relativedelta(years=3), estatus=1)
-        Certificado.objects.create(medico=medico3, documento='certificado_de_chingon3.PDF', descripcion='vencido(3) true', isVencido=False, fechaCertificacion='2016-06-06',
-                                   fechaCaducidad=date.today()-relativedelta(days=66), estatus=1)
-        Certificado.objects.create(medico=medico6, documento='certificado_de_chingon2.PDF', descripcion='por vencer(2) false', isVencido=False, fechaCertificacion='2000-05-06',
-                                   fechaCaducidad=date.today()+relativedelta(days=364), estatus=1)
-        Certificado.objects.create(medico=medico3, documento='certificado_de_chingon1.PDF', descripcion='vencido(3) true', isVencido=False, fechaCertificacion='2021-04-06',
-                                   fechaCaducidad=date.today()-relativedelta(months=9), estatus=1)
-        Certificado.objects.create(medico=medico9, documento='certificado_de_chingon3.PDF', descripcion='vigente(1) false', isVencido=False, fechaCertificacion='2016-06-06',
-                                   fechaCaducidad=date.today()+relativedelta(years=1, months=3), estatus=1)
-        Certificado.objects.create(medico=medico6, documento='certificado_de_chingon3.PDF', descripcion='por vencer(2) false', isVencido=False, fechaCertificacion='2016-06-06',
-                                   fechaCaducidad=date.today()+relativedelta(days=159), estatus=1)
+        # Certificado.objects.create(medico=medico9, documento='certificado_de_chingon3.PDF', descripcion='vigente(1) false', isVencido=False, fechaCertificacion='2016-06-06',
+        #                            fechaCaducidad=date.today()+relativedelta(years=3), estatus=1)
+        # Certificado.objects.create(medico=medico3, documento='certificado_de_chingon3.PDF', descripcion='vencido(3) true', isVencido=False, fechaCertificacion='2016-06-06',
+        #                            fechaCaducidad=date.today()-relativedelta(days=66), estatus=1)
+        # Certificado.objects.create(medico=medico6, documento='certificado_de_chingon2.PDF', descripcion='por vencer(2) false', isVencido=False, fechaCertificacion='2000-05-06',
+        #                            fechaCaducidad=date.today()+relativedelta(days=364), estatus=1)
+        # Certificado.objects.create(medico=medico3, documento='certificado_de_chingon1.PDF', descripcion='vencido(3) true', isVencido=False, fechaCertificacion='2021-04-06',
+        #                            fechaCaducidad=date.today()-relativedelta(months=9), estatus=1)
+        # Certificado.objects.create(medico=medico9, documento='certificado_de_chingon3.PDF', descripcion='vigente(1) false', isVencido=False, fechaCertificacion='2016-06-06',
+        #                            fechaCaducidad=date.today()+relativedelta(years=1, months=3), estatus=1)
+        # Certificado.objects.create(medico=medico6, documento='certificado_de_chingon3.PDF', descripcion='por vencer(2) false', isVencido=False, fechaCertificacion='2016-06-06',
+        #                            fechaCaducidad=date.today()+relativedelta(days=159), estatus=1)
         
-        Certificado.objects.create(medico=medico6, documento='certificado_de_chingon3.PDF', descripcion='vencido(3) true', isVencido=False, fechaCertificacion='2016-06-06',
-                                   fechaCaducidad=date.today()-relativedelta(months=11), estatus=1)
-        Certificado.objects.create(medico=medico6, documento='certificado_de_chingon3.PDF', descripcion='vencido(3) true', isVencido=False, fechaCertificacion='2016-06-06',
-                                   fechaCaducidad=date.today()-relativedelta(days=1), estatus=1)
-        Certificado.objects.create(medico=medico6, documento='certificado_de_chingon3.PDF', descripcion='por vencer(2) false', isVencido=False, fechaCertificacion='2016-06-06',
-                                   fechaCaducidad=date.today()+relativedelta(days=99), estatus=1)
-        Certificado.objects.create(medico=medico6, documento='certificado_de_chingon3.PDF', descripcion='vigente(1) false', isVencido=False, fechaCertificacion='2016-06-06',
-                                   fechaCaducidad=date.today()+relativedelta(years=1, days=9), estatus=1)
+        # Certificado.objects.create(medico=medico6, documento='certificado_de_chingon3.PDF', descripcion='vencido(3) true', isVencido=False, fechaCertificacion='2016-06-06',
+        #                            fechaCaducidad=date.today()-relativedelta(months=11), estatus=1)
+        # Certificado.objects.create(medico=medico6, documento='certificado_de_chingon3.PDF', descripcion='vencido(3) true', isVencido=False, fechaCertificacion='2016-06-06',
+        #                            fechaCaducidad=date.today()-relativedelta(days=1), estatus=1)
+        # Certificado.objects.create(medico=medico6, documento='certificado_de_chingon3.PDF', descripcion='por vencer(2) false', isVencido=False, fechaCertificacion='2016-06-06',
+        #                            fechaCaducidad=date.today()+relativedelta(days=99), estatus=1)
+        # Certificado.objects.create(medico=medico6, documento='certificado_de_chingon3.PDF', descripcion='vigente(1) false', isVencido=False, fechaCertificacion='2016-06-06',
+        #                            fechaCaducidad=date.today()+relativedelta(years=1, days=9), estatus=1)
         
-        # queryset = Certificado.objects.filter(isVencido=False).values_list('id', 'fechaCaducidad__year')
-        # # 1 vigente / 2 esta por vencer / 3 vencido
-        #         print('esta por vencer')
-        #         Certificado.objects.filter(id=dato[0]).update(estatus=2, isVencido=False)
-        #         print('vencido')
-        #         Certificado.objects.filter(id=dato[0]).update(estatus=3, isVencido=True)
-        #         print('vigente')
-        #         Certificado.objects.filter(id=dato[0]).update(estatus=1, isVencido=False)
+        # # queryset = Certificado.objects.filter(isVencido=False).values_list('id', 'fechaCaducidad__year')
+        # # # 1 vigente / 2 esta por vencer / 3 vencido
+        # #         print('esta por vencer')
+        # #         Certificado.objects.filter(id=dato[0]).update(estatus=2, isVencido=False)
+        # #         print('vencido')
+        # #         Certificado.objects.filter(id=dato[0]).update(estatus=3, isVencido=True)
+        # #         print('vigente')
+        # #         Certificado.objects.filter(id=dato[0]).update(estatus=1, isVencido=False)
 
-        # fecha = date.today()
+        # # fecha = date.today()
+        # # for dato in queryset:
+        # #     resta = (fecha - dato[1]).days
+        # #     print(f'--->>>dato: {dato[0]} -> {dato[1]} -> {resta} -> {type(resta)}')
+        # #     if resta > 0:
+        # #         print('vencido')
+        # #     if (resta <= 0) and (resta >= -365):
+        # #         print('por vencer')
+        # #     if resta <= -366:
+        # #         print('vigente')
+
+        # cuentaVencidos = Certificado.objects.filter(isVencido=False, fechaCaducidad__lt=date.today()).update(estatus=3, isVencido=True)
+        # cuentaVigentes = Certificado.objects.filter(isVencido=False, fechaCaducidad__gte=date.today()).update(estatus=1, isVencido=False)
+        # cuentaPorVencer = Certificado.objects.filter(isVencido=False, fechaCaducidad__range=[date.today(), date.today()+relativedelta(years=1)]).update(estatus=2, isVencido=False)
+        # print(f'---> cuenta: {cuentaVencidos}')
+        # print(f'---> cuenta: {cuentaVigentes}')
+        # print(f'---> cuenta: {cuentaPorVencer}')
+
+        # # queryset = Certificado.objects.all().values_list('id', 'fechaCaducidad', 'estatus', 'isVencido', 'descripcion').order_by('id')
+        # # for dato in queryset:
+        # #     print(f'--->>>dato: {dato[0]} - {dato[1]} - {dato[2]} - {dato[3]} - {dato[4]}')
+
+        # queryset = Certificado.objects.all().values_list('id', 'fechaCaducidad').order_by('-fechaCaducidad')[:10]
         # for dato in queryset:
-        #     resta = (fecha - dato[1]).days
-        #     print(f'--->>>dato: {dato[0]} -> {dato[1]} -> {resta} -> {type(resta)}')
-        #     if resta > 0:
-        #         print('vencido')
-        #     if (resta <= 0) and (resta >= -365):
-        #         print('por vencer')
-        #     if resta <= -366:
-        #         print('vigente')
-
-        cuentaVencidos = Certificado.objects.filter(isVencido=False, fechaCaducidad__lt=date.today()).update(estatus=3, isVencido=True)
-        cuentaVigentes = Certificado.objects.filter(isVencido=False, fechaCaducidad__gte=date.today()).update(estatus=1, isVencido=False)
-        cuentaPorVencer = Certificado.objects.filter(isVencido=False, fechaCaducidad__range=[date.today(), date.today()+relativedelta(years=1)]).update(estatus=2, isVencido=False)
-        print(f'---> cuenta: {cuentaVencidos}')
-        print(f'---> cuenta: {cuentaVigentes}')
-        print(f'---> cuenta: {cuentaPorVencer}')
-
-        queryset = Certificado.objects.all().values_list('id', 'fechaCaducidad', 'estatus', 'isVencido', 'descripcion').order_by('id')
-        for dato in queryset:
-            print(f'--->>>dato: {dato[0]} - {dato[1]} - {dato[2]} - {dato[3]} - {dato[4]}')
+        #     print(f'--->>>dato: {dato[0]} - {dato[1]}')
+        # # --------------------------------------------------------
+        
+        # FechasExamenRecertificacion.objects.create(fechaExamen='2021-04-01', descripcion='primer fecha')
+        # FechasExamenRecertificacion.objects.create(fechaExamen='2021-08-01', descripcion='segunda fecha')
+        # FechasExamenRecertificacion.objects.create(fechaExamen='2021-12-01', descripcion='tercer fecha')
+        
+        
+        # queryset = FechasExamenRecertificacion.objects.filter(fechaExamen__gte=date.today()).order_by('-fechaExamen')[:1]
+        # queryset = FechasExamenRecertificacion.objects.filter(fechaExamen__gte=date.today())
+        # queryset = FechasExamenRecertificacion.objects.filter(fechaExamen__gte=date.today()-relativedelta(months=2))
+        
+        try:
+            fechaPrueba =  '2021-02-11'
+            queryset = FechasExamenRecertificacion.objects.filter(fechaExamen__gte=fechaPrueba)
+            queryset = queryset.order_by('fechaExamen')[:1]
+            for dato in queryset:
+                print(f'---dato: {dato.fechaExamen} - {fechaPrueba} - {dato.descripcion}')
+                
+            fechaPrueba =  '2021-04-06'
+            queryset = FechasExamenRecertificacion.objects.filter(fechaExamen__gte=fechaPrueba)
+            queryset = queryset.order_by('fechaExamen')[:1]
+            for dato in queryset:
+                print(f'---dato: {dato.fechaExamen} - {fechaPrueba} - {dato.descripcion}')
+                
+            fechaPrueba =  '2021-11-10'
+            queryset = FechasExamenRecertificacion.objects.filter(fechaExamen__gte=fechaPrueba)
+            queryset = queryset.order_by('fechaExamen')[:1]
+            print(f'--->queryset: {queryset[0].fechaExamen}')
+            for dato in queryset:
+                print(f'---dato: {dato.fechaExamen} - {fechaPrueba} - {dato.descripcion}')
+        except Exception as e:
+            print(f'putamadre un error: {str(e)}')

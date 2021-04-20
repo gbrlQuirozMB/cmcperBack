@@ -25,6 +25,7 @@ urlpatterns = [
     path('subcapitulo/<capituloId>/list/', SubcapituloListView.as_view(), ),
     path('item/<subcapituloId>/list/', ItemListView.as_view(), ),
     path('actualiza-vigencia-certificados/update/', ActualizaVigenciaCertificados.as_view(), ),
+    path('solicitud-examen/create/', SolicitudExamenCreateView.as_view(), ),
 
 
 ]

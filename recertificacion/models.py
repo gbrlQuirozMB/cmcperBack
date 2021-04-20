@@ -145,3 +145,15 @@ class PuntosPorCapituloMedico:
         self.isExcedido = isExcedido
         self.excedentes = excedentes
         self.puntosCapitulo = puntosCapitulo
+
+
+class FechasExamenRecertificacion(models.Model):
+    actualizado_en = models.DateTimeField(auto_now=True)
+    fechaExamen = models.DateField(db_column='fecha_examen')
+    descripcion = models.CharField(max_length=300)
+    
+    class Meta:
+        db_table = 'fechas_examen_recertificacion'
+        ordering = ['-fechaExamen']
+    
+    

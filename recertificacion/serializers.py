@@ -194,3 +194,9 @@ class ItemListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = '__all__'
+
+
+class SolicitudExamenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PorExamen
+        fields = '__all__'
