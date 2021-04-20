@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ["*"]
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:8000',
-    'http://4a74be6ae89b.ngrok.io',  # back
+    'http://68418fe7d4d8.ngrok.io',  # back
     'http://localhost:4200',
     # 'http://54625c39d9d4.ngrok.io',  # front
 )
@@ -180,15 +180,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 # STATIC_URL = '/static/'
-# STATIC_ROOT = config('STATIC_ROOT', default='')
-# # STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
-# MEDIA_URL = config('MEDIA_URL', default='/uploads/')
-# MEDIA_ROOT = config('MEDIA_ROOT', default='uploads/')
+# STATIC_ROOT = config('STATIC_ROOT')
+# MEDIA_URL = '/uploads/'
+# MEDIA_ROOT = config('MEDIA_ROOT')
 
 STATIC_URL = '/static/'
-STATIC_ROOT = config('STATIC_ROOT')
-MEDIA_URL = '/uploads/'
-MEDIA_ROOT = config('MEDIA_ROOT')
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+# STATIC_ROOT = config('STATIC_ROOT', default="./static/")
+MEDIA_URL=config('MEDIA_URL', default="/uploads/")
+MEDIA_ROOT=config('MEDIA_ROOT', default="./uploads/")
 
 
 # Claves de STRIPE
