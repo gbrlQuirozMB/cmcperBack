@@ -200,3 +200,14 @@ class SolicitudExamenSerializer(serializers.ModelSerializer):
     class Meta:
         model = PorExamen
         fields = '__all__'
+        
+        
+class PorExamenDocumentoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PorExamenDocumento
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        repr['tipoDocumento'] = instance.catTiposDocumento.descripcion
+        return repr

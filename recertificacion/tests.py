@@ -18,6 +18,9 @@ import datetime
 
 from django.db.models import Q
 
+from notificaciones.models import Notificacion
+
+
 
 # Create your tests here.
 class GetCertificadoDatos200Test(APITestCase):
@@ -983,13 +986,57 @@ class PostSolicitarExamen201Test(APITestCase):
         print(f'response JSON ===>>> no existe medico \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         
-        
-
-        
         cuenta = PorExamen.objects.count()
         print(f'--->>>cuenta: {cuenta}')
 
 
+class PostDocumento201Test(APITestCase):
+    def setUp(self):
+        catTiposDocumento1 = CatTiposDocumento.objects.create(descripcion='Revalidación')
+        catTiposDocumento2 = CatTiposDocumento.objects.create(descripcion='CURP')
+        catTiposDocumento3 = CatTiposDocumento.objects.create(descripcion='Acta de Nacimiento')
+        catTiposDocumento4 = CatTiposDocumento.objects.create(descripcion='Carta de Solicitud de Examen')
+        catTiposDocumento5 = CatTiposDocumento.objects.create(descripcion='Constancia de Posgrado')
+        catTiposDocumento6 = CatTiposDocumento.objects.create(descripcion='Cédula de Especialidad')
+        catTiposDocumento7 = CatTiposDocumento.objects.create(descripcion='Título de la Licenciatura')
+        catTiposDocumento8 = CatTiposDocumento.objects.create(descripcion='Cédula Profesional')
+        catTiposDocumento9 = CatTiposDocumento.objects.create(descripcion='Constancia de Cirugía General')
+        catTiposDocumento10 = CatTiposDocumento.objects.create(descripcion='Carta de Profesor Titular')
+        catTiposDocumento11 = CatTiposDocumento.objects.create(descripcion='Ficha de Registro')
+        catTiposDocumento12 = CatTiposDocumento.objects.create(descripcion='Fotografía')
+        catTiposDocumento13 = CatTiposDocumento.objects.create(descripcion='Certificado')
+        
+        medico9 = Medico.objects.create(
+            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
+        
+        PorExamen.objects.create(medico=medico9, estatus=3, isAprobado=False, calificacion=0)
+        
+        archivo = open('./uploads/testUnit.png', 'rb')
+        documento = SimpleUploadedFile(archivo.name, archivo.read(), content_type='image/png')
+        
+        self.json = {
+            "documento": documento,
+            "porExamen": 1,
+            # "catTiposDocumento": 6,
+            # "isAceptado": True,
+        }
+        
+        self.user = User.objects.create_user(username='gabriel') #, is_staff=True)  # IsAuthenticated
+        
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+        
+        response = self.client.post('/api/recertificacion/documento/cedula-especialidad/create/', data=self.json, format='multipart')
+        print(f'response JSON ===>>> OK \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        
+        cuenta = Notificacion.objects.count()
+        if cuenta != 0:
+            dato = Notificacion.objects.get(id=1)
+            print(f'--->>>dato: titulo: {dato.titulo}, mensaje: {dato.mensaje}, destinatario: {dato.destinatario}, remitente: {dato.remitente}')
 
 
 class variosTest(APITestCase):

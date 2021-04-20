@@ -19,6 +19,9 @@ from django.core.mail import EmailMultiAlternatives
 
 from rest_framework.views import APIView
 
+from notificaciones.models import Notificacion
+from django.contrib.auth.models import User
+
 
 # Create your views here.
 # class CertificadoDatosDetailView(RetrieveAPIView):
@@ -335,6 +338,39 @@ class SolicitudExamenCreateView(CreateAPIView):
             except:
                 raise ResponseError('Error al enviar correo', 500)
 
+            return self.create(request, *args, **kwargs)
+        log.info(f'campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
+
+
+def inicializaData(request):
+    request.data['isAceptado'] = False
+    return request
+
+
+def borraExistentes(request, tipoDocumento):
+    porExamenId = request.data['porExamen']
+    PorExamenDocumento.objects.filter(porExamen=porExamenId, catTiposDocumento=tipoDocumento).delete()
+    
+    
+def totalDocumentosNotifica(request):
+    porExamenId = request.data['porExamen']
+    cuentaDocumentos = PorExamenDocumento.objects.filter(porExamen=porExamenId).count()
+    if cuentaDocumentos == 1:  # porque ya borro antes el que ya existia
+        datoUser = User.objects.filter(is_superuser=True, is_staff=True).values_list('id')
+        Notificacion.objects.create(titulo='Recertificación', mensaje='Hay documentos que validar', destinatario=datoUser[0][0], remitente=0)
+    
+
+class DocumentoCedulaEspecialidadCreateView(CreateAPIView):
+    serializer_class = PorExamenDocumentoSerializer
+
+    def post(self, request, *args, **kwargs):
+        borraExistentes(request, 6)
+        request = inicializaData(request)
+        request.data['catTiposDocumento'] = 6
+        serializer = PorExamenDocumentoSerializer(data=request.data)
+        if serializer.is_valid():
+            totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
