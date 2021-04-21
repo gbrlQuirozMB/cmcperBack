@@ -21,7 +21,6 @@ from django.db.models import Q
 from notificaciones.models import Notificacion
 
 
-
 # Create your tests here.
 class GetCertificadoDatos200Test(APITestCase):
     def setUp(self):
@@ -908,7 +907,7 @@ class PutActualizaVigenciaCertificados200Test(APITestCase):
             deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
             cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
-        
+
         Certificado.objects.create(medico=medico9, documento='certificado_de_chingon3.PDF', descripcion='vigente(1) false', isVencido=False, fechaCertificacion='2016-06-06',
                                    fechaCaducidad=date.today()+relativedelta(years=3), estatus=1)
         Certificado.objects.create(medico=medico3, documento='certificado_de_chingon3.PDF', descripcion='vencido(3) true', isVencido=False, fechaCertificacion='2016-06-06',
@@ -929,12 +928,12 @@ class PutActualizaVigenciaCertificados200Test(APITestCase):
                                    fechaCaducidad=date.today()+relativedelta(days=99), estatus=1)
         Certificado.objects.create(medico=medico6, documento='certificado_de_chingon3.PDF', descripcion='vigente(1) false', isVencido=False, fechaCertificacion='2016-06-06',
                                    fechaCaducidad=date.today()+relativedelta(years=1, days=9), estatus=1)
-        
+
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
-        
+
     def test(self):
         self.client.force_authenticate(user=self.user)
-        
+
         response = self.client.put('/api/recertificacion/actualiza-vigencia-certificados/update/')
         print(f'response JSON ===>>> OK \n {json.dumps(response.json())} \n ---')
         # print(f'response JSON ===>>> \n {json.dumps(response.data)} \n ---')
@@ -945,7 +944,6 @@ class PutActualizaVigenciaCertificados200Test(APITestCase):
             print(f'--->>>dato: {dato[0]} - {dato[1]} - {dato[2]} - {dato[3]} - {dato[4]}')
 
 
-
 class PostSolicitarExamen201Test(APITestCase):
     def setUp(self):
         self.medico9 = Medico.objects.create(
@@ -953,39 +951,39 @@ class PostSolicitarExamen201Test(APITestCase):
             deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
             cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
-        
+
         FechasExamenRecertificacion.objects.create(fechaExamen='2021-04-01', descripcion='primer fecha')
         FechasExamenRecertificacion.objects.create(fechaExamen='2021-08-01', descripcion='segunda fecha')
         FechasExamenRecertificacion.objects.create(fechaExamen='2021-12-01', descripcion='tercer fecha')
-        
+
         self.json = {
             "medico": 9,
         }
-        
-        self.user = User.objects.create_user(username='gabriel') #, is_staff=True)  # IsAuthenticated
-        
+
+        self.user = User.objects.create_user(username='gabriel')  # , is_staff=True)  # IsAuthenticated
+
     def test(self):
         self.client.force_authenticate(user=self.user)
-        
+
         cuenta = PorExamen.objects.count()
         print(f'--->>>cuenta: {cuenta}')
-        
+
         response = self.client.post('/api/recertificacion/solicitud-examen/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> OK \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        
+
         PorExamen.objects.create(medico=self.medico9, estatus=3, isAprobado=False, calificacion=0)
         response = self.client.post('/api/recertificacion/solicitud-examen/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> ya se genero una solicitud de examen \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)        
-        
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+
         self.json = {
             "medico": 4,
         }
         response = self.client.post('/api/recertificacion/solicitud-examen/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> no existe medico \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        
+
         cuenta = PorExamen.objects.count()
         print(f'--->>>cuenta: {cuenta}')
 
@@ -993,7 +991,7 @@ class PostSolicitarExamen201Test(APITestCase):
 class PostDocumento201Test(APITestCase):
     def setUp(self):
         User.objects.create_user(username='admin', email='admin@cmcper.com', password='password', first_name='Enrique', last_name='Lucero', is_superuser=True, is_staff=True)
-        
+
         catTiposDocumento1 = CatTiposDocumento.objects.create(descripcion='Revalidación')
         catTiposDocumento2 = CatTiposDocumento.objects.create(descripcion='CURP')
         catTiposDocumento3 = CatTiposDocumento.objects.create(descripcion='Acta de Nacimiento')
@@ -1007,54 +1005,87 @@ class PostDocumento201Test(APITestCase):
         catTiposDocumento11 = CatTiposDocumento.objects.create(descripcion='Ficha de Registro')
         catTiposDocumento12 = CatTiposDocumento.objects.create(descripcion='Fotografía')
         catTiposDocumento13 = CatTiposDocumento.objects.create(descripcion='Certificado')
-        
+
         self.medico9 = Medico.objects.create(
             id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
             deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
             cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
-        
+
         PorExamen.objects.create(medico=self.medico9, estatus=3, isAprobado=False, calificacion=0)
-        
+
         archivo = open('./uploads/testUnit.png', 'rb')
         documento = SimpleUploadedFile(archivo.name, archivo.read(), content_type='image/png')
-        
+
         self.json = {
             "documento": documento,
             "porExamen": 1,
             # "catTiposDocumento": 6,
             # "isAceptado": True,
         }
-        
+
         archivoO = open('./uploads/testUnit.png', 'rb')
         documentoO = SimpleUploadedFile(archivoO.name, archivoO.read(), content_type='image/png')
-        
+
         self.jsonO = {
             "documento": documentoO,
             "porExamen": 1,
             # "catTiposDocumento": 6,
             # "isAceptado": True,
         }
-        
-        self.user = User.objects.create_user(username='gabriel') #, is_staff=True)  # IsAuthenticated
-        
+
+        self.user = User.objects.create_user(username='gabriel')  # , is_staff=True)  # IsAuthenticated
+
     def test(self):
         self.client.force_authenticate(user=self.user)
-        
+
         response = self.client.post('/api/recertificacion/documento/cedula-especialidad/create/', data=self.json, format='multipart')
         print(f'response JSON ===>>> OK \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        
+
         response = self.client.post('/api/recertificacion/documento/certificado/create/', data=self.jsonO, format='multipart')
         print(f'response JSON ===>>> OK \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        
+
         cuenta = Notificacion.objects.count()
         if cuenta != 0:
             dato = Notificacion.objects.get(id=1)
             print(f'--->>>dato: titulo: {dato.titulo}, mensaje: {dato.mensaje}, destinatario: {dato.destinatario}, remitente: {dato.remitente}')
 
 
+class GetCostoAPagar200Test(APITestCase):
+    def setUp(self):
+        CatPagos.objects.create(descripcion='ECV - Examen loco!!!', precio= 369.69, tipo=1)
+        CatPagos.objects.create(descripcion='RC - Examen crazy!!!', precio= 963.69, tipo=6)
+        
+        medico9 = Medico.objects.create(
+            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', estudioExtranjero=True)
+    
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        # Si puede pagar
+        response = self.client.get('/api/recertificacion/medico/9/a-pagar/examen/')
+        print(f'response JSON ===>>> OK - examen \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/recertificacion/medico/9/a-pagar/renovacion/')
+        print(f'response JSON ===>>> OK - renovacion \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        response = self.client.get('/api/recertificacion/medico/3/a-pagar/renovacion/')
+        print(f'response JSON ===>>> 404 no existe medico - renovacion \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
+        response = self.client.get('/api/recertificacion/medico/3/a-pagar/examen/')
+        print(f'response JSON ===>>> 404 no existe medico - examen \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
 class variosTest(APITestCase):
     def setUp(self):
         pass
@@ -1104,8 +1135,7 @@ class variosTest(APITestCase):
         #     deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
         #     cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
         #     telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
-        
-        
+
         # Certificado.objects.create(medico=medico9, documento='certificado_de_chingon3.PDF', descripcion='vigente(1) false', isVencido=False, fechaCertificacion='2016-06-06',
         #                            fechaCaducidad=date.today()+relativedelta(years=3), estatus=1)
         # Certificado.objects.create(medico=medico3, documento='certificado_de_chingon3.PDF', descripcion='vencido(3) true', isVencido=False, fechaCertificacion='2016-06-06',
@@ -1118,7 +1148,7 @@ class variosTest(APITestCase):
         #                            fechaCaducidad=date.today()+relativedelta(years=1, months=3), estatus=1)
         # Certificado.objects.create(medico=medico6, documento='certificado_de_chingon3.PDF', descripcion='por vencer(2) false', isVencido=False, fechaCertificacion='2016-06-06',
         #                            fechaCaducidad=date.today()+relativedelta(days=159), estatus=1)
-        
+
         # Certificado.objects.create(medico=medico6, documento='certificado_de_chingon3.PDF', descripcion='vencido(3) true', isVencido=False, fechaCertificacion='2016-06-06',
         #                            fechaCaducidad=date.today()-relativedelta(months=11), estatus=1)
         # Certificado.objects.create(medico=medico6, documento='certificado_de_chingon3.PDF', descripcion='vencido(3) true', isVencido=False, fechaCertificacion='2016-06-06',
@@ -1127,7 +1157,7 @@ class variosTest(APITestCase):
         #                            fechaCaducidad=date.today()+relativedelta(days=99), estatus=1)
         # Certificado.objects.create(medico=medico6, documento='certificado_de_chingon3.PDF', descripcion='vigente(1) false', isVencido=False, fechaCertificacion='2016-06-06',
         #                            fechaCaducidad=date.today()+relativedelta(years=1, days=9), estatus=1)
-        
+
         # # queryset = Certificado.objects.filter(isVencido=False).values_list('id', 'fechaCaducidad__year')
         # # # 1 vigente / 2 esta por vencer / 3 vencido
         # #         print('esta por vencer')
@@ -1163,30 +1193,29 @@ class variosTest(APITestCase):
         # for dato in queryset:
         #     print(f'--->>>dato: {dato[0]} - {dato[1]}')
         # # --------------------------------------------------------
-        
+
         # FechasExamenRecertificacion.objects.create(fechaExamen='2021-04-01', descripcion='primer fecha')
         # FechasExamenRecertificacion.objects.create(fechaExamen='2021-08-01', descripcion='segunda fecha')
         # FechasExamenRecertificacion.objects.create(fechaExamen='2021-12-01', descripcion='tercer fecha')
-        
-        
+
         # queryset = FechasExamenRecertificacion.objects.filter(fechaExamen__gte=date.today()).order_by('-fechaExamen')[:1]
         # queryset = FechasExamenRecertificacion.objects.filter(fechaExamen__gte=date.today())
         # queryset = FechasExamenRecertificacion.objects.filter(fechaExamen__gte=date.today()-relativedelta(months=2))
-        
+
         try:
-            fechaPrueba =  '2021-02-11'
+            fechaPrueba = '2021-02-11'
             queryset = FechasExamenRecertificacion.objects.filter(fechaExamen__gte=fechaPrueba)
             queryset = queryset.order_by('fechaExamen')[:1]
             for dato in queryset:
                 print(f'---dato: {dato.fechaExamen} - {fechaPrueba} - {dato.descripcion}')
-                
-            fechaPrueba =  '2021-04-06'
+
+            fechaPrueba = '2021-04-06'
             queryset = FechasExamenRecertificacion.objects.filter(fechaExamen__gte=fechaPrueba)
             queryset = queryset.order_by('fechaExamen')[:1]
             for dato in queryset:
                 print(f'---dato: {dato.fechaExamen} - {fechaPrueba} - {dato.descripcion}')
-                
-            fechaPrueba =  '2021-11-10'
+
+            fechaPrueba = '2021-11-10'
             queryset = FechasExamenRecertificacion.objects.filter(fechaExamen__gte=fechaPrueba)
             queryset = queryset.order_by('fechaExamen')[:1]
             print(f'--->queryset: {queryset[0].fechaExamen}')

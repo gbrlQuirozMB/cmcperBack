@@ -200,8 +200,8 @@ class SolicitudExamenSerializer(serializers.ModelSerializer):
     class Meta:
         model = PorExamen
         fields = '__all__'
-        
-        
+
+
 class PorExamenDocumentoSerializer(serializers.ModelSerializer):
     class Meta:
         model = PorExamenDocumento
@@ -210,4 +210,20 @@ class PorExamenDocumentoSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         repr = super().to_representation(instance)
         repr['tipoDocumento'] = instance.catTiposDocumento.descripcion
+        return repr
+
+
+class MedicoAPagarSerializer(serializers.ModelSerializer):
+    tipoDescripcion = serializers.CharField(source='get_tipo_display', read_only=True)
+
+    class Meta:
+        model = CatPagos
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        medicoId = self.context.get('medicoId')
+        datoMedico = Medico.objects.get(id=medicoId)
+        repr['medico'] = datoMedico.nombre + ' ' + datoMedico.apPaterno
+
         return repr

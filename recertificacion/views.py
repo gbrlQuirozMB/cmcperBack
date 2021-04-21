@@ -389,3 +389,37 @@ class DocumentoCertificadoCreateView(CreateAPIView):
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
+
+
+class PorExamenAPagarEndPoint(APIView):
+    def getQuerySet(self):
+        try:
+            return CatPagos.objects.get(tipo=1)
+        except CatPagos.DoesNotExist:
+            raise ResponseError('No existe un registro de pago para el Examen Certificación Vigente', 404)
+
+    def get(self, request, *args, **kwargs):
+        medicoId = kwargs['medicoId']
+        cuenta = Medico.objects.filter(id=medicoId).count()
+        if cuenta < 1:
+            raise ResponseError('No existe medico',404)
+        queryset = self.getQuerySet()
+        serializer = MedicoAPagarSerializer(queryset, context={'medicoId': medicoId})
+        return Response(serializer.data)
+
+
+class RenovacionAPagarEndPoint(APIView):
+    def getQuerySet(self):
+        try:
+            return CatPagos.objects.get(tipo=6)
+        except CatPagos.DoesNotExist:
+            raise ResponseError('No existe un registro de pago para Renovación de Certificación', 404)
+
+    def get(self, request, *args, **kwargs):
+        medicoId = kwargs['medicoId']
+        cuenta = Medico.objects.filter(id=medicoId).count()
+        if cuenta < 1:
+            raise ResponseError('No existe medico',404)
+        queryset = self.getQuerySet()
+        serializer = MedicoAPagarSerializer(queryset, context={'medicoId': medicoId})
+        return Response(serializer.data)
