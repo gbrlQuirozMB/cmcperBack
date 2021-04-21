@@ -222,7 +222,7 @@ class MedicoAPagarSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         repr = super().to_representation(instance)
-        medicoId = self.context.get('medicoId')
+        medicoId = self.context.get('medicoId') # recibimos variable extra!!!
         datoMedico = Medico.objects.get(id=medicoId)
         repr['medico'] = datoMedico.nombre + ' ' + datoMedico.apPaterno
 

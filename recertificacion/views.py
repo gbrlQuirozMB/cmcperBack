@@ -404,7 +404,7 @@ class PorExamenAPagarEndPoint(APIView):
         if cuenta < 1:
             raise ResponseError('No existe medico',404)
         queryset = self.getQuerySet()
-        serializer = MedicoAPagarSerializer(queryset, context={'medicoId': medicoId})
+        serializer = MedicoAPagarSerializer(queryset, context={'medicoId': medicoId}) # enviamos variable extra para consulta interna en serializer
         return Response(serializer.data)
 
 
@@ -421,5 +421,5 @@ class RenovacionAPagarEndPoint(APIView):
         if cuenta < 1:
             raise ResponseError('No existe medico',404)
         queryset = self.getQuerySet()
-        serializer = MedicoAPagarSerializer(queryset, context={'medicoId': medicoId})
+        serializer = MedicoAPagarSerializer(queryset, context={'medicoId': medicoId}) # enviamos variable extra para consulta interna en serializer
         return Response(serializer.data)
