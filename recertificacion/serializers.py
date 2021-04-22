@@ -218,12 +218,27 @@ class MedicoAPagarSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CatPagos
-        fields = '__all__'
+        # fields = '__all__'
+        fields = ['descripcion', 'precio', 'tipo', 'tipoDescripcion']  # OJO: no envio el id porque puede confundir
 
     def to_representation(self, instance):
         repr = super().to_representation(instance)
-        medicoId = self.context.get('medicoId') # recibimos variable extra!!!
+        medicoId = self.context.get('medicoId')  # recibimos variable extra!!!
         datoMedico = Medico.objects.get(id=medicoId)
         repr['medico'] = datoMedico.nombre + ' ' + datoMedico.apPaterno
+        datoPorExamen = PorExamen.objects.get(medico=medicoId, isAceptado=True)
+        repr['porExamenId'] = datoPorExamen.id
 
         return repr
+
+
+class PorExamenPagadoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PorExamen
+        fields = ['id', 'isPagado']
+
+
+class CertificadoPagadoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Certificado
+        fields = ['medico', 'estatus', 'descripcion', 'isVencido']

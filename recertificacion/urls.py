@@ -35,6 +35,8 @@ urlpatterns = [
 
     path('medico/<medicoId>/a-pagar/examen/', PorExamenAPagarEndPoint.as_view(), ),
     path('medico/<medicoId>/a-pagar/renovacion/', RenovacionAPagarEndPoint.as_view(), ),
+    path('examen/<pk>/pagado/', PorExamenPagadoUpdateView.as_view(), ),
+    path('renovacion/pagado/', RenovacionPagadoCreateView.as_view(), ),
 
 
 

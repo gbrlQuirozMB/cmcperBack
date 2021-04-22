@@ -392,9 +392,12 @@ class DocumentoCertificadoCreateView(CreateAPIView):
 
 
 class PorExamenAPagarEndPoint(APIView):
-    def getQuerySet(self):
+    def getQuerySet(self, medicoId):
         try:
-            return CatPagos.objects.get(tipo=1)
+            cuenta = PorExamen.objects.filter(medico=medicoId, isAceptado=True).count()
+            if cuenta == 1:
+                return CatPagos.objects.get(tipo=1)
+            raise ResponseError('No tiene permitido pagar', 409)
         except CatPagos.DoesNotExist:
             raise ResponseError('No existe un registro de pago para el Examen Certificación Vigente', 404)
 
@@ -402,9 +405,9 @@ class PorExamenAPagarEndPoint(APIView):
         medicoId = kwargs['medicoId']
         cuenta = Medico.objects.filter(id=medicoId).count()
         if cuenta < 1:
-            raise ResponseError('No existe medico',404)
-        queryset = self.getQuerySet()
-        serializer = MedicoAPagarSerializer(queryset, context={'medicoId': medicoId}) # enviamos variable extra para consulta interna en serializer
+            raise ResponseError('No existe medico', 404)
+        queryset = self.getQuerySet(medicoId)
+        serializer = MedicoAPagarSerializer(queryset, context={'medicoId': medicoId})  # enviamos variable extra para consulta interna en serializer
         return Response(serializer.data)
 
 
@@ -419,7 +422,38 @@ class RenovacionAPagarEndPoint(APIView):
         medicoId = kwargs['medicoId']
         cuenta = Medico.objects.filter(id=medicoId).count()
         if cuenta < 1:
-            raise ResponseError('No existe medico',404)
+            raise ResponseError('No existe medico', 404)
         queryset = self.getQuerySet()
-        serializer = MedicoAPagarSerializer(queryset, context={'medicoId': medicoId}) # enviamos variable extra para consulta interna en serializer
+        serializer = MedicoAPagarSerializer(queryset, context={'medicoId': medicoId})  # enviamos variable extra para consulta interna en serializer
         return Response(serializer.data)
+
+
+class PorExamenPagadoUpdateView(UpdateAPIView):
+    queryset = PorExamen.objects.filter()
+    serializer_class = PorExamenPagadoSerializer
+    # permission_classes = (permissions.IsAdminUser,) # No porque se utiliza desde un usuario normal
+
+    def put(self, request, *args, **kwargs):
+        id = kwargs['pk']
+        cuenta = PorExamen.objects.filter(id=id, isAceptado=True).count()
+        if cuenta == 1:
+            request.data['isPagado'] = True
+            return self.update(request, *args, **kwargs)
+        cuenta = PorExamen.objects.filter(id=id).count()
+        if cuenta == 1:
+            raise ResponseError('No tiene permitido pagar', 409)
+        raise ResponseError('No existe registro', 404)
+
+
+class RenovacionPagadoCreateView(CreateAPIView):
+    serializer_class = CertificadoPagadoSerializer
+
+    def post(self, request, *args, **kwargs):
+        request.data['estatus'] = 1
+        request.data['descripcion'] = 'generado automaticamente por renovacion de recertificacion'
+        request.data['isVencido'] = False
+        serializer = CertificadoPagadoSerializer(data=request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.info(f'campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)

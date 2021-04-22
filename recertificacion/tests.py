@@ -1055,15 +1055,17 @@ class PostDocumento201Test(APITestCase):
 
 class GetCostoAPagar200Test(APITestCase):
     def setUp(self):
-        CatPagos.objects.create(descripcion='ECV - Examen loco!!!', precio= 369.69, tipo=1)
-        CatPagos.objects.create(descripcion='RC - Examen crazy!!!', precio= 963.69, tipo=6)
-        
+        CatPagos.objects.create(descripcion='ECV - Examen loco!!!', precio=369.69, tipo=1)
+        CatPagos.objects.create(descripcion='RC - Examen crazy!!!', precio=963.69, tipo=6)
+
         medico9 = Medico.objects.create(
             id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
             deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
             cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', estudioExtranjero=True)
-    
+
+        PorExamen.objects.create(id=6, medico=medico9, estatus=3, isAprobado=False, calificacion=0, isPagado=False, isAceptado=True)
+
         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
 
     def test(self):
@@ -1077,15 +1079,94 @@ class GetCostoAPagar200Test(APITestCase):
         response = self.client.get('/api/recertificacion/medico/9/a-pagar/renovacion/')
         print(f'response JSON ===>>> OK - renovacion \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         response = self.client.get('/api/recertificacion/medico/3/a-pagar/renovacion/')
         print(f'response JSON ===>>> 404 no existe medico - renovacion \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        
+
         response = self.client.get('/api/recertificacion/medico/3/a-pagar/examen/')
         print(f'response JSON ===>>> 404 no existe medico - examen \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        
+
+        PorExamen.objects.filter(id=6).update(isAceptado=False)
+        response = self.client.get('/api/recertificacion/medico/9/a-pagar/examen/')
+        print(f'response JSON ===>>> 409 no puede pagar - examen \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+
+
+class PutExamenPagado200Test(APITestCase):
+    def setUp(self):
+        CatPagos.objects.create(descripcion='ECV - Examen loco!!!', precio=369.69, tipo=1)
+        CatPagos.objects.create(descripcion='RC - Examen crazy!!!', precio=963.69, tipo=6)
+
+        medico9 = Medico.objects.create(
+            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', estudioExtranjero=True)
+
+        PorExamen.objects.create(id=3, medico=medico9, estatus=3, isAprobado=False, calificacion=0, isPagado=False, isAceptado=True)
+
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        dato = PorExamen.objects.get(id=3)
+        print(f'--->>>ANTES dato: {dato.id} - {dato.isPagado}')
+
+        response = self.client.put('/api/recertificacion/examen/3/pagado/')
+        print(f'response JSON ===>>> OK \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        dato = PorExamen.objects.get(id=3)
+        print(f'--->>>DESPUES dato: {dato.id} - {dato.isPagado}')
+
+        PorExamen.objects.filter(id=3).update(isAceptado=False)
+        response = self.client.put('/api/recertificacion/examen/3/pagado/')
+        print(f'response JSON ===>>> 409 no tiene permitido \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+
+        response = self.client.put('/api/recertificacion/examen/1/pagado/')
+        print(f'response JSON ===>>> 404 no existe \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class PostRenovacionPagado201Test(APITestCase):
+    def setUp(self):
+        medico9 = Medico.objects.create(
+            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', estudioExtranjero=True)
+
+        archivo = open('./uploads/testUnit.png', 'rb')
+        documento = SimpleUploadedFile(archivo.name, archivo.read(), content_type='image/png')
+        documentoVacio = None
+
+        self.json = {
+            # "documento": documentoVacio,
+            # "descripcion": "tituloDescripcion 3",
+            # "isVencido": False,
+            # "estatus": 1,
+            # "fechaCertificacion": "2021-04-06",
+            # "fechaCaducidad": "2021-04-06",
+            "medico": 9,
+        }
+
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post('/api/recertificacion/renovacion/pagado/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> OK \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        datos = Certificado.objects.get(id=1)
+        print(f'--->datos: id:{datos.id} - fechaCertificacion:{datos.fechaCertificacion} - fechaCaducidad:{datos.fechaCaducidad}')
+
+
 class variosTest(APITestCase):
     def setUp(self):
         pass

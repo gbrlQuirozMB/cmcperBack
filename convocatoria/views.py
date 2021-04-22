@@ -857,7 +857,7 @@ class PublicarCalificaciones(APIView):
                 if dato[8] and not dato[10]:  # se checa que este aprobado y no publicado
                     # hay que crear un nuevo campo de isPublicado y con ese verificar si se crea o no un certificado nuevo
                     medico = Medico.objects.get(id=dato[9])
-                    Certificado.objects.create(medico=medico, documento='', descripcion='generado automaticamente', isVencido=False, estatus=1)
+                    Certificado.objects.create(medico=medico, documento='', descripcion='generado automaticamente por convocatoria', isVencido=False, estatus=1)
                     ConvocatoriaEnrolado.objects.filter(medico=dato[9]).update(isPublicado=True)
 
                 datos = {
