@@ -392,9 +392,12 @@ class DocumentoCertificadoCreateView(CreateAPIView):
 
 
 class PorExamenAPagarEndPoint(APIView):
-    def getQuerySet(self):
+    def getQuerySet(self, medicoId):
         try:
-            return CatPagos.objects.get(tipo=1)
+            cuenta = PorExamen.objects.filter(medico=medicoId, isAceptado=True).count()
+            if cuenta == 1:
+                return CatPagos.objects.get(tipo=1)
+            raise ResponseError('No tiene permitido pagar', 409)
         except CatPagos.DoesNotExist:
             raise ResponseError('No existe un registro de pago para el Examen Certificación Vigente', 404)
 
@@ -403,7 +406,7 @@ class PorExamenAPagarEndPoint(APIView):
         cuenta = Medico.objects.filter(id=medicoId).count()
         if cuenta < 1:
             raise ResponseError('No existe medico',404)
-        queryset = self.getQuerySet()
+        queryset = self.getQuerySet(medicoId)
         serializer = MedicoAPagarSerializer(queryset, context={'medicoId': medicoId}) # enviamos variable extra para consulta interna en serializer
         return Response(serializer.data)
 
