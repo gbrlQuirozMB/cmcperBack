@@ -38,6 +38,8 @@ urlpatterns = [
     path('examen/<pk>/pagado/', PorExamenPagadoUpdateView.as_view(), ),
     path('renovacion/pagado/', RenovacionPagadoCreateView.as_view(), ),
 
+    path('por-examen/list/', PorExamenFilteredListView.as_view(), ),
+
 
 
 

@@ -242,3 +242,15 @@ class CertificadoPagadoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Certificado
         fields = ['medico', 'estatus', 'descripcion', 'isVencido']
+
+
+class PorExamenFilteredListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PorExamen
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        repr['nombreCompleto'] = instance.medico.nombre + ' ' + instance.medico.apPaterno
+
+        return repr

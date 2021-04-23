@@ -22,6 +22,9 @@ from rest_framework.views import APIView
 from notificaciones.models import Notificacion
 from django.contrib.auth.models import User
 
+from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter
+# from django_filters import rest_framework as filters
+
 
 # Create your views here.
 # class CertificadoDatosDetailView(RetrieveAPIView):
@@ -457,3 +460,19 @@ class RenovacionPagadoCreateView(CreateAPIView):
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
+
+
+class PorExamenFilter(FilterSet):
+    nombreNS = CharFilter(field_name='medico__nombre', lookup_expr='iexact')
+    apPaternoNS = CharFilter(field_name='medico__apPaterno', lookup_expr='iexact')
+
+    class Meta:
+        model = PorExamen
+        fields = ['nombreNS', 'apPaternoNS', 'estatus']
+
+
+class PorExamenFilteredListView(ListAPIView):
+    queryset = PorExamen.objects.all()
+    serializer_class = PorExamenFilteredListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = PorExamenFilter
