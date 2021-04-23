@@ -18,7 +18,7 @@ urlpatterns = [
     path('documento/create/', ItemDocumentosCreateView.as_view(), ),
 
     path('medico/<medicoId>/certificados/list/', CertificadosMedicoListView.as_view(), ),
-    path('<nombre>/<apPaterno>/<estatus>/list/', ItemDocumentosFilteredListView.as_view(), ),
+    path('documento/<nombre>/<apPaterno>/<estatus>/list/', ItemDocumentosFilteredListView.as_view(), ),
     path('documento/<pk>/detail/', ItemDocumentosDetailView.as_view(), ),
     path('documento/aceptar/<pk>/', ItemDocumentosAceptar.as_view(), ),
     path('documento/rechazar/<pk>/', ItemDocumentosRechazar.as_view(), ),
@@ -39,6 +39,7 @@ urlpatterns = [
     path('renovacion/pagado/', RenovacionPagadoCreateView.as_view(), ),
 
     path('por-examen/list/', PorExamenFilteredListView.as_view(), ),
+    path('por-examen/<porExamenId>/documentos/list/', PorExamenDocumentosListView.as_view(), ),
 
 
 

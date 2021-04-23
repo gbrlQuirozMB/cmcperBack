@@ -476,3 +476,14 @@ class PorExamenFilteredListView(ListAPIView):
     serializer_class = PorExamenFilteredListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = PorExamenFilter
+
+
+class PorExamenDocumentosListView(ListAPIView):
+    serializer_class = PorExamenDocumentoSerializer
+
+    def get_queryset(self):
+        porExamenId = self.kwargs['porExamenId']
+        queryset = PorExamenDocumento.objects.filter(porExamen=porExamenId)
+        if not queryset:
+            raise ResponseError('No existen documentos con el porExamenId proporcionado', 404)
+        return queryset

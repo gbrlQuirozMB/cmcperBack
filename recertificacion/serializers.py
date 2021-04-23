@@ -254,3 +254,6 @@ class PorExamenFilteredListSerializer(serializers.ModelSerializer):
         repr['nombreCompleto'] = instance.medico.nombre + ' ' + instance.medico.apPaterno
 
         return repr
+
+
+# class PorExamenDocumentoSerializer(serializers.ModelSerializer):
