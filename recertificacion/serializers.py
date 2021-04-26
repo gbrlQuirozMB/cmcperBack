@@ -157,6 +157,7 @@ class ItemDocumentoDetailSerializer(serializers.ModelSerializer):
         repr['subcapitulo'] = instance.item.subcapitulo.descripcion
         repr['nombreCompleto'] = instance.medico.nombre + ' ' + instance.medico.apPaterno + ' ' + instance.medico.apPaterno
         repr['puntosItem'] = instance.item.puntos
+        repr['item'] = instance.item.descripcion
         # try:
         #     certificadoMedico = Certificado.objects.filter(medico=instance.medico, isVencido=False)[0]
         #     repr['fechaCertificacion'] = certificadoMedico.fechaCertificacion
