@@ -1033,6 +1033,16 @@ class PostDocumento201Test(APITestCase):
             # "catTiposDocumento": 6,
             # "isAceptado": True,
         }
+        
+        archivoError = open('./uploads/testUnit.png', 'rb')
+        documentoError = SimpleUploadedFile(archivoError.name, archivoError.read(), content_type='image/png')
+
+        self.jsonError = {
+            "documento": documentoError,
+            "porExamen": 111,
+            # "catTiposDocumento": 6,
+            # "isAceptado": True,
+        }
 
         self.user = User.objects.create_user(username='gabriel')  # , is_staff=True)  # IsAuthenticated
 
@@ -1046,6 +1056,11 @@ class PostDocumento201Test(APITestCase):
         response = self.client.post('/api/recertificacion/documento/certificado/create/', data=self.jsonO, format='multipart')
         print(f'response JSON ===>>> OK \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        
+        response = self.client.post('/api/recertificacion/documento/certificado/create/', data=self.jsonError, format='multipart')
+        print(f'response JSON ===>>> OK \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        
 
         cuenta = Notificacion.objects.count()
         if cuenta != 0:
