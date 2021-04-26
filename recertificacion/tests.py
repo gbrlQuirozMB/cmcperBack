@@ -972,7 +972,7 @@ class PostSolicitarExamen201Test(APITestCase):
         print(f'response JSON ===>>> OK \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        PorExamen.objects.create(medico=self.medico9, estatus=3, isAprobado=False, calificacion=0)
+        # PorExamen.objects.create(medico=self.medico9, estatus=3, isAprobado=False, calificacion=0) #ya esxiste del anterior
         response = self.client.post('/api/recertificacion/solicitud-examen/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> ya se genero una solicitud de examen \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)

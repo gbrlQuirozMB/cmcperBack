@@ -322,7 +322,14 @@ class SolicitudExamenCreateView(CreateAPIView):
             medicoId = request.data.get('medico')
             cuenta = PorExamen.objects.filter(medico=medicoId, isAprobado=False).count()
             if cuenta > 0:
-                raise ResponseError('El medico tiene una solicitud de examen pendiente', 409)
+                dato = PorExamen.objects.filter(medico=medicoId, isAprobado=False).values_list('id')
+                print(f'--->>>dato: {dato[0][0]}')
+                jsonRespuesta = {
+                    'detail': 'El medico tiene una solicitud de examen pendiente',
+                    'porExamenId': dato[0][0]
+                }
+                # raise ResponseError('El medico tiene una solicitud de examen pendiente', 409)
+                raise ResponseError(jsonRespuesta, 409)
             datosMedico = Medico.objects.filter(id=medicoId).values_list('nombre', 'apPaterno', 'apMaterno', 'email')
             queryset = FechasExamenRecertificacion.objects.filter(fechaExamen__gte=date.today())
             queryset = queryset.order_by('fechaExamen')[:1]
