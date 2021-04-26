@@ -256,4 +256,7 @@ class PorExamenFilteredListSerializer(serializers.ModelSerializer):
         return repr
 
 
-# class PorExamenDocumentoSerializer(serializers.ModelSerializer):
+class PorExamenDocumentoAceptarRechazarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PorExamenDocumento
+        fields = ['id', 'isAceptado']

@@ -40,6 +40,7 @@ urlpatterns = [
 
     path('por-examen/list/', PorExamenFilteredListView.as_view(), ),
     path('por-examen/<porExamenId>/documentos/list/', PorExamenDocumentosListView.as_view(), ),
+    path('por-examen/documento/aceptart/<pk>/', PorExamenDocumentoAceptar.as_view(), ),
 
 
 

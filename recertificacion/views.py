@@ -494,3 +494,14 @@ class PorExamenDocumentosListView(ListAPIView):
         if not queryset:
             raise ResponseError('No existen documentos con el porExamenId proporcionado', 404)
         return queryset
+
+
+class PorExamenDocumentoAceptar(UpdateAPIView):
+    queryset = PorExamenDocumento.objects.filter()
+    serializer_class = PorExamenDocumentoAceptarRechazarSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+    def put(self, request, *args, **kwargs):
+        request.data['isAceptado'] = True
+
+        return self.update(request, *args, **kwargs)
