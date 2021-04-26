@@ -516,3 +516,15 @@ class PorExamenDocumentoRechazarUpdateView(UpdateAPIView):
         request.data['isAceptado'] = False
 
         return self.update(request, *args, **kwargs)
+
+
+class PorExamenMedicoDetailView(RetrieveAPIView):
+    def get(self, request, *args, **kwargs):
+        medicoId = kwargs['medicoId']
+        try:
+            queryset = PorExamen.objects.filter(medico=medicoId, isAprobado=False, isPagado=False, isAceptado=False)[0]
+            serializer = PorExamenMedicoSerializer(queryset)
+        except:
+            raise ResponseError('No hay solicitud de examen para el ID de Medico dado', 404)
+
+        return Response(serializer.data)

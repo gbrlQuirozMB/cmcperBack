@@ -260,3 +260,9 @@ class PorExamenDocumentoAceptarRechazarSerializer(serializers.ModelSerializer):
     class Meta:
         model = PorExamenDocumento
         fields = ['id', 'isAceptado']
+
+
+class PorExamenMedicoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PorExamen
+        fields = '__all__'

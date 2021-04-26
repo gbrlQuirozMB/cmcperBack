@@ -43,6 +43,8 @@ urlpatterns = [
     path('por-examen/documento/aceptar/<pk>/', PorExamenDocumentoAceptarUpdateView.as_view(), ),
     path('por-examen/documento/rechazar/<pk>/', PorExamenDocumentoRechazarUpdateView.as_view(), ),
 
+    path('por-examen/medico/<medicoId>/detail/', PorExamenMedicoDetailView.as_view(), ),
+
 
 
 

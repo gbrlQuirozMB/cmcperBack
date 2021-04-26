@@ -1415,6 +1415,53 @@ class PutPorExamenDocumentoRechazar200Test(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
+class GetPorExamenMedicoDetail200Test(APITestCase):
+    def setUp(self):
+        medico3 = Medico.objects.create(
+            id=3, nombre='elianid', apPaterno='tolentino', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
+        medico6 = Medico.objects.create(
+            id=6, nombre='laura', apPaterno='cabrera', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
+        medico9 = Medico.objects.create(
+            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
+
+        PorExamen.objects.create(medico=medico9, estatus=3, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False)
+        PorExamen.objects.create(medico=medico6, estatus=2, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False)
+        PorExamen.objects.create(medico=medico3, estatus=1, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False)
+        PorExamen.objects.create(medico=medico9, estatus=1, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False)
+        PorExamen.objects.create(medico=medico9, estatus=3, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False)
+        PorExamen.objects.create(medico=medico6, estatus=2, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False)
+        PorExamen.objects.create(medico=medico6, estatus=2, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False)
+        PorExamen.objects.create(medico=medico3, estatus=1, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False)
+        PorExamen.objects.create(medico=medico3, estatus=1, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False)
+        PorExamen.objects.create(medico=medico9, estatus=1, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False)
+
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/recertificacion/por-examen/medico/9/detail/')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/recertificacion/por-examen/medico/6/detail/')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/recertificacion/por-examen/medico/66/detail/')
+        print(f'response JSON ===>>> 404 no existe \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
 class variosTest(APITestCase):
     def setUp(self):
         pass
