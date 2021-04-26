@@ -1336,14 +1336,80 @@ class PutPorExamenDocumentoAceptar200Test(APITestCase):
 
         datos = PorExamenDocumento.objects.get(id=2)
         print(f'--->>>dato: {datos.id} - {datos.isAceptado}')
-        response = self.client.put('/api/recertificacion/por-examen/documento/aceptart/2/', data=json.dumps(self.json), content_type="application/json")
+        response = self.client.put('/api/recertificacion/por-examen/documento/aceptar/2/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> OK \n {json.dumps(response.json())} \n ---')
         # print(f'response JSON ===>>> \n {json.dumps(response.data)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         datos = PorExamenDocumento.objects.get(id=2)
         print(f'--->>>dato: {datos.id} - {datos.isAceptado}')
 
-        response = self.client.put('/api/recertificacion/por-examen/documento/aceptart/22/', data=json.dumps(self.json), content_type="application/json")
+        response = self.client.put('/api/recertificacion/por-examen/documento/aceptar/22/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> no encotrado 404 \n {json.dumps(response.json())} \n ---')
+        # print(f'response JSON ===>>> \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class PutPorExamenDocumentoRechazar200Test(APITestCase):
+    def setUp(self):
+        catTiposDocumento1 = CatTiposDocumento.objects.create(descripcion='Revalidación')
+        catTiposDocumento2 = CatTiposDocumento.objects.create(descripcion='CURP')
+        catTiposDocumento3 = CatTiposDocumento.objects.create(descripcion='Acta de Nacimiento')
+        catTiposDocumento4 = CatTiposDocumento.objects.create(descripcion='Carta de Solicitud de Examen')
+        catTiposDocumento5 = CatTiposDocumento.objects.create(descripcion='Constancia de Posgrado')
+        catTiposDocumento6 = CatTiposDocumento.objects.create(descripcion='Cédula de Especialidad')
+        catTiposDocumento7 = CatTiposDocumento.objects.create(descripcion='Título de la Licenciatura')
+        catTiposDocumento8 = CatTiposDocumento.objects.create(descripcion='Cédula Profesional')
+        catTiposDocumento9 = CatTiposDocumento.objects.create(descripcion='Constancia de Cirugía General')
+        catTiposDocumento10 = CatTiposDocumento.objects.create(descripcion='Carta de Profesor Titular')
+        catTiposDocumento11 = CatTiposDocumento.objects.create(descripcion='Ficha de Registro')
+        catTiposDocumento12 = CatTiposDocumento.objects.create(descripcion='Fotografía')
+        catTiposDocumento13 = CatTiposDocumento.objects.create(descripcion='Certificado')
+
+        medico3 = Medico.objects.create(
+            id=3, nombre='elianid', apPaterno='tolentino', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
+        medico6 = Medico.objects.create(
+            id=6, nombre='laura', apPaterno='cabrera', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
+        medico9 = Medico.objects.create(
+            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
+
+        porExamen9 = PorExamen.objects.create(id=9, medico=medico9, estatus=3, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False)
+        porExamen6 = PorExamen.objects.create(id=6, medico=medico6, estatus=2, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False)
+        porExamen3 = PorExamen.objects.create(id=3, medico=medico3, estatus=1, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False)
+
+        PorExamenDocumento.objects.create(porExamen=porExamen9, catTiposDocumento=catTiposDocumento9, documento='documento9', isAceptado=False)
+        PorExamenDocumento.objects.create(porExamen=porExamen9, catTiposDocumento=catTiposDocumento6, documento='documento6', isAceptado=False)
+        PorExamenDocumento.objects.create(porExamen=porExamen9, catTiposDocumento=catTiposDocumento3, documento='documento3', isAceptado=False)
+        PorExamenDocumento.objects.create(porExamen=porExamen6, catTiposDocumento=catTiposDocumento1, documento='documento1', isAceptado=False)
+        PorExamenDocumento.objects.create(porExamen=porExamen3, catTiposDocumento=catTiposDocumento2, documento='documento2', isAceptado=False)
+
+        self.json = {
+            "isAceptado": True
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        datos = PorExamenDocumento.objects.get(id=2)
+        print(f'--->>>dato: {datos.id} - {datos.isAceptado}')
+        response = self.client.put('/api/recertificacion/por-examen/documento/rechazar/2/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> OK \n {json.dumps(response.json())} \n ---')
+        # print(f'response JSON ===>>> \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        datos = PorExamenDocumento.objects.get(id=2)
+        print(f'--->>>dato: {datos.id} - {datos.isAceptado}')
+
+        response = self.client.put('/api/recertificacion/por-examen/documento/rechazar/22/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> no encotrado 404 \n {json.dumps(response.json())} \n ---')
         # print(f'response JSON ===>>> \n {json.dumps(response.data)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

@@ -496,12 +496,23 @@ class PorExamenDocumentosListView(ListAPIView):
         return queryset
 
 
-class PorExamenDocumentoAceptar(UpdateAPIView):
+class PorExamenDocumentoAceptarUpdateView(UpdateAPIView):
     queryset = PorExamenDocumento.objects.filter()
     serializer_class = PorExamenDocumentoAceptarRechazarSerializer
     permission_classes = (permissions.IsAdminUser,)
 
     def put(self, request, *args, **kwargs):
         request.data['isAceptado'] = True
+
+        return self.update(request, *args, **kwargs)
+
+
+class PorExamenDocumentoRechazarUpdateView(UpdateAPIView):
+    queryset = PorExamenDocumento.objects.filter()
+    serializer_class = PorExamenDocumentoAceptarRechazarSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+    def put(self, request, *args, **kwargs):
+        request.data['isAceptado'] = False
 
         return self.update(request, *args, **kwargs)
