@@ -18,7 +18,7 @@ from rest_framework.response import Response
 # ----------------------------------------------------------------------------------Chat
 class ChatCreateView(CreateAPIView):
     serializer_class = MensajeSerializer
-    # permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.AllowAny,)
 
     def post(self, request, *args, **kwargs):
         serializer = MensajeSerializer(data=request.data)
@@ -54,7 +54,7 @@ class ChatListEndPoint(APIView):
     orderby -- campo opr el cual se ordenaran los registros a traer
     direc -- si es ascendente(asc) o descencende (vacio)
     """
-    # permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.AllowAny,)
 
     def get(self, request, remitente, destinatario):
         queryset = Mensaje.objects.all().filter(remitente=remitente, destinatario=destinatario)
@@ -86,7 +86,7 @@ class ConversacionListEndPoint(APIView):
     orderby -- campo opr el cual se ordenaran los registros a traer
     direc -- si es ascendente(asc) o descencende (vacio)
     """
-    # permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.AllowAny,)
 
     def get(self, request):
         queryset = Conversacion.objects.all()
@@ -118,7 +118,7 @@ class MedicoChatListEndPoint(APIView):
     orderby -- campo opr el cual se ordenaran los registros a traer
     direc -- si es ascendente(asc) o descencende (vacio)
     """
-    # permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.AllowAny,)
 
     def get(self, request):
         queryset = Medico.objects.all().filter(aceptado=True)
