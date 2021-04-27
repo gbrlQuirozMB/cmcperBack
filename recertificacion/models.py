@@ -66,10 +66,21 @@ class Certificado(models.Model):
         ordering = ['-actualizado_en']
 
 
+class FechasExamenRecertificacion(models.Model):
+    actualizado_en = models.DateTimeField(auto_now=True)
+    fechaExamen = models.DateField(db_column='fecha_examen')
+    descripcion = models.CharField(max_length=300)
+    
+    class Meta:
+        db_table = 'fechas_examen_recertificacion'
+        ordering = ['-fechaExamen']
+    
+
 class PorExamen(models.Model):
     creado_en = models.DateTimeField(auto_now_add=True)
     actualizado_en = models.DateTimeField(auto_now=True)
     medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medicoPE')
+    fechaExamen = models.ForeignKey(FechasExamenRecertificacion, on_delete=models.CASCADE, null=True, related_name='fechaExamenPE')
     estatus = models.PositiveSmallIntegerField(blank=True, choices=(
         (1, 'Aceptado'),
         (2, 'Rechazado'),
@@ -150,13 +161,5 @@ class PuntosPorCapituloMedico:
         self.puntosCapitulo = puntosCapitulo
 
 
-class FechasExamenRecertificacion(models.Model):
-    actualizado_en = models.DateTimeField(auto_now=True)
-    fechaExamen = models.DateField(db_column='fecha_examen')
-    descripcion = models.CharField(max_length=300)
-    
-    class Meta:
-        db_table = 'fechas_examen_recertificacion'
-        ordering = ['-fechaExamen']
-    
+
     

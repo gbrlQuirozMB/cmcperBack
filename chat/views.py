@@ -25,7 +25,7 @@ class ChatCreateView(CreateAPIView):
         if serializer.is_valid():
             destinatario = self.request.data.get('destinatario')
             # remitente = self.request.data.get('remitente')
-            print(f'--->destinatario: {destinatario}')
+            # print(f'--->destinatario: {destinatario}')
             Conversacion.objects.filter(destinatario=destinatario).delete()
             nombre = getNombreSesion(request,destinatario)
             Conversacion.objects.create(destinatario=destinatario,nombre=nombre)

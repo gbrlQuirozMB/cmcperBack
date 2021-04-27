@@ -313,7 +313,6 @@ class SolicitudExamenCreateView(CreateAPIView):
     serializer_class = SolicitudExamenSerializer
 
     def post(self, request, *args, **kwargs):
-
         request.data['estatus'] = 3
         request.data['isAprobado'] = False
         request.data['calificacion'] = 0
@@ -323,7 +322,7 @@ class SolicitudExamenCreateView(CreateAPIView):
             cuenta = PorExamen.objects.filter(medico=medicoId, isAprobado=False).count()
             if cuenta > 0:
                 dato = PorExamen.objects.filter(medico=medicoId, isAprobado=False).values_list('id')
-                print(f'--->>>dato: {dato[0][0]}')
+                # print(f'--->>>dato: {dato[0][0]}')
                 jsonRespuesta = {
                     'detail': 'El medico tiene una solicitud de examen pendiente',
                     'porExamenId': dato[0][0]
@@ -333,6 +332,7 @@ class SolicitudExamenCreateView(CreateAPIView):
             datosMedico = Medico.objects.filter(id=medicoId).values_list('nombre', 'apPaterno', 'apMaterno', 'email')
             queryset = FechasExamenRecertificacion.objects.filter(fechaExamen__gte=date.today())
             queryset = queryset.order_by('fechaExamen')[:1]
+            request.data['fechaExamen'] = queryset[0].id
             datos = {
                 'nombre': datosMedico[0][0],
                 'apPaterno': datosMedico[0][1],
@@ -475,7 +475,7 @@ class PorExamenFilter(FilterSet):
 
     class Meta:
         model = PorExamen
-        fields = ['nombreNS', 'apPaternoNS', 'estatus']
+        fields = ['nombreNS', 'apPaternoNS', 'estatus', 'fechaExamen']
 
 
 class PorExamenFilteredListView(ListAPIView):
