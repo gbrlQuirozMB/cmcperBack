@@ -90,6 +90,8 @@ class PorExamen(models.Model):
     calificacion = models.PositiveSmallIntegerField(blank=True, null=True)
     isPagado = models.BooleanField(default=False, db_column='is_pagado') # verificar si ya pago
     isAceptado = models.BooleanField(default=False, db_column='is_aceptado') # se activa para validar que aceptaron todos sus documentos
+    isPublicado = models.BooleanField(default=False, db_column='is_publicado') # verificar si se le da su certificado por primera vez
+    
     
 
     class Meta:

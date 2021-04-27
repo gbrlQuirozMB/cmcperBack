@@ -579,3 +579,49 @@ class PorExamenFechaUpExcel(APIView):
         except Exception as e:
             respuesta = {"detail": str(e)}
             return Response(respuesta, status=status.HTTP_409_CONFLICT)
+
+
+class PublicarCalificaciones(APIView):
+    permission_classes = (permissions.IsAdminUser,)
+
+    def get(self, request, *args, **kwargs):
+        fechaExamenId = self.kwargs['fechaExamenId']
+        try:
+            queryset = PorExamen.objects.filter(fechaExamen=fechaExamenId).values_list('id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno',
+                                                                                       'fechaExamen__fechaExamen', 'calificacion', 'medico__email', 'isAprobado', 'medico__id',
+                                                                                       'isPublicado')
+            # print(f'--->>>queryset como tupla(values_list): {queryset}')
+            if not queryset:
+                respuesta = {"detail": "Registros no encontrados"}
+                return Response(respuesta, status=status.HTTP_404_NOT_FOUND)
+
+            for dato in queryset:
+                if dato[8] and not dato[10]:  # se checa que este aprobado y no publicado
+                    # hay que crear un nuevo campo de isPublicado y con ese verificar si se crea o no un certificado nuevo
+                    medico = Medico.objects.get(id=dato[9])
+                    Certificado.objects.create(medico=medico, documento='', descripcion='generado automaticamente por recertificacion examen', isVencido=False, estatus=1)
+                    PorExamen.objects.filter(medico=dato[9]).update(isPublicado=True)
+
+                datos = {
+                    'nombre': dato[2],
+                    'apPaterno': dato[3],
+                    'apMaterno': dato[4],
+                    'fechaExamen': dato[5],
+                    'anioExamen': dato[5].strftime("%Y"),
+                    # 'aceptado': True if dato[6] > 5 else False,
+                    'aceptado': dato[8],
+                    'email': dato[7]
+                }
+                print(f'--->>>datos: {datos}')
+                try:
+                    htmlContent = render_to_string('exam-a-r.html', datos)
+                    textContent = strip_tags(htmlContent)
+                    emailAcep = EmailMultiAlternatives('CMCPER - Resultado de Examen', textContent, "no-reply@cmcper.mx", [datos['email']])
+                    emailAcep.attach_alternative(htmlContent, "text/html")
+                    emailAcep.send()
+                except:
+                    raise ResponseError('Error al enviar correo', 500)
+            return Response(status=status.HTTP_200_OK)
+        except Exception as e:
+            respuesta = {"detail": str(e)}
+            return Response(respuesta, status=status.HTTP_409_CONFLICT)

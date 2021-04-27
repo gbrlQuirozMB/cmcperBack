@@ -1567,6 +1567,58 @@ class PutProcesaExcel200Test(APITestCase):
         for dato in datos:
             print(f'--->>>id: {dato.id} - calificacion: {dato.calificacion}')
 
+
+class GetPublicarCalificaciones200Test(APITestCase):
+    def setUp(self):
+        medico3 = Medico.objects.create(
+            id=3, nombre='elianid', apPaterno='tolentino', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=333)
+        medico6 = Medico.objects.create(
+            id=6, nombre='laura', apPaterno='cabrera', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=666)
+        medico9 = Medico.objects.create(
+            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999)
+        
+        fechaExamen1 = FechasExamenRecertificacion.objects.create(fechaExamen='2021-04-01', descripcion='primer fecha')
+        fechaExamen2 = FechasExamenRecertificacion.objects.create(fechaExamen='2021-08-01', descripcion='segunda fecha')
+        fechaExamen3 = FechasExamenRecertificacion.objects.create(fechaExamen='2021-12-01', descripcion='tercera fecha')
+
+        PorExamen.objects.create(medico=medico9, estatus=3, isAprobado=True, calificacion=0, isPagado=False, isAceptado=False, fechaExamen=fechaExamen1, isPublicado=False) #1
+        PorExamen.objects.create(medico=medico6, estatus=2, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False, fechaExamen=fechaExamen1, isPublicado=False) #2
+        PorExamen.objects.create(medico=medico3, estatus=1, isAprobado=True, calificacion=0, isPagado=False, isAceptado=False, fechaExamen=fechaExamen1, isPublicado=False) #3
+        
+        archivo = open('./uploads/recertificacion.csv', 'rb')
+        csvFile = SimpleUploadedFile(archivo.name, archivo.read(), content_type='text/csv')
+
+        self.json = {
+            "archivo": csvFile
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        cuentaCertificados =  Certificado.objects.count()
+        print(f'--->>>cuentaCertificados: {cuentaCertificados}')
+        
+        response = self.client.get('/api/recertificacion/por-examen/fecha/1/publicar/list/')
+        print(f'response JSON ===>>> ok \n {response.content} \n ---')
+        # print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        # print(f'response JSON ===>>> ok \n {response.json()} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        cuentaCertificados =  Certificado.objects.count()
+        print(f'--->>>cuentaCertificados: {cuentaCertificados}')
+
+
 class variosTest(APITestCase):
     def setUp(self):
         pass
