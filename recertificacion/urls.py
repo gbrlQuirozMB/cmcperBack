@@ -46,6 +46,8 @@ urlpatterns = [
     path('por-examen/medico/<medicoId>/detail/', PorExamenMedicoDetailView.as_view(), ),
 
     path('por-examen/fecha/<fechaExamenId>/bajar-excel/list/', PorExamenFechaDownExcel.as_view(), ),
+    path('por-examen/fecha/<fechaExamenId>/cargar-excel/update/', PorExamenFechaUpExcel.as_view(), ),
+
 
 
 

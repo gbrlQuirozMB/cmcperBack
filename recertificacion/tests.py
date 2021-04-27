@@ -1510,22 +1510,62 @@ class GetDescargarExcel200Test(APITestCase):
         PorExamen.objects.create(medico=medico9, estatus=3, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False, fechaExamen=fechaExamen2) #1
         PorExamen.objects.create(medico=medico6, estatus=2, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False, fechaExamen=fechaExamen1) #2
         PorExamen.objects.create(medico=medico3, estatus=1, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False, fechaExamen=fechaExamen1) #3
-        PorExamen.objects.create(medico=medico9, estatus=1, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False, fechaExamen=fechaExamen1) #4
-        PorExamen.objects.create(medico=medico9, estatus=3, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False, fechaExamen=fechaExamen1) #5
-        PorExamen.objects.create(medico=medico6, estatus=2, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False, fechaExamen=fechaExamen1) #6
-        PorExamen.objects.create(medico=medico6, estatus=2, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False, fechaExamen=fechaExamen1) #7
-        PorExamen.objects.create(medico=medico3, estatus=1, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False, fechaExamen=fechaExamen1) #8
-        PorExamen.objects.create(medico=medico3, estatus=1, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False, fechaExamen=fechaExamen1) #9
-        PorExamen.objects.create(medico=medico9, estatus=1, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False, fechaExamen=fechaExamen1) #10
 
         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
 
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        response = self.client.get('/api/recertificacion/por-examen/fecha/2/bajar-excel/list/')
+        response = self.client.get('/api/recertificacion/por-examen/fecha/1/bajar-excel/list/')
         print(f'response JSON ===>>> ok \n {response.content} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class PutProcesaExcel200Test(APITestCase):
+    def setUp(self):
+        medico3 = Medico.objects.create(
+            id=3, nombre='elianid', apPaterno='tolentino', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=333)
+        medico6 = Medico.objects.create(
+            id=6, nombre='laura', apPaterno='cabrera', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=666)
+        medico9 = Medico.objects.create(
+            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999)
+        
+        fechaExamen1 = FechasExamenRecertificacion.objects.create(fechaExamen='2021-04-01', descripcion='primer fecha')
+        fechaExamen2 = FechasExamenRecertificacion.objects.create(fechaExamen='2021-08-01', descripcion='segunda fecha')
+        fechaExamen3 = FechasExamenRecertificacion.objects.create(fechaExamen='2021-12-01', descripcion='tercera fecha')
+
+        PorExamen.objects.create(medico=medico9, estatus=3, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False, fechaExamen=fechaExamen2) #1
+        PorExamen.objects.create(medico=medico6, estatus=2, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False, fechaExamen=fechaExamen1) #2
+        PorExamen.objects.create(medico=medico3, estatus=1, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False, fechaExamen=fechaExamen1) #3
+        
+        archivo = open('./uploads/recertificacion.csv', 'rb')
+        csvFile = SimpleUploadedFile(archivo.name, archivo.read(), content_type='text/csv')
+
+        self.json = {
+            "archivo": csvFile
+        }
+
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.put('/api/recertificacion/por-examen/fecha/1/cargar-excel/update/', data=self.json, format='multipart')
+        print(f'response JSON ===>>> ok \n {response.content} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        datos = PorExamen.objects.all()
+        for dato in datos:
+            print(f'--->>>id: {dato.id} - calificacion: {dato.calificacion}')
 
 class variosTest(APITestCase):
     def setUp(self):

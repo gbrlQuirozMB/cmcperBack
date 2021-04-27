@@ -26,8 +26,11 @@ from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFi
 # from django_filters import rest_framework as filters
 
 from django.http import HttpResponse
-import csv
 from django.views import View
+
+import csv
+import codecs
+
 
 # Create your views here.
 # class CertificadoDatosDetailView(RetrieveAPIView):
@@ -557,6 +560,22 @@ class PorExamenFechaDownExcel(View):
                 return Response(respuesta, status=status.HTTP_404_NOT_FOUND)
 
             return renderCsvView(request, queryset)
+        except Exception as e:
+            respuesta = {"detail": str(e)}
+            return Response(respuesta, status=status.HTTP_409_CONFLICT)
+
+
+class PorExamenFechaUpExcel(APIView):
+    def put(self, request, *args, **kwargs):
+        # archivo = request.FILES['archivo']
+        archivo = request.data['archivo']
+        datosList = list(csv.reader(codecs.iterdecode(archivo, 'utf-8'), delimiter=','))
+        datosList.pop(0)
+        try:
+            for row in datosList:
+                PorExamen.objects.filter(id=row[0]).update(calificacion=row[5], isAprobado=row[6])
+            respuesta = {"detail": "Datos subidos correctamente"}
+            return Response(respuesta, status=status.HTTP_200_OK)
         except Exception as e:
             respuesta = {"detail": str(e)}
             return Response(respuesta, status=status.HTTP_409_CONFLICT)
