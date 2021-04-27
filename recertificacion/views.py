@@ -25,6 +25,9 @@ from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter
 # from django_filters import rest_framework as filters
 
+from django.http import HttpResponse
+import csv
+from django.views import View
 
 # Create your views here.
 # class CertificadoDatosDetailView(RetrieveAPIView):
@@ -528,3 +531,32 @@ class PorExamenMedicoDetailView(RetrieveAPIView):
             raise ResponseError('No hay solicitud de examen para el ID de Medico dado', 404)
 
         return Response(serializer.data)
+
+
+def renderCsvView(request, queryset):
+    response = HttpResponse(content_type='text/csv')
+    # response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="calificaciones-medicos.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['NO TOCAR', 'Num. de Registro', 'Nombre', 'Apellido Paterno', 'Apellido Materno', 'Calificacion', 'Aprobado'])
+    for dato in queryset:
+        writer.writerow(dato)
+
+    return response
+
+
+class PorExamenFechaDownExcel(View):
+    def get(self, request, *args, **kwargs):
+        fechaExamenId = self.kwargs['fechaExamenId']
+        try:
+            queryset = PorExamen.objects.filter(fechaExamen=fechaExamenId).values_list('id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno',
+                                                                                       'calificacion', 'isAprobado')
+            # print(f'--->>>queryset como tupla(values_list): {queryset}')
+            if not queryset:
+                respuesta = {"detail": "Registros no encontrados"}
+                return Response(respuesta, status=status.HTTP_404_NOT_FOUND)
+
+            return renderCsvView(request, queryset)
+        except Exception as e:
+            respuesta = {"detail": str(e)}
+            return Response(respuesta, status=status.HTTP_409_CONFLICT)
