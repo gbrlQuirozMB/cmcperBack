@@ -762,81 +762,81 @@ class ConvocatoriaEnroladosUpExcel(APIView):
             return Response(respuesta, status=status.HTTP_409_CONFLICT)
 
 
-class SubirPagoCreateView(CreateAPIView):
-    serializer_class = ConvocatoriaPagoSerializer
+# class SubirPagoCreateView(CreateAPIView):
+#     serializer_class = ConvocatoriaPagoSerializer
 
-    def post(self, request, *args, **kwargs):
-        request.data['estatus'] = 3
-        serializer = ConvocatoriaPagoSerializer(data=request.data)
-        if serializer.is_valid():
-            datoUser = User.objects.filter(is_superuser=True, is_staff=True).values_list('id')
-            Notificacion.objects.create(titulo='Convocatoria', mensaje='Se subió un pago', destinatario=datoUser[0][0], remitente=0)
-            return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
-        raise CamposIncorrectos(serializer.errors)
-
-
-def getQuerysetEstatus(estatus):
-    if estatus == 0:
-        queryset = Pago.objects.all()
-        return queryset
-
-    queryset = Pago.objects.filter(estatus=estatus)
-    return queryset
+#     def post(self, request, *args, **kwargs):
+#         request.data['estatus'] = 3
+#         serializer = ConvocatoriaPagoSerializer(data=request.data)
+#         if serializer.is_valid():
+#             datoUser = User.objects.filter(is_superuser=True, is_staff=True).values_list('id')
+#             Notificacion.objects.create(titulo='Convocatoria', mensaje='Se subió un pago', destinatario=datoUser[0][0], remitente=0)
+#             return self.create(request, *args, **kwargs)
+#         log.info(f'campos incorrectos: {serializer.errors}')
+#         raise CamposIncorrectos(serializer.errors)
 
 
-class PagosListView(ListAPIView):
-    serializer_class = PagosListSerializer
+# def getQuerysetEstatus(estatus):
+#     if estatus == 0:
+#         queryset = Pago.objects.all()
+#         return queryset
 
-    def get_queryset(self):
-        estatus = self.kwargs['estatus']
-        log.info(f'se busca por: estatus: {estatus}')
-
-        return getQuerysetEstatus(estatus)
-
-
-class PagoAceptarUpdateView(UpdateAPIView):
-    queryset = Pago.objects.filter()
-    serializer_class = PagoAceptarRechazarSerializer
-    permission_classes = (permissions.IsAdminUser,)
-
-    def put(self, request, *args, **kwargs):
-        id = kwargs['pk']
-        try:
-            dato = Pago.objects.get(id=id)
-        except Exception as e:
-            raise ResponseError('No existe registro', 404)
-
-        cuenta = ConvocatoriaEnrolado.objects.filter(id=dato.convocatoriaEnrolado.id, isAceptado=True).count()
-        if cuenta == 1:
-            request.data['estatus'] = 1
-            ConvocatoriaEnrolado.objects.filter(id=dato.convocatoriaEnrolado.id).update(isPagado=True)
-            return self.update(request, *args, **kwargs)
-        cuenta = ConvocatoriaEnrolado.objects.filter(id=dato.convocatoriaEnrolado.id).count()
-        if cuenta == 1:
-            raise ResponseError('No tiene permitido pagar', 409)
+#     queryset = Pago.objects.filter(estatus=estatus)
+#     return queryset
 
 
-class PagoRechazarUpdateView(UpdateAPIView):
-    queryset = Pago.objects.filter()
-    serializer_class = PagoAceptarRechazarSerializer
-    permission_classes = (permissions.IsAdminUser,)
+# class PagosListView(ListAPIView):
+#     serializer_class = PagosListSerializer
 
-    def put(self, request, *args, **kwargs):
-        id = kwargs['pk']
-        try:
-            dato = Pago.objects.get(id=id)
-        except Exception as e:
-            raise ResponseError('No existe registro', 404)
+#     def get_queryset(self):
+#         estatus = self.kwargs['estatus']
+#         log.info(f'se busca por: estatus: {estatus}')
 
-        cuenta = ConvocatoriaEnrolado.objects.filter(id=dato.convocatoriaEnrolado.id, isAceptado=True).count()
-        if cuenta == 1:
-            request.data['estatus'] = 2
-            ConvocatoriaEnrolado.objects.filter(id=dato.convocatoriaEnrolado.id).update(isPagado=False)
-            return self.update(request, *args, **kwargs)
-        cuenta = ConvocatoriaEnrolado.objects.filter(id=dato.convocatoriaEnrolado.id).count()
-        if cuenta == 1:
-            raise ResponseError('No tiene permitido pagar', 409)
+#         return getQuerysetEstatus(estatus)
+
+
+# class PagoAceptarUpdateView(UpdateAPIView):
+#     queryset = Pago.objects.filter()
+#     serializer_class = PagoAceptarRechazarSerializer
+#     permission_classes = (permissions.IsAdminUser,)
+
+#     def put(self, request, *args, **kwargs):
+#         id = kwargs['pk']
+#         try:
+#             dato = Pago.objects.get(id=id)
+#         except Exception as e:
+#             raise ResponseError('No existe registro', 404)
+
+#         cuenta = ConvocatoriaEnrolado.objects.filter(id=dato.convocatoriaEnrolado.id, isAceptado=True).count()
+#         if cuenta == 1:
+#             request.data['estatus'] = 1
+#             ConvocatoriaEnrolado.objects.filter(id=dato.convocatoriaEnrolado.id).update(isPagado=True)
+#             return self.update(request, *args, **kwargs)
+#         cuenta = ConvocatoriaEnrolado.objects.filter(id=dato.convocatoriaEnrolado.id).count()
+#         if cuenta == 1:
+#             raise ResponseError('No tiene permitido pagar', 409)
+
+
+# class PagoRechazarUpdateView(UpdateAPIView):
+#     queryset = Pago.objects.filter()
+#     serializer_class = PagoAceptarRechazarSerializer
+#     permission_classes = (permissions.IsAdminUser,)
+
+#     def put(self, request, *args, **kwargs):
+#         id = kwargs['pk']
+#         try:
+#             dato = Pago.objects.get(id=id)
+#         except Exception as e:
+#             raise ResponseError('No existe registro', 404)
+
+#         cuenta = ConvocatoriaEnrolado.objects.filter(id=dato.convocatoriaEnrolado.id, isAceptado=True).count()
+#         if cuenta == 1:
+#             request.data['estatus'] = 2
+#             ConvocatoriaEnrolado.objects.filter(id=dato.convocatoriaEnrolado.id).update(isPagado=False)
+#             return self.update(request, *args, **kwargs)
+#         cuenta = ConvocatoriaEnrolado.objects.filter(id=dato.convocatoriaEnrolado.id).count()
+#         if cuenta == 1:
+#             raise ResponseError('No tiene permitido pagar', 409)
 
 
 class PublicarCalificaciones(APIView):
