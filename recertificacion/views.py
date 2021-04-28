@@ -645,13 +645,13 @@ class CorreoDocumentosEndPoint(APIView):
             'cuentaDocumentos': cuentaDocumentos,  # fines de control
         }
         # print(f'--->>>datos: {datos}')
-        # try:
-        #     htmlContent = render_to_string('doc-dig-a-r.html', datos)
-        #     textContent = strip_tags(htmlContent)
-        #     emailAcep = EmailMultiAlternatives(datos['titulo'], textContent, "no-reply@cmcper.mx", [datos['email']])
-        #     emailAcep.attach_alternative(htmlContent, "text/html")
-        #     emailAcep.send()
-        # except:
-        #     raise ResponseError('Error al enviar correo', 500)
+        try:
+            htmlContent = render_to_string('recert-doc-dig-a-r.html', datos)
+            textContent = strip_tags(htmlContent)
+            emailAcep = EmailMultiAlternatives(datos['titulo'], textContent, "no-reply@cmcper.mx", [datos['email']])
+            emailAcep.attach_alternative(htmlContent, "text/html")
+            emailAcep.send()
+        except:
+            raise ResponseError('Error al enviar correo', 500)
 
         return Response(datos)
