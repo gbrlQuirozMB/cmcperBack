@@ -19,9 +19,9 @@ class ConversacionSerializer(serializers.ModelSerializer):
         repr = super().to_representation(instance)
         try:
             datoMedico = Medico.objects.get(numRegistro=instance.destinatario)
-            repr['fotoPerfil'] = str(datoMedico.fotoPerfil)
+            repr['fotoPerfil'] = datoMedico.fotoPerfil.url
         except:
-            repr['fotoPerfil'] = 'no existe foto'
+            repr['fotoPerfil'] = None
 
         return repr
 

@@ -172,6 +172,9 @@ class GetConversacionList200Test(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
+        datosMedico = Medico.objects.all()
+        for dato in datosMedico:
+            print(f'--->>>fotoPerfil: {dato.fotoPerfil}')
         
 
 class GetMedicoChatList200Test(APITestCase):
@@ -187,9 +190,13 @@ class GetMedicoChatList200Test(APITestCase):
             Medico.objects.create(id=3, nombre='n3', apPaterno='app3', apMaterno='apm3', rfc='rfc3', curp='curp3', fechaNac='2020-09-09', pais='pais3', estado='estado3', ciudad='ciudad3', deleMuni='deleMuni3',
                                 colonia='colonia', calle='calle3', cp='cp3', numExterior='numExterior3', rfcFacturacion='rfcFacturacion3', cedProfesional='cedProfesional3', cedEspecialidad='cedEspecialidad3',
                                 cedCirugiaGral='cedCirugiaGral3',hospitalResi='hospitalResi3',telJefEnse='telJefEnse3',fechaInicioResi='1999-06-06',fechaFinResi='2000-07-07',telCelular='telCelular3',
-                                telParticular='telParticular3',email='email3',aceptado=True,numRegistro=999, fotoPerfil='mi_foto_999.png')
+                                telParticular='telParticular3',email='email3',aceptado=True,numRegistro=999)#, fotoPerfil='mi_foto_999.png')
 
     def test(self):
         response = self.client.get('/api/chat/medicos/list/')
         print(f'response JSON ===>>> {nl} {json.dumps(response.json())} {nl} ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        datosMedico = Medico.objects.all()
+        for dato in datosMedico:
+            print(f'--->>>fotoPerfil: {dato.fotoPerfil}')
