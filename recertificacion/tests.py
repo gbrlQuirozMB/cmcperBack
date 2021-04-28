@@ -1688,6 +1688,7 @@ class GetEnviarCorreoDocumentos200Test(APITestCase):
         print(f'--->>>datos.id: {datos.id} - datos.isAceptado: {datos.isAceptado}')
 
 
+
 class PutCertificadoCargaMasiva200Test(APITestCase):
     def setUp(self):
         pass

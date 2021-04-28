@@ -170,10 +170,15 @@ class GetDetail200Test(APITestCase):
         Medico.objects.create(id=3, nombre='n3', apPaterno='app3', apMaterno='apm3', rfc='rfc3', curp='curp3', fechaNac='2020-09-09', pais='pais3', estado='estado3', ciudad='ciudad3',
                               deleMuni='deleMuni3', colonia='colonia', calle='calle3', cp='cp3', numExterior='numExterior3', rfcFacturacion='rfcFacturacion3', cedProfesional='cedProfesional3',
                               cedEspecialidad='cedEspecialidad3', cedCirugiaGral='cedCirugiaGral3', hospitalResi='hospitalResi3', telJefEnse='telJefEnse3', fechaInicioResi='1999-06-06',
-                              fechaFinResi='2000-07-07', telCelular='telCelular3', telParticular='telParticular3', email='email3')
+                              fechaFinResi='2000-07-07', telCelular='telCelular3', telParticular='telParticular3', email='email3', fotoPerfil='mi_foto_999.png')
+        
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+        
 
     def test(self):
-        response = self.client.get('/api/preregistro/detail/2/')
+        self.client.force_authenticate(user=self.user)
+        
+        response = self.client.get('/api/preregistro/detail/3/')
         print(f'response JSON ===>>> {nl} {response.data} {nl} ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
