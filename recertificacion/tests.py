@@ -1619,6 +1619,82 @@ class GetPublicarCalificaciones200Test(APITestCase):
         print(f'--->>>cuentaCertificados: {cuentaCertificados}')
 
 
+class GetEnviarCorreoDocumentos200Test(APITestCase):
+    def setUp(self):
+        catTiposDocumento1 = CatTiposDocumento.objects.create(descripcion='Revalidación')
+        catTiposDocumento2 = CatTiposDocumento.objects.create(descripcion='CURP')
+        catTiposDocumento3 = CatTiposDocumento.objects.create(descripcion='Acta de Nacimiento')
+        catTiposDocumento4 = CatTiposDocumento.objects.create(descripcion='Carta de Solicitud de Examen')
+        catTiposDocumento5 = CatTiposDocumento.objects.create(descripcion='Constancia de Posgrado')
+        catTiposDocumento6 = CatTiposDocumento.objects.create(descripcion='Cédula de Especialidad')
+        catTiposDocumento7 = CatTiposDocumento.objects.create(descripcion='Título de la Licenciatura')
+        catTiposDocumento8 = CatTiposDocumento.objects.create(descripcion='Cédula Profesional')
+        catTiposDocumento9 = CatTiposDocumento.objects.create(descripcion='Constancia de Cirugía General')
+        catTiposDocumento10 = CatTiposDocumento.objects.create(descripcion='Carta de Profesor Titular')
+        catTiposDocumento11 = CatTiposDocumento.objects.create(descripcion='Ficha de Registro')
+        catTiposDocumento12 = CatTiposDocumento.objects.create(descripcion='Fotografía')
+        catTiposDocumento13 = CatTiposDocumento.objects.create(descripcion='Certificado')
+        
+        medico3 = Medico.objects.create(
+            id=3, nombre='elianid', apPaterno='tolentino', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=333)
+        medico6 = Medico.objects.create(
+            id=6, nombre='laura', apPaterno='cabrera', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=666)
+        medico9 = Medico.objects.create(
+            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999)
+        
+        fechaExamen1 = FechasExamenRecertificacion.objects.create(fechaExamen='2021-04-01', descripcion='primer fecha')
+        fechaExamen2 = FechasExamenRecertificacion.objects.create(fechaExamen='2021-08-01', descripcion='segunda fecha')
+        fechaExamen3 = FechasExamenRecertificacion.objects.create(fechaExamen='2021-12-01', descripcion='tercera fecha')
+
+        porExamen9 = PorExamen.objects.create(id=9, medico=medico9, estatus=3, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False, fechaExamen=fechaExamen2) #1
+        porExamen6 = PorExamen.objects.create(id=6, medico=medico6, estatus=2, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False, fechaExamen=fechaExamen1) #2
+        porExamen3 = PorExamen.objects.create(id=3, medico=medico3, estatus=1, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False, fechaExamen=fechaExamen1) #3
+        
+        
+        PorExamenDocumento.objects.create(porExamen=porExamen9, catTiposDocumento=catTiposDocumento9, documento='documento9', isAceptado=True)
+        PorExamenDocumento.objects.create(porExamen=porExamen9, catTiposDocumento=catTiposDocumento6, documento='documento6', isAceptado=True)
+        # PorExamenDocumento.objects.create(porExamen=porExamen9, catTiposDocumento=catTiposDocumento3, documento='documento3', isAceptado=False)
+        # PorExamenDocumento.objects.create(porExamen=porExamen6, catTiposDocumento=catTiposDocumento1, documento='documento1', isAceptado=False)
+        # PorExamenDocumento.objects.create(porExamen=porExamen3, catTiposDocumento=catTiposDocumento2, documento='documento2', isAceptado=False)
+        
+
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        datos = PorExamen.objects.get(id=9)
+        print(f'--->>>datos.id: {datos.id} - datos.isAceptado: {datos.isAceptado}')
+        response = self.client.get('/api/recertificacion/por-examen/9/correo-documentos/')
+        print(f'response JSON ===>>> ok 2  documentos aceptados \n {response.content} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        datos = PorExamen.objects.get(id=9)
+        print(f'--->>>datos.id: {datos.id} - datos.isAceptado: {datos.isAceptado}')    
+
+        PorExamenDocumento.objects.filter(id=1).update(isAceptado=False)
+        response = self.client.get('/api/recertificacion/por-examen/9/correo-documentos/')
+        print(f'response JSON ===>>> ok 1 documento aceptado \n {response.content} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        datos = PorExamen.objects.get(id=9)
+        print(f'--->>>datos.id: {datos.id} - datos.isAceptado: {datos.isAceptado}')
+
+
+class PutCertificadoCargaMasiva200Test(APITestCase):
+    def setUp(self):
+        pass
+    
+    def test(self):
+        pass
+
 class variosTest(APITestCase):
     def setUp(self):
         pass

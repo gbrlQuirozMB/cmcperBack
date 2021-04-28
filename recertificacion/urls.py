@@ -48,6 +48,9 @@ urlpatterns = [
     path('por-examen/fecha/<fechaExamenId>/bajar-excel/list/', PorExamenFechaDownExcel.as_view(), ),
     path('por-examen/fecha/<fechaExamenId>/cargar-excel/update/', PorExamenFechaUpExcel.as_view(), ),
     path('por-examen/fecha/<fechaExamenId>/publicar/list/', PublicarCalificaciones.as_view(), ),
+    
+    path('por-examen/<porExamenId>/correo-documentos/', CorreoDocumentosEndPoint.as_view(), ),
+    
 
 
 

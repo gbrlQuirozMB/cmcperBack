@@ -528,7 +528,8 @@ class PorExamenMedicoDetailView(RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         medicoId = kwargs['medicoId']
         try:
-            queryset = PorExamen.objects.filter(medico=medicoId, isAprobado=False, isPagado=False, isAceptado=False)[0]
+            # queryset = PorExamen.objects.filter(medico=medicoId, isAprobado=False, isPagado=False, isAceptado=False)[0]
+            queryset = PorExamen.objects.filter(medico=medicoId, isAprobado=False, isPagado=False)[0]
             serializer = PorExamenMedicoSerializer(queryset)
         except:
             raise ResponseError('No hay solicitud de examen para el ID de Medico dado', 404)
@@ -625,3 +626,32 @@ class PublicarCalificaciones(APIView):
         except Exception as e:
             respuesta = {"detail": str(e)}
             return Response(respuesta, status=status.HTTP_409_CONFLICT)
+
+
+class CorreoDocumentosEndPoint(APIView):
+    def get(self, request, *args, **kwargs):
+        porExamenId = kwargs['porExamenId']
+        cuentaDocumentos = PorExamenDocumento.objects.filter(porExamen=porExamenId, isAceptado=True).count()
+        if cuentaDocumentos == 2:
+            PorExamen.objects.filter(id=porExamenId).update(isAceptado=True)
+        else:
+            PorExamen.objects.filter(id=porExamenId).update(isAceptado=False)
+        datosMedico = PorExamen.objects.filter(id=porExamenId).values_list('medico__nombre', 'medico__apPaterno', 'medico__apMaterno', 'medico__email')
+        datos = {
+            'nombre': datosMedico[0][0],
+            'apPaterno': datosMedico[0][1],
+            'aceptado': True if cuentaDocumentos == 2 else False,
+            'email': datosMedico[0][3],
+            'cuentaDocumentos': cuentaDocumentos,  # fines de control
+        }
+        # print(f'--->>>datos: {datos}')
+        # try:
+        #     htmlContent = render_to_string('doc-dig-a-r.html', datos)
+        #     textContent = strip_tags(htmlContent)
+        #     emailAcep = EmailMultiAlternatives(datos['titulo'], textContent, "no-reply@cmcper.mx", [datos['email']])
+        #     emailAcep.attach_alternative(htmlContent, "text/html")
+        #     emailAcep.send()
+        # except:
+        #     raise ResponseError('Error al enviar correo', 500)
+
+        return Response(datos)
