@@ -62,7 +62,10 @@ class PagoAceptarUpdateView(UpdateAPIView):
             raise ResponseError('No existe registro', 404)
 
         # si se esta aceptando el pago de una CONVOCATORIA
-        if dato.tipo == 1:  
+        if dato.tipo == 1:
+            verificador = ConvocatoriaEnrolado.objects.filter(id=dato.externoId)
+            if not verificador:
+                raise ResponseError('No existe el ID de convocatoria', 404)
             cuenta = ConvocatoriaEnrolado.objects.filter(id=dato.externoId, isAceptado=True).count()
             if cuenta == 1:
                 request.data['estatus'] = 1
@@ -73,7 +76,10 @@ class PagoAceptarUpdateView(UpdateAPIView):
                 raise ResponseError('No tiene permitido pagar', 409)
 
         # si se esta aceptando el pago de una RECERTIFICACION EXAMEN
-        if dato.tipo == 2:  
+        if dato.tipo == 2:
+            verificador = PorExamen.objects.filter(id=dato.externoId)
+            if not verificador:
+                raise ResponseError('No existe el ID de porExamen', 404)
             cuenta = PorExamen.objects.filter(id=dato.externoId, isAceptado=True).count()
             if cuenta == 1:
                 request.data['estatus'] = 1
@@ -84,14 +90,14 @@ class PagoAceptarUpdateView(UpdateAPIView):
                 raise ResponseError('No tiene permitido pagar', 409)
 
         # si se esta aceptando el pago de una RECERTIFICACION RENOVACION
-        if dato.tipo == 3:  
+        if dato.tipo == 3:
             request.data['estatus'] = 1
             medico = Medico.objects.get(id=dato.medico)
             Certificado.objects.create(medico=medico, documento='', descripcion='generado automaticamente por recertificacion renovacion', isVencido=False, estatus=1)
             return self.update(request, *args, **kwargs)
 
 
-class PagoRechazarUpdateView(UpdateAPIView):    
+class PagoRechazarUpdateView(UpdateAPIView):
     queryset = Pago.objects.filter()
     serializer_class = PagoAceptarRechazarSerializer
     permission_classes = (permissions.IsAdminUser,)
@@ -104,6 +110,9 @@ class PagoRechazarUpdateView(UpdateAPIView):
             raise ResponseError('No existe registro', 404)
 
         if dato.tipo == 1:  # si se esta aceptando el pago de una CONVOCATORIA
+            verificador = ConvocatoriaEnrolado.objects.filter(id=dato.externoId)
+            if not verificador:
+                raise ResponseError('No existe el ID de convocatoria', 404)
             cuenta = ConvocatoriaEnrolado.objects.filter(id=dato.externoId, isAceptado=True).count()
             if cuenta == 1:
                 request.data['estatus'] = 2
@@ -114,6 +123,9 @@ class PagoRechazarUpdateView(UpdateAPIView):
                 raise ResponseError('No tiene permitido pagar', 409)
 
         if dato.tipo == 2:  # si se esta aceptando el pago de una RECERTIFICACION EXAMEN
+            verificador = PorExamen.objects.filter(id=dato.externoId)
+            if not verificador:
+                raise ResponseError('No existe el ID de porExamen', 404)
             cuenta = PorExamen.objects.filter(id=dato.externoId, isAceptado=True).count()
             if cuenta == 1:
                 request.data['estatus'] = 2
