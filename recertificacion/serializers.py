@@ -285,3 +285,9 @@ class CertificadosFilteredListSerializer(serializers.ModelSerializer):
         repr['nombreCompleto'] = instance.medico.nombre + ' ' + instance.medico.apPaterno
 
         return repr
+
+
+class CertificadoDocumentoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Certificado
+        fields = ['id', 'documento']

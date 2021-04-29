@@ -681,3 +681,8 @@ class CertificadosFilteredListView(ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_class = CertificadosFilter
     # filterset_fields = ['estatus']
+
+
+class CertificadoSubirDocumentoUpdateView(UpdateAPIView):
+    queryset = Certificado.objects.filter()
+    serializer_class = CertificadoDocumentoSerializer
