@@ -1688,6 +1688,21 @@ class GetEnviarCorreoDocumentos200Test(APITestCase):
         print(f'--->>>datos.id: {datos.id} - datos.isAceptado: {datos.isAceptado}')
 
 
+class GetFechasExamenes200Test(APITestCase):
+    def setUp(self):
+        FechasExamenRecertificacion.objects.create(fechaExamen='2021-04-01', descripcion='primer fecha')
+        FechasExamenRecertificacion.objects.create(fechaExamen='2021-08-01', descripcion='segunda fecha')
+        FechasExamenRecertificacion.objects.create(fechaExamen='2021-12-01', descripcion='tercera fecha')
+        
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+    
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+        
+        response = self.client.get('/api/recertificacion/fechas-examen/list/')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+    
 
 class PutCertificadoCargaMasiva200Test(APITestCase):
     def setUp(self):

@@ -267,3 +267,9 @@ class PorExamenMedicoSerializer(serializers.ModelSerializer):
     class Meta:
         model = PorExamen
         fields = '__all__'
+
+
+class FechasExamenRecertificacionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FechasExamenRecertificacion
+        fields = '__all__'

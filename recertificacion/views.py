@@ -655,3 +655,7 @@ class CorreoDocumentosEndPoint(APIView):
             raise ResponseError('Error al enviar correo', 500)
 
         return Response(datos)
+    
+class FechasExamenListView(ListAPIView):
+    queryset = FechasExamenRecertificacion.objects.all()
+    serializer_class = FechasExamenRecertificacionSerializer

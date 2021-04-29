@@ -51,11 +51,6 @@ urlpatterns = [
     
     path('por-examen/<porExamenId>/correo-documentos/', CorreoDocumentosEndPoint.as_view(), ),
     
-
-
-
-
-
-
+    path('fechas-examen/list/', FechasExamenListView.as_view(), ),
 
 ]
