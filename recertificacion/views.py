@@ -531,7 +531,7 @@ class PorExamenMedicoDetailView(RetrieveAPIView):
         medicoId = kwargs['medicoId']
         try:
             # queryset = PorExamen.objects.filter(medico=medicoId, isAprobado=False, isPagado=False, isAceptado=False)[0]
-            queryset = PorExamen.objects.filter(medico=medicoId, isAprobado=False, isPagado=False)[0]
+            queryset = PorExamen.objects.filter(medico=medicoId, isAprobado=False)[0]
             serializer = PorExamenMedicoSerializer(queryset)
         except:
             raise ResponseError('No hay solicitud de examen para el ID de Medico dado', 404)
@@ -657,7 +657,27 @@ class CorreoDocumentosEndPoint(APIView):
             raise ResponseError('Error al enviar correo', 500)
 
         return Response(datos)
-    
+
+
 class FechasExamenListView(ListAPIView):
     queryset = FechasExamenRecertificacion.objects.all()
     serializer_class = FechasExamenRecertificacionSerializer
+
+
+class CertificadosFilter(FilterSet):
+    nombreNS = CharFilter(field_name='medico__nombre', lookup_expr='iexact')
+    apPaternoNS = CharFilter(field_name='medico__apPaterno', lookup_expr='iexact')
+
+    class Meta:
+        model = Certificado
+        fields = ['nombreNS', 'apPaternoNS', 'estatus']
+
+
+class CertificadosFilteredListView(ListAPIView):
+    queryset = Certificado.objects.all()
+    # queryset = Certificado.objects.filter(documento__isnull=False)
+    # queryset = Certificado.objects.filter(documento__exact='')
+    serializer_class = CertificadosFilteredListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = CertificadosFilter
+    # filterset_fields = ['estatus']
