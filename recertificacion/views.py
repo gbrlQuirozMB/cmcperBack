@@ -337,6 +337,8 @@ class SolicitudExamenCreateView(CreateAPIView):
                 raise ResponseError(jsonRespuesta, 409)
             datosMedico = Medico.objects.filter(id=medicoId).values_list('nombre', 'apPaterno', 'apMaterno', 'email')
             queryset = FechasExamenRecertificacion.objects.filter(fechaExamen__gte=date.today())
+            if not queryset:
+                raise ResponseError('No existe una fecha de examen', 404)
             queryset = queryset.order_by('fechaExamen')[:1]
             request.data['fechaExamen'] = queryset[0].id
             datos = {

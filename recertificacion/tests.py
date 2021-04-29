@@ -965,27 +965,35 @@ class PostSolicitarExamen201Test(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        cuenta = PorExamen.objects.count()
-        print(f'--->>>cuenta: {cuenta}')
+        # cuenta = PorExamen.objects.count()
+        # print(f'--->>>cuenta: {cuenta}')
 
+        # response = self.client.post('/api/recertificacion/solicitud-examen/create/', data=json.dumps(self.json), content_type="application/json")
+        # print(f'response JSON ===>>> OK \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # # PorExamen.objects.create(medico=self.medico9, estatus=3, isAprobado=False, calificacion=0) #ya esxiste del anterior
+        # response = self.client.post('/api/recertificacion/solicitud-examen/create/', data=json.dumps(self.json), content_type="application/json")
+        # print(f'response JSON ===>>> ya se genero una solicitud de examen \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+
+        # self.json = {
+        #     "medico": 4,
+        # }
+        # response = self.client.post('/api/recertificacion/solicitud-examen/create/', data=json.dumps(self.json), content_type="application/json")
+        # print(f'response JSON ===>>> no existe medico \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # cuenta = PorExamen.objects.count()
+        # print(f'--->>>cuenta: {cuenta}')
+        
+        FechasExamenRecertificacion.objects.filter(id=2).delete()
+        FechasExamenRecertificacion.objects.filter(id=3).delete()
         response = self.client.post('/api/recertificacion/solicitud-examen/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> OK \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-        # PorExamen.objects.create(medico=self.medico9, estatus=3, isAprobado=False, calificacion=0) #ya esxiste del anterior
-        response = self.client.post('/api/recertificacion/solicitud-examen/create/', data=json.dumps(self.json), content_type="application/json")
-        print(f'response JSON ===>>> ya se genero una solicitud de examen \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
-
-        self.json = {
-            "medico": 4,
-        }
-        response = self.client.post('/api/recertificacion/solicitud-examen/create/', data=json.dumps(self.json), content_type="application/json")
-        print(f'response JSON ===>>> no existe medico \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-        cuenta = PorExamen.objects.count()
-        print(f'--->>>cuenta: {cuenta}')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
+        
 
 
 class PostDocumento201Test(APITestCase):
