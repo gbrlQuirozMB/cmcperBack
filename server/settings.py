@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ["*"]
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:8000',
-    'http://e65acbf44086.ngrok.io',  # back
+    'http://bcba47989371.ngrok.io',  # back
     'http://localhost:4200',
     # 'http://54625c39d9d4.ngrok.io',  # front
 )
@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'front',
     'recertificacion',
     'tesoreria',
+    'certificados',
 ]
 
 MIDDLEWARE = [
@@ -96,8 +97,8 @@ REST_FRAMEWORK = {
 #     #         'name': 'Authorization'
 #     #     }
 #     # },
-#     "is_authenticated": False,  # Set to True to enforce user authentication,
-#     "is_superuser": False,  # Set to True to enforce admin only access
+#     # "is_authenticated": False,  # Set to True to enforce user authentication,
+#     # "is_superuser": False,  # Set to True to enforce admin only access
 # }
 
 ROOT_URLCONF = 'server.urls'

@@ -7,6 +7,8 @@ from api.exceptions import *
 import datetime
 from django.db.models import Sum
 
+from certificados.models import Certificado
+
 
 class CertificadoDatosSerializer(serializers.ModelSerializer):
     estatus = serializers.CharField(source='get_estatus_display')
@@ -275,19 +277,19 @@ class FechasExamenRecertificacionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class CertificadosFilteredListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Certificado
-        fields = '__all__'
+# class CertificadosFilteredListSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Certificado
+#         fields = '__all__'
 
-    def to_representation(self, instance):
-        repr = super().to_representation(instance)
-        repr['nombreCompleto'] = instance.medico.nombre + ' ' + instance.medico.apPaterno
+#     def to_representation(self, instance):
+#         repr = super().to_representation(instance)
+#         repr['nombreCompleto'] = instance.medico.nombre + ' ' + instance.medico.apPaterno
 
-        return repr
+#         return repr
 
 
-class CertificadoDocumentoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Certificado
-        fields = ['id', 'documento']
+# class CertificadoDocumentoSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Certificado
+#         fields = ['id', 'documento']

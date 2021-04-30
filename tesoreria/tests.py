@@ -21,7 +21,7 @@ from datetime import date
 import requests
 
 from notificaciones.models import Notificacion
-from recertificacion.models import Certificado
+from certificados.models import Certificado
 
 
 # Create your tests here.

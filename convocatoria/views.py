@@ -32,7 +32,7 @@ import codecs
 
 import locale
 
-from recertificacion.models import Certificado
+from certificados.models import Certificado
 
 # from django_filters import rest_framework
 # from django_filters import rest_framework as filters

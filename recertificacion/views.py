@@ -31,6 +31,7 @@ from django.views import View
 import csv
 import codecs
 
+from certificados.models import Certificado
 
 # Create your views here.
 # class CertificadoDatosDetailView(RetrieveAPIView):
@@ -664,25 +665,25 @@ class FechasExamenListView(ListAPIView):
     serializer_class = FechasExamenRecertificacionSerializer
 
 
-class CertificadosFilter(FilterSet):
-    nombreNS = CharFilter(field_name='medico__nombre', lookup_expr='iexact')
-    apPaternoNS = CharFilter(field_name='medico__apPaterno', lookup_expr='iexact')
+# class CertificadosFilter(FilterSet):
+#     nombreNS = CharFilter(field_name='medico__nombre', lookup_expr='iexact')
+#     apPaternoNS = CharFilter(field_name='medico__apPaterno', lookup_expr='iexact')
 
-    class Meta:
-        model = Certificado
-        fields = ['nombreNS', 'apPaternoNS', 'estatus']
-
-
-class CertificadosFilteredListView(ListAPIView):
-    queryset = Certificado.objects.all()
-    # queryset = Certificado.objects.filter(documento__isnull=False)
-    # queryset = Certificado.objects.filter(documento__exact='')
-    serializer_class = CertificadosFilteredListSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_class = CertificadosFilter
-    # filterset_fields = ['estatus']
+#     class Meta:
+#         model = Certificado
+#         fields = ['nombreNS', 'apPaternoNS', 'estatus']
 
 
-class CertificadoSubirDocumentoUpdateView(UpdateAPIView):
-    queryset = Certificado.objects.filter()
-    serializer_class = CertificadoDocumentoSerializer
+# class CertificadosFilteredListView(ListAPIView):
+#     queryset = Certificado.objects.all()
+#     # queryset = Certificado.objects.filter(documento__isnull=False)
+#     # queryset = Certificado.objects.filter(documento__exact='')
+#     serializer_class = CertificadosFilteredListSerializer
+#     filter_backends = [DjangoFilterBackend]
+#     filterset_class = CertificadosFilter
+#     # filterset_fields = ['estatus']
+
+
+# class CertificadoSubirDocumentoUpdateView(UpdateAPIView):
+#     queryset = Certificado.objects.filter()
+#     serializer_class = CertificadoDocumentoSerializer

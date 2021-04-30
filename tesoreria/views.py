@@ -7,7 +7,8 @@ from notificaciones.models import Notificacion
 from django.contrib.auth.models import User
 
 from convocatoria.models import ConvocatoriaEnrolado
-from recertificacion.models import PorExamen, Certificado
+from recertificacion.models import PorExamen
+from certificados.models import Certificado
 
 from api.logger import log
 from api.exceptions import *
@@ -53,6 +54,8 @@ class PagoAceptarUpdateView(UpdateAPIView):
     queryset = Pago.objects.filter()
     serializer_class = PagoAceptarRechazarSerializer
     permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
+    
 
     def put(self, request, *args, **kwargs):
         id = kwargs['pk']
@@ -101,6 +104,8 @@ class PagoRechazarUpdateView(UpdateAPIView):
     queryset = Pago.objects.filter()
     serializer_class = PagoAceptarRechazarSerializer
     permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
+    
 
     def put(self, request, *args, **kwargs):
         id = kwargs['pk']
