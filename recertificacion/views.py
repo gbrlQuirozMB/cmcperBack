@@ -234,6 +234,7 @@ class ItemDocumentosAceptar(UpdateAPIView):
     queryset = RecertificacionItemDocumento.objects.filter()
     serializer_class = ItemDocumentoAceptarRechazarSerializer
     permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
 
     def put(self, request, *args, **kwargs):
         request.data['estatus'] = 1
@@ -247,6 +248,7 @@ class ItemDocumentosRechazar(UpdateAPIView):
     queryset = RecertificacionItemDocumento.objects.filter()
     serializer_class = ItemDocumentoAceptarRechazarSerializer
     permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
 
     def put(self, request, *args, **kwargs):
         request.data['estatus'] = 2
@@ -259,6 +261,7 @@ class ItemDocumentosReasignar(UpdateAPIView):
     queryset = RecertificacionItemDocumento.objects.filter()
     serializer_class = ItemDocumentoReasignarSerializer
     permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
 
     def put(self, request, *args, **kwargs):
         request.data['estatus'] = 1
@@ -451,6 +454,7 @@ class PorExamenPagadoUpdateView(UpdateAPIView):
     queryset = PorExamen.objects.filter()
     serializer_class = PorExamenPagadoSerializer
     # permission_classes = (permissions.IsAdminUser,) # No porque se utiliza desde un usuario normal
+    http_method_names = ['put']
 
     def put(self, request, *args, **kwargs):
         id = kwargs['pk']
@@ -509,6 +513,7 @@ class PorExamenDocumentoAceptarUpdateView(UpdateAPIView):
     queryset = PorExamenDocumento.objects.filter()
     serializer_class = PorExamenDocumentoAceptarRechazarSerializer
     permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
 
     def put(self, request, *args, **kwargs):
         request.data['isAceptado'] = True
@@ -520,6 +525,7 @@ class PorExamenDocumentoRechazarUpdateView(UpdateAPIView):
     queryset = PorExamenDocumento.objects.filter()
     serializer_class = PorExamenDocumentoAceptarRechazarSerializer
     permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
 
     def put(self, request, *args, **kwargs):
         request.data['isAceptado'] = False
@@ -664,26 +670,3 @@ class FechasExamenListView(ListAPIView):
     queryset = FechasExamenRecertificacion.objects.all()
     serializer_class = FechasExamenRecertificacionSerializer
 
-
-# class CertificadosFilter(FilterSet):
-#     nombreNS = CharFilter(field_name='medico__nombre', lookup_expr='iexact')
-#     apPaternoNS = CharFilter(field_name='medico__apPaterno', lookup_expr='iexact')
-
-#     class Meta:
-#         model = Certificado
-#         fields = ['nombreNS', 'apPaternoNS', 'estatus']
-
-
-# class CertificadosFilteredListView(ListAPIView):
-#     queryset = Certificado.objects.all()
-#     # queryset = Certificado.objects.filter(documento__isnull=False)
-#     # queryset = Certificado.objects.filter(documento__exact='')
-#     serializer_class = CertificadosFilteredListSerializer
-#     filter_backends = [DjangoFilterBackend]
-#     filterset_class = CertificadosFilter
-#     # filterset_fields = ['estatus']
-
-
-# class CertificadoSubirDocumentoUpdateView(UpdateAPIView):
-#     queryset = Certificado.objects.filter()
-#     serializer_class = CertificadoDocumentoSerializer

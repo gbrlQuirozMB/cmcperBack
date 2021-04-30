@@ -46,6 +46,7 @@ totalDocumentosNacional = 9
 class EsExtranjeroUpdateView(UpdateAPIView):
     queryset = Medico.objects.filter()
     serializer_class = EsExtranjeroSerializer
+    http_method_names = ['put']
 
     # def put(self, request, *args, **kwargs):
     #     # para poder modificar el dato que llega
@@ -59,6 +60,7 @@ class EsExtranjeroUpdateView(UpdateAPIView):
 class EstudioExtranjeroUpdateView(UpdateAPIView):
     queryset = Medico.objects.filter()
     serializer_class = EstudioExtranjeroSerializer
+    http_method_names = ['put']
 
     # def put(self, request, *args, **kwargs):
     #     # para poder modificar el dato que llega
@@ -102,16 +104,19 @@ class ConvocatoriaDetailView(RetrieveAPIView):
 class ConvocatoriaArchivoUpdateView(UpdateAPIView):
     queryset = Convocatoria.objects.filter()
     serializer_class = ConvocatoriaArchivoSerializer
+    http_method_names = ['put']
 
 
 class ConvocatoriaBannerUpdateView(UpdateAPIView):
     queryset = Convocatoria.objects.filter()
     serializer_class = ConvocatoriaBannerSerializer
+    http_method_names = ['put']
 
 
 class ConvocatoriaUpdateView(UpdateAPIView):
     queryset = Convocatoria.objects.filter()
     serializer_class = ConvocatoriaSerializer
+    http_method_names = ['put']
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
@@ -349,6 +354,7 @@ class DocumentosMedicoListView(ListAPIView):
 class ConvocatoriaDocumentoUpdateView(UpdateAPIView):
     queryset = ConvocatoriaEnroladoDocumento.objects.filter()
     serializer_class = ConvocatoriaDocumentoSerializer
+    http_method_names = ['put']
 
     def put(self, request, *args, **kwargs):
         datoUser = User.objects.filter(is_superuser=True, is_staff=True).values_list('id')
@@ -491,12 +497,14 @@ class ConvocatoriaEnroladosMedicoEndPoint(APIView):
 class ConvocatoriaEnroladoComentarioUpdateView(UpdateAPIView):
     queryset = ConvocatoriaEnrolado.objects.filter()
     serializer_class = ConvocatoriaEnroladoComentarioSerializer
+    http_method_names = ['put']
 
 
 class ConvocatoriaEnroladoDocumentoAceptarUpdateView(UpdateAPIView):
     queryset = ConvocatoriaEnroladoDocumento.objects.filter()
     serializer_class = ConvocatoriaEnroladoDocumentoAceptarSerializer
     permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
 
     def put(self, request, *args, **kwargs):
         # para poder modificar el dato que llega
@@ -511,6 +519,7 @@ class ConvocatoriaEnroladoDocumentoRechazarUpdateView(UpdateAPIView):
     queryset = ConvocatoriaEnroladoDocumento.objects.filter()
     serializer_class = ConvocatoriaEnroladoDocumentoRechazarSerializer
     permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
 
     def put(self, request, *args, **kwargs):
         # para poder modificar el dato que llega
@@ -523,6 +532,7 @@ class ConvocatoriaEnroladoEngargoladoAceptarUpdateView(UpdateAPIView):
     queryset = ConvocatoriaEnroladoDocumento.objects.filter()
     serializer_class = ConvocatoriaEnroladoEngargoladoAceptarSerializer
     permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
 
     def put(self, request, *args, **kwargs):
         # para poder modificar el dato que llega
@@ -537,6 +547,7 @@ class ConvocatoriaEnroladoEngargoladoRechazarUpdateView(UpdateAPIView):
     queryset = ConvocatoriaEnroladoDocumento.objects.filter()
     serializer_class = ConvocatoriaEnroladoEngargoladoRechazarSerializer
     permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
 
     def put(self, request, *args, **kwargs):
         # para poder modificar el dato que llega
@@ -569,6 +580,7 @@ class ConvocatoriaEnroladoMedicoPagadoUpdateView(UpdateAPIView):
     queryset = ConvocatoriaEnrolado.objects.filter()
     serializer_class = ConvocatoriaEnroladoMedicoPagadoSerializer
     # permission_classes = (permissions.IsAdminUser,) # No porque se utiliza desde un usuario normal
+    http_method_names = ['put']
 
     def put(self, request, *args, **kwargs):
         id = kwargs['pk']
@@ -761,84 +773,6 @@ class ConvocatoriaEnroladosUpExcel(APIView):
             respuesta = {"detail": str(e)}
             return Response(respuesta, status=status.HTTP_409_CONFLICT)
 
-
-# class SubirPagoCreateView(CreateAPIView):
-#     serializer_class = ConvocatoriaPagoSerializer
-
-#     def post(self, request, *args, **kwargs):
-#         request.data['estatus'] = 3
-#         serializer = ConvocatoriaPagoSerializer(data=request.data)
-#         if serializer.is_valid():
-#             datoUser = User.objects.filter(is_superuser=True, is_staff=True).values_list('id')
-#             Notificacion.objects.create(titulo='Convocatoria', mensaje='Se subió un pago', destinatario=datoUser[0][0], remitente=0)
-#             return self.create(request, *args, **kwargs)
-#         log.info(f'campos incorrectos: {serializer.errors}')
-#         raise CamposIncorrectos(serializer.errors)
-
-
-# def getQuerysetEstatus(estatus):
-#     if estatus == 0:
-#         queryset = Pago.objects.all()
-#         return queryset
-
-#     queryset = Pago.objects.filter(estatus=estatus)
-#     return queryset
-
-
-# class PagosListView(ListAPIView):
-#     serializer_class = PagosListSerializer
-
-#     def get_queryset(self):
-#         estatus = self.kwargs['estatus']
-#         log.info(f'se busca por: estatus: {estatus}')
-
-#         return getQuerysetEstatus(estatus)
-
-
-# class PagoAceptarUpdateView(UpdateAPIView):
-#     queryset = Pago.objects.filter()
-#     serializer_class = PagoAceptarRechazarSerializer
-#     permission_classes = (permissions.IsAdminUser,)
-
-#     def put(self, request, *args, **kwargs):
-#         id = kwargs['pk']
-#         try:
-#             dato = Pago.objects.get(id=id)
-#         except Exception as e:
-#             raise ResponseError('No existe registro', 404)
-
-#         cuenta = ConvocatoriaEnrolado.objects.filter(id=dato.convocatoriaEnrolado.id, isAceptado=True).count()
-#         if cuenta == 1:
-#             request.data['estatus'] = 1
-#             ConvocatoriaEnrolado.objects.filter(id=dato.convocatoriaEnrolado.id).update(isPagado=True)
-#             return self.update(request, *args, **kwargs)
-#         cuenta = ConvocatoriaEnrolado.objects.filter(id=dato.convocatoriaEnrolado.id).count()
-#         if cuenta == 1:
-#             raise ResponseError('No tiene permitido pagar', 409)
-
-
-# class PagoRechazarUpdateView(UpdateAPIView):
-#     queryset = Pago.objects.filter()
-#     serializer_class = PagoAceptarRechazarSerializer
-#     permission_classes = (permissions.IsAdminUser,)
-
-#     def put(self, request, *args, **kwargs):
-#         id = kwargs['pk']
-#         try:
-#             dato = Pago.objects.get(id=id)
-#         except Exception as e:
-#             raise ResponseError('No existe registro', 404)
-
-#         cuenta = ConvocatoriaEnrolado.objects.filter(id=dato.convocatoriaEnrolado.id, isAceptado=True).count()
-#         if cuenta == 1:
-#             request.data['estatus'] = 2
-#             ConvocatoriaEnrolado.objects.filter(id=dato.convocatoriaEnrolado.id).update(isPagado=False)
-#             return self.update(request, *args, **kwargs)
-#         cuenta = ConvocatoriaEnrolado.objects.filter(id=dato.convocatoriaEnrolado.id).count()
-#         if cuenta == 1:
-#             raise ResponseError('No tiene permitido pagar', 409)
-
-
 class PublicarCalificaciones(APIView):
     permission_classes = (permissions.IsAdminUser,)
 
@@ -886,13 +820,6 @@ class PublicarCalificaciones(APIView):
 
 
 # ES DE PRUEBA NO USAR!!!
-
-# https://www.django-rest-framework.org/api-guide/filtering/
-# class prueba(ListAPIView):
-#     queryset = ConvocatoriaEnrolado.objects.filter()
-#     serializer_class = ConvocatoriaEnroladosMedicoListSerializer
-#     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
-#     filter_fields = ('medico', 'convocatoria')
 
 # class ConvocatoriaSedeCreateView(CreateAPIView):
 #     def post(self, request, *args, **kwargs):

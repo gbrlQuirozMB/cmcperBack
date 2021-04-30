@@ -52,8 +52,5 @@ urlpatterns = [
     path('por-examen/<porExamenId>/correo-documentos/', CorreoDocumentosEndPoint.as_view(), ),
 
     path('fechas-examen/list/', FechasExamenListView.as_view(), ),
-    # path('certificados/list/', CertificadosFilteredListView.as_view(), ),
-
-    # path('certificado/<pk>/subir-documento/update/', CertificadoSubirDocumentoUpdateView.as_view(), ),
 
 ]

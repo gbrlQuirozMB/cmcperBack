@@ -79,6 +79,7 @@ class PreregistroAceptadoUpdateView(UpdateAPIView):
     queryset = Medico.objects.filter()
     serializer_class = MedicoAceptadoRechazadoSerializer
     # permission_classes = (permissions.AllowAny,)
+    http_method_names = ['put']
     
     def put(self, request, *args, **kwargs):
         pk = kwargs['pk']
@@ -118,6 +119,7 @@ class PreregistroRechazadoUpdateView(UpdateAPIView):
     queryset = Medico.objects.filter()
     serializer_class = MedicoAceptadoRechazadoSerializer
     # permission_classes = (permissions.AllowAny,)
+    http_method_names = ['put']
     
     def put(self, request, *args, **kwargs):
         pk = kwargs['pk']
@@ -147,4 +149,5 @@ class PreregistroRechazadoUpdateView(UpdateAPIView):
     
 class FotoPerfilUpdateView(UpdateAPIView):
     queryset = Medico.objects.filter()
-    serializer_class = FotoPerfilSerializer 
+    serializer_class = FotoPerfilSerializer
+    http_method_names = ['put'] 
