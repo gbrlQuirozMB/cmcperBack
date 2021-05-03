@@ -657,7 +657,7 @@ class CorreoDocumentosEndPoint(APIView):
         try:
             htmlContent = render_to_string('recert-doc-dig-a-r.html', datos)
             textContent = strip_tags(htmlContent)
-            emailAcep = EmailMultiAlternatives(datos['titulo'], textContent, "no-reply@cmcper.mx", [datos['email']])
+            emailAcep = EmailMultiAlternatives('CMCPER - Documentos Aceptados/Rechazados', textContent, "no-reply@cmcper.mx", [datos['email']])
             emailAcep.attach_alternative(htmlContent, "text/html")
             emailAcep.send()
         except:

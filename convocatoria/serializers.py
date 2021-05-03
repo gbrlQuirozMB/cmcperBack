@@ -261,9 +261,11 @@ class ConvocatoriaEnroladoMedicoAPagarDetailSerializer(serializers.ModelSerializ
         repr['catSedes'] = instance.catSedes.descripcion
         repr['convocatoria'] = instance.convocatoria.nombre
         repr['medico'] = instance.medico.nombre + ' ' + instance.medico.apPaterno
-        repr['aPagar'] = instance.catTiposExamen.precio
-        if instance.medico.estudioExtranjero:
-            repr['aPagar'] = instance.catTiposExamen.precioExtrangero
+        # repr['aPagar'] = instance.catTiposExamen.precio
+        tipo = self.context.get('tipo')  # recibimos variable extra!!!
+        dato = CatPagos.objects.get(tipo=tipo)  # diferente precio si estudio en el extrajero
+        repr['aPagar'] = dato.precio
+
         return repr
 
 

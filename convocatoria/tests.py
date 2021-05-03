@@ -16,7 +16,7 @@ from datetime import date
 import requests
 
 from notificaciones.models import Notificacion
-from recertificacion.models import Certificado
+from certificados.models import Certificado
 
 
 # Create your tests here.
@@ -1090,6 +1090,9 @@ class GetCostoAPagar200Test(APITestCase):
         catTiposExamen1 = CatTiposExamen.objects.create(id=1, descripcion='tiposExameneDescripcion1', precio=111.11, precioExtrangero=222.22)
         CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion2')
         catTiposExamen3 = CatTiposExamen.objects.create(id=3, descripcion='tiposExameneDescripcion3', precio=333.33, precioExtrangero=444.44)
+        
+        CatPagos.objects.create(descripcion='Exam Conv Nacional', precio=369.69, tipo=2)
+        CatPagos.objects.create(descripcion='Exam Conv Extran', precio=963.69, tipo=3)
 
         medico3 = Medico.objects.create(
             id=3, nombre='elianid', apPaterno='tolentino', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
@@ -1105,7 +1108,7 @@ class GetCostoAPagar200Test(APITestCase):
             id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
             deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
             cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', estudioExtranjero=True)
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', estudioExtranjero=False)
 
         convocatoria1 = Convocatoria.objects.create(id=1, fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',
                                                     horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1')
