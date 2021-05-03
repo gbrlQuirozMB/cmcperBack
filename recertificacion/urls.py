@@ -32,6 +32,8 @@ urlpatterns = [
 
     path('documento/cedula-especialidad/create/', DocumentoCedulaEspecialidadCreateView.as_view(), ),
     path('documento/certificado/create/', DocumentoCertificadoCreateView.as_view(), ),
+    path('documento/foto/create/', DocumentoFotoCreateView.as_view(), ),
+    path('documento/carta-solicitud/create/', DocumentoCartaSolicitudCreateView.as_view(), ),
 
     path('medico/<medicoId>/a-pagar/examen/', PorExamenAPagarEndPoint.as_view(), ),
     path('medico/<medicoId>/a-pagar/renovacion/', RenovacionAPagarEndPoint.as_view(), ),

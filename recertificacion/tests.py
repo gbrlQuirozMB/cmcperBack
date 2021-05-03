@@ -1010,8 +1010,9 @@ class PostDocumento201Test(APITestCase):
         catTiposDocumento9 = CatTiposDocumento.objects.create(descripcion='Constancia de Cirugía General')
         catTiposDocumento10 = CatTiposDocumento.objects.create(descripcion='Carta de Profesor Titular')
         catTiposDocumento11 = CatTiposDocumento.objects.create(descripcion='Ficha de Registro')
-        catTiposDocumento12 = CatTiposDocumento.objects.create(descripcion='Fotografía')
+        catTiposDocumento12 = CatTiposDocumento.objects.create(descripcion='Fotografía Digital')
         catTiposDocumento13 = CatTiposDocumento.objects.create(descripcion='Certificado')
+        catTiposDocumento14 = CatTiposDocumento.objects.create(descripcion='Fotografía Diploma')
 
         self.medico9 = Medico.objects.create(
             id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
@@ -1019,7 +1020,13 @@ class PostDocumento201Test(APITestCase):
             cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
 
-        PorExamen.objects.create(medico=self.medico9, estatus=3, isAprobado=False, calificacion=0)
+        porExamen = PorExamen.objects.create(medico=self.medico9, estatus=3, isAprobado=False, calificacion=0)
+
+        PorExamenDocumento.objects.create(porExamen=porExamen, catTiposDocumento=catTiposDocumento13, documento='documento6', isAceptado=True)
+        PorExamenDocumento.objects.create(porExamen=porExamen, catTiposDocumento=catTiposDocumento6, documento='documento6', isAceptado=True)
+        PorExamenDocumento.objects.create(porExamen=porExamen, catTiposDocumento=catTiposDocumento12, documento='documento6', isAceptado=True)
+        PorExamenDocumento.objects.create(porExamen=porExamen, catTiposDocumento=catTiposDocumento14, documento='documento6', isAceptado=True)
+        PorExamenDocumento.objects.create(porExamen=porExamen, catTiposDocumento=catTiposDocumento4, documento='documento6', isAceptado=True)
 
         archivo = open('./uploads/testUnit.png', 'rb')
         documento = SimpleUploadedFile(archivo.name, archivo.read(), content_type='image/png')
@@ -1056,13 +1063,21 @@ class PostDocumento201Test(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        response = self.client.post('/api/recertificacion/documento/cedula-especialidad/create/', data=self.json, format='multipart')
+        # response = self.client.post('/api/recertificacion/documento/cedula-especialidad/create/', data=self.json, format='multipart')
+        # print(f'response JSON ===>>> OK \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # response = self.client.post('/api/recertificacion/documento/certificado/create/', data=self.jsonO, format='multipart')
+        # print(f'response JSON ===>>> OK \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        response = self.client.post('/api/recertificacion/documento/carta-solicitud/create/', data=self.jsonO, format='multipart')
         print(f'response JSON ===>>> OK \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        response = self.client.post('/api/recertificacion/documento/certificado/create/', data=self.jsonO, format='multipart')
-        print(f'response JSON ===>>> OK \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # response = self.client.post('/api/recertificacion/documento/foto/create/', data=self.jsonO, format='multipart')
+        # print(f'response JSON ===>>> OK \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         response = self.client.post('/api/recertificacion/documento/certificado/create/', data=self.jsonError, format='multipart')
         print(f'response JSON ===>>> OK \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
