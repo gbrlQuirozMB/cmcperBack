@@ -53,4 +53,7 @@ urlpatterns = [
 
     path('fechas-examen/list/', FechasExamenListView.as_view(), ),
 
+    path('certificado/<pk>/prorroga/<dias>/update/', ProrrogaCertificadoUpdateView.as_view(), ),
+
+
 ]

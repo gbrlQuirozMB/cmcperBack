@@ -670,3 +670,20 @@ class FechasExamenListView(ListAPIView):
     queryset = FechasExamenRecertificacion.objects.all()
     serializer_class = FechasExamenRecertificacionSerializer
 
+
+class ProrrogaCertificadoUpdateView(UpdateAPIView):
+    queryset = Certificado.objects.filter()
+    serializer_class = ProrrogaCertificadoSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
+
+    def put(self, request, *args, **kwargs):
+        dias = int(kwargs['dias'])
+        id = kwargs['pk']
+        try:
+            dato = Certificado.objects.get(id=id)
+            request.data['fechaCertificacion'] = dato.fechaCertificacion + relativedelta(days=dias)
+        except:
+            raise ResponseError('No existe certificado', 404)
+
+        return self.update(request, *args, **kwargs)
