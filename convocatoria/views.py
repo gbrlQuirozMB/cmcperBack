@@ -572,7 +572,12 @@ class ConvocatoriaEnroladoMedicoAPagarEndPoint(APIView):
         convocatoriaId = kwargs['convocatoriaId']
         medicoId = kwargs['medicoId']
         queryset = self.getQuerySet(medicoId, convocatoriaId)
-        serializer = ConvocatoriaEnroladoMedicoAPagarDetailSerializer(queryset)
+        datoMedico = Medico.objects.get(id=medicoId)
+        if datoMedico.estudioExtranjero:  # diferente precio si estudio en el extrajero
+            tipo = 3
+        else:
+            tipo = 2
+        serializer = ConvocatoriaEnroladoMedicoAPagarDetailSerializer(queryset, context={'tipo': tipo})
         return Response(serializer.data)
 
 
@@ -772,6 +777,7 @@ class ConvocatoriaEnroladosUpExcel(APIView):
         except Exception as e:
             respuesta = {"detail": str(e)}
             return Response(respuesta, status=status.HTTP_409_CONFLICT)
+
 
 class PublicarCalificaciones(APIView):
     permission_classes = (permissions.IsAdminUser,)
