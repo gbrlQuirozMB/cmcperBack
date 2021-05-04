@@ -676,7 +676,7 @@ class CorreoDocumentosEndPoint(APIView):
     def get(self, request, *args, **kwargs):
         porExamenId = kwargs['porExamenId']
         cuentaDocumentos = PorExamenDocumento.objects.filter(porExamen=porExamenId, isAceptado=True).count()
-        if cuentaDocumentos == 2:
+        if cuentaDocumentos == 5:
             PorExamen.objects.filter(id=porExamenId).update(isAceptado=True)
         else:
             PorExamen.objects.filter(id=porExamenId).update(isAceptado=False)
@@ -684,7 +684,7 @@ class CorreoDocumentosEndPoint(APIView):
         datos = {
             'nombre': datosMedico[0][0],
             'apPaterno': datosMedico[0][1],
-            'aceptado': True if cuentaDocumentos == 2 else False,
+            'aceptado': True if cuentaDocumentos == 5 else False,
             'email': datosMedico[0][3],
             'cuentaDocumentos': cuentaDocumentos,  # fines de control
         }
