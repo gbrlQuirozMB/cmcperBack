@@ -5,6 +5,10 @@ from django.shortcuts import render
 from rest_framework.generics import DestroyAPIView, ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter
 
+from api.Paginacion import Paginacion
+from rest_framework.response import Response
+
+
 # Create your views here.
 
 
@@ -14,7 +18,7 @@ class CertificadosFilter(FilterSet):
 
     class Meta:
         model = Certificado
-        fields = ['nombreNS', 'apPaternoNS', 'estatus']
+        fields = ['nombreNS', 'apPaternoNS', 'estatus', 'id']
 
 
 class CertificadosFilteredListView(ListAPIView):
