@@ -632,9 +632,9 @@ class PublicarCalificaciones(APIView):
     def get(self, request, *args, **kwargs):
         fechaExamenId = self.kwargs['fechaExamenId']
         try:
-            queryset = PorExamen.objects.filter(fechaExamen=fechaExamenId).values_list('id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno',
-                                                                                       'fechaExamen__fechaExamen', 'calificacion', 'medico__email', 'isAprobado', 'medico__id',
-                                                                                       'isPublicado')
+            queryset = PorExamen.objects.filter(fechaExamen=fechaExamenId, isPagado=True).values_list('id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno',
+                                                                                                      'fechaExamen__fechaExamen', 'calificacion', 'medico__email', 'isAprobado', 'medico__id',
+                                                                                                      'isPublicado')
             # print(f'--->>>queryset como tupla(values_list): {queryset}')
             if not queryset:
                 respuesta = {"detail": "Registros no encontrados"}
