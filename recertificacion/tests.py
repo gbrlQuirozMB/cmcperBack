@@ -1325,6 +1325,20 @@ class GetPorExamenDocumentosList200Test(APITestCase):
         response = self.client.get('/api/recertificacion/por-examen/1/documentos/list/')
         print(f'response JSON ===>>> no existe \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
+        
+        # cuentaPorExamen = PorExamen.objects.all().count()
+        # print(f'--->cuentaPorExamen: {cuentaPorExamen}')
+        # cuentaPEDocs = PorExamenDocumento.objects.filter(porExamen=9).count()
+        # print(f'--->cuentaPorExamen: {cuentaPEDocs}')
+        
+        # PorExamen.objects.filter(id=9).delete()
+        # cuentaPorExamen = PorExamen.objects.all().count()
+        # print(f'--->cuentaPorExamen: {cuentaPorExamen}')
+        # cuentaPEDocs = PorExamenDocumento.objects.filter(porExamen=9).count()
+        # print(f'--->cuentaPorExamen: {cuentaPEDocs}')
+
+        
 
 
 class PutPorExamenDocumentoAceptar200Test(APITestCase):

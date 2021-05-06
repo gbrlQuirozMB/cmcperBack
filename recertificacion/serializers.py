@@ -216,12 +216,11 @@ class PorExamenDocumentoSerializer(serializers.ModelSerializer):
         return repr
 
 
-class MedicoAPagarSerializer(serializers.ModelSerializer):
+class MedicoAPagarExamenSerializer(serializers.ModelSerializer):
     tipoDescripcion = serializers.CharField(source='get_tipo_display', read_only=True)
 
     class Meta:
         model = CatPagos
-        # fields = '__all__'
         fields = ['descripcion', 'precio', 'tipo', 'tipoDescripcion']  # OJO: no envio el id porque puede confundir
 
     def to_representation(self, instance):
@@ -234,6 +233,20 @@ class MedicoAPagarSerializer(serializers.ModelSerializer):
 
         return repr
 
+class MedicoAPagarRenovacionSerializer(serializers.ModelSerializer):
+    tipoDescripcion = serializers.CharField(source='get_tipo_display', read_only=True)
+
+    class Meta:
+        model = CatPagos
+        fields = ['descripcion', 'precio', 'tipo', 'tipoDescripcion']  # OJO: no envio el id porque puede confundir
+
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        medicoId = self.context.get('medicoId')  # recibimos variable extra!!!
+        datoMedico = Medico.objects.get(id=medicoId)
+        repr['medico'] = datoMedico.nombre + ' ' + datoMedico.apPaterno
+
+        return repr
 
 class PorExamenPagadoSerializer(serializers.ModelSerializer):
     class Meta:

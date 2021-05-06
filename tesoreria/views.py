@@ -95,7 +95,7 @@ class PagoAceptarUpdateView(UpdateAPIView):
         # si se esta aceptando el pago de una RECERTIFICACION RENOVACION
         if dato.tipo == 3:
             request.data['estatus'] = 1
-            medico = Medico.objects.get(id=dato.medico)
+            medico = Medico.objects.get(id=dato.medico.id)
             Certificado.objects.create(medico=medico, documento='', descripcion='generado automaticamente por recertificacion renovacion', isVencido=False, estatus=1)
             return self.update(request, *args, **kwargs)
 

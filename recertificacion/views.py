@@ -464,7 +464,7 @@ class PorExamenAPagarEndPoint(APIView):
         if cuenta < 1:
             raise ResponseError('No existe medico', 404)
         queryset = self.getQuerySet(medicoId)
-        serializer = MedicoAPagarSerializer(queryset, context={'medicoId': medicoId})  # enviamos variable extra para consulta interna en serializer
+        serializer = MedicoAPagarExamenSerializer(queryset, context={'medicoId': medicoId})  # enviamos variable extra para consulta interna en serializer
         return Response(serializer.data)
 
 
@@ -481,7 +481,7 @@ class RenovacionAPagarEndPoint(APIView):
         if cuenta < 1:
             raise ResponseError('No existe medico', 404)
         queryset = self.getQuerySet()
-        serializer = MedicoAPagarSerializer(queryset, context={'medicoId': medicoId})  # enviamos variable extra para consulta interna en serializer
+        serializer = MedicoAPagarRenovacionSerializer(queryset, context={'medicoId': medicoId})  # enviamos variable extra para consulta interna en serializer
         return Response(serializer.data)
 
 
@@ -512,6 +512,7 @@ class RenovacionPagadoCreateView(CreateAPIView):
         request.data['isVencido'] = False
         serializer = CertificadoPagadoSerializer(data=request.data)
         if serializer.is_valid():
+            RecertificacionItemDocumento.objects.filter(medico=request.data['medico']).delete()
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
@@ -646,6 +647,9 @@ class PublicarCalificaciones(APIView):
                     medico = Medico.objects.get(id=dato[9])
                     Certificado.objects.create(medico=medico, documento='', descripcion='generado automaticamente por recertificacion examen', isVencido=False, estatus=1)
                     PorExamen.objects.filter(medico=dato[9]).update(isPublicado=True)
+
+                    PorExamen.objects.filter(medico=dato[9]).delete()
+                    RecertificacionItemDocumento.objects.filter(medico=dato[9]).delete()
 
                 datos = {
                     'nombre': dato[2],
