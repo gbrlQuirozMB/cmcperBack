@@ -294,3 +294,9 @@ class ProrrogaCertificadoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Certificado
         fields = ['id', 'fechaCertificacion']
+
+
+class RenovacionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Renovacion
+        fields = '__all__'

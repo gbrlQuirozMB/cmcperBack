@@ -41,15 +41,16 @@ class Item(models.Model):
         db_table = 'items'
         ordering = ['subcapitulo']
 
+
 class FechasExamenRecertificacion(models.Model):
     actualizado_en = models.DateTimeField(auto_now=True)
     fechaExamen = models.DateField(db_column='fecha_examen')
     descripcion = models.CharField(max_length=300)
-    
+
     class Meta:
         db_table = 'fechas_examen_recertificacion'
         ordering = ['-fechaExamen']
-    
+
 
 class PorExamen(models.Model):
     creado_en = models.DateTimeField(auto_now_add=True)
@@ -63,11 +64,9 @@ class PorExamen(models.Model):
     ))
     isAprobado = models.BooleanField(default=False, db_column='is_aprobado')  # verificar si se le da su certificado
     calificacion = models.PositiveSmallIntegerField(blank=True, null=True)
-    isPagado = models.BooleanField(default=False, db_column='is_pagado') # verificar si ya pago
-    isAceptado = models.BooleanField(default=False, db_column='is_aceptado') # se activa para validar que aceptaron todos sus documentos
-    isPublicado = models.BooleanField(default=False, db_column='is_publicado') # verificar si se le da su certificado por primera vez
-    
-    
+    isPagado = models.BooleanField(default=False, db_column='is_pagado')  # verificar si ya pago
+    isAceptado = models.BooleanField(default=False, db_column='is_aceptado')  # se activa para validar que aceptaron todos sus documentos
+    isPublicado = models.BooleanField(default=False, db_column='is_publicado')  # verificar si se le da su certificado por primera vez
 
     class Meta:
         db_table = 'recertificacion_por_examen'
@@ -138,5 +137,12 @@ class PuntosPorCapituloMedico:
         self.puntosCapitulo = puntosCapitulo
 
 
-
+class Renovacion(models.Model):
+    creado_en = models.DateTimeField(auto_now_add=True)
+    actualizado_en = models.DateTimeField(auto_now=True)
+    medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medicoR')
+    isPagado = models.BooleanField(default=False, db_column='is_pagado')  # verificar si ya pago
     
+    class Meta:
+        db_table = 'recertificacion_renovaciones'
+        ordering = ['-actualizado_en']

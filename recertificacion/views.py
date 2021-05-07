@@ -726,3 +726,26 @@ class ProrrogaCertificadoUpdateView(UpdateAPIView):
             raise ResponseError('No existe certificado', 404)
 
         return self.update(request, *args, **kwargs)
+
+
+class RenovacionCreateView(CreateAPIView):
+    serializer_class = RenovacionSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = RenovacionSerializer(data=request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.info(f'campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
+    
+    
+class RenovacionDetailView(RetrieveAPIView):
+    def get(self, request, *args, **kwargs):
+        medicoId = kwargs['medicoId']
+        try:
+            queryset = Renovacion.objects.filter(medico=medicoId)[0]
+            serializer = RenovacionSerializer(queryset)
+        except:
+            raise ResponseError('No hay renovacion para el ID de Medico dado', 404)
+
+        return Response(serializer.data)
