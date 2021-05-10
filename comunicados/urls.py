@@ -7,6 +7,8 @@ app_name = 'comunicados'
 
 urlpatterns = [
     path('create/', ComunicadoCreateView.as_view(), ),
+    path('list/', ComunicadoFilteredListView.as_view(), ),
+
 
 
 ]
