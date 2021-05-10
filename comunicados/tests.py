@@ -22,7 +22,7 @@ class PostComunicadoTest(APITestCase):
             "isActivo": True
         }
 
-        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
 
     def test(self):
         self.client.force_authenticate(user=self.user)
@@ -41,7 +41,7 @@ class GetComunicadoFilteredListTest(APITestCase):
         Comunicado.objects.create(titulo='titulo5', categoria=3, imagen='imagen5.img', detalles='detalles5', isActivo=True)
         Comunicado.objects.create(titulo='titulo6', categoria=3, imagen='imagen6.img', detalles='detalles6', isActivo=True)
 
-        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
 
     def test(self):
         self.client.force_authenticate(user=self.user)
@@ -68,7 +68,7 @@ class GetComunicadoDetailTest(APITestCase):
         Comunicado.objects.create(titulo='titulo5', categoria=3, imagen='imagen5.img', detalles='detalles5', isActivo=True)
         Comunicado.objects.create(titulo='titulo6', categoria=3, imagen='imagen6.img', detalles='detalles6', isActivo=True)
 
-        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
 
     def test(self):
         self.client.force_authenticate(user=self.user)
@@ -78,5 +78,43 @@ class GetComunicadoDetailTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         response = self.client.get('/api/comunicados/33/detail/')
+        print(f'response JSON ===>>> 404 \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class PutComunicadoTest(APITestCase):
+    def setUp(self):
+        Comunicado.objects.create(titulo='titulo1', categoria=1, imagen='imagen1.img', detalles='detalles1', isActivo=True)
+        Comunicado.objects.create(titulo='titulo2', categoria=2, imagen='imagen2.img', detalles='detalles2', isActivo=True)
+        Comunicado.objects.create(titulo='titulo3', categoria=3, imagen='imagen3.img', detalles='detalles3', isActivo=True)
+        Comunicado.objects.create(titulo='titulo4', categoria=1, imagen='imagen4.img', detalles='detalles4', isActivo=True)
+        Comunicado.objects.create(titulo='titulo5', categoria=3, imagen='imagen5.img', detalles='detalles5', isActivo=True)
+        Comunicado.objects.create(titulo='titulo6', categoria=3, imagen='imagen6.img', detalles='detalles6', isActivo=True)
+
+        archivo = open('./uploads/testUnit.png', 'rb')
+        imgFile = SimpleUploadedFile(archivo.name, archivo.read(), content_type='image/png')
+
+        self.json = {
+            "titulo": "titulo mortal 333",
+            "categoria": 1,
+            "imagen": imgFile,
+            "detalles": "detalles mortal 333",
+            "isActivo": False
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        # response = self.client.get('/api/comunicados/3/detail/')
+        # print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.put('/api/comunicados/3/update/', data=self.json, format='multipart')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.put('/api/comunicados/33/update/')
         print(f'response JSON ===>>> 404 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

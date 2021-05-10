@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework.generics import DestroyAPIView, ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter
+from rest_framework import status, permissions
 
 
 from .serializers import *
@@ -12,6 +13,7 @@ from api.exceptions import *
 # Create your views here.
 class ComunicadoCreateView(CreateAPIView):
     serializer_class = ComunicadoSerializer
+    permission_classes = (permissions.IsAdminUser,)
 
     def post(self, request, *args, **kwargs):
         serializer = ComunicadoSerializer(data=request.data)
@@ -34,8 +36,17 @@ class ComunicadoFilteredListView(ListAPIView):
     serializer_class = ComunicadoFilteredListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = ComunicadoFilter
+    permission_classes = (permissions.IsAdminUser,)
 
 
 class ComunicadoDetailView(RetrieveAPIView):
     queryset = Comunicado.objects.filter()
     serializer_class = ComunicadoFilteredListSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+
+class ComunicadoUpdateView(UpdateAPIView):
+    queryset = Comunicado.objects.filter()
+    serializer_class = ComunicadoSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
