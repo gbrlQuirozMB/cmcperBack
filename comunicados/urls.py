@@ -6,6 +6,7 @@ from .views import *
 app_name = 'comunicados'
 
 urlpatterns = [
+    path('create/', ComunicadoCreateView.as_view(), ),
 
 
 ]
