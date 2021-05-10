@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'recertificacion',
     'tesoreria',
     'certificados',
+    'comunicados',
 ]
 
 MIDDLEWARE = [

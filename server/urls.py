@@ -33,6 +33,7 @@ urlpatterns = [
     path('api/recertificacion/', include('recertificacion.urls')),
     path('api/tesoreria/', include('tesoreria.urls')),
     path('api/certificados/', include('certificados.urls')),
+    path('api/comunicados/', include('comunicados.urls')),
 
     path('api/admin/password_reset/', auth_views.PasswordResetView.as_view(template_name='admin/password_reset.html'), name='password_reset'),
     path('api/admin/password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='admin/password_reset_done.html'), name='password_reset_done'),
