@@ -10,3 +10,9 @@ class CatMotivosRechazoSerializer(serializers.ModelSerializer):
     class Meta:
         model = CatMotivosRechazo
         fields = '__all__'
+
+
+class CatPagosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CatPagos
+        fields = '__all__'

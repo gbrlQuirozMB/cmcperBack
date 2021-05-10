@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 import json
 from rest_framework import status
 
+import decimal
+
 
 # Create your tests here.
 class GetMotivoRechazo200Test(APITestCase):
@@ -30,3 +32,32 @@ class GetMotivoRechazo200Test(APITestCase):
         response = self.client.get('/api/catalogo/motivo-rechazo/fall/')
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+# usado para corregir error de que json.dumps no puede mostrar los tipos Decimal, aqui regreso un float
+
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, decimal.Decimal):
+            # return str(o)
+            return float(o)
+        return super(DecimalEncoder, self).default(o)
+
+
+class PostCatPagosTest(APITestCase):
+    def setUp(self):
+
+        self.json = {
+            "descripcion": "descricpcion 6",
+            "precio": 369.99,
+            "tipo": 6,
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post('/api/catalogo/pagos/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> \n {json.dumps(response.data, cls=DecimalEncoder)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
