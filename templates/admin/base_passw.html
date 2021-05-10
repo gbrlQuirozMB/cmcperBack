@@ -1,0 +1,74 @@
+{% load static %}
+<!doctype html>
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	{% comment %} <link rel="stylesheet" href="https://cmcper.sandboxmb.com/assets/css/forgetPsw.css"> {% endcomment %}
+	<link rel="stylesheet" href="{% static 'css/forget-psw.css' %}">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script>
+		$(document).ready(function () {
+			$(".form input").addClass("form-control");
+			$(".form button").addClass("btn btn-cmcper");
+			$(".form ul").addClass("text-left");
+		});
+	</script>
+</head>
+
+<body>
+	<div class="container-fluid">
+		<div class="content">
+			<div class="row">
+				​
+				<div class="col-md-7"><br><br>
+					<div class="row">
+						<div class="col-md-12 col-sm-8 col-8">
+							{% comment %} <img src="https://cmcper.sandboxmb.com/assets/img/login/letras.png"	class="img-fluid d-block mx-auto" id="letras"> {% endcomment %}
+							<img src="{% static 'img/letras.png' %}" class="img-fluid d-block mx-auto" id="letras">
+						</div>
+						<div class="col-md-12 col-sm-3 col-3">
+							{% comment %} <img src="https://cmcper.sandboxmb.com/assets/img/login/Recurso%201.png" class="img-fluid d-block mx-auto" id="doctores"> {% endcomment %}
+							<img src="{% static 'img/recurso-1.png' %}" class="img-fluid d-block mx-auto" id="doctores">
+						</div>
+					</div>
+					​
+					​
+				</div>
+				​
+				<div class="col-md-5 form-login">
+					<div class="card">
+						<div class="col-md-12 text-center">
+							<br>
+							{% comment %} <img src="https://cmcper.sandboxmb.com/assets/img/login/Logo%20ingresar.png" id="logo-cmcper-login" class="img-fluid mx-auto d-block" /> {% endcomment %}
+							<img src="{% static 'img/logo-ingresar.png' %}" id="logo-cmcper-login" class="img-fluid mx-auto d-block" />
+							<h2 id="welcome">
+								Recupera tu contraseña<br><br>
+							</h2>
+						</div>
+						​
+						<div class="col-md-12 text-center form">
+							{% block content %}{% endblock %}
+							<br><br>
+						</div>
+						​
+						​
+					</div>
+					​
+					​
+					​
+				</div>
+				​
+			</div>
+			​
+		</div>
+		​
+	</div>
+	​
+</body>
+​
+
+</html>

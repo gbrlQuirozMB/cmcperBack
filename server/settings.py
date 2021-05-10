@@ -31,10 +31,10 @@ ALLOWED_HOSTS = ["*"]
 # CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
-       'http://localhost:8000',
-       'http://e0477649a843.ngrok.io', #back
-       'http://localhost:4200',
-       'http://54625c39d9d4.ngrok.io', #front
+    'http://localhost:8000',
+    'http://0f3bc3ec3174.ngrok.io',  # back
+    'http://localhost:4200',
+    # 'http://54625c39d9d4.ngrok.io',  # front
 )
 
 # Application definition
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_filters', # hay que instalarlo antes -> pip install django-filter
     'rest_framework',
     'rest_framework_swagger',
     'rest_framework.authtoken',
@@ -55,6 +56,12 @@ INSTALLED_APPS = [
     'preregistro',
     'chat',
     'notificaciones',
+    'convocatoria',
+    'catalogos',
+    'front',
+    'recertificacion',
+    'tesoreria',
+    'certificados',
 ]
 
 MIDDLEWARE = [
@@ -79,6 +86,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    'COERCE_DECIMAL_TO_STRING': False,  # quita que se los campos de tipo Decimal se regresen como string
 }
 
 # SWAGGER_SETTINGS = {
@@ -89,8 +97,8 @@ REST_FRAMEWORK = {
 #     #         'name': 'Authorization'
 #     #     }
 #     # },
-#     "is_authenticated": False,  # Set to True to enforce user authentication,
-#     "is_superuser": False,  # Set to True to enforce admin only access
+#     # "is_authenticated": False,  # Set to True to enforce user authentication,
+#     # "is_superuser": False,  # Set to True to enforce admin only access
 # }
 
 ROOT_URLCONF = 'server.urls'
@@ -98,7 +106,7 @@ ROOT_URLCONF = 'server.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -173,11 +181,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
+# STATIC_URL = '/static/'
+# STATIC_ROOT = config('STATIC_ROOT')
+# MEDIA_URL = '/uploads/'
+# MEDIA_ROOT = config('MEDIA_ROOT')
+
 STATIC_URL = '/static/'
-STATIC_ROOT = config('STATIC_ROOT', default='')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
-MEDIA_URL = config('MEDIA_URL', default='/uploads/')
-MEDIA_ROOT = config('MEDIA_ROOT', default='uploads/')
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+# STATIC_ROOT = config('STATIC_ROOT', default="./static/")
+MEDIA_URL=config('MEDIA_URL', default="/uploads/")
+MEDIA_ROOT=config('MEDIA_ROOT', default="./uploads/")
+
 
 # Claves de STRIPE
 if DEBUG:
@@ -199,4 +213,3 @@ EMAIL_HOST = config('EMAIL_HOST', default='mail.booster.com.mx')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='billy@booster.com.mx')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='billy123!')
 EMAIL_PORT = config('EMAIL_PORT', default=465)
-

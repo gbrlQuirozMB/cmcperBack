@@ -13,5 +13,6 @@ urlpatterns = [
     path('detail/<pk>/', PreregistroDetailView.as_view(), ),
     path('aceptar/<pk>/', PreregistroAceptadoUpdateView.as_view(), ),
     path('rechazar/<pk>/', PreregistroRechazadoUpdateView.as_view(), ),
+    path('medico/<pk>/foto-perfil/', FotoPerfilUpdateView.as_view(), ),
     
 ]

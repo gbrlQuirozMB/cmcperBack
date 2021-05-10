@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import FileExtensionValidator
 
 # Create your models here.
 
@@ -59,11 +60,19 @@ class Medico(models.Model):
     telConsultorio = models.CharField(max_length=15, blank=True, db_column='tel_consultorio')
     email = models.CharField(max_length=50)
     emailAlterno = models.CharField(max_length=50, blank=True, db_column='email_alterno')
+    # historia-2 doc-1 pantalla-4
+    isExtranjero = models.BooleanField(default=False, db_column='is_extranjero')
+    nacionalidad = models.CharField(max_length=100, blank=True)
+    # historia-2 doc-1 pantalla-5
+    estudioExtranjero = models.BooleanField(default=False, db_column='estudio_extranjero')
+    escuelaExtranjero = models.CharField(max_length=200, blank=True, db_column='escuela_extranjero')
     # administracion interna
     aceptado = models.BooleanField(default=False)
     motivo = models.TextField(blank=True)
-    numRegistro = models.IntegerField(blank=True, null=True)
+    numRegistro = models.IntegerField(blank=True, null=True, db_column='num_registro')
     username = models.CharField(max_length=150, blank=True)
+    fotoPerfil = models.FileField(blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'gif'])], db_column='foto_perfil')
+    
 
     class Meta:
         db_table = 'pre_registro_medico'
