@@ -1755,6 +1755,35 @@ class PostFechasExamenes200Test(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
+class PutFechasExamenes200Test(APITestCase):
+    def setUp(self):
+        FechasExamenRecertificacion.objects.create(fechaExamen='2021-04-01', descripcion='primer fecha')
+        FechasExamenRecertificacion.objects.create(fechaExamen='2021-08-01', descripcion='segunda fecha')
+        FechasExamenRecertificacion.objects.create(fechaExamen='2021-12-01', descripcion='tercera fecha')
+
+        self.json = {
+            "fechaExamen": "2021-04-06",
+            "descripcion": "mi cumpleaños"
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/recertificacion/fechas-examen/list/')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.put('/api/recertificacion/fechas-examen/3/update/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/recertificacion/fechas-examen/list/')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
 class PutProrrogaCertificadoTest(APITestCase):
     def setUp(self):
         medico3 = Medico.objects.create(

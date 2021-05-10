@@ -55,6 +55,7 @@ urlpatterns = [
 
     path('fechas-examen/list/', FechasExamenListView.as_view(), ),
     path('fechas-examen/create/', FechasExamenCreateView.as_view(), ),
+    path('fechas-examen/<pk>/update/', FechasExamenUpdateView.as_view(), ),
 
     path('certificado/<pk>/prorroga/<dias>/update/', ProrrogaCertificadoUpdateView.as_view(), ),
 

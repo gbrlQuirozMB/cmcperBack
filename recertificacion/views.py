@@ -722,6 +722,13 @@ class FechasExamenCreateView(CreateAPIView):
         raise CamposIncorrectos(serializer.errors)
 
 
+class FechasExamenUpdateView(UpdateAPIView):
+    queryset = FechasExamenRecertificacion.objects.filter()
+    serializer_class = FechasExamenRecertificacionSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
+
+
 class ProrrogaCertificadoUpdateView(UpdateAPIView):
     queryset = Certificado.objects.filter()
     serializer_class = ProrrogaCertificadoSerializer
