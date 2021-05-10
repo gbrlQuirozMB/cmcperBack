@@ -50,3 +50,10 @@ class CatPagosFilteredListView(ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_class = CatPagosFilter
     permission_classes = (permissions.IsAdminUser,)
+
+
+class CatPagosUpdateView(UpdateAPIView):
+    queryset = CatPagos.objects.filter()
+    serializer_class = CatPagosSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']

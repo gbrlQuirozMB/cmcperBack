@@ -89,3 +89,32 @@ class GetCatPagosFilteredListTest(APITestCase):
         response = self.client.get('/api/catalogo/pagos/list/?descripcionNS=descripcion6&tipo=3')
         print(f'response JSON ===>>> descripcionNS=descripcion6&tipo=3 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class PutCatPagosTest(APITestCase):
+    def setUp(self):
+        CatPagos.objects.create(descripcion='descripcion1', tipo=5, precio=123.45)
+        CatPagos.objects.create(descripcion='descripcion2', tipo=4, precio=456.78)
+        CatPagos.objects.create(descripcion='descripcion3', tipo=1, precio=111.11)
+        CatPagos.objects.create(descripcion='descripcion4', tipo=3, precio=333.33)
+        CatPagos.objects.create(descripcion='descripcion5', tipo=1, precio=666.66)
+        CatPagos.objects.create(descripcion='descripcion6', tipo=3, precio=999.99)
+
+        self.json = {
+            "descripcion": "descricpcion mortal 666",
+            "precio": 666.66,
+            "tipo": 6,
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        # response = self.client.get('/api/catalogo/pagos/list/?descripcionNS=descripcion3')
+        # print(f'response JSON ===>>> descripcionNS=descripcion1 \n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.put('/api/catalogo/pagos/3/update/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

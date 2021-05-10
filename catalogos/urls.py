@@ -10,6 +10,7 @@ urlpatterns = [
 
     path('pagos/create/', CatPagosCreateView.as_view(), ),
     path('pagos/list/', CatPagosFilteredListView.as_view(), ),
+    path('pagos/<pk>/update/', CatPagosUpdateView.as_view(), ),
 
 
 ]
