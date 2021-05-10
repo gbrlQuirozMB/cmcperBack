@@ -10,5 +10,6 @@ urlpatterns = [
     path('list/', ComunicadoFilteredListView.as_view(), ),
     path('<pk>/detail/', ComunicadoDetailView.as_view(), ),
     path('<pk>/update/', ComunicadoUpdateView.as_view(), ),
+    path('<pk>/delete/', ComunicadoDeleteView.as_view(), ),
 
 ]

@@ -50,3 +50,7 @@ class ComunicadoUpdateView(UpdateAPIView):
     serializer_class = ComunicadoSerializer
     permission_classes = (permissions.IsAdminUser,)
     http_method_names = ['put']
+
+
+class ComunicadoDeleteView(DestroyAPIView):
+    queryset = Comunicado.objects.filter()
