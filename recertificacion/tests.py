@@ -1325,20 +1325,17 @@ class GetPorExamenDocumentosList200Test(APITestCase):
         response = self.client.get('/api/recertificacion/por-examen/1/documentos/list/')
         print(f'response JSON ===>>> no existe \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        
-        
-        # cuentaPorExamen = PorExamen.objects.all().count()
-        # print(f'--->cuentaPorExamen: {cuentaPorExamen}')
-        # cuentaPEDocs = PorExamenDocumento.objects.filter(porExamen=9).count()
-        # print(f'--->cuentaPorExamen: {cuentaPEDocs}')
-        
-        # PorExamen.objects.filter(id=9).delete()
+
         # cuentaPorExamen = PorExamen.objects.all().count()
         # print(f'--->cuentaPorExamen: {cuentaPorExamen}')
         # cuentaPEDocs = PorExamenDocumento.objects.filter(porExamen=9).count()
         # print(f'--->cuentaPorExamen: {cuentaPEDocs}')
 
-        
+        # PorExamen.objects.filter(id=9).delete()
+        # cuentaPorExamen = PorExamen.objects.all().count()
+        # print(f'--->cuentaPorExamen: {cuentaPorExamen}')
+        # cuentaPEDocs = PorExamenDocumento.objects.filter(porExamen=9).count()
+        # print(f'--->cuentaPorExamen: {cuentaPEDocs}')
 
 
 class PutPorExamenDocumentoAceptar200Test(APITestCase):
@@ -1737,6 +1734,27 @@ class GetFechasExamenesList200Test(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
+class PostFechasExamenes200Test(APITestCase):
+    def setUp(self):
+        FechasExamenRecertificacion.objects.create(fechaExamen='2021-04-01', descripcion='primer fecha')
+        FechasExamenRecertificacion.objects.create(fechaExamen='2021-08-01', descripcion='segunda fecha')
+        FechasExamenRecertificacion.objects.create(fechaExamen='2021-12-01', descripcion='tercera fecha')
+
+        self.json = {
+            "fechaExamen": "2021-04-06",
+            "descripcion": "mi cumpleaños"
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post('/api/recertificacion/fechas-examen/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
 class PutProrrogaCertificadoTest(APITestCase):
     def setUp(self):
         medico3 = Medico.objects.create(
@@ -1789,7 +1807,6 @@ class PutProrrogaCertificadoTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
-
 class RenovacionTest(APITestCase):
     def setUp(self):
         medico3 = Medico.objects.create(
@@ -1807,30 +1824,27 @@ class RenovacionTest(APITestCase):
             deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
             cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999)
-        
+
         Renovacion.objects.create(medico=medico3)
         Renovacion.objects.create(medico=medico6)
-        
+
         self.json = {
             "medico": 9,
             "isPagado": False
-        }    
-        
+        }
+
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
 
     def test(self):
         self.client.force_authenticate(user=self.user)
-        
+
         response = self.client.post('/api/recertificacion/renovacion/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> OK \n {json.dumps(response.data, ensure_ascii=False)} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)     
-        
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
         response = self.client.get('/api/recertificacion/renovacion/medico/3/detail/')
         print(f'response JSON ===>>> OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
-           
-
 
 
 class variosTest(APITestCase):

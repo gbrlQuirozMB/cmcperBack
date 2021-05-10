@@ -710,6 +710,18 @@ class FechasExamenListView(ListAPIView):
     serializer_class = FechasExamenRecertificacionSerializer
 
 
+class FechasExamenCreateView(CreateAPIView):
+    serializer_class = FechasExamenRecertificacionSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+    def post(self, request, *args, **kwargs):
+        serializer = FechasExamenRecertificacionSerializer(data=request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.info(f'campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
+
+
 class ProrrogaCertificadoUpdateView(UpdateAPIView):
     queryset = Certificado.objects.filter()
     serializer_class = ProrrogaCertificadoSerializer
@@ -737,8 +749,8 @@ class RenovacionCreateView(CreateAPIView):
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
-    
-    
+
+
 class RenovacionDetailView(RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         medicoId = kwargs['medicoId']
