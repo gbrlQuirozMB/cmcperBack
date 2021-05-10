@@ -34,3 +34,8 @@ class ComunicadoFilteredListView(ListAPIView):
     serializer_class = ComunicadoFilteredListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = ComunicadoFilter
+
+
+class ComunicadoDetailView(RetrieveAPIView):
+    queryset = Comunicado.objects.filter()
+    serializer_class = ComunicadoFilteredListSerializer
