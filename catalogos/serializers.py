@@ -16,3 +16,11 @@ class CatPagosSerializer(serializers.ModelSerializer):
     class Meta:
         model = CatPagos
         fields = '__all__'
+
+
+class CatPagosFilteredListSerializer(serializers.ModelSerializer):
+    tipo = serializers.CharField(source='get_tipo_display')
+
+    class Meta:
+        model = CatPagos
+        fields = '__all__'

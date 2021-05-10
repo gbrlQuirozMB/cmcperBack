@@ -7,6 +7,8 @@ from .models import *
 
 from rest_framework import status, permissions
 from rest_framework.generics import DestroyAPIView, ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView
+from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter
+
 
 # Create your views here.
 
@@ -32,3 +34,19 @@ class CatPagosCreateView(CreateAPIView):
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
+
+
+class CatPagosFilter(FilterSet):
+    descripcionNS = CharFilter(field_name='descripcion', lookup_expr='iexact')
+
+    class Meta:
+        model = CatPagos
+        fields = ['descripcionNS', 'tipo']
+
+
+class CatPagosFilteredListView(ListAPIView):
+    queryset = CatPagos.objects.all()
+    serializer_class = CatPagosFilteredListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = CatPagosFilter
+    permission_classes = (permissions.IsAdminUser,)

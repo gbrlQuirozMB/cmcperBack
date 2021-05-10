@@ -9,5 +9,7 @@ urlpatterns = [
     path('motivo-rechazo/<textoBusqueda>/', MotivoRechazoListView.as_view(), ),
 
     path('pagos/create/', CatPagosCreateView.as_view(), ),
+    path('pagos/list/', CatPagosFilteredListView.as_view(), ),
+
 
 ]
