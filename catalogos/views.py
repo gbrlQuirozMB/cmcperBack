@@ -13,8 +13,8 @@ from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFi
 # Create your views here.
 
 
-class MotivoRechazoListView(ListAPIView):
-    serializer_class = CatMotivosRechazoSerializer
+class CatMotivoRechazoListView(ListAPIView):
+    serializer_class = CatMotivosRechazoFilteredSerializer
 
     def get_queryset(self):
         textoBusqueda = self.kwargs['textoBusqueda']
@@ -22,6 +22,18 @@ class MotivoRechazoListView(ListAPIView):
         queryset = CatMotivosRechazo.objects.filter(descripcion__icontains=textoBusqueda)
 
         return queryset
+
+
+class CatMotivosRechazoCreateView(CreateAPIView):
+    serializer_class = CatMotivosRechazoSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+    def post(self, request, *args, **kwargs):
+        serializer = CatMotivosRechazoSerializer(data=request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.info(f'campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
 
 
 class CatPagosCreateView(CreateAPIView):

@@ -25,17 +25,35 @@ class GetMotivoRechazo200Test(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        response = self.client.get('/api/catalogo/motivo-rechazo/steelers/')
+        response = self.client.get('/api/catalogo/motivo-rechazo/list/steelers/')
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = self.client.get('/api/catalogo/motivo-rechazo/fall/')
+        response = self.client.get('/api/catalogo/motivo-rechazo/list/fall/')
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class PostMotivoRechazoTest(APITestCase):
+    def setUp(self):
+
+        self.json = {
+            "descripcion": "descricpcion 9",
+            "tipo": 1,
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post('/api/catalogo/motivo-rechazo/create/', data=json.dumps(self.json), content_type="application/json")
+        # print(f'response JSON ===>>> \n {json.dumps(response.data, cls=DecimalEncoder)} \n ---')
+        print(f'response JSON ===>>> \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
 
 # usado para corregir error de que json.dumps no puede mostrar los tipos Decimal, aqui regreso un float
-
-
 class DecimalEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, decimal.Decimal):
