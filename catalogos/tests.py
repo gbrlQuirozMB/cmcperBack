@@ -53,6 +53,32 @@ class PostMotivoRechazoTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
+class PutMotivoRechazoTest(APITestCase):
+    def setUp(self):
+        CatMotivosRechazo.objects.create(descripcion='muchos fallos', tipo=1)
+        CatMotivosRechazo.objects.create(descripcion='no sirve', tipo=2)
+        CatMotivosRechazo.objects.create(descripcion='perdieron los steelers', tipo=1)
+        CatMotivosRechazo.objects.create(descripcion='engargolado incorrecto', tipo=1)
+        CatMotivosRechazo.objects.create(descripcion='documento perdido', tipo=1)
+        CatMotivosRechazo.objects.create(descripcion='no se que mas poner fall', tipo=2)
+        CatMotivosRechazo.objects.create(descripcion='ganaron los steelers', tipo=1)
+
+        self.json = {
+            "descripcion": "descricpcion 9",
+            "tipo": 2,
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.put('/api/catalogo/motivo-rechazo/3/update/', data=json.dumps(self.json), content_type="application/json")
+        # print(f'response JSON ===>>> \n {json.dumps(response.data, cls=DecimalEncoder)} \n ---')
+        print(f'response JSON ===>>> \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
 # usado para corregir error de que json.dumps no puede mostrar los tipos Decimal, aqui regreso un float
 class DecimalEncoder(json.JSONEncoder):
     def default(self, o):

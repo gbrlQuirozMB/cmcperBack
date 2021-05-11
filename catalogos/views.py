@@ -36,6 +36,13 @@ class CatMotivosRechazoCreateView(CreateAPIView):
         raise CamposIncorrectos(serializer.errors)
 
 
+class CatMotivosRechazoUpdateView(UpdateAPIView):
+    queryset = CatMotivosRechazo.objects.filter()
+    serializer_class = CatMotivosRechazoSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
+
+
 class CatPagosCreateView(CreateAPIView):
     serializer_class = CatPagosSerializer
     permission_classes = (permissions.IsAdminUser,)

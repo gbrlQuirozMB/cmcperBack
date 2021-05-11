@@ -8,6 +8,7 @@ app_name = 'catalogo'
 urlpatterns = [
     path('motivo-rechazo/list/<textoBusqueda>/', CatMotivoRechazoListView.as_view(), ),
     path('motivo-rechazo/create/', CatMotivosRechazoCreateView.as_view(), ),
+    path('motivo-rechazo/<pk>/update/', CatMotivosRechazoUpdateView.as_view(), ),
 
     path('pagos/create/', CatPagosCreateView.as_view(), ),
     path('pagos/list/', CatPagosFilteredListView.as_view(), ),
