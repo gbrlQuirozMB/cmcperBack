@@ -36,13 +36,11 @@ class ComunicadoFilteredListView(ListAPIView):
     serializer_class = ComunicadoFilteredListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = ComunicadoFilter
-    permission_classes = (permissions.IsAdminUser,)
 
 
 class ComunicadoDetailView(RetrieveAPIView):
     queryset = Comunicado.objects.filter()
     serializer_class = ComunicadoFilteredListSerializer
-    permission_classes = (permissions.IsAdminUser,)
 
 
 class ComunicadoUpdateView(UpdateAPIView):

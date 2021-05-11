@@ -5,6 +5,12 @@ from api.exceptions import *
 
 
 class CatMotivosRechazoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CatMotivosRechazo
+        fields = '__all__'
+
+
+class CatMotivosRechazoFilteredSerializer(serializers.ModelSerializer):
     tipo = serializers.CharField(source='get_tipo_display')
 
     class Meta:
