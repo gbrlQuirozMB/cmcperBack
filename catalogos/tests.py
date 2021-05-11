@@ -17,7 +17,7 @@ class GetMotivoRechazo200Test(APITestCase):
         CatMotivosRechazo.objects.create(descripcion='perdieron los steelers', tipo=1)
         CatMotivosRechazo.objects.create(descripcion='engargolado incorrecto', tipo=1)
         CatMotivosRechazo.objects.create(descripcion='documento perdido', tipo=1)
-        CatMotivosRechazo.objects.create(descripcion='no se que mas poner fall', tipo=2)
+        CatMotivosRechazo.objects.create(descripcion='no se que mas poner', tipo=2)
         CatMotivosRechazo.objects.create(descripcion='ganaron los steelers', tipo=1)
 
         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
@@ -29,7 +29,11 @@ class GetMotivoRechazo200Test(APITestCase):
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = self.client.get('/api/catalogo/motivo-rechazo/list/fall/')
+        response = self.client.get('/api/catalogo/motivo-rechazo/list/poner/')
+        print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/catalogo/motivo-rechazo/list/all/')
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
