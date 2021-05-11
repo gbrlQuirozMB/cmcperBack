@@ -192,6 +192,12 @@ class CapituloSerializer(serializers.ModelSerializer):
         model = Capitulo
         fields = '__all__'
 
+
+class SubcapituloUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subcapitulo
+        fields = '__all__'
+
 class SubcapituloListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subcapitulo

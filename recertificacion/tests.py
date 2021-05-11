@@ -1908,6 +1908,12 @@ class PutSeveralSelectList200Test(APITestCase):
             "isOpcional": True,
             "icono": imgFile
         }
+        
+        self.jsonSC = {
+            "descripcion": "descricpcion modif",
+            "comentarios": "comentarios modif",
+            "capitulo": 1
+        }
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
 
@@ -1917,6 +1923,11 @@ class PutSeveralSelectList200Test(APITestCase):
         # capitulos
         response = self.client.put('/api/recertificacion/capitulo/1/update/', data=self.jsonC, format='multipart')
         print(f'response JSON ===>>> capitulos OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        # subcapitulos
+        response = self.client.put('/api/recertificacion/subcapitulo/2/update/', data=json.dumps(self.jsonSC), content_type="application/json")
+        print(f'response JSON ===>>> subcapitulos OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
