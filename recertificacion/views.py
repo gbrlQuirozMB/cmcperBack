@@ -309,6 +309,12 @@ class ItemListView(ListAPIView):
         return queryset
 
 
+class ItemUpdateView(UpdateAPIView):
+    queryset = Item.objects.filter()
+    serializer_class = ItemSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
+    
 class ActualizaVigenciaCertificados(APIView):
     permission_classes = (permissions.IsAdminUser,)
 
