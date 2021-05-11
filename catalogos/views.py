@@ -43,6 +43,10 @@ class CatMotivosRechazoUpdateView(UpdateAPIView):
     http_method_names = ['put']
 
 
+class CatMotivosRechazoDeleteView(DestroyAPIView):
+    queryset = CatMotivosRechazo.objects.filter()
+
+
 class CatPagosCreateView(CreateAPIView):
     serializer_class = CatPagosSerializer
     permission_classes = (permissions.IsAdminUser,)

@@ -79,6 +79,32 @@ class PutMotivoRechazoTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
+class DeleteMotivoRechazoTest(APITestCase):
+    def setUp(self):
+        CatMotivosRechazo.objects.create(descripcion='muchos fallos', tipo=1)
+        CatMotivosRechazo.objects.create(descripcion='no sirve', tipo=2)
+        CatMotivosRechazo.objects.create(descripcion='perdieron los steelers', tipo=1)
+        CatMotivosRechazo.objects.create(descripcion='engargolado incorrecto', tipo=1)
+        CatMotivosRechazo.objects.create(descripcion='documento perdido', tipo=1)
+        CatMotivosRechazo.objects.create(descripcion='no se que mas poner fall', tipo=2)
+        CatMotivosRechazo.objects.create(descripcion='ganaron los steelers', tipo=1)
+
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        cuenta = CatMotivosRechazo.objects.all().count()
+        print(f'--->>>cuenta registros antes: {cuenta}')
+
+        response = self.client.delete('/api/catalogo/motivo-rechazo/3/delete/')
+        print(f'response JSON ===>>> ok 204 sin contenido \n {response.content} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        cuenta = CatMotivosRechazo.objects.all().count()
+        print(f'--->>>cuenta registros despues: {cuenta}')
+
+
 # usado para corregir error de que json.dumps no puede mostrar los tipos Decimal, aqui regreso un float
 class DecimalEncoder(json.JSONEncoder):
     def default(self, o):
