@@ -23,13 +23,13 @@ urlpatterns = [
     path('documento/aceptar/<pk>/', ItemDocumentosAceptar.as_view(), ),
     path('documento/rechazar/<pk>/', ItemDocumentosRechazar.as_view(), ),
     path('documento/reasignar/<pk>/', ItemDocumentosReasignar.as_view(), ),
-    
+
     path('capitulo/list/', CapituloListView.as_view(), ),
     path('capitulo/<pk>/update/', CapituloUpdateView.as_view(), ),
-    
+
     path('subcapitulo/<capituloId>/list/', SubcapituloListView.as_view(), ),
     path('subcapitulo/<pk>/update/', SubcapituloUpdateView.as_view(), ),
-    
+
     path('item/<subcapituloId>/list/', ItemListView.as_view(), ),
     path('item/<pk>/update/', ItemUpdateView.as_view(), ),
 

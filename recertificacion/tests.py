@@ -1876,7 +1876,6 @@ class RenovacionTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-
 class PutSeveralSelectList200Test(APITestCase):
     def setUp(self):
         capitulo1 = Capitulo.objects.create(titulo='titulo 1', descripcion='capitulo descripcion 1', puntos=33.0, maximo=50.0, minimo=50.0, isOpcional=False)
@@ -1895,10 +1894,10 @@ class PutSeveralSelectList200Test(APITestCase):
         item7 = Item.objects.create(descripcion='item descripcion 7', puntos=30, subcapitulo=subcapitulo4)
         item8 = Item.objects.create(descripcion='item descripcion 8', puntos=30, subcapitulo=subcapitulo4)
         item9 = Item.objects.create(descripcion='item descripcion 9', puntos=30, subcapitulo=subcapitulo4)
-        
+
         archivo = open('./uploads/testUnit.png', 'rb')
         imgFile = SimpleUploadedFile(archivo.name, archivo.read(), content_type='image/png')
-        
+
         self.jsonC = {
             "titulo": "titulo modif",
             "descripcion": "descripcion modif",
@@ -1908,13 +1907,13 @@ class PutSeveralSelectList200Test(APITestCase):
             "isOpcional": True,
             "icono": imgFile
         }
-        
+
         self.jsonSC = {
             "descripcion": "descricpcion modif",
             "comentarios": "comentarios modif",
             "capitulo": 1
         }
-        
+
         self.jsonI = {
             "descripcion": "descricpcion modif",
             "puntos": 44.44,
@@ -1930,7 +1929,7 @@ class PutSeveralSelectList200Test(APITestCase):
         response = self.client.put('/api/recertificacion/capitulo/1/update/', data=self.jsonC, format='multipart')
         print(f'response JSON ===>>> capitulos OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         # subcapitulos
         response = self.client.put('/api/recertificacion/subcapitulo/2/update/', data=json.dumps(self.jsonSC), content_type="application/json")
         print(f'response JSON ===>>> subcapitulos OK \n {json.dumps(response.json())} \n ---')
@@ -1940,7 +1939,6 @@ class PutSeveralSelectList200Test(APITestCase):
         response = self.client.put('/api/recertificacion/item/3/update/', data=json.dumps(self.jsonI), content_type="application/json")
         print(f'response JSON ===>>> items OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
 
 
 class variosTest(APITestCase):

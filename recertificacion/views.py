@@ -275,11 +275,13 @@ class CapituloListView(ListAPIView):
     queryset = Capitulo.objects.all()
     serializer_class = CapituloListSerializer
 
+
 class CapituloUpdateView(UpdateAPIView):
     queryset = Capitulo.objects.filter()
     serializer_class = CapituloSerializer
     permission_classes = (permissions.IsAdminUser,)
     http_method_names = ['put']
+
 
 class SubcapituloListView(ListAPIView):
     serializer_class = SubcapituloListSerializer
@@ -298,6 +300,7 @@ class SubcapituloUpdateView(UpdateAPIView):
     permission_classes = (permissions.IsAdminUser,)
     http_method_names = ['put']
 
+
 class ItemListView(ListAPIView):
     serializer_class = ItemListSerializer
 
@@ -314,7 +317,8 @@ class ItemUpdateView(UpdateAPIView):
     serializer_class = ItemSerializer
     permission_classes = (permissions.IsAdminUser,)
     http_method_names = ['put']
-    
+
+
 class ActualizaVigenciaCertificados(APIView):
     permission_classes = (permissions.IsAdminUser,)
 

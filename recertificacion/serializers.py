@@ -198,6 +198,7 @@ class SubcapituloUpdateSerializer(serializers.ModelSerializer):
         model = Subcapitulo
         fields = '__all__'
 
+
 class SubcapituloListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subcapitulo
@@ -244,6 +245,7 @@ class MedicoAPagarExamenSerializer(serializers.ModelSerializer):
 
         return repr
 
+
 class MedicoAPagarRenovacionSerializer(serializers.ModelSerializer):
     tipoDescripcion = serializers.CharField(source='get_tipo_display', read_only=True)
 
@@ -258,6 +260,7 @@ class MedicoAPagarRenovacionSerializer(serializers.ModelSerializer):
         repr['medico'] = datoMedico.nombre + ' ' + datoMedico.apPaterno
 
         return repr
+
 
 class PorExamenPagadoSerializer(serializers.ModelSerializer):
     class Meta:
