@@ -6,7 +6,7 @@ from django.conf import settings
 from django.shortcuts import render
 from rest_framework import permissions
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.views import APIView
 
 from api.exceptions import *
@@ -187,3 +187,7 @@ class HorarioAtencionUpdateView(UpdateAPIView):
     queryset = HorarioAtencion.objects.filter()
     serializer_class = HorarioAtencionSerializer
     http_method_names = ['put']
+
+
+class HorarioAtencionDeleteView(DestroyAPIView):
+    queryset = HorarioAtencion.objects.filter()

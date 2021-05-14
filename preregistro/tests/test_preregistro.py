@@ -437,3 +437,41 @@ class PutHorarioAtencionTest(APITestCase):
         response = self.client.put('/api/preregistro/horario-atencion/9/update/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> 404 \n {json.dumps(response.data)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class DeleteHorarioAtencionTest(APITestCase):
+    def setUp(self):
+        medico3 = Medico.objects.create(
+            id=3, nombre='elianid', apPaterno='tolentino', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=333)
+        medico9 = Medico.objects.create(
+            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999)
+
+        HorarioAtencion.objects.create(medico=medico9, dia='Lunes', horaInicio='3:03', horaTermino='6:06')
+        HorarioAtencion.objects.create(medico=medico9, dia='Martes', horaInicio='6:06', horaTermino='9:09')
+        HorarioAtencion.objects.create(medico=medico9, dia='Miércoles', horaInicio='9:09', horaTermino='12:12')  # este es el que cambia
+        HorarioAtencion.objects.create(medico=medico3, dia='Lunes', horaInicio='3:03', horaTermino='6:06')
+
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        cuenta = HorarioAtencion.objects.all().count()
+        print(f'--->>>cuenta registros original: {cuenta}')
+
+        response = self.client.delete('/api/preregistro/horario-atencion/3/delete/')
+        print(f'response JSON ===>>> ok 204 sin contenido \n {response.content} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        response = self.client.delete('/api/preregistro/horario-atencion/9/delete/')
+        print(f'response JSON ===>>> 404 \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        cuenta = HorarioAtencion.objects.all().count()
+        print(f'--->>>cuenta registros despues: {cuenta}')
