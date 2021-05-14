@@ -181,3 +181,9 @@ class HorarioAtencionListView(ListAPIView):
 class HorarioAtencionDetailView(RetrieveAPIView):
     queryset = HorarioAtencion.objects.filter()
     serializer_class = HorarioAtencionSerializer
+
+
+class HorarioAtencionUpdateView(UpdateAPIView):
+    queryset = HorarioAtencion.objects.filter()
+    serializer_class = HorarioAtencionSerializer
+    http_method_names = ['put']

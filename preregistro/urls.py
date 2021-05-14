@@ -18,6 +18,7 @@ urlpatterns = [
     path('horario-atencion/create/', HorarioAtencionCreateView.as_view(), ),
     path('horario-atencion/medico/<medicoId>/list/', HorarioAtencionListView.as_view(), ),
     path('horario-atencion/<pk>/detail/', HorarioAtencionDetailView.as_view(), ),
+    path('horario-atencion/<pk>/update/', HorarioAtencionUpdateView.as_view(), ),
 
 
 ]
