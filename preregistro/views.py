@@ -176,3 +176,8 @@ class HorarioAtencionListView(ListAPIView):
         if not queryset:
             raise ResponseError('No hay horarios de atencion', 404)
         return queryset
+
+
+class HorarioAtencionDetailView(RetrieveAPIView):
+    queryset = HorarioAtencion.objects.filter()
+    serializer_class = HorarioAtencionSerializer
