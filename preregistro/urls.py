@@ -15,4 +15,7 @@ urlpatterns = [
     path('rechazar/<pk>/', PreregistroRechazadoUpdateView.as_view(), ),
     path('medico/<pk>/foto-perfil/', FotoPerfilUpdateView.as_view(), ),
     
+    path('horario-atencion/create/', HorarioAtencionCreateView.as_view(), ),
+    
+    
 ]

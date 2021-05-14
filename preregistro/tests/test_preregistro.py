@@ -171,13 +171,12 @@ class GetDetail200Test(APITestCase):
                               deleMuni='deleMuni3', colonia='colonia', calle='calle3', cp='cp3', numExterior='numExterior3', rfcFacturacion='rfcFacturacion3', cedProfesional='cedProfesional3',
                               cedEspecialidad='cedEspecialidad3', cedCirugiaGral='cedCirugiaGral3', hospitalResi='hospitalResi3', telJefEnse='telJefEnse3', fechaInicioResi='1999-06-06',
                               fechaFinResi='2000-07-07', telCelular='telCelular3', telParticular='telParticular3', email='email3', fotoPerfil='mi_foto_999.png')
-        
+
         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
-        
 
     def test(self):
         self.client.force_authenticate(user=self.user)
-        
+
         response = self.client.get('/api/preregistro/detail/3/')
         print(f'response JSON ===>>> {nl} {json.dumps(response.data)} {nl} ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -310,3 +309,28 @@ class baseDatosTest(APITestCase):
         username = datosMedico[0][0][0:3] + datosMedico[0][1][0:3] + datosMedico[0][4][4:6]
 
         print(username)
+
+
+class PostHorarioAtencionTest(APITestCase):
+    def setUp(self):
+        medico9 = Medico.objects.create(
+            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999)
+
+        self.json = {
+            "medico": 9,
+            "dia": "Martes",
+            "horaInicio": "9:09",
+            "horaTermino": "18:33"
+        }
+
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post('/api/preregistro/horario-atencion/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)

@@ -30,3 +30,9 @@ class FotoPerfilSerializer(serializers.ModelSerializer):
     class Meta:
         model = Medico
         fields = ['id', 'fotoPerfil']
+        
+
+class HorarioAtencionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HorarioAtencion
+        fields = '__all__'

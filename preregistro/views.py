@@ -151,3 +151,14 @@ class FotoPerfilUpdateView(UpdateAPIView):
     queryset = Medico.objects.filter()
     serializer_class = FotoPerfilSerializer
     http_method_names = ['put'] 
+    
+    
+class HorarioAtencionCreateView(CreateAPIView):
+    serializer_class = HorarioAtencionSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = HorarioAtencionSerializer(data=request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.info(f'campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
