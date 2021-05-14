@@ -179,7 +179,7 @@ class GetDetail200Test(APITestCase):
         self.client.force_authenticate(user=self.user)
         
         response = self.client.get('/api/preregistro/detail/3/')
-        print(f'response JSON ===>>> {nl} {response.data} {nl} ---')
+        print(f'response JSON ===>>> {nl} {json.dumps(response.data)} {nl} ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
