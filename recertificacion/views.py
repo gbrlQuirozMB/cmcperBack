@@ -322,6 +322,10 @@ class ItemUpdateView(UpdateAPIView):
     http_method_names = ['put']
 
 
+class ItemDetailView(RetrieveAPIView):
+    queryset = Item.objects.filter()
+    serializer_class = ItemSerializer
+
 class ActualizaVigenciaCertificados(APIView):
     permission_classes = (permissions.IsAdminUser,)
 

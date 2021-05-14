@@ -33,6 +33,7 @@ urlpatterns = [
 
     path('item/<subcapituloId>/list/', ItemListView.as_view(), ),
     path('item/<pk>/update/', ItemUpdateView.as_view(), ),
+    path('item/<pk>/detail/', ItemDetailView.as_view(), ),
 
     path('actualiza-vigencia-certificados/update/', ActualizaVigenciaCertificados.as_view(), ),
     path('solicitud-examen/create/', SolicitudExamenCreateView.as_view(), ),
