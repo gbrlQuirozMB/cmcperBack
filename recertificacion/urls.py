@@ -29,6 +29,7 @@ urlpatterns = [
 
     path('subcapitulo/<capituloId>/list/', SubcapituloListView.as_view(), ),
     path('subcapitulo/<pk>/update/', SubcapituloUpdateView.as_view(), ),
+    path('subcapitulo/<pk>/detail/', SubcapituloDetailView.as_view(), ),
 
     path('item/<subcapituloId>/list/', ItemListView.as_view(), ),
     path('item/<pk>/update/', ItemUpdateView.as_view(), ),

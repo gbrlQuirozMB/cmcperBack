@@ -314,3 +314,10 @@ class RenovacionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Renovacion
         fields = '__all__'
+
+
+class DetallesSubcapituloSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Subcapitulo
+        fields = '__all__'

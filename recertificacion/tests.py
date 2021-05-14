@@ -852,7 +852,7 @@ class GetSeveralSelectList200Test(APITestCase):
         item3 = Item.objects.create(descripcion='item descripcion 3', puntos=9, subcapitulo=subcapitulo1)
 
         capitulo2 = Capitulo.objects.create(titulo='titulo 2', descripcion='capitulo descripcion 2', puntos=66.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo2 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo2)
+        subcapitulo2 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 2', comentarios='subcapitulo comentarios 2', capitulo=capitulo2)
         subcapitulo4 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 4', comentarios='subcapitulo comentarios 4', capitulo=capitulo2)
         item4 = Item.objects.create(descripcion='item descripcion 4', puntos=10, subcapitulo=subcapitulo2)
         item5 = Item.objects.create(descripcion='item descripcion 5', puntos=20, subcapitulo=subcapitulo2)
@@ -867,28 +867,33 @@ class GetSeveralSelectList200Test(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        # capitulos
-        response = self.client.get('/api/recertificacion/capitulo/list/')
-        print(f'response JSON ===>>> capitulos OK \n {json.dumps(response.json())} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # # capitulos
+        # response = self.client.get('/api/recertificacion/capitulo/list/')
+        # print(f'response JSON ===>>> capitulos OK \n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        # subcapitulos
-        response = self.client.get('/api/recertificacion/subcapitulo/2/list/')
+        # # subcapitulos
+        # response = self.client.get('/api/recertificacion/subcapitulo/2/list/')
+        # print(f'response JSON ===>>> subcapitulos OK \n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # response = self.client.get('/api/recertificacion/subcapitulo/3/list/')
+        # print(f'response JSON ===>>> subcapitulos no existe \n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
+        response = self.client.get('/api/recertificacion/subcapitulo/2/detail/')
         print(f'response JSON ===>>> subcapitulos OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
 
-        response = self.client.get('/api/recertificacion/subcapitulo/3/list/')
-        print(f'response JSON ===>>> subcapitulos no existe \n {json.dumps(response.json())} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        # # items
+        # response = self.client.get('/api/recertificacion/item/2/list/')
+        # print(f'response JSON ===>>> items OK \n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        # items
-        response = self.client.get('/api/recertificacion/item/2/list/')
-        print(f'response JSON ===>>> items OK \n {json.dumps(response.json())} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        response = self.client.get('/api/recertificacion/item/33/list/')
-        print(f'response JSON ===>>> items no existe \n {json.dumps(response.json())} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        # response = self.client.get('/api/recertificacion/item/33/list/')
+        # print(f'response JSON ===>>> items no existe \n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
 class PutActualizaVigenciaCertificados200Test(APITestCase):

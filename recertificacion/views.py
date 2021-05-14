@@ -300,6 +300,9 @@ class SubcapituloUpdateView(UpdateAPIView):
     permission_classes = (permissions.IsAdminUser,)
     http_method_names = ['put']
 
+class SubcapituloDetailView(RetrieveAPIView):
+    queryset = Subcapitulo.objects.filter()
+    serializer_class = DetallesSubcapituloSerializer
 
 class ItemListView(ListAPIView):
     serializer_class = ItemListSerializer
