@@ -14,8 +14,9 @@ urlpatterns = [
     path('aceptar/<pk>/', PreregistroAceptadoUpdateView.as_view(), ),
     path('rechazar/<pk>/', PreregistroRechazadoUpdateView.as_view(), ),
     path('medico/<pk>/foto-perfil/', FotoPerfilUpdateView.as_view(), ),
-    
+
     path('horario-atencion/create/', HorarioAtencionCreateView.as_view(), ),
-    
-    
+    path('horario-atencion/medico/<medicoId>/list/', HorarioAtencionListView.as_view(), ),
+
+
 ]
