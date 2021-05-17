@@ -37,3 +37,8 @@ class InstitucionFilteredListView(ListAPIView):
     serializer_class = InstitucionFilteredListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = InstitucionFilter
+
+
+class InstitucionDetailView(RetrieveAPIView):
+    queryset = Institucion.objects.filter()
+    serializer_class = InstitucionSerializer
