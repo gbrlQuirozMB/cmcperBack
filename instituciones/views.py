@@ -21,3 +21,19 @@ class InstitucionCreateView(CreateAPIView):
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
+
+
+class InstitucionFilter(FilterSet):
+    nombreInstitucionNS = CharFilter(field_name='nombreInstitucion', lookup_expr='iexact')
+    contactoNS = CharFilter(field_name='contacto', lookup_expr='iexact')
+
+    class Meta:
+        model = Institucion
+        fields = ['nombreInstitucionNS', 'contactoNS']
+
+
+class InstitucionFilteredListView(ListAPIView):
+    queryset = Institucion.objects.all()
+    serializer_class = InstitucionFilteredListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = InstitucionFilter

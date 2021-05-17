@@ -6,3 +6,9 @@ class InstitucionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Institucion
         fields = '__all__'
+
+
+class InstitucionFilteredListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Institucion
+        fields = ['nombreInstitucion', 'rfc', 'contacto', 'email', 'telUno']

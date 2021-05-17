@@ -7,6 +7,8 @@ app_name = 'instituciones'
 
 urlpatterns = [
     path('create/', InstitucionCreateView.as_view(), ),
+    path('list/', InstitucionFilteredListView.as_view(), ),
+
 
 
 ]
