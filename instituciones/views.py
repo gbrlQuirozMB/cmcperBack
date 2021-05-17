@@ -49,3 +49,7 @@ class InstitucionUpdateView(UpdateAPIView):
     serializer_class = InstitucionSerializer
     permission_classes = (permissions.IsAdminUser,)
     http_method_names = ['put']
+
+
+class InstitucionDeleteView(DestroyAPIView):
+    queryset = Institucion.objects.filter()

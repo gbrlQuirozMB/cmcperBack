@@ -10,6 +10,7 @@ urlpatterns = [
     path('list/', InstitucionFilteredListView.as_view(), ),
     path('<pk>/detail/', InstitucionDetailView.as_view(), ),
     path('<pk>/update/', InstitucionUpdateView.as_view(), ),
+    path('<pk>/delete/', InstitucionDeleteView.as_view(), ),
 
 
 
