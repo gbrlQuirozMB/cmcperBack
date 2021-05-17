@@ -42,3 +42,10 @@ class InstitucionFilteredListView(ListAPIView):
 class InstitucionDetailView(RetrieveAPIView):
     queryset = Institucion.objects.filter()
     serializer_class = InstitucionSerializer
+
+
+class InstitucionUpdateView(UpdateAPIView):
+    queryset = Institucion.objects.filter()
+    serializer_class = InstitucionSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
