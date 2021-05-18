@@ -3,6 +3,7 @@ from django.core.validators import FileExtensionValidator
 
 from instituciones.models import Institucion
 from recertificacion.models import Item
+from preregistro.models import Medico
 
 
 # Create your models here.
@@ -40,3 +41,13 @@ class Tema(models.Model):
     class Meta:
         db_table = 'temas'
         ordering = ['-nombre']
+
+
+class ActividadAvaladaAsistente(models.Model):
+    medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medicoAAA')
+    actividadAvalada = models.ForeignKey(ActividadAvalada, on_delete=models.CASCADE, related_name='actividadAvaladaAAA')
+
+    class Meta:
+        db_table = 'actividades_avaladas_asistentes'
+        ordering = ['-actividadAvalada']
+    
