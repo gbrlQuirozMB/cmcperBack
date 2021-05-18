@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ["*"]
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:8000',
-    'http://5f84a0e58c55.ngrok.io',  # back
+    'http://b743bff359d9.ngrok.io',  # back
     'http://localhost:4200',
     # 'http://54625c39d9d4.ngrok.io',  # front
 )
@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'certificados',
     'comunicados',
     'instituciones',
+    'actividadesAvaladas',
 ]
 
 MIDDLEWARE = [
