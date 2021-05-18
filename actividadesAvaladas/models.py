@@ -36,7 +36,8 @@ class ActividadAvalada(models.Model):
 
 class Tema(models.Model):
     nombre = models.CharField(max_length=300)
-    actividadAvalada = models.ForeignKey(ActividadAvalada, on_delete=models.CASCADE, related_name='actividadAvaladaT')
+    # related no cumple con el nombre estandarizado ('actividadAvaladaT'), porque se utiliza en el serializer y llega hasta el json
+    actividadAvalada = models.ForeignKey(ActividadAvalada, on_delete=models.CASCADE, related_name='temas')
 
     class Meta:
         db_table = 'temas'
@@ -50,4 +51,3 @@ class ActividadAvaladaAsistente(models.Model):
     class Meta:
         db_table = 'actividades_avaladas_asistentes'
         ordering = ['-actividadAvalada']
-    
