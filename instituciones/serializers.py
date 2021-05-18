@@ -11,4 +11,4 @@ class InstitucionSerializer(serializers.ModelSerializer):
 class InstitucionFilteredListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Institucion
-        fields = ['nombreInstitucion', 'rfc', 'contacto', 'email', 'telUno']
+        fields = ['id', 'nombreInstitucion', 'rfc', 'contacto', 'email', 'telUno']
