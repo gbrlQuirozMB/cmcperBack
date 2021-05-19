@@ -9,6 +9,8 @@ urlpatterns = [
     path('create/', ActividadAvaladaCreateView.as_view(), ),
     path('<pk>/archivo/', ActividadAvaladaArchivoUpdateView.as_view(), ),
     path('<pk>/banner/', ActividadAvaladaBannerUpdateView.as_view(), ),
+    path('list/', ActividadAvaladaFilteredListView.as_view(), ),
+    
 
 
 

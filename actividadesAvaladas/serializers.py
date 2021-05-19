@@ -38,3 +38,22 @@ class ActividadAvaladaBannerSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActividadAvalada
         fields = ['id', 'banner']
+
+
+class ActividadAvaladaFilteredListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ActividadAvalada
+        fields = ['id', 'institucion', 'item', 'fechaInicio', 'isPagado', 'puntosAsignar']
+    
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        repr['institucion'] = instance.institucion.nombreInstitucion
+        repr['capitulo'] = instance.item.subcapitulo.capitulo.descripcion
+        repr['subcapitulo'] = instance.item.subcapitulo.descripcion
+        # try:
+        #     certificadoMedico = Certificado.objects.filter(medico=instance.medico, isVencido=False)[0]
+        #     repr['fechaCertificacion'] = certificadoMedico.fechaCertificacion
+        # except:
+        #     repr['fechaCertificacion'] = 'no existe certificado'
+
+        return repr
