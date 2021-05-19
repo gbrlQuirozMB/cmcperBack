@@ -22,3 +22,9 @@ class ActividadAvaladaCreateView(CreateAPIView):
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
+
+
+class ActividadAvaladaArchivoUpdateView(UpdateAPIView):
+    queryset = ActividadAvalada.objects.filter()
+    serializer_class = ActividadAvaladaArchivoSerializer
+    http_method_names = ['put']

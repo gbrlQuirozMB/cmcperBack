@@ -7,6 +7,7 @@ app_name = 'actividades-avaladas'
 
 urlpatterns = [
     path('create/', ActividadAvaladaCreateView.as_view(), ),
+    path('<pk>/archivo/', ActividadAvaladaArchivoUpdateView.as_view(), ),
 
 
 

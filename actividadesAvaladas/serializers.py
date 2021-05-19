@@ -26,3 +26,9 @@ class ActividadAvaladaSerializer(serializers.ModelSerializer):
         for temaData in temasData:
             Tema.objects.create(**temaData, actividadAvalada=actividadAvalada)
         return actividadAvalada
+
+
+class ActividadAvaladaArchivoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ActividadAvalada
+        fields = ['id', 'archivo']
