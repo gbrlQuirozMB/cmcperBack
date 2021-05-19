@@ -28,3 +28,9 @@ class ActividadAvaladaArchivoUpdateView(UpdateAPIView):
     queryset = ActividadAvalada.objects.filter()
     serializer_class = ActividadAvaladaArchivoSerializer
     http_method_names = ['put']
+
+
+class ActividadAvaladaBannerUpdateView(UpdateAPIView):
+    queryset = ActividadAvalada.objects.filter()
+    serializer_class = ActividadAvaladaBannerSerializer
+    http_method_names = ['put']

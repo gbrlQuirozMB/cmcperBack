@@ -32,3 +32,9 @@ class ActividadAvaladaArchivoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActividadAvalada
         fields = ['id', 'archivo']
+
+
+class ActividadAvaladaBannerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ActividadAvalada
+        fields = ['id', 'banner']
