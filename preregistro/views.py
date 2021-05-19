@@ -191,3 +191,9 @@ class HorarioAtencionUpdateView(UpdateAPIView):
 
 class HorarioAtencionDeleteView(DestroyAPIView):
     queryset = HorarioAtencion.objects.filter()
+
+
+class PreregistroUpdateView(UpdateAPIView):
+    queryset = Medico.objects.filter()
+    serializer_class = MedicoSerializer
+    http_method_names = ['put']
