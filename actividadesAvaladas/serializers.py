@@ -107,7 +107,7 @@ class CuposAsistentesSerializer(serializers.ModelSerializer):
         return repr
 
 
-class MedicosAsistenteAASerializer(serializers.ModelSerializer):
+class MedicosAIncribirseAASerializer(serializers.ModelSerializer):
     class Meta:
         model = Medico
         fields = ['id', 'nombre', 'apPaterno', 'apMaterno', 'rfc', 'numRegistro']
