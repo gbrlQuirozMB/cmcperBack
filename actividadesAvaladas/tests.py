@@ -466,7 +466,6 @@ class PostAsistenteActividadAvaladaTest(APITestCase):
 
         AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=aa3)
         AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa3)
-        # AsistenteActividadAvalada.objects.create(medico=medico3, actividadAvalada=aa3)
 
         self.json = {
             "medico": 3,
@@ -494,13 +493,81 @@ class PostAsistenteActividadAvaladaTest(APITestCase):
         print(f'response JSON ===>>> 409 cupo lleno \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
 
-        # print(f'\n --->>> checando la DB <<<---')
 
-        # print(f'\n --->>>#registros ActividadAvalada: {ActividadAvalada.objects.count()}')
-        # print(f'\n --->>>#registros Temas: {Tema.objects.count()}')
+class GetAsistenteActividadAvaladaFilteredListTest(APITestCase):
+    def setUp(self):
+        institucion1 = Institucion.objects.create(nombreInstitucion='nombre institucion 1', rfc='rfc 1', contacto='contacto 1', telUno='telUno 1', telDos='telDos 1', telCelular='telCelular 1',
+                                                  email='email 1', pais='pais 1', estado='estado 1', ciudad='ciudad 1', deleMuni='deleMuni 1', colonia='colonia 1', calle='calle 1', cp='cp 1',
+                                                  numInterior='Interior 1', numExterior='Exterior 1')
+        institucion2 = Institucion.objects.create(nombreInstitucion='nombre institucion 2', rfc='rfc 2', contacto='contacto 2', telUno='telUno 2', telDos='telDos 2', telCelular='telCelular 2',
+                                                  email='email 2', pais='pais 2', estado='estado 2', ciudad='ciudad 2', deleMuni='deleMuni 2', colonia='colonia 2', calle='calle 2', cp='cp 2',
+                                                  numInterior='Interior 2', numExterior='Exterior 2')
+        institucion3 = Institucion.objects.create(nombreInstitucion='nombre institucion 3', rfc='rfc 3', contacto='contacto 3', telUno='telUno 3', telDos='telDos 3', telCelular='telCelular 3',
+                                                  email='email 3', pais='pais 3', estado='estado 3', ciudad='ciudad 3', deleMuni='deleMuni 3', colonia='colonia 3', calle='calle 3', cp='cp 3',
+                                                  numInterior='Interior 3', numExterior='Exterior 3')
 
-        # print(f'\n --->>>ActividadAvalada.nombre: {ActividadAvalada.objects.get().nombre}')
-        # if Tema.objects.count() > 0:
-        #     print(f'\n --->>>Tema.nombre: {Tema.objects.get(id=1).nombre}')
-        #     print(f'\n --->>>Tema.nombre: {Tema.objects.get(id=2).nombre}')
-        #     print(f'\n --->>>Tema.nombre: {Tema.objects.get(id=3).nombre}')
+        capitulo1 = Capitulo.objects.create(titulo='titulo 1', descripcion='capitulo descripcion 1', puntos=33.0, maximo=50.0, minimo=50.0, isOpcional=False)
+        subcapitulo1 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo1)
+        item1 = Item.objects.create(descripcion='item descripcion 1', puntos=3, subcapitulo=subcapitulo1)
+        item2 = Item.objects.create(descripcion='item descripcion 2', puntos=6, subcapitulo=subcapitulo1)
+        item3 = Item.objects.create(descripcion='item descripcion 3', puntos=9, subcapitulo=subcapitulo1)
+
+        capitulo2 = Capitulo.objects.create(titulo='titulo 2', descripcion='capitulo descripcion 2', puntos=66.0, maximo=50.0, minimo=50.0, isOpcional=False)
+        subcapitulo2 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo2)
+        subcapitulo4 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 4', comentarios='subcapitulo comentarios 4', capitulo=capitulo2)
+        item4 = Item.objects.create(descripcion='item descripcion 1', puntos=10, subcapitulo=subcapitulo4)
+        item5 = Item.objects.create(descripcion='item descripcion 2', puntos=20, subcapitulo=subcapitulo2)
+        item6 = Item.objects.create(descripcion='item descripcion 3', puntos=30, subcapitulo=subcapitulo2)
+
+        aa1 = ActividadAvalada.objects.create(institucion=institucion1, item=item1, nombre='nombre 1', emailContacto='emailContacto 1', numAsistentes=9, puntosAsignar=3.1, fechaInicio='2021-04-06',
+                                              lugar='lugar 1', solicitante='solicitante 1', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 1', isPagado=False)
+        aa2 = ActividadAvalada.objects.create(institucion=institucion1, item=item2, nombre='nombre 2', emailContacto='emailContacto 2', numAsistentes=9, puntosAsignar=3.2, fechaInicio='2021-04-06',
+                                              lugar='lugar 2', solicitante='solicitante 2', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 2', isPagado=True)
+        aa3 = ActividadAvalada.objects.create(institucion=institucion2, item=item3, nombre='nombre 3', emailContacto='emailContacto 3', numAsistentes=3, puntosAsignar=3.3, fechaInicio='2021-04-06',
+                                              lugar='lugar 3', solicitante='solicitante 3', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 3', isPagado=False)
+        aa4 = ActividadAvalada.objects.create(institucion=institucion2, item=item4, nombre='nombre 4', emailContacto='emailContacto 4', numAsistentes=9, puntosAsignar=3.4, fechaInicio='2021-04-06',
+                                              lugar='lugar 4', solicitante='solicitante 4', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 4', isPagado=True)
+        aa5 = ActividadAvalada.objects.create(institucion=institucion3, item=item5, nombre='nombre 5', emailContacto='emailContacto 5', numAsistentes=9, puntosAsignar=3.5, fechaInicio='2021-04-06',
+                                              lugar='lugar 5', solicitante='solicitante 5', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 5', isPagado=False)
+        aa6 = ActividadAvalada.objects.create(institucion=institucion3, item=item6, nombre='nombre 6', emailContacto='emailContacto 6', numAsistentes=9, puntosAsignar=3.6, fechaInicio='2021-04-06',
+                                              lugar='lugar 6', solicitante='solicitante 6', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 6', isPagado=True)
+
+        medico3 = Medico.objects.create(
+            id=3, nombre='elianid', apPaterno='quiroz', apMaterno='tolentino', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='elianidTolentino@mb.company', numRegistro=333, aceptado=True)
+        medico6 = Medico.objects.create(
+            id=6, nombre='laura', apPaterno='cabrera', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='lauraCabrera@mb.company', numRegistro=666, aceptado=False)
+        medico9 = Medico.objects.create(
+            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999, aceptado=True)
+
+        AsistenteActividadAvalada.objects.create(medico=medico3, actividadAvalada=aa3)
+        AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=aa3)
+        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa6)
+        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa1)
+        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa2)
+        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa4)
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/actividades-avaladas/asistentes/list/?nombreNS=gabriel')
+        print(f'response JSON ===>>> nombreNS=gabriel \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/actividades-avaladas/asistentes/list/?apPaternoNS=quiroz&actividadAvalada=3')
+        print(f'response JSON ===>>> apPaternoNS=quiroz&actividadAvalada=3 \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/actividades-avaladas/asistentes/list/?apPaternoNS=quiroz&actividadAvalada=6')
+        print(f'response JSON ===>>> apPaternoNS=quiroz&actividadAvalada=6 \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

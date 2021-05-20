@@ -16,6 +16,7 @@ urlpatterns = [
 
     path('asistente/create/', AsistenteActividadAvaladaCreateView.as_view(), ),
     path('<pk>/asistentes/cupos/', CuposAsistentesDetailView.as_view(), ),
-    path('medicos/list/', MedicosAsistenteAAFilteredListView.as_view(), ),
+    path('medicos/list/', MedicosAIncribirseAAFilteredListView.as_view(), ),
+    path('asistentes/list/', MedicosAsistenteAAFilteredListView.as_view(), ),
 
 ]

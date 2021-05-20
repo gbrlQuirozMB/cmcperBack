@@ -98,7 +98,7 @@ class CuposAsistentesDetailView(RetrieveAPIView):
     serializer_class = CuposAsistentesSerializer
 
 
-class MedicosAsistenteAAFilter(FilterSet):
+class MedicosAIncribirseAAFilter(FilterSet):
     nombreNS = CharFilter(field_name='nombre', lookup_expr='iexact')
     apPaternoNS = CharFilter(field_name='apPaterno', lookup_expr='iexact')
 
@@ -107,8 +107,25 @@ class MedicosAsistenteAAFilter(FilterSet):
         fields = ['nombreNS', 'apPaternoNS']
 
 
-class MedicosAsistenteAAFilteredListView(ListAPIView):
+class MedicosAIncribirseAAFilteredListView(ListAPIView):
     queryset = Medico.objects.filter(aceptado=True)
+    serializer_class = MedicosAIncribirseAASerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = MedicosAIncribirseAAFilter
+    permission_classes = (permissions.IsAdminUser,)
+
+
+class MedicosAsistenteAAFilter(FilterSet):
+    nombreNS = CharFilter(field_name='medico__nombre', lookup_expr='iexact')
+    apPaternoNS = CharFilter(field_name='medico__apPaterno', lookup_expr='iexact')
+
+    class Meta:
+        model = AsistenteActividadAvalada
+        fields = ['nombreNS', 'apPaternoNS', 'actividadAvalada']
+
+
+class MedicosAsistenteAAFilteredListView(ListAPIView):
+    queryset = AsistenteActividadAvalada.objects.all()
     serializer_class = MedicosAsistenteAASerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = MedicosAsistenteAAFilter
