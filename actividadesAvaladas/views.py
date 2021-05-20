@@ -28,12 +28,14 @@ class ActividadAvaladaArchivoUpdateView(UpdateAPIView):
     queryset = ActividadAvalada.objects.filter()
     serializer_class = ActividadAvaladaArchivoSerializer
     http_method_names = ['put']
+    permission_classes = (permissions.IsAdminUser,)
 
 
 class ActividadAvaladaBannerUpdateView(UpdateAPIView):
     queryset = ActividadAvalada.objects.filter()
     serializer_class = ActividadAvaladaBannerSerializer
     http_method_names = ['put']
+    permission_classes = (permissions.IsAdminUser,)
 
 
 class ActividadAvaladaFilter(FilterSet):
@@ -51,6 +53,7 @@ class ActividadAvaladaFilteredListView(ListAPIView):
     serializer_class = ActividadAvaladaFilteredListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = ActividadAvaladaFilter
+    permission_classes = (permissions.IsAdminUser,)
 
 
 class ActividadAvaladaDetailView(RetrieveAPIView):
@@ -63,3 +66,8 @@ class ActividadAvaladaUpdateView(UpdateAPIView):
     serializer_class = ActividadAvaladaSerializer
     permission_classes = (permissions.IsAdminUser,)
     http_method_names = ['put']
+
+
+class ActividadAvaladaDeleteView(DestroyAPIView):
+    queryset = ActividadAvalada.objects.filter()
+    permission_classes = (permissions.IsAdminUser,)

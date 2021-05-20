@@ -12,6 +12,7 @@ urlpatterns = [
     path('list/', ActividadAvaladaFilteredListView.as_view(), ),
     path('<pk>/detail/', ActividadAvaladaDetailView.as_view(), ),
     path('<pk>/update/', ActividadAvaladaUpdateView.as_view(), ),
+    path('<pk>/delete/', ActividadAvaladaDeleteView.as_view(), ),
 
 
 
