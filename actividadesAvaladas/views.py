@@ -56,3 +56,10 @@ class ActividadAvaladaFilteredListView(ListAPIView):
 class ActividadAvaladaDetailView(RetrieveAPIView):
     queryset = ActividadAvalada.objects.filter()
     serializer_class = ActividadAvaladaDetailSerializer
+
+
+class ActividadAvaladaUpdateView(UpdateAPIView):
+    queryset = ActividadAvalada.objects.filter()
+    serializer_class = ActividadAvaladaSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']

@@ -79,6 +79,9 @@ class Medico(models.Model):
     whatsapp = models.CharField(max_length=300, blank=True)
     linkedin = models.CharField(max_length=300, blank=True)
     pagWeb = models.CharField(max_length=300, blank=True, db_column='pag_web')
+    # mas cambios solicitados
+    telConsultorioPublico = models.CharField(max_length=15, blank=True, db_column='tel_consultorio_publico')
+    telCelularPublico = models.CharField(max_length=15, blank=True, db_column='tel_celular_publico')
 
     class Meta:
         db_table = 'pre_registro_medico'
