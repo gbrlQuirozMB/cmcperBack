@@ -1,5 +1,6 @@
-from rest_framework import serializers
+from rest_framework import fields, serializers
 from .models import *
+from preregistro.models import Medico
 
 
 class TemaSerializer(serializers.ModelSerializer):
@@ -84,3 +85,29 @@ class ActividadAvaladaDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActividadAvalada
         fields = '__all__'
+
+
+class AsistenteActividadAvaladaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AsistenteActividadAvalada
+        fields = '__all__'
+
+
+class CuposAsistentesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ActividadAvalada
+        fields = ['numAsistentes']
+
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        asistentesRegistrados = AsistenteActividadAvalada.objects.filter(actividadAvalada=instance.id).count()
+        repr['asistentesRegistrados'] = asistentesRegistrados
+        repr['porRegistrar'] = instance.numAsistentes - asistentesRegistrados
+
+        return repr
+
+
+class MedicosAsistenteAASerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Medico
+        fields = ['id', 'nombre', 'apPaterno', 'apMaterno', 'rfc', 'numRegistro']

@@ -71,3 +71,45 @@ class ActividadAvaladaUpdateView(UpdateAPIView):
 class ActividadAvaladaDeleteView(DestroyAPIView):
     queryset = ActividadAvalada.objects.filter()
     permission_classes = (permissions.IsAdminUser,)
+
+
+# ------------------------ asistentes
+
+class AsistenteActividadAvaladaCreateView(CreateAPIView):
+    serializer_class = AsistenteActividadAvaladaSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+    def post(self, request, *args, **kwargs):
+        actAvaId = request.data.get('actividadAvalada')
+        numAsistentes = ActividadAvalada.objects.filter(id=actAvaId).values_list('numAsistentes', flat=True)
+        asistentesRegistrados = AsistenteActividadAvalada.objects.filter(actividadAvalada=actAvaId).count()
+        if asistentesRegistrados >= numAsistentes[0]:
+            raise ResponseError(f'No se permite registrar mas de {numAsistentes[0]} asistentes', 409)
+
+        serializer = AsistenteActividadAvaladaSerializer(data=request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.info(f'campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
+
+
+class CuposAsistentesDetailView(RetrieveAPIView):
+    queryset = ActividadAvalada.objects.filter()
+    serializer_class = CuposAsistentesSerializer
+
+
+class MedicosAsistenteAAFilter(FilterSet):
+    nombreNS = CharFilter(field_name='nombre', lookup_expr='iexact')
+    apPaternoNS = CharFilter(field_name='apPaterno', lookup_expr='iexact')
+
+    class Meta:
+        model = Medico
+        fields = ['nombreNS', 'apPaternoNS']
+
+
+class MedicosAsistenteAAFilteredListView(ListAPIView):
+    queryset = Medico.objects.filter(aceptado=True)
+    serializer_class = MedicosAsistenteAASerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = MedicosAsistenteAAFilter
+    permission_classes = (permissions.IsAdminUser,)
