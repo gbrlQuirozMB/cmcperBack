@@ -115,3 +115,18 @@ class MedicosAIncribirseAAFilteredListView(ListAPIView):
     permission_classes = (permissions.IsAdminUser,)
 
 
+class MedicosAsistenteAAFilter(FilterSet):
+    nombreNS = CharFilter(field_name='medico__nombre', lookup_expr='iexact')
+    apPaternoNS = CharFilter(field_name='medico__apPaterno', lookup_expr='iexact')
+
+    class Meta:
+        model = AsistenteActividadAvalada
+        fields = ['nombreNS', 'apPaternoNS', 'actividadAvalada']
+
+
+class MedicosAsistenteAAFilteredListView(ListAPIView):
+    queryset = AsistenteActividadAvalada.objects.all()
+    serializer_class = MedicosAsistenteAASerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = MedicosAsistenteAAFilter
+    permission_classes = (permissions.IsAdminUser,)

@@ -111,3 +111,17 @@ class MedicosAIncribirseAASerializer(serializers.ModelSerializer):
     class Meta:
         model = Medico
         fields = ['id', 'nombre', 'apPaterno', 'apMaterno', 'rfc', 'numRegistro']
+
+
+class MedicosAsistenteAASerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AsistenteActividadAvalada
+        fields = ['id']
+
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        repr['medicoNombre'] = instance.medico.nombre
+        repr['medicoApPaterno'] = instance.medico.apPaterno
+        repr['medicoEmail'] = instance.medico.email
+
+        return repr

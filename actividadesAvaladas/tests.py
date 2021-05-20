@@ -536,12 +536,12 @@ class GetAsistenteActividadAvaladaFilteredListTest(APITestCase):
             id=3, nombre='elianid', apPaterno='quiroz', apMaterno='tolentino', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
             deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
             cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=333, aceptado=True)
+            telCelular='telCelular1', telParticular='telParticular1', email='elianidTolentino@mb.company', numRegistro=333, aceptado=True)
         medico6 = Medico.objects.create(
             id=6, nombre='laura', apPaterno='cabrera', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
             deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
             cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=666, aceptado=False)
+            telCelular='telCelular1', telParticular='telParticular1', email='lauraCabrera@mb.company', numRegistro=666, aceptado=False)
         medico9 = Medico.objects.create(
             id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
             deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
@@ -550,24 +550,24 @@ class GetAsistenteActividadAvaladaFilteredListTest(APITestCase):
 
         AsistenteActividadAvalada.objects.create(medico=medico3, actividadAvalada=aa3)
         AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=aa3)
-        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa3)
-
-        self.json = {
-            "medico": 3,
-            "actividadAvalada": 3
-        }
+        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa6)
+        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa1)
+        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa2)
+        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa4)
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
 
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        response = self.client.get('/api/actividades-avaladas/medicos/list/?nombreNS=gabriel')
-        print(f'response JSON ===>>> nombreNS=gabriel \n {json.dumps(response.json())} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
-        response = self.client.get('/api/actividades-avaladas/medicos/list/?apPaternoNS=gabriel')
+        response = self.client.get('/api/actividades-avaladas/asistentes/list/?nombreNS=gabriel')
         print(f'response JSON ===>>> nombreNS=gabriel \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+        response = self.client.get('/api/actividades-avaladas/asistentes/list/?apPaternoNS=quiroz&actividadAvalada=3')
+        print(f'response JSON ===>>> apPaternoNS=quiroz&actividadAvalada=3 \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+        response = self.client.get('/api/actividades-avaladas/asistentes/list/?apPaternoNS=quiroz&actividadAvalada=6')
+        print(f'response JSON ===>>> apPaternoNS=quiroz&actividadAvalada=6 \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
