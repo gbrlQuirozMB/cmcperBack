@@ -51,3 +51,8 @@ class ActividadAvaladaFilteredListView(ListAPIView):
     serializer_class = ActividadAvaladaFilteredListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = ActividadAvaladaFilter
+
+
+class ActividadAvaladaDetailView(RetrieveAPIView):
+    queryset = ActividadAvalada.objects.filter()
+    serializer_class = ActividadAvaladaDetailSerializer
