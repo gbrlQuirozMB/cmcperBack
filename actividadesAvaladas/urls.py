@@ -11,6 +11,7 @@ urlpatterns = [
     path('<pk>/banner/', ActividadAvaladaBannerUpdateView.as_view(), ),
     path('list/', ActividadAvaladaFilteredListView.as_view(), ),
     path('<pk>/detail/', ActividadAvaladaDetailView.as_view(), ),
+    path('<pk>/update/', ActividadAvaladaUpdateView.as_view(), ),
 
 
 
