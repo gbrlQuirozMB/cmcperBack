@@ -18,5 +18,6 @@ urlpatterns = [
     path('<pk>/asistentes/cupos/', CuposAsistentesDetailView.as_view(), ),
     path('medicos/list/', MedicosAIncribirseAAFilteredListView.as_view(), ),
     path('asistentes/list/', MedicosAsistenteAAFilteredListView.as_view(), ),
+    path('asistente/<pk>/delete/', MedicosAsistenteAADeleteView.as_view(), ),
 
 ]

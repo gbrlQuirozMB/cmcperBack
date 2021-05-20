@@ -130,3 +130,8 @@ class MedicosAsistenteAAFilteredListView(ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_class = MedicosAsistenteAAFilter
     permission_classes = (permissions.IsAdminUser,)
+
+
+class MedicosAsistenteAADeleteView(DestroyAPIView):
+    queryset = AsistenteActividadAvalada.objects.filter()
+    permission_classes = (permissions.IsAdminUser,)
