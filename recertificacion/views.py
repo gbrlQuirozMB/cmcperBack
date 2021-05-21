@@ -614,10 +614,12 @@ def renderCsvView(request, queryset):
     response = HttpResponse(content_type='text/csv')
     # response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename="calificaciones-medicos.csv"'
+    response.write(u'\ufeff'.encode('utf8'))
     writer = csv.writer(response)
     writer.writerow(['NO TOCAR', 'Num. de Registro', 'Nombre', 'Apellido Paterno', 'Apellido Materno', 'Calificacion', 'Aprobado'])
     for dato in queryset:
         writer.writerow(dato)
+        # writer.writerow(dato.encode('UTF-8'))
 
     return response
 
