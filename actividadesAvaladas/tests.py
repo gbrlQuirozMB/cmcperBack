@@ -9,6 +9,9 @@ from django.contrib.auth.models import User
 import json
 from rest_framework import status
 
+from datetime import date
+from dateutil.relativedelta import relativedelta
+
 
 # Create your tests here.
 
@@ -435,18 +438,29 @@ class PostAsistenteActividadAvaladaTest(APITestCase):
         item5 = Item.objects.create(descripcion='item descripcion 2', puntos=20, subcapitulo=subcapitulo2)
         item6 = Item.objects.create(descripcion='item descripcion 3', puntos=30, subcapitulo=subcapitulo2)
 
-        aa1 = ActividadAvalada.objects.create(institucion=institucion1, item=item1, nombre='nombre 1', emailContacto='emailContacto 1', numAsistentes=9, puntosAsignar=3.1, fechaInicio='2021-04-06',
-                                              lugar='lugar 1', solicitante='solicitante 1', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 1', isPagado=False)
-        aa2 = ActividadAvalada.objects.create(institucion=institucion1, item=item2, nombre='nombre 2', emailContacto='emailContacto 2', numAsistentes=9, puntosAsignar=3.2, fechaInicio='2021-04-06',
-                                              lugar='lugar 2', solicitante='solicitante 2', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 2', isPagado=True)
-        aa3 = ActividadAvalada.objects.create(institucion=institucion2, item=item3, nombre='nombre 3', emailContacto='emailContacto 3', numAsistentes=3, puntosAsignar=3.3, fechaInicio='2021-04-06',
-                                              lugar='lugar 3', solicitante='solicitante 3', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 3', isPagado=False)
-        aa4 = ActividadAvalada.objects.create(institucion=institucion2, item=item4, nombre='nombre 4', emailContacto='emailContacto 4', numAsistentes=9, puntosAsignar=3.4, fechaInicio='2021-04-06',
-                                              lugar='lugar 4', solicitante='solicitante 4', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 4', isPagado=True)
-        aa5 = ActividadAvalada.objects.create(institucion=institucion3, item=item5, nombre='nombre 5', emailContacto='emailContacto 5', numAsistentes=9, puntosAsignar=3.5, fechaInicio='2021-04-06',
-                                              lugar='lugar 5', solicitante='solicitante 5', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 5', isPagado=False)
-        aa6 = ActividadAvalada.objects.create(institucion=institucion3, item=item6, nombre='nombre 6', emailContacto='emailContacto 6', numAsistentes=9, puntosAsignar=3.6, fechaInicio='2021-04-06',
-                                              lugar='lugar 6', solicitante='solicitante 6', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 6', isPagado=True)
+        aa1 = ActividadAvalada.objects.create(institucion=institucion1, item=item1, nombre='nombre 1', emailContacto='emailContacto 1', numAsistentes=9, puntosAsignar=3.1,
+                                              fechaInicio=date.today()+relativedelta(days=5), lugar='lugar 1', solicitante='solicitante 1', tipoPago=1, porcentaje=1, precio=369.69,
+                                              descripcion='descripcion 1', isPagado=False)
+
+        aa2 = ActividadAvalada.objects.create(institucion=institucion1, item=item2, nombre='nombre 2', emailContacto='emailContacto 2', numAsistentes=9, puntosAsignar=3.2,
+                                              fechaInicio=date.today()+relativedelta(days=8), lugar='lugar 2', solicitante='solicitante 2', tipoPago=1, porcentaje=1, precio=369.69,
+                                              descripcion='descripcion 2', isPagado=True)
+
+        aa3 = ActividadAvalada.objects.create(institucion=institucion2, item=item3, nombre='nombre 3', emailContacto='emailContacto 3', numAsistentes=3, puntosAsignar=3.3,
+                                              fechaInicio=date.today()+relativedelta(days=3), lugar='lugar 3', solicitante='solicitante 3', tipoPago=1, porcentaje=1, precio=369.69,
+                                              descripcion='descripcion 3', isPagado=False)
+
+        aa4 = ActividadAvalada.objects.create(institucion=institucion2, item=item4, nombre='nombre 4', emailContacto='emailContacto 4', numAsistentes=9, puntosAsignar=3.4,
+                                              fechaInicio=date.today()+relativedelta(days=9), lugar='lugar 4', solicitante='solicitante 4', tipoPago=1, porcentaje=1, precio=369.69,
+                                              descripcion='descripcion 4', isPagado=True)
+
+        aa6 = ActividadAvalada.objects.create(id=6, institucion=institucion3, item=item5, nombre='nombre 5', emailContacto='emailContacto 5', numAsistentes=9, puntosAsignar=3.5,
+                                              fechaInicio=date.today()+relativedelta(days=10), lugar='lugar 5', solicitante='solicitante 5', tipoPago=1, porcentaje=1, precio=369.69,
+                                              descripcion='descripcion 5', isPagado=False)
+
+        aa9 = ActividadAvalada.objects.create(id=9, institucion=institucion3, item=item6, nombre='nombre 6', emailContacto='emailContacto 6', numAsistentes=9, puntosAsignar=3.6,
+                                              fechaInicio=date.today()+relativedelta(days=1), lugar='lugar 6', solicitante='solicitante 6', tipoPago=1, porcentaje=1, precio=369.69,
+                                              descripcion='descripcion 6', isPagado=True)
 
         medico3 = Medico.objects.create(
             id=3, nombre='elianid', apPaterno='quiroz', apMaterno='tolentino', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
@@ -464,6 +478,8 @@ class PostAsistenteActividadAvaladaTest(APITestCase):
             cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999, aceptado=True)
 
+        AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=aa6)
+        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa9)
         AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=aa3)
         AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa3)
 
@@ -481,6 +497,10 @@ class PostAsistenteActividadAvaladaTest(APITestCase):
         print(f'response JSON ===>>> cupos \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+        response = self.client.get('/api/actividades-avaladas/333/asistentes/cupos/')
+        print(f'response JSON ===>>> cupos 404 \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
         response = self.client.get('/api/actividades-avaladas/medicos/list/?nombreNS=gabriel')
         print(f'response JSON ===>>> nombreNS=gabriel \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -492,6 +512,44 @@ class PostAsistenteActividadAvaladaTest(APITestCase):
         response = self.client.post('/api/actividades-avaladas/asistente/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> 409 cupo lleno \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+
+        self.json = {
+            "medico": 3,
+            "actividadAvalada": 333
+        }
+        response = self.client.post('/api/actividades-avaladas/asistente/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> 404 no existe actividad avalada\n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        self.json = {
+            "medico": 333,
+            "actividadAvalada": 3
+        }
+        AsistenteActividadAvalada.objects.filter(id=3).delete()
+        response = self.client.post('/api/actividades-avaladas/asistente/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> 400 no existe medico\n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # ---------------------------------------------------------
+        # cuenta = AsistenteActividadAvalada.objects.all().count()
+        # print(f'--->>>cuenta: {cuenta}')
+
+        # datos = AsistenteActividadAvalada.objects.all()
+        # for dato in datos:
+        #     print(f'--->id: {dato.id} - medico: {dato.medico} - actividadAvalada: {dato.actividadAvalada}')
+
+        # print(f'--->>>typeOf: {type(self.json)}')
+
+        # nose=99
+        # numAsistentes = ActividadAvalada.objects.filter(id=nose).values_list('numAsistentes', flat=True)
+        # asistentesRegistrados = AsistenteActividadAvalada.objects.filter(actividadAvalada=nose).count()
+
+        # if not numAsistentes:
+        #     print(f'No existe actividad avalada')
+        # else:
+        #     print(f'--->>>{numAsistentes[0]}')
+
+        # print(f'--->>>{asistentesRegistrados}')
 
 
 class GetAsistenteActividadAvaladaFilteredListTest(APITestCase):

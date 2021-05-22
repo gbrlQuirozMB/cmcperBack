@@ -83,6 +83,8 @@ class AsistenteActividadAvaladaCreateView(CreateAPIView):
         actAvaId = request.data.get('actividadAvalada')
         numAsistentes = ActividadAvalada.objects.filter(id=actAvaId).values_list('numAsistentes', flat=True)
         asistentesRegistrados = AsistenteActividadAvalada.objects.filter(actividadAvalada=actAvaId).count()
+        if not numAsistentes:
+            raise ResponseError(f'No existe Actividad avalada', 404)
         if asistentesRegistrados >= numAsistentes[0]:
             raise ResponseError(f'No se permite registrar mas de {numAsistentes[0]} asistentes', 409)
 
