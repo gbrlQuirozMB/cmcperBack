@@ -83,6 +83,8 @@ class ActividadAvaladaFilteredListSerializer(serializers.ModelSerializer):
 
 
 class ActividadAvaladaDetailSerializer(serializers.ModelSerializer):
+    temas = TemaSerializer(many=True, read_only=True)
+
     class Meta:
         model = ActividadAvalada
         fields = '__all__'
