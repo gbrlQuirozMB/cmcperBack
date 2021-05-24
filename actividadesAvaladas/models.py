@@ -69,14 +69,16 @@ class AsistenteActividadAvalada(models.Model):
     def save(self, *args, **kwargs):
         textoQr = {
             'medico': self.medico.id,
-            'item': self.actividadAvalada.item.id,
-            'fechaEmision': self.actividadAvalada.fechaInicio.strftime('%Y-%m-%d'),
-            'puntosOtorgados': float(self.actividadAvalada.puntosAsignar)
+            # 'item': self.actividadAvalada.item.id,
+            # 'fechaEmision': self.actividadAvalada.fechaInicio.strftime('%Y-%m-%d'),
+            # 'puntosOtorgados': float(self.actividadAvalada.puntosAsignar)
+            'actividadAvalada': self.actividadAvalada.id
         }
         qr.add_data(json.dumps(textoQr))
         qr.make(fit=True)
         qrcode_img = qr.make_image(fill_color="black", back_color="white")
-        canvas = Image.new('RGB', (233, 233), 'white')
+        # canvas = Image.new('RGB', (233, 233), 'white')
+        canvas = Image.new('RGB', (213, 212), 'white')
         draw = ImageDraw.Draw(canvas)
         canvas.paste(qrcode_img)
         fname = f'qrCode-M{self.medico.id}-AA{self.actividadAvalada.id}-I{self.actividadAvalada.item.id}.png'

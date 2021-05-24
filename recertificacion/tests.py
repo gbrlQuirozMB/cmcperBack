@@ -20,6 +20,8 @@ from django.db.models import Q
 
 from notificaciones.models import Notificacion
 from certificados.models import Certificado
+from actividadesAvaladas.models import ActividadAvalada, AsistenteActividadAvalada
+from instituciones.models import Institucion
 
 
 # Create your tests here.
@@ -406,7 +408,7 @@ class PostItemDocumentosCreate201Test(APITestCase):
         item8 = Item.objects.create(descripcion='item descripcion 5', puntos=30, subcapitulo=subcapitulo4)
         item9 = Item.objects.create(descripcion='item descripcion 6', puntos=30, subcapitulo=subcapitulo4)
 
-        archivo = open('./uploads/image_4.png', 'rb')
+        archivo = open('./uploads/testUnit.png', 'rb')
         documento = SimpleUploadedFile(archivo.name, archivo.read(), content_type='image/png')
 
         self.json = {
@@ -430,7 +432,8 @@ class PostItemDocumentosCreate201Test(APITestCase):
         cuenta = RecertificacionItemDocumento.objects.count()
         print(f'--->>>cuenta: {cuenta}')
         response = self.client.post('/api/recertificacion/documento/create/', data=self.json, format='multipart')
-        print(f'response JSON ===>>> OK \n {json.dumps(response.data)} \n ---')
+        # print(f'response JSON ===>>> OK \n {json.dumps(response.data)} \n ---')
+        print(f'response JSON ===>>> OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         cuenta = RecertificacionItemDocumento.objects.count()
         print(f'--->>>cuenta: {cuenta}')
@@ -880,11 +883,10 @@ class GetSeveralSelectList200Test(APITestCase):
         response = self.client.get('/api/recertificacion/subcapitulo/3/list/')
         print(f'response JSON ===>>> subcapitulos no existe \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        
+
         response = self.client.get('/api/recertificacion/subcapitulo/2/detail/')
         print(f'response JSON ===>>> subcapitulos OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
 
         # items
         response = self.client.get('/api/recertificacion/item/2/list/')
@@ -894,7 +896,7 @@ class GetSeveralSelectList200Test(APITestCase):
         response = self.client.get('/api/recertificacion/item/33/list/')
         print(f'response JSON ===>>> items no existe \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        
+
         response = self.client.get('/api/recertificacion/item/3/detail/')
         print(f'response JSON ===>>> items OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -1948,6 +1950,88 @@ class PutSeveralSelectList200Test(APITestCase):
         response = self.client.put('/api/recertificacion/item/3/update/', data=json.dumps(self.jsonI), content_type="application/json")
         print(f'response JSON ===>>> items OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class PostQRItemDocumentosCreate201Test(APITestCase):
+    def setUp(self):
+        medico1 = Medico.objects.create(
+            id=1, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=369)
+
+        capitulo1 = Capitulo.objects.create(titulo='titulo 1', descripcion='capitulo descripcion 1', puntos=33.0, maximo=50.0, minimo=50.0, isOpcional=False)
+        subcapitulo1 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo1)
+        item1 = Item.objects.create(descripcion='item descripcion 1', puntos=3, subcapitulo=subcapitulo1)
+        item2 = Item.objects.create(descripcion='item descripcion 2', puntos=6, subcapitulo=subcapitulo1)
+        item3 = Item.objects.create(descripcion='item descripcion 3', puntos=9, subcapitulo=subcapitulo1)
+
+        capitulo2 = Capitulo.objects.create(titulo='titulo 2', descripcion='capitulo descripcion 2', puntos=66.0, maximo=50.0, minimo=50.0, isOpcional=False)
+        subcapitulo2 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo2)
+        subcapitulo4 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 4', comentarios='subcapitulo comentarios 4', capitulo=capitulo2)
+        item4 = Item.objects.create(descripcion='item descripcion 1', puntos=10, subcapitulo=subcapitulo2)
+        item5 = Item.objects.create(descripcion='item descripcion 2', puntos=20, subcapitulo=subcapitulo2)
+        item6 = Item.objects.create(descripcion='item descripcion 3', puntos=30, subcapitulo=subcapitulo2)
+
+        item7 = Item.objects.create(descripcion='item descripcion 4', puntos=30, subcapitulo=subcapitulo4)
+        item8 = Item.objects.create(descripcion='item descripcion 5', puntos=30, subcapitulo=subcapitulo4)
+        item9 = Item.objects.create(descripcion='item descripcion 6', puntos=30, subcapitulo=subcapitulo4)
+
+        institucion3 = Institucion.objects.create(id=3, nombreInstitucion='nombre institucion 3', rfc='rfc 3', contacto='contacto 3', telUno='telUno 3', telDos='telDos 3', telCelular='telCelular 3',
+                                                  email='email 3', pais='pais 3', estado='estado 3', ciudad='ciudad 3', deleMuni='deleMuni 3', colonia='colonia 3', calle='calle 3', cp='cp 3',
+                                                  numInterior='Interior 3', numExterior='Exterior 3')
+
+        aa9 = ActividadAvalada.objects.create(id=9, institucion=institucion3, item=item6, nombre='nombre 6', emailContacto='emailContacto 6', numAsistentes=9, puntosAsignar=3.6,
+                                              fechaInicio=date.today()+relativedelta(days=9), lugar='lugar 6', solicitante='solicitante 6', tipoPago=1, porcentaje=1, precio=369.69,
+                                              descripcion='descripcion 6', isPagado=True)
+
+        AsistenteActividadAvalada.objects.create(medico=medico1, actividadAvalada=aa9)
+
+        # archivo = open('./uploads/image_4.png', 'rb')
+        # documento = SimpleUploadedFile(archivo.name, archivo.read(), content_type='image/png')
+
+        self.json = {
+            "medico": 1,
+            "actividadAvalada": 9
+        }
+
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        cuenta = RecertificacionItemDocumento.objects.count()
+        print(f'--->>>cuenta: {cuenta}')
+        response = self.client.post('/api/recertificacion/documento-qr/create/', data=json.dumps(self.json), content_type="application/json")
+        # print(f'response JSON ===>>> OK \n {json.dumps(response.data)} \n ---')
+        print(f'response JSON ===>>> OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        cuenta = RecertificacionItemDocumento.objects.count()
+        print(f'--->>>cuenta: {cuenta}')
+
+        response = self.client.post('/api/recertificacion/documento-qr/create/', data=json.dumps(self.json), content_type="application/json")
+        # print(f'response JSON ===>>> OK \n {json.dumps(response.data)} \n ---')
+        print(f'response JSON ===>>> 409 ya se capturo \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+
+        self.json = {
+            "medico": 1,
+            "actividadAvalada": 99
+        }
+
+        response = self.client.post('/api/recertificacion/documento-qr/create/', data=json.dumps(self.json), content_type="application/json")
+        # print(f'response JSON ===>>> OK \n {json.dumps(response.data)} \n ---')
+        print(f'response JSON ===>>> 409 no existe medico o actividad \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+
+        # datos = Item.objects.filter(subcapitulo=2)
+        # for dato in datos:
+        #     print(f'--->>>datos: {dato.id}')
+        # print(f'--->>>cuenta: {datos.count()}')
+
+        # datos = AsistenteActividadAvalada.objects.filter(medico=1, actividadAvalada=9)
+        # print(f'--->>>cuenta: {datos.count()}')
+        # print(f'--->>>cuenta: {datos.get().actividadAvalada.puntosAsignar}')
 
 
 class variosTest(APITestCase):

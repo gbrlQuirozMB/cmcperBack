@@ -32,6 +32,7 @@ import csv
 import codecs
 
 from certificados.models import Certificado
+from actividadesAvaladas.models import AsistenteActividadAvalada
 
 # Create your views here.
 # class CertificadoDatosDetailView(RetrieveAPIView):
@@ -300,9 +301,11 @@ class SubcapituloUpdateView(UpdateAPIView):
     permission_classes = (permissions.IsAdminUser,)
     http_method_names = ['put']
 
+
 class SubcapituloDetailView(RetrieveAPIView):
     queryset = Subcapitulo.objects.filter()
     serializer_class = DetallesSubcapituloSerializer
+
 
 class ItemListView(ListAPIView):
     serializer_class = ItemListSerializer
@@ -325,6 +328,7 @@ class ItemUpdateView(UpdateAPIView):
 class ItemDetailView(RetrieveAPIView):
     queryset = Item.objects.filter()
     serializer_class = ItemSerializer
+
 
 class ActualizaVigenciaCertificados(APIView):
     permission_classes = (permissions.IsAdminUser,)
@@ -798,3 +802,34 @@ class RenovacionDetailView(RetrieveAPIView):
             raise ResponseError('No hay renovacion para el ID de Medico dado', 404)
 
         return Response(serializer.data)
+
+
+class QRItemDocumentosCreateView(CreateAPIView):
+    serializer_class = ItemDocumentoSerializer
+
+    def post(self, request, *args, **kwargs):
+        medicoId = request.data.get('medico')
+        actividadAvaladaId = request.data.get('actividadAvalada')
+
+        request.data['estatus'] = 1
+        request.data['observaciones'] = ''
+        request.data['notasRechazo'] = ''
+        request.data['razonRechazo'] = ''
+        request.data['tituloDescripcion'] = 'Generado por QR'
+
+        datos = AsistenteActividadAvalada.objects.filter(medico=medicoId, actividadAvalada=actividadAvaladaId)
+        if datos.count() <= 0:
+            raise ResponseError('No existe el medico en la actividad avalada', 409)
+
+        request.data['fechaEmision'] = datos.get().actividadAvalada.fechaInicio
+        request.data['puntosOtorgados'] = datos.get().actividadAvalada.puntosAsignar
+        request.data['item'] = datos.get().actividadAvalada.item.id
+
+        serializer = ItemDocumentoSerializer(data=request.data)
+        if serializer.is_valid():
+            cuenta = RecertificacionItemDocumento.objects.filter(medico=medicoId, item=request.data['item'], tituloDescripcion='Generado por QR').count()
+            if cuenta > 0:
+                raise ResponseError('Ya se capturo este QR', 409)
+            return self.create(request, *args, **kwargs)
+        log.info(f'campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
