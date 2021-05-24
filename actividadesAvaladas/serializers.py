@@ -14,8 +14,8 @@ class ActividadAvaladaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ActividadAvalada
-        fields = ['id', 'institucion', 'item', 'nombre', 'emailContacto', 'numAsistentes', 'puntosAsignar', 'fechaInicio', 'lugar', 'solicitante', 'tipoPago', 'porcentaje', 'precio', 'descripcion',
-                  'temas']
+        fields = ['id', 'institucion', 'item', 'nombre', 'emailContacto', 'numAsistentes', 'puntosAsignar', 'fechaInicio', 'lugar', 'solicitante', 'tipoPago', 'porcentaje', 'precio',
+                  'descripcion', 'temas']
 
     def create(self, validated_data):
         if validated_data.get('temas') is None:
@@ -70,13 +70,14 @@ class ActividadAvaladaBannerSerializer(serializers.ModelSerializer):
 class ActividadAvaladaFilteredListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActividadAvalada
-        fields = ['id', 'institucion', 'item', 'fechaInicio', 'isPagado', 'puntosAsignar']
+        fields = ['id', 'institucion', 'item', 'fechaInicio', 'isPagado', 'puntosAsignar', 'emailContacto', 'nombre']
 
     def to_representation(self, instance):
         repr = super().to_representation(instance)
         repr['institucion'] = instance.institucion.nombreInstitucion
         repr['capitulo'] = instance.item.subcapitulo.capitulo.descripcion
         repr['subcapitulo'] = instance.item.subcapitulo.descripcion
+        repr['item'] = instance.item.descripcion
 
         return repr
 
