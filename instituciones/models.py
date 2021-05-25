@@ -22,7 +22,8 @@ class Institucion(models.Model):
     cp = models.CharField(max_length=10)
     numInterior = models.CharField(max_length=10, blank=True, db_column='num_interior')
     numExterior = models.CharField(max_length=10, db_column='num_exterior')
-    
+    username = models.CharField(max_length=150, blank=True)
+
     class Meta:
         db_table = 'instituciones'
         ordering = ['-creado_en']
