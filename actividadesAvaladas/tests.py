@@ -450,9 +450,9 @@ class PostAsistenteActividadAvaladaTest(APITestCase):
                                               fechaInicio=date.today()+relativedelta(days=8), lugar='lugar 2', solicitante='solicitante 2', tipoPago=1, porcentaje=1, precio=369.69,
                                               descripcion='descripcion 2', isPagado=True)
 
-        aa3 = ActividadAvalada.objects.create(institucion=institucion2, item=item3, nombre='nombre 3', emailContacto='emailContacto 3', numAsistentes=3, puntosAsignar=3.3,
-                                              fechaInicio=date.today()+relativedelta(days=3), lugar='lugar 3', solicitante='solicitante 3', tipoPago=1, porcentaje=1, precio=369.69,
-                                              descripcion='descripcion 3', isPagado=False)
+        self.aa3 = ActividadAvalada.objects.create(institucion=institucion2, item=item3, nombre='nombre 3', emailContacto='emailContacto 3', numAsistentes=3, puntosAsignar=3.3,
+                                                   fechaInicio=date.today()+relativedelta(days=3), lugar='lugar 3', solicitante='solicitante 3', tipoPago=1, porcentaje=1, precio=369.69,
+                                                   descripcion='descripcion 3', isPagado=False)
 
         aa4 = ActividadAvalada.objects.create(institucion=institucion2, item=item4, nombre='nombre 4', emailContacto='emailContacto 4', numAsistentes=9, puntosAsignar=3.4,
                                               fechaInicio=date.today()+relativedelta(days=9), lugar='lugar 4', solicitante='solicitante 4', tipoPago=1, porcentaje=1, precio=369.69,
@@ -467,7 +467,7 @@ class PostAsistenteActividadAvaladaTest(APITestCase):
                                               descripcion='descripcion 6', isPagado=True)
 
         medico3 = Medico.objects.create(
-            id=3, nombre='elianid', apPaterno='quiroz', apMaterno='tolentino', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            id=3, nombre='roberto', apPaterno='quiroz', apMaterno='tolentino', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
             deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
             cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=333, aceptado=True)
@@ -476,16 +476,16 @@ class PostAsistenteActividadAvaladaTest(APITestCase):
             deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
             cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=666, aceptado=False)
-        medico9 = Medico.objects.create(
-            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+        self.medico9 = Medico.objects.create(
+            id=9, nombre='juan gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
             deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
             cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999, aceptado=True)
 
         AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=aa6)
-        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa9)
-        AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=aa3)
-        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa3)
+        AsistenteActividadAvalada.objects.create(medico=self.medico9, actividadAvalada=aa9)
+        AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=self.aa3)
+        # AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa3)
 
         self.json = {
             "medico": 3,
@@ -504,18 +504,30 @@ class PostAsistenteActividadAvaladaTest(APITestCase):
         response = self.client.get('/api/actividades-avaladas/333/asistentes/cupos/')
         print(f'response JSON ===>>> cupos 404 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        # ------------CUPOS
+
+        response = self.client.get('/api/actividades-avaladas/medicos/list/?nombreNS=gabr')
+        print(f'response JSON ===>>> nombreNS=gabr\n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         response = self.client.get('/api/actividades-avaladas/medicos/list/?nombreNS=gabriel')
         print(f'response JSON ===>>> nombreNS=gabriel \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # ------------BUSQUEDAS PARA AGREGAR
 
         response = self.client.post('/api/actividades-avaladas/asistente/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         response = self.client.post('/api/actividades-avaladas/asistente/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> 409 medico ya registrado \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+
+        AsistenteActividadAvalada.objects.create(medico=self.medico9, actividadAvalada=self.aa3)  # se agrega para llenar el cupo
+        response = self.client.post('/api/actividades-avaladas/asistente/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> 409 cupo lleno \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+        # ------------AGREGAR y VARIAS BL
 
         self.json = {
             "medico": 3,

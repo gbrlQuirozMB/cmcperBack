@@ -39,8 +39,8 @@ class ActividadAvaladaBannerUpdateView(UpdateAPIView):
 
 
 class ActividadAvaladaFilter(FilterSet):
-    nombreNS = CharFilter(field_name='nombre', lookup_expr='iexact')
-    institucionNS = CharFilter(field_name='institucion__nombreInstitucion', lookup_expr='iexact')
+    nombreNS = CharFilter(field_name='nombre', lookup_expr='icontains')
+    institucionNS = CharFilter(field_name='institucion__nombreInstitucion', lookup_expr='icontains')
     pagado = CharFilter(field_name='isPagado')
 
     class Meta:
@@ -81,12 +81,19 @@ class AsistenteActividadAvaladaCreateView(CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         actAvaId = request.data.get('actividadAvalada')
+
         numAsistentes = ActividadAvalada.objects.filter(id=actAvaId).values_list('numAsistentes', flat=True)
-        asistentesRegistrados = AsistenteActividadAvalada.objects.filter(actividadAvalada=actAvaId).count()
         if not numAsistentes:
             raise ResponseError(f'No existe Actividad avalada', 404)
+
+        asistentesRegistrados = AsistenteActividadAvalada.objects.filter(actividadAvalada=actAvaId).count()
         if asistentesRegistrados >= numAsistentes[0]:
             raise ResponseError(f'No se permite registrar mas de {numAsistentes[0]} asistentes', 409)
+
+        medicoId = request.data.get('medico')
+        cuenta = AsistenteActividadAvalada.objects.filter(medico=medicoId, actividadAvalada=actAvaId).count()
+        if cuenta > 0:
+            raise ResponseError(f'Ya esta registrado el medico', 409)
 
         serializer = AsistenteActividadAvaladaSerializer(data=request.data)
         if serializer.is_valid():
@@ -101,8 +108,8 @@ class CuposAsistentesDetailView(RetrieveAPIView):
 
 
 class MedicosAIncribirseAAFilter(FilterSet):
-    nombreNS = CharFilter(field_name='nombre', lookup_expr='iexact')
-    apPaternoNS = CharFilter(field_name='apPaterno', lookup_expr='iexact')
+    nombreNS = CharFilter(field_name='nombre', lookup_expr='icontains')
+    apPaternoNS = CharFilter(field_name='apPaterno', lookup_expr='icontains')
 
     class Meta:
         model = Medico
@@ -118,8 +125,8 @@ class MedicosAIncribirseAAFilteredListView(ListAPIView):
 
 
 class MedicosAsistenteAAFilter(FilterSet):
-    nombreNS = CharFilter(field_name='medico__nombre', lookup_expr='iexact')
-    apPaternoNS = CharFilter(field_name='medico__apPaterno', lookup_expr='iexact')
+    nombreNS = CharFilter(field_name='medico__nombre', lookup_expr='icontains')
+    apPaternoNS = CharFilter(field_name='medico__apPaterno', lookup_expr='icontains')
 
     class Meta:
         model = AsistenteActividadAvalada

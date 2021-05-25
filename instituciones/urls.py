@@ -12,6 +12,6 @@ urlpatterns = [
     path('<pk>/update/', InstitucionUpdateView.as_view(), ),
     path('<pk>/delete/', InstitucionDeleteView.as_view(), ),
 
-
+    path('<pk>/correo/', CorreoInstitucionEndPoint.as_view(), ),
 
 ]
