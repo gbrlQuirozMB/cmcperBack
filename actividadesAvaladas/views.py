@@ -39,8 +39,8 @@ class ActividadAvaladaBannerUpdateView(UpdateAPIView):
 
 
 class ActividadAvaladaFilter(FilterSet):
-    nombreNS = CharFilter(field_name='nombre', lookup_expr='iexact')
-    institucionNS = CharFilter(field_name='institucion__nombreInstitucion', lookup_expr='iexact')
+    nombreNS = CharFilter(field_name='nombre', lookup_expr='icontains')
+    institucionNS = CharFilter(field_name='institucion__nombreInstitucion', lookup_expr='icontains')
     pagado = CharFilter(field_name='isPagado')
 
     class Meta:
@@ -101,8 +101,8 @@ class CuposAsistentesDetailView(RetrieveAPIView):
 
 
 class MedicosAIncribirseAAFilter(FilterSet):
-    nombreNS = CharFilter(field_name='nombre', lookup_expr='iexact')
-    apPaternoNS = CharFilter(field_name='apPaterno', lookup_expr='iexact')
+    nombreNS = CharFilter(field_name='nombre', lookup_expr='icontains')
+    apPaternoNS = CharFilter(field_name='apPaterno', lookup_expr='icontains')
 
     class Meta:
         model = Medico
@@ -118,8 +118,8 @@ class MedicosAIncribirseAAFilteredListView(ListAPIView):
 
 
 class MedicosAsistenteAAFilter(FilterSet):
-    nombreNS = CharFilter(field_name='medico__nombre', lookup_expr='iexact')
-    apPaternoNS = CharFilter(field_name='medico__apPaterno', lookup_expr='iexact')
+    nombreNS = CharFilter(field_name='medico__nombre', lookup_expr='icontains')
+    apPaternoNS = CharFilter(field_name='medico__apPaterno', lookup_expr='icontains')
 
     class Meta:
         model = AsistenteActividadAvalada
