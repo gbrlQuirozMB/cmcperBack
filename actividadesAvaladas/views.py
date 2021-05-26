@@ -144,3 +144,14 @@ class MedicosAsistenteAAFilteredListView(ListAPIView):
 class MedicosAsistenteAADeleteView(DestroyAPIView):
     queryset = AsistenteActividadAvalada.objects.filter()
     permission_classes = (permissions.IsAdminUser,)
+
+
+class ActividadAvaladaPagadoView(UpdateAPIView):
+    queryset = ActividadAvalada.objects.filter()
+    serializer_class = ActividadAvaladaPagadoSerializer
+    # permission_classes = (permissions.IsAdminUser,) # No porque se utiliza desde un usuario normal
+    http_method_names = ['put']
+
+    def put(self, request, *args, **kwargs):
+        request.data['isPagado'] = True
+        return self.update(request, *args, **kwargs)

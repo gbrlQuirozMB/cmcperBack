@@ -128,3 +128,9 @@ class MedicosAsistenteAASerializer(serializers.ModelSerializer):
         repr['medicoEmail'] = instance.medico.email
 
         return repr
+
+
+class ActividadAvaladaPagadoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ActividadAvalada
+        fields = ['id', 'isPagado']
