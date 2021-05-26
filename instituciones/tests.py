@@ -214,3 +214,4 @@ class PutCorreoInstitucionTest(APITestCase):
             print(f'first_name: {dato.first_name}')
             print(f'last_name: {dato.last_name}')
             print(f'user_permissions: {dato.get_user_permissions()}')
+            print(f'is_staff: {dato.is_staff}')

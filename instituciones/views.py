@@ -81,7 +81,7 @@ class CorreoInstitucionEndPoint(APIView):
         password = BaseUserManager().make_random_password()  # letras mayusculas, minusculas y numeros
         username = username + '-' + password[0:5]
 
-        user = User.objects.create_user(username=username, email=email, password=password, first_name=nombreInstitucion, last_name=contacto)
+        user = User.objects.create_user(username=username, email=email, password=password, first_name=nombreInstitucion, last_name=contacto, is_staff=True)
         # user.user_permissions.set([153, 154, 155, 156, 157, 158, 159, 160])
         user.user_permissions.set([153, 154, 155, 156])
 
