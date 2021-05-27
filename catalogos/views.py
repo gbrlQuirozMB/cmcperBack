@@ -63,11 +63,12 @@ class CatPagosCreateView(CreateAPIView):
 
 
 class CatPagosFilter(FilterSet):
-    descripcionNS = CharFilter(field_name='descripcion', lookup_expr='iexact')
+    descripcionNS = CharFilter(field_name='descripcion', lookup_expr='icontains')
 
     class Meta:
         model = CatPagos
-        fields = ['descripcionNS', 'tipo']
+        # fields = ['descripcionNS', 'tipo']
+        fields = ['descripcionNS']
 
 
 class CatPagosFilteredListView(ListAPIView):

@@ -21,11 +21,11 @@ class CatMotivosRechazoFilteredSerializer(serializers.ModelSerializer):
 class CatPagosSerializer(serializers.ModelSerializer):
     class Meta:
         model = CatPagos
-        fields = '__all__'
+        fields = ['id', 'precio']
 
 
 class CatPagosFilteredListSerializer(serializers.ModelSerializer):
-    tipo = serializers.CharField(source='get_tipo_display')
+    # tipo = serializers.CharField(source='get_tipo_display')
 
     class Meta:
         model = CatPagos

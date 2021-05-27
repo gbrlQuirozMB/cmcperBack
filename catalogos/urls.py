@@ -11,7 +11,7 @@ urlpatterns = [
     path('motivo-rechazo/<pk>/update/', CatMotivosRechazoUpdateView.as_view(), ),
     path('motivo-rechazo/<pk>/delete/', CatMotivosRechazoDeleteView.as_view(), ),
 
-    path('pagos/create/', CatPagosCreateView.as_view(), ),
+    # path('pagos/create/', CatPagosCreateView.as_view(), ),
     path('pagos/list/', CatPagosFilteredListView.as_view(), ),
     path('pagos/<pk>/update/', CatPagosUpdateView.as_view(), ),
 
