@@ -8,7 +8,7 @@ class CatSedes(models.Model):
     direccion = models.CharField(max_length=200)
     latitud = models.DecimalField(max_digits=9, decimal_places=6)
     longitud = models.DecimalField(max_digits=9, decimal_places=6)
-    imagen = models.FileField(blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'gif'])])
+    imagen = models.FileField(blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'gif'])], upload_to='catalogos')
 
     class Meta:
         db_table = 'cat_sedes'

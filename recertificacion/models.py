@@ -15,7 +15,7 @@ class Capitulo(models.Model):
     maximo = models.DecimalField(max_digits=6, decimal_places=2)
     minimo = models.DecimalField(max_digits=6, decimal_places=2)
     isOpcional = models.BooleanField(default=False, db_column='is_opcional')
-    icono = models.FileField(blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif'])])
+    icono = models.FileField(blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif'])], upload_to='recertificacion')
 
     class Meta:
         db_table = 'capitulos'
@@ -78,7 +78,7 @@ class PorExamenDocumento(models.Model):
     actualizado_en = models.DateTimeField(auto_now=True)
     catTiposDocumento = models.ForeignKey(CatTiposDocumento, on_delete=models.CASCADE, related_name='catTiposDocumentoPED')
     porExamen = models.ForeignKey(PorExamen, on_delete=models.CASCADE, related_name='porExamenD')
-    documento = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif'])])
+    documento = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif'])], upload_to='recertificacion')
     isAceptado = models.BooleanField(default=False, db_column='is_aceptado')
 
     class Meta:
@@ -91,7 +91,7 @@ class RecertificacionItemDocumento(models.Model):
     actualizado_en = models.DateTimeField(auto_now=True)
     medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medicoRID')
     item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='itemRID')
-    documento = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif'])])
+    documento = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif'])], upload_to='recertificacion')
     tituloDescripcion = models.CharField(max_length=300, db_column='titulo_descripcion')
     fechaEmision = models.DateField(db_column='fecha_emision')
     puntosOtorgados = models.DecimalField(max_digits=6, decimal_places=2, db_column='puntos_otorgados')

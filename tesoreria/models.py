@@ -9,7 +9,7 @@ class Pago(models.Model):
     actualizado_en = models.DateTimeField(auto_now=True)
     medico = models.ForeignKey(Medico, on_delete=models.CASCADE, null=True, related_name='medicoP')
     concepto = models.CharField(max_length=400, blank=True)
-    comprobante = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif'])])
+    comprobante = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif'])], upload_to='tesoreria')
     monto = models.DecimalField(max_digits=7, decimal_places=2, null=True)
     nota = models.CharField(max_length=400, blank=True)
     estatus = models.PositiveSmallIntegerField(blank=True, choices=(

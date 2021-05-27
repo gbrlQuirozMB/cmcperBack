@@ -12,6 +12,10 @@ from PIL import Image, ImageDraw
 
 import json
 
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
+import os
+
 # Create your models here.
 
 
@@ -22,8 +26,8 @@ class ActividadAvalada(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='itemA')
     nombre = models.CharField(max_length=200)
     emailContacto = models.CharField(max_length=50, db_column='email_contacto')
-    archivo = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf'])])
-    banner = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'gif'])])
+    archivo = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf'])], upload_to='actividadesAvaladas')
+    banner = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'gif'])], upload_to='actividadesAvaladas')
     numAsistentes = models.PositiveSmallIntegerField(db_column='numero_asistentes')
     puntosAsignar = models.DecimalField(max_digits=6, decimal_places=2, db_column='puntos_asignar')
     fechaInicio = models.DateField(db_column='fecha_inicio')
@@ -91,3 +95,10 @@ class AsistenteActividadAvalada(models.Model):
     class Meta:
         db_table = 'actividades_avaladas_asistentes'
         ordering = ['-actividadAvalada']
+
+
+@receiver(post_delete, sender=AsistenteActividadAvalada)
+def deleteQRimgRelacionada(sender, instance, using, **kwargs):
+    # print(f'--->>>ruta: {instance.qrCodeImg}')
+    # os.remove('./uploads/'+str(instance.qrCodeImg))
+    instance.qrCodeImg.delete(save=False)
