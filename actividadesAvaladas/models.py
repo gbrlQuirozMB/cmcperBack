@@ -12,6 +12,10 @@ from PIL import Image, ImageDraw
 
 import json
 
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
+import os
+
 # Create your models here.
 
 
@@ -91,3 +95,10 @@ class AsistenteActividadAvalada(models.Model):
     class Meta:
         db_table = 'actividades_avaladas_asistentes'
         ordering = ['-actividadAvalada']
+
+
+@receiver(post_delete, sender=AsistenteActividadAvalada)
+def deleteQRimgRelacionada(sender, instance, using, **kwargs):
+    # print(f'--->>>ruta: {instance.qrCodeImg}')
+    # os.remove('./uploads/'+str(instance.qrCodeImg))
+    instance.qrCodeImg.delete(save=False)

@@ -701,12 +701,12 @@ class DeleteAsistenteActividadAvaladaTest(APITestCase):
             cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999, aceptado=True)
 
-        AsistenteActividadAvalada.objects.create(medico=medico3, actividadAvalada=aa3)
-        AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=aa3)
-        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa6)
-        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa1)
-        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa2)
-        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa4)
+        AsistenteActividadAvalada.objects.create(medico=medico3, actividadAvalada=aa3) 
+        AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=aa3) 
+        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa6) 
+        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa1) 
+        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa2) 
+        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa4) 
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
 
@@ -724,7 +724,7 @@ class DeleteAsistenteActividadAvaladaTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
         response = self.client.delete('/api/actividades-avaladas/asistente/33/delete/')
-        print(f'response JSON ===>>> nombreNS=gabriel \n {json.dumps(response.json())} \n ---')
+        print(f'response JSON ===>>> 404 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
         cuenta = AsistenteActividadAvalada.objects.all().count()
