@@ -12,7 +12,7 @@ class Comunicado(models.Model):
         (2, 'Categoria 2'),
         (3, 'Categoria 3')
     ))
-    imagen = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif', 'jpeg'])])
+    imagen = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif', 'jpeg'])], upload_to='comunicados')
     detalles = models.TextField(blank=True)
     isActivo = models.BooleanField(default=False, db_column='is_activo')  # si se utiliza o no
 
