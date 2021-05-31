@@ -73,6 +73,12 @@ class ActividadAvaladaDeleteView(DestroyAPIView):
     permission_classes = (permissions.IsAdminUser,)
 
 
+class ActividadAvaladaPorPagarDetailView(RetrieveAPIView):
+    queryset = ActividadAvalada.objects.filter()
+    serializer_class = ActividadAvaladaPorPagarSerializer
+    
+    
+
 # ------------------------ asistentes
 
 class AsistenteActividadAvaladaCreateView(CreateAPIView):

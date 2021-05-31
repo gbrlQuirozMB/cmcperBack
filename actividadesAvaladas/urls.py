@@ -14,7 +14,7 @@ urlpatterns = [
     path('<pk>/update/', ActividadAvaladaUpdateView.as_view(), ),
     path('<pk>/delete/', ActividadAvaladaDeleteView.as_view(), ),
     path('<pk>/pagado/', ActividadAvaladaPagadoView.as_view(), ),
-
+    path('<pk>/a-pagar/', ActividadAvaladaPorPagarDetailView.as_view(), ),
 
     path('asistente/create/', AsistenteActividadAvaladaCreateView.as_view(), ),
     path('<pk>/asistentes/cupos/', CuposAsistentesDetailView.as_view(), ),

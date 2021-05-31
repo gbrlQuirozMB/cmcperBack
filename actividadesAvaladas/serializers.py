@@ -134,3 +134,22 @@ class ActividadAvaladaPagadoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActividadAvalada
         fields = ['id', 'isPagado']
+
+
+class ActividadAvaladaPorPagarSerializer(serializers.ModelSerializer):
+    tipoPago = serializers.CharField(source='get_tipoPago_display')
+    class Meta:
+        model = ActividadAvalada
+        fields = ['id', 'nombre', 'tipoPago']
+
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        repr['tipo'] = 5
+        repr['descripcion'] = 'Actividad Asistencial'
+        if instance.tipoPago == 1:
+            total = instance.precio - (instance.precio * (instance.porcentaje / 100))
+            repr['aPagar'] = round(total, 2)
+        else:
+            total = instance.numAsistentes * instance.porcentaje
+            repr['aPagar'] = round(total, 2)
+        return repr

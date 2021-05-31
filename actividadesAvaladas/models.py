@@ -35,10 +35,10 @@ class ActividadAvalada(models.Model):
     solicitante = models.CharField(max_length=300)
     tipoPago = models.PositiveSmallIntegerField(db_column='tipo_pago', choices=(
         (1, 'Porcentaje'),
-        (2, 'Precio'),
+        (2, 'Precio por Médico'),
     ))
-    porcentaje = models.DecimalField(max_digits=6, decimal_places=2, null=True)
-    precio = models.DecimalField(max_digits=7, decimal_places=2, null=True)
+    porcentaje = models.DecimalField(max_digits=6, decimal_places=2, null=True, default=0)
+    precio = models.DecimalField(max_digits=7, decimal_places=2, null=True, default=0)
     descripcion = models.TextField(blank=True)
     isPagado = models.BooleanField(default=False, db_column='is_pagado')  # verificar si ya pago
 
