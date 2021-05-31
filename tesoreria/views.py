@@ -55,7 +55,6 @@ class PagoAceptarUpdateView(UpdateAPIView):
     serializer_class = PagoAceptarRechazarSerializer
     permission_classes = (permissions.IsAdminUser,)
     http_method_names = ['put']
-    
 
     def put(self, request, *args, **kwargs):
         id = kwargs['pk']
@@ -65,7 +64,7 @@ class PagoAceptarUpdateView(UpdateAPIView):
             raise ResponseError('No existe registro', 404)
 
         # si se esta aceptando el pago de una CONVOCATORIA
-        if dato.tipo == 1:
+        if dato.tipo == 2 or dato.tipo == 3 or dato.tipo == 4:
             verificador = ConvocatoriaEnrolado.objects.filter(id=dato.externoId)
             if not verificador:
                 raise ResponseError('No existe el ID de convocatoria', 404)
@@ -79,7 +78,7 @@ class PagoAceptarUpdateView(UpdateAPIView):
                 raise ResponseError('No tiene permitido pagar', 409)
 
         # si se esta aceptando el pago de una RECERTIFICACION EXAMEN
-        if dato.tipo == 2:
+        if dato.tipo == 1:
             verificador = PorExamen.objects.filter(id=dato.externoId)
             if not verificador:
                 raise ResponseError('No existe el ID de porExamen', 404)
@@ -93,22 +92,16 @@ class PagoAceptarUpdateView(UpdateAPIView):
                 raise ResponseError('No tiene permitido pagar', 409)
 
         # si se esta aceptando el pago de una RECERTIFICACION RENOVACION
-        if dato.tipo == 3:
-            # request.data['estatus'] = 1
-            # medico = Medico.objects.get(id=dato.medico.id)
-            # Certificado.objects.create(medico=medico, documento='', descripcion='generado automaticamente por recertificacion renovacion', isVencido=False, estatus=1)
-            # return self.update(request, *args, **kwargs)
+        if dato.tipo == 6:
             verificador = Renovacion.objects.filter(id=dato.externoId)
             if not verificador:
                 raise ResponseError('No existe el ID de renovacion', 404)
             cuenta = Renovacion.objects.filter(id=dato.externoId).count()
             if cuenta == 1:
                 request.data['estatus'] = 1
-                # Renovacion.objects.filter(id=dato.externoId).update(isPagado=True)
                 Renovacion.objects.filter(id=dato.externoId).delete()
                 RecertificacionItemDocumento.objects.filter(medico=dato.medico.id).delete()
                 return self.update(request, *args, **kwargs)
-            
 
 
 class PagoRechazarUpdateView(UpdateAPIView):
@@ -116,7 +109,6 @@ class PagoRechazarUpdateView(UpdateAPIView):
     serializer_class = PagoAceptarRechazarSerializer
     permission_classes = (permissions.IsAdminUser,)
     http_method_names = ['put']
-    
 
     def put(self, request, *args, **kwargs):
         id = kwargs['pk']
@@ -125,7 +117,7 @@ class PagoRechazarUpdateView(UpdateAPIView):
         except Exception as e:
             raise ResponseError('No existe registro', 404)
 
-        if dato.tipo == 1:  # si se esta rechazando el pago de una CONVOCATORIA
+        if dato.tipo == 2 or dato.tipo == 3 or dato.tipo == 4:  # si se esta rechazando el pago de una CONVOCATORIA
             verificador = ConvocatoriaEnrolado.objects.filter(id=dato.externoId)
             if not verificador:
                 raise ResponseError('No existe el ID de convocatoria', 404)
@@ -138,7 +130,7 @@ class PagoRechazarUpdateView(UpdateAPIView):
             if cuenta == 1:
                 raise ResponseError('No tiene permitido pagar', 409)
 
-        if dato.tipo == 2:  # si se esta rechazando el pago de una RECERTIFICACION EXAMEN
+        if dato.tipo == 1:  # si se esta rechazando el pago de una RECERTIFICACION EXAMEN
             verificador = PorExamen.objects.filter(id=dato.externoId)
             if not verificador:
                 raise ResponseError('No existe el ID de porExamen', 404)
@@ -151,7 +143,7 @@ class PagoRechazarUpdateView(UpdateAPIView):
             if cuenta == 1:
                 raise ResponseError('No tiene permitido pagar', 409)
 
-        if dato.tipo == 3:  # si se esta rechazando el pago de una RECERTIFICACION RENOVACION
+        if dato.tipo == 6:  # si se esta rechazando el pago de una RECERTIFICACION RENOVACION
             verificador = Renovacion.objects.filter(id=dato.externoId)
             if not verificador:
                 raise ResponseError('No existe el ID de renovacion', 404)

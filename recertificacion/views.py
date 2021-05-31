@@ -485,7 +485,7 @@ class PorExamenAPagarEndPoint(APIView):
         try:
             cuenta = PorExamen.objects.filter(medico=medicoId, isAceptado=True).count()
             if cuenta == 1:
-                return CatPagos.objects.get(tipo=1)
+                return CatPagos.objects.get(id=1)
             raise ResponseError('No tiene permitido pagar', 409)
         except CatPagos.DoesNotExist:
             raise ResponseError('No existe un registro de pago para el Examen Certificación Vigente', 404)
@@ -503,7 +503,7 @@ class PorExamenAPagarEndPoint(APIView):
 class RenovacionAPagarEndPoint(APIView):
     def getQuerySet(self):
         try:
-            return CatPagos.objects.get(tipo=6)
+            return CatPagos.objects.get(id=6)
         except CatPagos.DoesNotExist:
             raise ResponseError('No existe un registro de pago para Renovación de Certificación', 404)
 

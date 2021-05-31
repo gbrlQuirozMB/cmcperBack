@@ -118,66 +118,75 @@ class DecimalEncoder(json.JSONEncoder):
         return super(DecimalEncoder, self).default(o)
 
 
-class PostCatPagosTest(APITestCase):
-    def setUp(self):
+# class PostCatPagosTest(APITestCase):
+#     def setUp(self):
 
-        self.json = {
-            "descripcion": "descricpcion 6",
-            "precio": 369.99,
-            "tipo": 6,
-        }
+#         self.json = {
+#             "descripcion": "descricpcion 6",
+#             "precio": 369.99,
+#             "tipo": 6,
+#         }
 
-        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+#         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
 
-    def test(self):
-        self.client.force_authenticate(user=self.user)
+#     def test(self):
+#         self.client.force_authenticate(user=self.user)
 
-        response = self.client.post('/api/catalogo/pagos/create/', data=json.dumps(self.json), content_type="application/json")
-        # print(f'response JSON ===>>> \n {json.dumps(response.data, cls=DecimalEncoder)} \n ---')
-        print(f'response JSON ===>>> \n {json.dumps(response.json())} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+#         response = self.client.post('/api/catalogo/pagos/create/', data=json.dumps(self.json), content_type="application/json")
+#         # print(f'response JSON ===>>> \n {json.dumps(response.data, cls=DecimalEncoder)} \n ---')
+#         print(f'response JSON ===>>> \n {json.dumps(response.json())} \n ---')
+#         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
 class GetCatPagosFilteredListTest(APITestCase):
     def setUp(self):
-        CatPagos.objects.create(descripcion='descripcion1', tipo=5, precio=123.45)
-        CatPagos.objects.create(descripcion='descripcion2', tipo=4, precio=456.78)
-        CatPagos.objects.create(descripcion='descripcion3', tipo=6, precio=369.69)
-        CatPagos.objects.create(descripcion='descripcion4', tipo=3, precio=333.33)
-        CatPagos.objects.create(descripcion='descripcion5', tipo=1, precio=666.66)
-        CatPagos.objects.create(descripcion='descripcion6', tipo=3, precio=999.99)
+        # CatPagos.objects.create(descripcion='descripcion1', tipo=5, precio=123.45)
+        # CatPagos.objects.create(descripcion='descripcion2', tipo=4, precio=456.78)
+        # CatPagos.objects.create(descripcion='descripcion3', tipo=6, precio=369.69)
+        # CatPagos.objects.create(descripcion='descripcion4', tipo=3, precio=333.33)
+        # CatPagos.objects.create(descripcion='descripcion5', tipo=1, precio=666.66)
+        # CatPagos.objects.create(descripcion='descripcion6', tipo=3, precio=999.99)
+        
+        CatPagos.objects.create(descripcion='Examen Certificación Vigente', precio=123.45)
+        CatPagos.objects.create(descripcion='Examen Convocatoria Nacional', precio=456.78)
+        CatPagos.objects.create(descripcion='Examen Convocatoria Extranjero', precio=369.69)
+        CatPagos.objects.create(descripcion='Examen Especial de Certificación', precio=333.33)
+        CatPagos.objects.create(descripcion='Actividad Asistencial', precio=666.66)
+        CatPagos.objects.create(descripcion='Renovación de Certificación', precio=999.99)
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
 
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        response = self.client.get('/api/catalogo/pagos/list/?descripcionNS=descripcion1')
+        response = self.client.get('/api/catalogo/pagos/list/?descripcionNS=nacional')
         print(f'response JSON ===>>> descripcionNS=descripcion1 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = self.client.get('/api/catalogo/pagos/list/?tipo=3')
-        print(f'response JSON ===>>> tipo=3 \n {json.dumps(response.json())} \n ---')
+        response = self.client.get('/api/catalogo/pagos/list/')
+        print(f'response JSON ===>>> all ok \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = self.client.get('/api/catalogo/pagos/list/?descripcionNS=descripcion6&tipo=3')
-        print(f'response JSON ===>>> descripcionNS=descripcion6&tipo=3 \n {json.dumps(response.json())} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 class PutCatPagosTest(APITestCase):
     def setUp(self):
-        CatPagos.objects.create(descripcion='descripcion1', tipo=5, precio=123.45)
-        CatPagos.objects.create(descripcion='descripcion2', tipo=4, precio=456.78)
-        CatPagos.objects.create(descripcion='descripcion3', tipo=1, precio=111.11)
-        CatPagos.objects.create(descripcion='descripcion4', tipo=3, precio=333.33)
-        CatPagos.objects.create(descripcion='descripcion5', tipo=1, precio=666.66)
-        CatPagos.objects.create(descripcion='descripcion6', tipo=3, precio=999.99)
+        # CatPagos.objects.create(descripcion='descripcion1', tipo=5, precio=123.45)
+        # CatPagos.objects.create(descripcion='descripcion2', tipo=4, precio=456.78)
+        # CatPagos.objects.create(descripcion='descripcion3', tipo=1, precio=111.11)
+        # CatPagos.objects.create(descripcion='descripcion4', tipo=3, precio=333.33)
+        # CatPagos.objects.create(descripcion='descripcion5', tipo=1, precio=666.66)
+        # CatPagos.objects.create(descripcion='descripcion6', tipo=3, precio=999.99)
+        
+        CatPagos.objects.create(descripcion='Examen Certificación Vigente', precio=123.45)
+        CatPagos.objects.create(descripcion='Examen Convocatoria Nacional', precio=456.78)
+        CatPagos.objects.create(descripcion='Examen Convocatoria Extranjero', precio=369.69)
+        CatPagos.objects.create(descripcion='Examen Especial de Certificación', precio=333.33)
+        CatPagos.objects.create(descripcion='Actividad Asistencial', precio=666.66)
+        CatPagos.objects.create(descripcion='Renovación de Certificación', precio=999.99)
 
         self.json = {
-            "descripcion": "descricpcion mortal 666",
-            "precio": 666.66,
-            "tipo": 6,
+            "precio": 111.11
         }
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
@@ -185,10 +194,14 @@ class PutCatPagosTest(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        # response = self.client.get('/api/catalogo/pagos/list/?descripcionNS=descripcion3')
-        # print(f'response JSON ===>>> descripcionNS=descripcion1 \n {json.dumps(response.json())} \n ---')
-        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.get('/api/catalogo/pagos/list/?descripcionNS=extranjero')
+        print(f'response JSON ===>>> descripcionNS=descripcion1 \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         response = self.client.put('/api/catalogo/pagos/3/update/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        response = self.client.get('/api/catalogo/pagos/list/?descripcionNS=extranjero')
+        print(f'response JSON ===>>> descripcionNS=descripcion1 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)

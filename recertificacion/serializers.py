@@ -229,11 +229,10 @@ class PorExamenDocumentoSerializer(serializers.ModelSerializer):
 
 
 class MedicoAPagarExamenSerializer(serializers.ModelSerializer):
-    tipoDescripcion = serializers.CharField(source='get_tipo_display', read_only=True)
 
     class Meta:
         model = CatPagos
-        fields = ['descripcion', 'precio', 'tipo', 'tipoDescripcion']  # OJO: no envio el id porque puede confundir
+        fields = ['descripcion', 'precio']  # OJO: no envio el id porque puede confundir
 
     def to_representation(self, instance):
         repr = super().to_representation(instance)
@@ -242,22 +241,22 @@ class MedicoAPagarExamenSerializer(serializers.ModelSerializer):
         repr['medico'] = datoMedico.nombre + ' ' + datoMedico.apPaterno
         datoPorExamen = PorExamen.objects.get(medico=medicoId, isAceptado=True)
         repr['porExamenId'] = datoPorExamen.id
+        repr['tipo'] = 1
 
         return repr
 
 
 class MedicoAPagarRenovacionSerializer(serializers.ModelSerializer):
-    tipoDescripcion = serializers.CharField(source='get_tipo_display', read_only=True)
-
     class Meta:
         model = CatPagos
-        fields = ['descripcion', 'precio', 'tipo', 'tipoDescripcion']  # OJO: no envio el id porque puede confundir
+        fields = ['descripcion', 'precio']  # OJO: no envio el id porque puede confundir
 
     def to_representation(self, instance):
         repr = super().to_representation(instance)
         medicoId = self.context.get('medicoId')  # recibimos variable extra!!!
         datoMedico = Medico.objects.get(id=medicoId)
         repr['medico'] = datoMedico.nombre + ' ' + datoMedico.apPaterno
+        repr['tipo'] = 6
 
         return repr
 

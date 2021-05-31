@@ -258,14 +258,22 @@ class ConvocatoriaEnroladoMedicoAPagarDetailSerializer(serializers.ModelSerializ
     def to_representation(self, instance):
         repr = super().to_representation(instance)
         repr['catTiposExamen'] = instance.catTiposExamen.descripcion
+        tipoExamen = instance.catTiposExamen.id
         repr['catSedes'] = instance.catSedes.descripcion
         repr['convocatoria'] = instance.convocatoria.nombre
         repr['medico'] = instance.medico.nombre + ' ' + instance.medico.apPaterno
-        # repr['aPagar'] = instance.catTiposExamen.precio
-        tipo = self.context.get('tipo')  # recibimos variable extra!!!
-        dato = CatPagos.objects.get(tipo=tipo)  # diferente precio si estudio en el extrajero
-        repr['aPagar'] = dato.precio
-
+        tipo = self.context.get('tipo')  # recibimos variable extra!!!  2-nacional/3-extranjero
+        if tipoExamen == 2: #examen especial
+            tipo = 4
+        repr['tipo'] = tipo
+        try:
+            dato = CatPagos.objects.get(id=tipo)  # diferente precio si estudio en el extrajero, nacional o especial
+            repr['aPagar'] = dato.precio
+            repr['descripcion'] = dato.descripcion
+        except:
+            repr['aPagar'] = 0.0
+            repr['descripcion'] = 'No hay descripcion'
+            
         return repr
 
 

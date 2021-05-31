@@ -48,15 +48,15 @@ class CatMotivosRechazo(models.Model):
 class CatPagos(models.Model):
     descripcion = models.CharField(max_length=200)
     precio = models.DecimalField(max_digits=7, decimal_places=2, null=True)
-    tipo = models.PositiveSmallIntegerField(choices=(
-        (1, 'Examen Certificación Vigente'),
-        (2, 'Examen Convocatoria Nacional'),
-        (3, 'Examen Convocatoria Extranjero'),
-        (4, 'Curso'),
-        (5, 'Actividad Asistencial'),
-        (6, 'Renovación de Certificación'),
-    ))
+    # tipo = models.PositiveSmallIntegerField(choices=(
+    #     (1, 'Examen Certificación Vigente'),
+    #     (2, 'Examen Convocatoria Nacional'),
+    #     (3, 'Examen Convocatoria Extranjero'),
+    #     (4, 'Curso'),
+    #     (5, 'Actividad Asistencial'),
+    #     (6, 'Renovación de Certificación'),
+    # ))
 
     class Meta:
         db_table = 'cat_pagos'
-        ordering = ['tipo']
+        ordering = ['descripcion']

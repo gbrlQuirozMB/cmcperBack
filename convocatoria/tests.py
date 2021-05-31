@@ -1087,12 +1087,18 @@ class GetCostoAPagar200Test(APITestCase):
         CatSedes.objects.create(descripcion='sedeDescripcion2', direccion='sedeDireccion2', latitud=22.235698, longitud=-222.235689)
         catSedes3 = CatSedes.objects.create(descripcion='sedeDescripcion3', direccion='sedeDireccion3', latitud=33.235698, longitud=-333.235689)
 
-        catTiposExamen1 = CatTiposExamen.objects.create(id=1, descripcion='tiposExameneDescripcion1', precio=111.11, precioExtrangero=222.22)
-        CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion2')
-        catTiposExamen3 = CatTiposExamen.objects.create(id=3, descripcion='tiposExameneDescripcion3', precio=333.33, precioExtrangero=444.44)
+        self.catTiposExamen1 = CatTiposExamen.objects.create(id=1, descripcion='Normal', precio=111.11, precioExtrangero=222.22)
+        self.catTiposExamen2 = CatTiposExamen.objects.create(id=2, descripcion='Especial', precio=333.33, precioExtrangero=444.44)
         
-        CatPagos.objects.create(descripcion='Exam Conv Nacional', precio=369.69, tipo=2)
-        CatPagos.objects.create(descripcion='Exam Conv Extran', precio=963.69, tipo=3)
+        # CatPagos.objects.create(descripcion='Exam Conv Nacional', precio=369.69, tipo=2)
+        # CatPagos.objects.create(descripcion='Exam Conv Extran', precio=963.69, tipo=3)
+        
+        CatPagos.objects.create(descripcion='Examen Certificación Vigente', precio=123.45)
+        CatPagos.objects.create(descripcion='Examen Convocatoria Nacional', precio=456.78)
+        CatPagos.objects.create(descripcion='Examen Convocatoria Extranjero', precio=369.69)
+        CatPagos.objects.create(descripcion='Examen Especial de Certificación', precio=333.33)
+        CatPagos.objects.create(descripcion='Actividad Asistencial', precio=666.66)
+        CatPagos.objects.create(descripcion='Renovación de Certificación', precio=999.99)
 
         medico3 = Medico.objects.create(
             id=3, nombre='elianid', apPaterno='tolentino', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
@@ -1115,9 +1121,9 @@ class GetCostoAPagar200Test(APITestCase):
         convocatoria6 = Convocatoria.objects.create(id=6, fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',
                                                     horaExamen='09:09', nombre='convocatoria chingona6', detalles='detalles6')
 
-        ConvocatoriaEnrolado.objects.create(medico=medico3, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=catTiposExamen1)
-        ConvocatoriaEnrolado.objects.create(medico=medico6, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=catTiposExamen1)
-        ConvocatoriaEnrolado.objects.create(medico=medico9, convocatoria=convocatoria6, catSedes=catSedes3, catTiposExamen=catTiposExamen3, isAceptado=True)
+        ConvocatoriaEnrolado.objects.create(medico=medico3, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=self.catTiposExamen1)
+        ConvocatoriaEnrolado.objects.create(medico=medico6, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=self.catTiposExamen1)
+        ConvocatoriaEnrolado.objects.create(medico=medico9, convocatoria=convocatoria6, catSedes=catSedes3, catTiposExamen=self.catTiposExamen1, isAceptado=True)
 
         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
 
@@ -1129,16 +1135,29 @@ class GetCostoAPagar200Test(APITestCase):
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        # no puede pagar
-        ConvocatoriaEnrolado.objects.filter(id=3).update(isAceptado=False)
+        Medico.objects.filter(id=9).update(estudioExtranjero=True)
         response = self.client.get('/api/convocatoria/6/medico/9/a-pagar/')
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        # no se encuentra el registro
-        response = self.client.get('/api/convocatoria/6/medico/2/a-pagar/')
+        ConvocatoriaEnrolado.objects.filter(id=3).update(catTiposExamen=self.catTiposExamen2)
+        response = self.client.get('/api/convocatoria/6/medico/9/a-pagar/')
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+
+
+        # # no puede pagar
+        # ConvocatoriaEnrolado.objects.filter(id=3).update(isAceptado=False)
+        # response = self.client.get('/api/convocatoria/6/medico/9/a-pagar/')
+        # print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+
+        # # no se encuentra el registro
+        # response = self.client.get('/api/convocatoria/6/medico/2/a-pagar/')
+        # print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
 class PutPagado200Test(APITestCase):

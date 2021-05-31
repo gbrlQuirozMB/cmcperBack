@@ -17,13 +17,8 @@ class Pago(models.Model):
         (2, 'Rechazado'),
         (3, 'Pendiente')
     ))
-    tipo = models.PositiveSmallIntegerField(blank=True, choices=(
-        (1, 'Convocatoria'),
-        (2, 'Recertificacion Examen'),
-        (3, 'Recertificacion Renovacion'),
-        (4, 'Curso'),
-        (5, 'Actividad Asistencial')
-    ))
+    tipo = models.PositiveSmallIntegerField(blank=True)
+    
     externoId = models.IntegerField(blank=True, null=True)
 
     class Meta:
