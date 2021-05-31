@@ -71,7 +71,7 @@ class PostSubirPago200Test(APITestCase):
             "comprobante": comprobante,
             "monto": 369.99,
             "nota": "nota del pago",
-            "tipo": 1,  # es una convocatoria
+            "tipo": 1,  # viene desde el front que obtuvo de los endpoints de /a-pagar/
             "externoId": 3
             # "estatus": 3
         }
@@ -94,6 +94,13 @@ class PostSubirPago200Test(APITestCase):
 class GetPagoList200Test(APITestCase):
     def setUp(self):
         User.objects.create_user(username='admin', email='admin@cmcper.com', password='password', first_name='Enrique', last_name='Lucero', is_superuser=True, is_staff=True)
+        
+        CatPagos.objects.create(descripcion='Examen Certificación Vigente', precio=123.45)
+        CatPagos.objects.create(descripcion='Examen Convocatoria Nacional', precio=456.78)
+        CatPagos.objects.create(descripcion='Examen Convocatoria Extranjero', precio=369.69)
+        CatPagos.objects.create(descripcion='Examen Especial de Certificación', precio=333.33)
+        CatPagos.objects.create(descripcion='Actividad Asistencial', precio=666.66)
+        CatPagos.objects.create(descripcion='Renovación de Certificación', precio=999.99)
 
         catSedes1 = CatSedes.objects.create(descripcion='sedeDescripcion1', direccion='sedeDireccion1', latitud=11.235698, longitud=-111.235689)
         CatSedes.objects.create(descripcion='sedeDescripcion2', direccion='sedeDireccion2', latitud=22.235698, longitud=-222.235689)
@@ -131,6 +138,7 @@ class GetPagoList200Test(APITestCase):
         Pago.objects.create(medico=medico3, concepto='concepto', comprobante='archvivo', monto=333.33, nota='nota', estatus=3, tipo=1, externoId=1)
         Pago.objects.create(medico=medico6, concepto='concepto', comprobante='archvivo', monto=666.66, nota='nota', estatus=2, tipo=1, externoId=2)
         Pago.objects.create(medico=medico9, concepto='concepto', comprobante='archvivo', monto=999.99, nota='nota', estatus=1, tipo=2, externoId=3)
+        Pago.objects.create(medico=medico9, concepto='concepto', comprobante='archvivo', monto=999.99, nota='nota', estatus=1, tipo=99, externoId=3)
 
         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
 
@@ -187,8 +195,8 @@ class PutPagoAceptar200Test(APITestCase):
         PorExamen.objects.create(id=6, medico=medico3, estatus=1, isAprobado=False, calificacion=0, isPagado=False, isAceptado=True, fechaExamen=fechaExamen1)
 
         Pago.objects.create(id=3, medico=medico3, concepto='concepto', comprobante='archvivo', monto=333.33, nota='nota', estatus=3, tipo=1, externoId=1)
-        Pago.objects.create(id=6, medico=medico6, concepto='concepto', comprobante='archvivo', monto=666.66, nota='nota', estatus=3, tipo=2, externoId=6)  # recertificaion por examen
-        Pago.objects.create(id=9, medico=medico9, concepto='concepto', comprobante='archvivo', monto=999.99, nota='nota', estatus=3, tipo=1, externoId=3)  # convocatoria enrolado
+        Pago.objects.create(id=6, medico=medico6, concepto='concepto', comprobante='archvivo', monto=666.66, nota='nota', estatus=3, tipo=1, externoId=6)  # recertificaion por examen -> 1
+        Pago.objects.create(id=9, medico=medico9, concepto='concepto', comprobante='archvivo', monto=999.99, nota='nota', estatus=3, tipo=3, externoId=3)  # convocatoria enrolado -> 2 3 4
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated - IsAdminUser
 

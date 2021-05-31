@@ -1102,8 +1102,15 @@ class PostDocumento201Test(APITestCase):
 
 class GetCostoAPagar200Test(APITestCase):
     def setUp(self):
-        CatPagos.objects.create(descripcion='ECV - Examen loco!!!', precio=369.69, tipo=1)
-        CatPagos.objects.create(descripcion='RC - Examen crazy!!!', precio=963.69, tipo=6)
+        # CatPagos.objects.create(descripcion='ECV - Examen loco!!!', precio=369.69, tipo=1)
+        # CatPagos.objects.create(descripcion='RC - Examen crazy!!!', precio=963.69, tipo=6)
+        
+        CatPagos.objects.create(descripcion='Examen Certificación Vigente', precio=123.45)
+        CatPagos.objects.create(descripcion='Examen Convocatoria Nacional', precio=456.78)
+        CatPagos.objects.create(descripcion='Examen Convocatoria Extranjero', precio=369.69)
+        CatPagos.objects.create(descripcion='Examen Especial de Certificación', precio=333.33)
+        CatPagos.objects.create(descripcion='Actividad Asistencial', precio=666.66)
+        CatPagos.objects.create(descripcion='Renovación de Certificación', precio=999.99)
 
         medico9 = Medico.objects.create(
             id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
@@ -1143,8 +1150,15 @@ class GetCostoAPagar200Test(APITestCase):
 
 class PutExamenPagado200Test(APITestCase):
     def setUp(self):
-        CatPagos.objects.create(descripcion='ECV - Examen loco!!!', precio=369.69, tipo=1)
-        CatPagos.objects.create(descripcion='RC - Examen crazy!!!', precio=963.69, tipo=6)
+        # CatPagos.objects.create(descripcion='ECV - Examen loco!!!', precio=369.69, tipo=1)
+        # CatPagos.objects.create(descripcion='RC - Examen crazy!!!', precio=963.69, tipo=6)
+        
+        CatPagos.objects.create(descripcion='Examen Certificación Vigente', precio=123.45)
+        CatPagos.objects.create(descripcion='Examen Convocatoria Nacional', precio=456.78)
+        CatPagos.objects.create(descripcion='Examen Convocatoria Extranjero', precio=369.69)
+        CatPagos.objects.create(descripcion='Examen Especial de Certificación', precio=333.33)
+        CatPagos.objects.create(descripcion='Actividad Asistencial', precio=666.66)
+        CatPagos.objects.create(descripcion='Renovación de Certificación', precio=999.99)
 
         medico9 = Medico.objects.create(
             id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
