@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from convocatoria.models import ConvocatoriaEnrolado
 from recertificacion.models import PorExamen, Renovacion, RecertificacionItemDocumento
 from certificados.models import Certificado
+from actividadesAvaladas.models import ActividadAvalada
 
 from api.logger import log
 from api.exceptions import *
@@ -102,7 +103,17 @@ class PagoAceptarUpdateView(UpdateAPIView):
                 Renovacion.objects.filter(id=dato.externoId).delete()
                 RecertificacionItemDocumento.objects.filter(medico=dato.medico.id).delete()
                 return self.update(request, *args, **kwargs)
-
+        
+        # si se esta aceptando el pago de una ACTIVIDAD AVALADA
+        if dato.tipo == 5:
+            verificador = ActividadAvalada.objects.filter(id=dato.externoId)
+            if not verificador:
+                raise ResponseError('No existe el ID de actividad avalada', 404)
+            cuenta = ActividadAvalada.objects.filter(id=dato.externoId).count()
+            if cuenta == 1:
+                request.data['estatus'] = 1
+                ActividadAvalada.objects.filter(id=dato.externoId).update(isPagado=True)
+                return self.update(request, *args, **kwargs)
 
 class PagoRechazarUpdateView(UpdateAPIView):
     queryset = Pago.objects.filter()
@@ -154,3 +165,14 @@ class PagoRechazarUpdateView(UpdateAPIView):
                 return self.update(request, *args, **kwargs)
             # return self.update(request, *args, **kwargs)
             raise ResponseError('No tiene permitido pagar', 409)
+        
+        # si se esta aceptando el pago de una ACTIVIDAD AVALADA
+        if dato.tipo == 5:
+            verificador = ActividadAvalada.objects.filter(id=dato.externoId)
+            if not verificador:
+                raise ResponseError('No existe el ID de actividad avalada', 404)
+            cuenta = ActividadAvalada.objects.filter(id=dato.externoId).count()
+            if cuenta == 1:
+                request.data['estatus'] = 2
+                ActividadAvalada.objects.filter(id=dato.externoId).update(isPagado=False)
+                return self.update(request, *args, **kwargs)
