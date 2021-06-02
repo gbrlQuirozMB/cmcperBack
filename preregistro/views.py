@@ -15,7 +15,8 @@ from api.logger import log
 from api.Paginacion import Paginacion
 from rest_framework.response import Response
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Permission, User
+
 from django.contrib.auth.base_user import BaseUserManager
 from django.core.mail import send_mail
 
@@ -94,7 +95,13 @@ class PreregistroAceptadoUpdateView(UpdateAPIView):
         password = BaseUserManager().make_random_password()  # letras mayusculas, minusculas y numeros
         username = username + '-' + password[0:5]
         user = User.objects.create_user(username=username, email=email, password=password, first_name=datosMedico[0][0], last_name=lastName)
-        user.user_permissions.set([41, 44, 37, 40, 34])
+        permisoChMed = Permission.objects.get(codename='change_medico')
+        permisoAdConv = Permission.objects.get(codename='add_conversacion')
+        permisoViConv = Permission.objects.get(codename='view_conversacion')
+        permisoAdMen = Permission.objects.get(codename='add_mensaje')
+        permisoViMen = Permission.objects.get(codename='view_mensaje')
+        # user.user_permissions.set([41, 44, 37, 40, 34])
+        user.user_permissions.set([permisoChMed, permisoAdConv, permisoViConv, permisoAdMen, permisoViMen])
         # actualiza el status del registro para que este aceptado
         Medico.objects.filter(id=pk).update(aceptado=True, numRegistro=pk, username=username)
         Notificacion.objects.create(titulo='Preregistro', mensaje='Su preregistro se aprobó', destinatario=pk, remitente=0)

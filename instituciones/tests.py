@@ -3,7 +3,8 @@ from instituciones.models import *
 
 from django.test import TestCase
 from rest_framework.test import APITestCase
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Permission, User
+
 import json
 from rest_framework import status
 
@@ -173,6 +174,11 @@ class DeleteInstitucionTest(APITestCase):
 
 class PutCorreoInstitucionTest(APITestCase):
     def setUp(self):
+        Permission.objects.create(content_type_id=39, codename='add_actividadavaladaasistente', name='Can add actividad avalada asistente')
+        Permission.objects.create(content_type_id=39, codename='change_actividadavaladaasistente', name='Can change actividad avalada asistente')
+        Permission.objects.create(content_type_id=39, codename='delete_actividadavaladaasistente', name='Can delete actividad avalada asistente')
+        Permission.objects.create(content_type_id=39, codename='view_actividadavaladaasistente', name='Can view actividad avalada asistente')
+        
         Institucion.objects.create(nombreInstitucion='nombre institucion 1', rfc='rfc 1', contacto='contacto 1', telUno='telUno 1', telDos='telDos 1', telCelular='telCelular 1', email='email 1',
                                    pais='pais 1', estado='estado 1', ciudad='ciudad 1', deleMuni='deleMuni 1', colonia='colonia 1', calle='calle 1', cp='cp 1', numInterior='Interior 1',
                                    numExterior='Exterior 1')
@@ -200,7 +206,7 @@ class PutCorreoInstitucionTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
         datos = Institucion.objects.get(id=3)
-        print(f'--->>>rfc: {datos.rfc} - username: {datos.username}')
+        print(f'--->>>rfc: {datos.rfc} - username: {datos.username} \n')
 
         cuenta = User.objects.count()
         # que el usuario se haya creado correctamente
@@ -213,5 +219,5 @@ class PutCorreoInstitucionTest(APITestCase):
             print(f'password: {dato.password}')
             print(f'first_name: {dato.first_name}')
             print(f'last_name: {dato.last_name}')
-            print(f'user_permissions: {dato.get_user_permissions()}')
+            print(f'user_permissions: {dato.get_user_permissions()}')   
             print(f'is_staff: {dato.is_staff}')

@@ -15,9 +15,11 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Permission, User
 from django.contrib.auth.base_user import BaseUserManager
-# Create your views here.
+
+# para crear permisos de acceso a los endpoints
+# from rest_framework import exceptions
 
 
 class InstitucionCreateView(CreateAPIView):
@@ -64,7 +66,17 @@ class InstitucionDeleteView(DestroyAPIView):
     queryset = Institucion.objects.filter()
 
 
+
+# class ChatPermission(permissions.BasePermission):
+#     def has_permission(self, request, view):
+#         if not request.user.has_perm('chat.change_mensaje'):
+#             raise exceptions.PermissionDenied("No tiene permisos!")
+#         return True
+
+
 class CorreoInstitucionEndPoint(APIView):
+    # permission_classes = (ChatPermission, )
+
     def put(self, request, *args, **kwargs):
         institucionId = kwargs['pk']
         # datosQuery = Institucion.objects.filter(id=institucionId).values_list('id','nombreInstitucion') # solo obtener ciertos campos se usan corchetes para obtener datos
@@ -82,8 +94,12 @@ class CorreoInstitucionEndPoint(APIView):
         username = username + '-' + password[0:5]
 
         user = User.objects.create_user(username=username, email=email, password=password, first_name=nombreInstitucion, last_name=contacto, is_staff=True)
-        # user.user_permissions.set([153, 154, 155, 156, 157, 158, 159, 160])
-        user.user_permissions.set([153, 154, 155, 156])
+        # user.user_permissions.set([153, 154, 155, 156])
+        permisoView = Permission.objects.get(codename='view_actividadavaladaasistente')
+        permisoDelete = Permission.objects.get(codename='delete_actividadavaladaasistente')
+        permisoAdd = Permission.objects.get(codename='add_actividadavaladaasistente')
+        permisoChange = Permission.objects.get(codename='change_actividadavaladaasistente')
+        user.user_permissions.set([permisoView, permisoDelete, permisoAdd, permisoChange])
 
         Institucion.objects.filter(id=institucionId).update(username=username)
 
