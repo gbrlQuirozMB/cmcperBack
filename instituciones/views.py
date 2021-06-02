@@ -72,8 +72,8 @@ class CorreoInstitucionEndPoint(APIView):
         if datosQuery.count() <= 0:
             raise ResponseError('No existe institucion', 404)
 
-        nombreInstitucion = datosQuery.get().nombreInstitucion[0:3]
-        rfc = datosQuery.get().rfc[0:3]
+        nombreInstitucion = datosQuery.get().nombreInstitucion
+        rfc = datosQuery.get().rfc
         email = datosQuery.get().email
         contacto = datosQuery.get().contacto
 

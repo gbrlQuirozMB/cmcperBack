@@ -1,4 +1,6 @@
 from preregistro.models import Medico
+from instituciones.models import Institucion
+
 from django.shortcuts import render
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -56,14 +58,21 @@ class CustomAuthToken(ObtainAuthToken):
         # permissions = Permission.objects.filter(user=user).values_list('name', flat=True)
         if user.is_superuser or user.is_staff:
             idMedico = 'No es medico'
+            datoInsti = Institucion.objects.filter(username=user).values_list('id')
+            if datoInsti:
+                idInsti = datoInsti[0][0]
+            else:
+                idInsti = 'No es una institución'
         else:
             datoMedico = Medico.objects.filter(username=user).values_list('id')
             idMedico = datoMedico[0][0]
+            idInsti = 'No es una institución'
 
         return Response({
             'token': token.key,
             'idUser': user.pk,
             'idMedico': idMedico,
+            'idInstitucion': idInsti,
             'email': user.email,
             'firstName': user.first_name,
             'lastName': user.last_name,
