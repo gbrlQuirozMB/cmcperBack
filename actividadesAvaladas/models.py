@@ -12,7 +12,7 @@ from PIL import Image, ImageDraw
 
 import json
 
-from django.db.models.signals import post_delete
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 import os
 
@@ -41,10 +41,45 @@ class ActividadAvalada(models.Model):
     precio = models.DecimalField(max_digits=7, decimal_places=2, null=True, default=0)
     descripcion = models.TextField(blank=True)
     isPagado = models.BooleanField(default=False, db_column='is_pagado')  # verificar si ya pago
+    qrCodeImg = models.ImageField(upload_to='qr-codes', blank=True)
 
     class Meta:
         db_table = 'actividades_avaladas'
         ordering = ['-creado_en']
+
+
+qr = qrcode.QRCode(
+    version=1,
+    error_correction=qrcode.constants.ERROR_CORRECT_L,
+    box_size=6,
+    border=3,
+)
+
+
+@receiver(post_save, sender=ActividadAvalada)
+def saveQRimgRelacionada(sender, instance, using, **kwargs):
+    textoQr = {
+        'actividadAvalada': instance.id
+    }
+    # print(f'--->>>save().id: {self.id}')
+    qr.add_data(json.dumps(textoQr))
+    qr.make(fit=True)
+    qrcode_img = qr.make_image(fill_color="black", back_color="white")
+    canvas = Image.new('RGB', (190, 190), 'white')
+    draw = ImageDraw.Draw(canvas)
+    canvas.paste(qrcode_img)
+    fname = f'qrCode-AA{instance.id}.png'
+    buffer = BytesIO()
+    canvas.save(buffer, 'PNG')
+    instance.qrCodeImg.save(fname, File(buffer), save=False)
+    qr.clear()
+    # print(f'--->>>receiver.instance.qrCode: {instance.qrCodeImg}')
+    ActividadAvalada.objects.filter(id=instance.id).update(qrCodeImg=instance.qrCodeImg)
+
+
+@receiver(post_delete, sender=ActividadAvalada)
+def deleteQRimgRelacionada(sender, instance, using, **kwargs):
+    instance.qrCodeImg.delete(save=False)
 
 
 class Tema(models.Model):

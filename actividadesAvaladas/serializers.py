@@ -15,7 +15,8 @@ class ActividadAvaladaSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActividadAvalada
         fields = ['id', 'institucion', 'item', 'nombre', 'emailContacto', 'numAsistentes', 'puntosAsignar', 'fechaInicio', 'lugar', 'solicitante', 'tipoPago', 'porcentaje', 'precio',
-                  'descripcion', 'temas']
+                  'descripcion', 'temas', 'qrCodeImg']
+        read_only_fields = ['qrCodeImg']
 
     def create(self, validated_data):
         if validated_data.get('temas') is None:
@@ -70,7 +71,7 @@ class ActividadAvaladaBannerSerializer(serializers.ModelSerializer):
 class ActividadAvaladaFilteredListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActividadAvalada
-        fields = ['id', 'institucion', 'item', 'fechaInicio', 'isPagado', 'puntosAsignar', 'emailContacto', 'nombre']
+        fields = ['id', 'institucion', 'item', 'fechaInicio', 'isPagado', 'puntosAsignar', 'emailContacto', 'nombre', 'qrCodeImg']
 
     def to_representation(self, instance):
         repr = super().to_representation(instance)
@@ -138,6 +139,7 @@ class ActividadAvaladaPagadoSerializer(serializers.ModelSerializer):
 
 class ActividadAvaladaPorPagarSerializer(serializers.ModelSerializer):
     tipoPago = serializers.CharField(source='get_tipoPago_display')
+
     class Meta:
         model = ActividadAvalada
         fields = ['id', 'nombre', 'tipoPago']

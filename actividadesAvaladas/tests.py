@@ -80,6 +80,8 @@ class PostActividadAvaladaTest(APITestCase):
             print(f'\n --->>>Tema.nombre: {Tema.objects.get(id=2).nombre}')
             print(f'\n --->>>Tema.nombre: {Tema.objects.get(id=3).nombre}')
 
+        print(f'\n --->>>ActividadAvalada.qrCodeImg: {ActividadAvalada.objects.get().qrCodeImg}')
+
 
 class PutArchivoTest(APITestCase):
     def setUp(self):
@@ -346,6 +348,8 @@ class PutActividadAvaladaTest(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
+        print(f'\n --->>>ActividadAvalada.qrCodeImg: {ActividadAvalada.objects.get(id=3).qrCodeImg}')
+        
         response = self.client.put('/api/actividades-avaladas/3/update/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> nombreNS=nombre 6 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -354,7 +358,8 @@ class PutActividadAvaladaTest(APITestCase):
         print(f'response JSON ===>>> institucionNS=nombre institucion 3 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-
+        print(f'\n --->>>ActividadAvalada.qrCodeImg: {ActividadAvalada.objects.get(id=3).qrCodeImg}')
+        
 class DeleteActividadAvaladaTest(APITestCase):
     def setUp(self):
         institucion1 = Institucion.objects.create(nombreInstitucion='nombre institucion 1', rfc='rfc 1', contacto='contacto 1', telUno='telUno 1', telDos='telDos 1', telCelular='telCelular 1',
