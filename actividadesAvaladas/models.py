@@ -57,48 +57,10 @@ class Tema(models.Model):
         ordering = ['-nombre']
 
 
-qr = qrcode.QRCode(
-    version=1,
-    error_correction=qrcode.constants.ERROR_CORRECT_L,
-    box_size=6,
-    border=3,
-)
-
-
 class AsistenteActividadAvalada(models.Model):
     medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medicoAAA')
     actividadAvalada = models.ForeignKey(ActividadAvalada, on_delete=models.CASCADE, related_name='actividadAvaladaAAA')
-    qrCodeImg = models.ImageField(upload_to='qr-codes', blank=True)
-
-    def save(self, *args, **kwargs):
-        textoQr = {
-            'medico': self.medico.id,
-            # 'item': self.actividadAvalada.item.id,
-            # 'fechaEmision': self.actividadAvalada.fechaInicio.strftime('%Y-%m-%d'),
-            # 'puntosOtorgados': float(self.actividadAvalada.puntosAsignar)
-            'actividadAvalada': self.actividadAvalada.id
-        }
-        qr.add_data(json.dumps(textoQr))
-        qr.make(fit=True)
-        qrcode_img = qr.make_image(fill_color="black", back_color="white")
-        # canvas = Image.new('RGB', (233, 233), 'white')
-        canvas = Image.new('RGB', (213, 212), 'white')
-        draw = ImageDraw.Draw(canvas)
-        canvas.paste(qrcode_img)
-        fname = f'qrCode-M{self.medico.id}-AA{self.actividadAvalada.id}-I{self.actividadAvalada.item.id}.png'
-        buffer = BytesIO()
-        canvas.save(buffer, 'PNG')
-        self.qrCodeImg.save(fname, File(buffer), save=False)
-        qr.clear()
-        super(AsistenteActividadAvalada, self).save(*args, **kwargs)
 
     class Meta:
         db_table = 'actividades_avaladas_asistentes'
         ordering = ['-actividadAvalada']
-
-
-@receiver(post_delete, sender=AsistenteActividadAvalada)
-def deleteQRimgRelacionada(sender, instance, using, **kwargs):
-    # print(f'--->>>ruta: {instance.qrCodeImg}')
-    # os.remove('./uploads/'+str(instance.qrCodeImg))
-    instance.qrCodeImg.delete(save=False)
