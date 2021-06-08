@@ -16,6 +16,8 @@ from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 import os
 
+import datetime
+
 # Create your models here.
 
 
@@ -30,7 +32,8 @@ class ActividadAvalada(models.Model):
     banner = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'gif'])], upload_to='actividadesAvaladas')
     numAsistentes = models.PositiveSmallIntegerField(db_column='numero_asistentes')
     puntosAsignar = models.DecimalField(max_digits=6, decimal_places=2, db_column='puntos_asignar')
-    fechaInicio = models.DateField(db_column='fecha_inicio')
+    fechaInicio = models.DateField(db_column='fecha_inicio', default=datetime.date.today)
+    fechaTermino = models.DateField(db_column='fecha_termino', default=datetime.date.today)
     lugar = models.CharField(max_length=300)
     solicitante = models.CharField(max_length=300)
     tipoPago = models.PositiveSmallIntegerField(db_column='tipo_pago', choices=(

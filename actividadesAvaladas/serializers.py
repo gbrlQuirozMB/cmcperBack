@@ -14,7 +14,7 @@ class ActividadAvaladaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ActividadAvalada
-        fields = ['id', 'institucion', 'item', 'nombre', 'emailContacto', 'numAsistentes', 'puntosAsignar', 'fechaInicio', 'lugar', 'solicitante', 'tipoPago', 'porcentaje', 'precio',
+        fields = ['id', 'institucion', 'item', 'nombre', 'emailContacto', 'numAsistentes', 'puntosAsignar', 'fechaInicio', 'fechaTermino', 'lugar', 'solicitante', 'tipoPago', 'porcentaje', 'precio',
                   'descripcion', 'temas', 'qrCodeImg']
         read_only_fields = ['qrCodeImg']
 
@@ -37,6 +37,7 @@ class ActividadAvaladaSerializer(serializers.ModelSerializer):
         instance.numAsistentes = validated_data.get('numAsistentes', instance.numAsistentes)
         instance.puntosAsignar = validated_data.get('puntosAsignar', instance.puntosAsignar)
         instance.fechaInicio = validated_data.get('fechaInicio', instance.fechaInicio)
+        instance.fechaTermino = validated_data.get('fechaTermino', instance.fechaTermino)
         instance.lugar = validated_data.get('lugar', instance.lugar)
         instance.solicitante = validated_data.get('solicitante', instance.solicitante)
         instance.tipoPago = validated_data.get('tipoPago', instance.tipoPago)
@@ -71,7 +72,7 @@ class ActividadAvaladaBannerSerializer(serializers.ModelSerializer):
 class ActividadAvaladaFilteredListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActividadAvalada
-        fields = ['id', 'institucion', 'item', 'fechaInicio', 'isPagado', 'puntosAsignar', 'emailContacto', 'nombre', 'qrCodeImg']
+        fields = ['id', 'institucion', 'item', 'fechaInicio', 'fechaTermino', 'isPagado', 'puntosAsignar', 'emailContacto', 'nombre', 'qrCodeImg']
 
     def to_representation(self, instance):
         repr = super().to_representation(instance)
