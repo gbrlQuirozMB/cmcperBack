@@ -102,3 +102,6 @@ class AsistenteActividadAvalada(models.Model):
     class Meta:
         db_table = 'actividades_avaladas_asistentes'
         ordering = ['-actividadAvalada']
+        constraints = [
+            models.UniqueConstraint(fields=['medico', 'actividadAvalada'], name='unicoMedicoPorActiAvala')
+        ]

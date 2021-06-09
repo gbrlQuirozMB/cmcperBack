@@ -3,11 +3,19 @@ from rest_framework.generics import DestroyAPIView, ListAPIView, CreateAPIView, 
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter, BooleanFilter
 from rest_framework import status, permissions
 
-
 from .serializers import *
 
 from api.logger import log
 from api.exceptions import *
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+import csv
+import codecs
+
+from django.core.exceptions import FieldError
+from django.db import IntegrityError
 
 # Create your views here.
 
@@ -76,8 +84,7 @@ class ActividadAvaladaDeleteView(DestroyAPIView):
 class ActividadAvaladaPorPagarDetailView(RetrieveAPIView):
     queryset = ActividadAvalada.objects.filter()
     serializer_class = ActividadAvaladaPorPagarSerializer
-    
-    
+
 
 # ------------------------ asistentes
 
@@ -161,3 +168,34 @@ class ActividadAvaladaPagadoView(UpdateAPIView):
     def put(self, request, *args, **kwargs):
         request.data['isPagado'] = True
         return self.update(request, *args, **kwargs)
+
+
+class AsistentesUpExcel(APIView):
+    def post(self, request, *args, **kwargs):
+        actAvaId = kwargs['pk']
+        datoAA = ActividadAvalada.objects.get(id=actAvaId)
+        AsistenteActividadAvalada.objects.filter(actividadAvalada=actAvaId).delete()
+
+        archivo = request.data['archivo']
+        datosList = list(csv.reader(codecs.iterdecode(archivo, 'utf-8'), delimiter=','))
+        datosList.pop(0)
+        try:
+            # datos = {'dadosAlta':[]}
+            # valorReng = {'numCertificado': 0,'nombre':''}
+            for row in datosList:
+                datoMedico = Medico.objects.get(numRegistro=row[0])
+                AsistenteActividadAvalada.objects.create(medico=datoMedico, actividadAvalada=datoAA)
+                # valorReng = {'numCertificado': row[0],'nombre': row[1]}
+                # datos['dadosAlta'].append(valorReng)
+
+            cuenta = AsistenteActividadAvalada.objects.filter(actividadAvalada=actAvaId).count()
+            respuesta = {"detail": "Datos subidos correctamente"}
+            respuesta['numRegistrosSubidos'] = cuenta
+            # respuesta['detail'] = datos
+            return Response(respuesta, status=status.HTTP_201_CREATED)
+        except IntegrityError as e:
+            respuesta = {"detail": "Sólo puede existir un Medico asistente por Actividad Avalada"}
+            return Response(respuesta, status=status.HTTP_409_CONFLICT)
+        except Exception as e:
+            respuesta = {"detail": str(e)}
+            return Response(respuesta, status=status.HTTP_409_CONFLICT)

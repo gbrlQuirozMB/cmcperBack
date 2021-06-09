@@ -22,4 +22,6 @@ urlpatterns = [
     path('asistentes/list/', MedicosAsistenteAAFilteredListView.as_view(), ),
     path('asistente/<pk>/delete/', MedicosAsistenteAADeleteView.as_view(), ),
 
+    path('<pk>/asistentes/cargar-excel/create/', AsistentesUpExcel.as_view(), ),
+
 ]
