@@ -349,7 +349,7 @@ class PutActividadAvaladaTest(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         print(f'\n --->>>ActividadAvalada.qrCodeImg: {ActividadAvalada.objects.get(id=3).qrCodeImg}')
-        
+
         response = self.client.put('/api/actividades-avaladas/3/update/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> nombreNS=nombre 6 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -359,7 +359,8 @@ class PutActividadAvaladaTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
         print(f'\n --->>>ActividadAvalada.qrCodeImg: {ActividadAvalada.objects.get(id=3).qrCodeImg}')
-        
+
+
 class DeleteActividadAvaladaTest(APITestCase):
     def setUp(self):
         institucion1 = Institucion.objects.create(nombreInstitucion='nombre institucion 1', rfc='rfc 1', contacto='contacto 1', telUno='telUno 1', telDos='telDos 1', telCelular='telCelular 1',
@@ -706,12 +707,12 @@ class DeleteAsistenteActividadAvaladaTest(APITestCase):
             cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999, aceptado=True)
 
-        AsistenteActividadAvalada.objects.create(medico=medico3, actividadAvalada=aa3) 
-        AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=aa3) 
-        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa6) 
-        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa1) 
-        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa2) 
-        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa4) 
+        AsistenteActividadAvalada.objects.create(medico=medico3, actividadAvalada=aa3)
+        AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=aa3)
+        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa6)
+        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa1)
+        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa2)
+        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa4)
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
 
@@ -860,7 +861,7 @@ class GetCostoAPagarTest(APITestCase):
         response = self.client.get('/api/actividades-avaladas/3/a-pagar/')
         print(f'response JSON ===>>> ok\n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         response = self.client.get('/api/actividades-avaladas/6/a-pagar/')
         print(f'response JSON ===>>> ok\n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -956,28 +957,26 @@ class PostCargaMasivaExcelAsistenteActividadAvaladaTest(APITestCase):
 
         cuenta = AsistenteActividadAvalada.objects.all().count()
         print(f'--->>>cuenta originales totales: {cuenta}')
-        
+
         response = self.client.post('/api/actividades-avaladas/3/asistentes/cargar-excel/create/', data=self.json, format='multipart')
         print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         cuenta = AsistenteActividadAvalada.objects.all().count()
         print(f'--->>>cuenta: {cuenta}')
-        
+
         datos = AsistenteActividadAvalada.objects.filter(actividadAvalada=3)
         for dato in datos:
             print(f'--->>>id: {dato.id} - medicoId: {dato.medico.id}')
-            
+
         # se prueba que no permita  registros repetidos
         # se prueba que no existan medico en DB
-        
-        
 
 
 class PruebaDiccionarios(APITestCase):
     def test(self):
-        datos = {'dadosAlta':[]}
-        valoReng = {'numCertificado': 0,'nombre':''}
+        datos = {'dadosAlta': []}
+        valoReng = {'numCertificado': 0, 'nombre': ''}
         datos['dadosAlta'].append(valoReng)
         datos['dadosAlta'].append(valoReng)
         print(f'--->>>datos: {datos}')
