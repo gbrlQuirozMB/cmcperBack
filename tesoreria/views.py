@@ -16,6 +16,9 @@ from api.exceptions import *
 
 from rest_framework import response, status, permissions
 
+from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter, BooleanFilter
+
+
 
 # Create your views here.
 class SubirPagoCreateView(CreateAPIView):
@@ -176,3 +179,16 @@ class PagoRechazarUpdateView(UpdateAPIView):
                 request.data['estatus'] = 2
                 ActividadAvalada.objects.filter(id=dato.externoId).update(isPagado=False)
                 return self.update(request, *args, **kwargs)
+
+
+class PagoFilter(FilterSet):
+    class Meta:
+        model = Pago
+        fields = ['medico', 'tipo', 'externoId']
+
+
+class PagoFilteredListView(ListAPIView):
+    queryset = Pago.objects.all()
+    serializer_class = PagosListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = PagoFilter
