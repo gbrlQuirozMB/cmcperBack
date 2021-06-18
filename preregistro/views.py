@@ -105,6 +105,7 @@ class PreregistroAceptadoUpdateView(UpdateAPIView):
         # actualiza el status del registro para que este aceptado
         Medico.objects.filter(id=pk).update(aceptado=True, numRegistro=pk, username=username)
         Notificacion.objects.create(titulo='Preregistro', mensaje='Su preregistro se aprobó', destinatario=pk, remitente=0)
+        # print(f'--->>>password: {password}')
         try:
             datos = {
                 'nombre': datosMedico[0][0],

@@ -25,15 +25,22 @@ class ActividadAvalada(models.Model):
     creado_en = models.DateTimeField(auto_now_add=True)
     actualizado_en = models.DateTimeField(auto_now=True)
     institucion = models.ForeignKey(Institucion, on_delete=models.CASCADE, related_name='institucionA')
-    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='itemA')
+    # item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='itemA')
+    itemAsistente = models.ForeignKey(Item, on_delete=models.CASCADE, null=True, related_name='itemAsistente')
+    itemPonente = models.ForeignKey(Item, on_delete=models.CASCADE, null=True, related_name='itemPonente')
+    itemCoordinador = models.ForeignKey(Item, on_delete=models.CASCADE, null=True, related_name='itemCoordinador')
     nombre = models.CharField(max_length=200)
     emailContacto = models.CharField(max_length=50, db_column='email_contacto')
     archivo = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf'])], upload_to='actividadesAvaladas')
     banner = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'gif'])], upload_to='actividadesAvaladas')
-    numAsistentes = models.PositiveSmallIntegerField(db_column='numero_asistentes')
-    puntosAsignar = models.DecimalField(max_digits=6, decimal_places=2, db_column='puntos_asignar')
+    # numAsistentes = models.PositiveSmallIntegerField(db_column='numero_asistentes')
+    # puntosAsignar = models.DecimalField(max_digits=6, decimal_places=2, db_column='puntos_asignar')
+    puntajeAsistente = models.DecimalField(max_digits=6, decimal_places=2, default=0, db_column='puntaje_asistente')
+    puntajePonente = models.DecimalField(max_digits=6, decimal_places=2, default=0, db_column='puntaje_ponente')
+    puntajeCoordinador = models.DecimalField(max_digits=6, decimal_places=2, default=0, db_column='puntaje_coordinador')
     fechaInicio = models.DateField(db_column='fecha_inicio', default=datetime.date.today)
     fechaTermino = models.DateField(db_column='fecha_termino', default=datetime.date.today)
+    fechaLimite = models.DateField(db_column='fecha_limite', default=datetime.date.today)
     lugar = models.CharField(max_length=300)
     solicitante = models.CharField(max_length=300)
     tipoPago = models.PositiveSmallIntegerField(db_column='tipo_pago', choices=(
@@ -45,6 +52,7 @@ class ActividadAvalada(models.Model):
     descripcion = models.TextField(blank=True)
     isPagado = models.BooleanField(default=False, db_column='is_pagado')  # verificar si ya pago
     qrCodeImg = models.ImageField(upload_to='qr-codes', blank=True)
+    codigoWeb = models.CharField(max_length=11, blank=True, db_column='codigo_web')
 
     class Meta:
         db_table = 'actividades_avaladas'

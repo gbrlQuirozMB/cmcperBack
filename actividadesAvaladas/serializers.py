@@ -14,9 +14,9 @@ class ActividadAvaladaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ActividadAvalada
-        fields = ['id', 'institucion', 'item', 'nombre', 'emailContacto', 'numAsistentes', 'puntosAsignar', 'fechaInicio', 'fechaTermino', 'lugar', 'solicitante', 'tipoPago', 'porcentaje', 'precio',
-                  'descripcion', 'temas', 'qrCodeImg']
-        read_only_fields = ['qrCodeImg']
+        fields = ['id', 'institucion', 'nombre', 'emailContacto', 'fechaInicio', 'fechaTermino', 'lugar', 'solicitante', 'tipoPago', 'porcentaje', 'precio', 'descripcion', 'temas', 'qrCodeImg',
+                  'itemAsistente', 'itemPonente', 'itemCoordinador', 'puntajeAsistente', 'puntajePonente', 'puntajeCoordinador', 'fechaLimite', 'codigoWeb']
+        read_only_fields = ['qrCodeImg','codigoWeb']
 
     def create(self, validated_data):
         if validated_data.get('temas') is None:
@@ -31,13 +31,20 @@ class ActividadAvaladaSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.institucion = validated_data.get('institucion', instance.institucion)
-        instance.item = validated_data.get('item', instance.item)
+        # instance.item = validated_data.get('item', instance.item)
+        instance.itemAsistente = validated_data.get('itemAsistente', instance.itemAsistente)
+        instance.itemPonente = validated_data.get('itemPonente', instance.itemPonente)
+        instance.itemCoordinador = validated_data.get('itemCoordinador', instance.itemCoordinador)
         instance.nombre = validated_data.get('nombre', instance.nombre)
         instance.emailContacto = validated_data.get('emailContacto', instance.emailContacto)
-        instance.numAsistentes = validated_data.get('numAsistentes', instance.numAsistentes)
-        instance.puntosAsignar = validated_data.get('puntosAsignar', instance.puntosAsignar)
+        # instance.numAsistentes = validated_data.get('numAsistentes', instance.numAsistentes)
+        # instance.puntosAsignar = validated_data.get('puntosAsignar', instance.puntosAsignar)
+        instance.puntajeAsistente = validated_data.get('puntajeAsistente', instance.puntajeAsistente)
+        instance.puntajePonente = validated_data.get('puntajePonente', instance.puntajePonente)
+        instance.puntajeCoordinador = validated_data.get('puntajeCoordinador', instance.puntajeCoordinador)
         instance.fechaInicio = validated_data.get('fechaInicio', instance.fechaInicio)
         instance.fechaTermino = validated_data.get('fechaTermino', instance.fechaTermino)
+        instance.fechaLimite = validated_data.get('fechaLimite', instance.fechaLimite)
         instance.lugar = validated_data.get('lugar', instance.lugar)
         instance.solicitante = validated_data.get('solicitante', instance.solicitante)
         instance.tipoPago = validated_data.get('tipoPago', instance.tipoPago)
@@ -72,14 +79,15 @@ class ActividadAvaladaBannerSerializer(serializers.ModelSerializer):
 class ActividadAvaladaFilteredListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActividadAvalada
-        fields = ['id', 'institucion', 'item', 'fechaInicio', 'fechaTermino', 'isPagado', 'puntosAsignar', 'emailContacto', 'nombre', 'qrCodeImg']
+        # fields = ['id', 'institucion', 'item', 'fechaInicio', 'fechaTermino', 'isPagado', 'puntosAsignar', 'emailContacto', 'nombre', 'qrCodeImg', 'codigoWeb']
+        fields = ['id', 'institucion', 'fechaInicio', 'fechaTermino', 'fechaLimite', 'isPagado', 'emailContacto', 'nombre', 'qrCodeImg', 'codigoWeb']
 
     def to_representation(self, instance):
         repr = super().to_representation(instance)
         repr['institucion'] = instance.institucion.nombreInstitucion
-        repr['capitulo'] = instance.item.subcapitulo.capitulo.descripcion
-        repr['subcapitulo'] = instance.item.subcapitulo.descripcion
-        repr['item'] = instance.item.descripcion
+        # repr['capitulo'] = instance.item.subcapitulo.capitulo.descripcion
+        # repr['subcapitulo'] = instance.item.subcapitulo.descripcion
+        # repr['item'] = instance.item.descripcion
 
         return repr
 
