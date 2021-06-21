@@ -17,7 +17,7 @@ urlpatterns = [
     path('<pk>/a-pagar/', ActividadAvaladaPorPagarDetailView.as_view(), ),
 
     path('asistente/create/', AsistenteActividadAvaladaCreateView.as_view(), ),
-    path('<pk>/asistentes/cupos/', CuposAsistentesDetailView.as_view(), ),
+    # path('<pk>/asistentes/cupos/', CuposAsistentesDetailView.as_view(), ), # ya no existen cupos, porque los asistentes se va creando cobre la marcha
     path('medicos/list/', MedicosAIncribirseAAFilteredListView.as_view(), ),
     path('asistentes/list/', MedicosAsistenteAAFilteredListView.as_view(), ),
     path('asistente/<pk>/delete/', MedicosAsistenteAADeleteView.as_view(), ),

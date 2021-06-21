@@ -105,19 +105,19 @@ class AsistenteActividadAvaladaSerializer(serializers.ModelSerializer):
         model = AsistenteActividadAvalada
         fields = '__all__'
 
+# ya no existen cupos, porque los asistentes se va creando cobre la marcha
+# class CuposAsistentesSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = ActividadAvalada
+#         fields = ['numAsistentes']
 
-class CuposAsistentesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ActividadAvalada
-        fields = ['numAsistentes']
+#     def to_representation(self, instance):
+#         repr = super().to_representation(instance)
+#         asistentesRegistrados = AsistenteActividadAvalada.objects.filter(actividadAvalada=instance.id).count()
+#         repr['asistentesRegistrados'] = asistentesRegistrados
+#         repr['porRegistrar'] = instance.numAsistentes - asistentesRegistrados
 
-    def to_representation(self, instance):
-        repr = super().to_representation(instance)
-        asistentesRegistrados = AsistenteActividadAvalada.objects.filter(actividadAvalada=instance.id).count()
-        repr['asistentesRegistrados'] = asistentesRegistrados
-        repr['porRegistrar'] = instance.numAsistentes - asistentesRegistrados
-
-        return repr
+#         return repr
 
 
 class MedicosAIncribirseAASerializer(serializers.ModelSerializer):
@@ -161,6 +161,7 @@ class ActividadAvaladaPorPagarSerializer(serializers.ModelSerializer):
             total = instance.precio - (instance.precio * (instance.porcentaje / 100))
             repr['aPagar'] = round(total, 2)
         else:
-            total = instance.numAsistentes * instance.porcentaje
-            repr['aPagar'] = round(total, 2)
+            # total = instance.numAsistentes * instance.porcentaje
+            # repr['aPagar'] = round(total, 2)
+            repr['aPagar'] = 'se redefine'
         return repr

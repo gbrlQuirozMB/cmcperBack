@@ -13,49 +13,108 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 
 
-# Create your tests here.
+def configDB():
+    institucion1 = Institucion.objects.create(nombreInstitucion='nombre institucion 1', rfc='rfc 1', contacto='contacto 1', telUno='telUno 1', telDos='telDos 1', telCelular='telCelular 1',
+                                              email='email 1', pais='pais 1', estado='estado 1', ciudad='ciudad 1', deleMuni='deleMuni 1', colonia='colonia 1', calle='calle 1', cp='cp 1',
+                                              numInterior='Interior 1', numExterior='Exterior 1')
+    institucion2 = Institucion.objects.create(nombreInstitucion='nombre institucion 2', rfc='rfc 2', contacto='contacto 2', telUno='telUno 2', telDos='telDos 2', telCelular='telCelular 2',
+                                              email='email 2', pais='pais 2', estado='estado 2', ciudad='ciudad 2', deleMuni='deleMuni 2', colonia='colonia 2', calle='calle 2', cp='cp 2',
+                                              numInterior='Interior 2', numExterior='Exterior 2')
+    institucion3 = Institucion.objects.create(nombreInstitucion='nombre institucion 3', rfc='rfc 3', contacto='contacto 3', telUno='telUno 3', telDos='telDos 3', telCelular='telCelular 3',
+                                              email='email 3', pais='pais 3', estado='estado 3', ciudad='ciudad 3', deleMuni='deleMuni 3', colonia='colonia 3', calle='calle 3', cp='cp 3',
+                                              numInterior='Interior 3', numExterior='Exterior 3')
+
+    capitulo1 = Capitulo.objects.create(titulo='titulo 1', descripcion='capitulo descripcion 1', puntos=33.0, maximo=50.0, minimo=50.0, isOpcional=False)
+    subcapitulo1 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo1)
+    item1 = Item.objects.create(descripcion='item descripcion 1', puntos=3, subcapitulo=subcapitulo1)
+    item2 = Item.objects.create(descripcion='item descripcion 2', puntos=6, subcapitulo=subcapitulo1)
+    item3 = Item.objects.create(descripcion='item descripcion 3', puntos=9, subcapitulo=subcapitulo1)
+
+    capitulo2 = Capitulo.objects.create(titulo='titulo 2', descripcion='capitulo descripcion 2', puntos=66.0, maximo=50.0, minimo=50.0, isOpcional=False)
+    subcapitulo2 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo2)
+    subcapitulo4 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 4', comentarios='subcapitulo comentarios 4', capitulo=capitulo2)
+    item4 = Item.objects.create(descripcion='item descripcion 1', puntos=10, subcapitulo=subcapitulo2)
+    item5 = Item.objects.create(descripcion='item descripcion 2', puntos=20, subcapitulo=subcapitulo2)
+    item6 = Item.objects.create(descripcion='item descripcion 3', puntos=30, subcapitulo=subcapitulo2)
+
+    item7 = Item.objects.create(descripcion='item descripcion 4', puntos=30, subcapitulo=subcapitulo4)
+    item8 = Item.objects.create(descripcion='item descripcion 5', puntos=30, subcapitulo=subcapitulo4)
+    item9 = Item.objects.create(descripcion='item descripcion 6', puntos=30, subcapitulo=subcapitulo4)
+
+    aa1 = ActividadAvalada.objects.create(institucion=institucion1, nombre='nombre 1', emailContacto='emailContacto 1', fechaInicio=date.today() + relativedelta(days=8),
+                                          lugar='lugar 1', solicitante='solicitante 1', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 1', isPagado=False)
+    aa2 = ActividadAvalada.objects.create(institucion=institucion1,  nombre='nombre 2', emailContacto='emailContacto 2', fechaInicio=date.today()+relativedelta(days=8),
+                                          lugar='lugar 2', solicitante='solicitante 2', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 2', isPagado=True)
+    aa3 = ActividadAvalada.objects.create(institucion=institucion2,  nombre='nombre 3', emailContacto='emailContacto 3', fechaInicio=date.today()+relativedelta(days=8),
+                                          lugar='lugar 3', solicitante='solicitante 3', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 3', isPagado=False)
+    aa4 = ActividadAvalada.objects.create(institucion=institucion2,  nombre='nombre 4', emailContacto='emailContacto 4', fechaInicio=date.today()+relativedelta(days=8),
+                                          lugar='lugar 4', solicitante='solicitante 4', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 4', isPagado=True)
+    aa6 = ActividadAvalada.objects.create(id=6, institucion=institucion3,  nombre='nombre 5', emailContacto='emailContacto 5', fechaInicio=date.today()+relativedelta(days=8),
+                                          lugar='lugar 5', solicitante='solicitante 5', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 5', isPagado=False)
+    aa9 = ActividadAvalada.objects.create(id=9, institucion=institucion3,  nombre='nombre 6', emailContacto='emailContacto 6', fechaInicio=date.today()+relativedelta(days=8),
+                                          lugar='lugar 6', solicitante='solicitante 6', tipoPago=6, porcentaje=33, precio=369.69, descripcion='descripcion 6', isPagado=True)
+
+    Tema.objects.create(nombre='tema nombre 3.1', actividadAvalada=aa3)
+    Tema.objects.create(nombre='tema nombre 3.2', actividadAvalada=aa3)
+    Tema.objects.create(nombre='tema nombre 3.3', actividadAvalada=aa3)
+
+    medico3 = Medico.objects.create(
+        id=3, nombre='roberto', apPaterno='quiroz', apMaterno='tolentino', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+        deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+        cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+        telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=333, aceptado=True)
+    medico6 = Medico.objects.create(
+        id=6, nombre='laura', apPaterno='cabrera', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+        deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+        cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+        telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=666, aceptado=False)
+    medico9 = Medico.objects.create(
+        id=9, nombre='juan gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+        deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+        cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+        telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999, aceptado=True)
+
+    AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=aa6)
+    AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=aa3)
+    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa9)
+    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa3)
+    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa6)
+    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa1)
+    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa2)
+    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa4)
+
 
 class PostActividadAvaladaTest(APITestCase):
     def setUp(self):
-        Institucion.objects.create(nombreInstitucion='nombre institucion 1', rfc='rfc 1', contacto='contacto 1', telUno='telUno 1', telDos='telDos 1', telCelular='telCelular 1', email='email 1',
-                                   pais='pais 1', estado='estado 1', ciudad='ciudad 1', deleMuni='deleMuni 1', colonia='colonia 1', calle='calle 1', cp='cp 1', numInterior='Interior 1',
-                                   numExterior='Exterior 1')
 
-        capitulo1 = Capitulo.objects.create(titulo='titulo 1', descripcion='capitulo descripcion 1', puntos=33.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo1 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo1)
-        item1 = Item.objects.create(descripcion='item descripcion 1', puntos=3, subcapitulo=subcapitulo1)
-        item2 = Item.objects.create(descripcion='item descripcion 2', puntos=6, subcapitulo=subcapitulo1)
-        item3 = Item.objects.create(descripcion='item descripcion 3', puntos=9, subcapitulo=subcapitulo1)
-
-        capitulo2 = Capitulo.objects.create(titulo='titulo 2', descripcion='capitulo descripcion 2', puntos=66.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo2 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo2)
-        subcapitulo4 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 4', comentarios='subcapitulo comentarios 4', capitulo=capitulo2)
-        item4 = Item.objects.create(descripcion='item descripcion 1', puntos=10, subcapitulo=subcapitulo2)
-        item5 = Item.objects.create(descripcion='item descripcion 2', puntos=20, subcapitulo=subcapitulo2)
-        item6 = Item.objects.create(descripcion='item descripcion 3', puntos=30, subcapitulo=subcapitulo2)
-
-        item7 = Item.objects.create(descripcion='item descripcion 4', puntos=30, subcapitulo=subcapitulo4)
-        item8 = Item.objects.create(descripcion='item descripcion 5', puntos=30, subcapitulo=subcapitulo4)
-        item9 = Item.objects.create(descripcion='item descripcion 6', puntos=30, subcapitulo=subcapitulo4)
+        configDB()
 
         self.json = {
             "institucion": 1,
-            "item": 1,
-            "nombre": "nombre 1",
-            "emailContacto": "emailContacto 1",
+            # "item": 1,
+            "itemAsistente": 3,
+            "itemPonente": 6,
+            "itemCoordinador": 9,
+            "nombre": "nombre 7",
+            "emailContacto": "emailContacto 7",
             "numAsistentes": 9,
-            "puntosAsignar": 3.3,
+            # "puntosAsignar": 3.3,
+            "puntajeAsistente": 3.3,
+            "puntajePonente": 6.6,
+            "puntajeCoordinador": 9.9,
             "fechaInicio": "2021-04-06",
-            "lugar": "lugar 1",
-            "solicitante": "solicitante 1",
+            "fechaTermino": "2021-04-06",
+            "fechaLimite": "2021-04-06",
+            "lugar": "lugar 7",
+            "solicitante": "solicitante 7",
             "tipoPago": 1,
             "porcentaje": 1,
             "precio": 369.69,
-            "descripcion": "descripcion 1",
+            "descripcion": "descripcion 7",
             "temas": [
-                {"nombre": "nombre de tema 1"},
-                {"nombre": "nombre de tema 2"},
-                {"nombre": "nombre de tema 3"},
+                {"nombre": "nombre de tema 7.1"},
+                {"nombre": "nombre de tema 7.2"},
+                {"nombre": "nombre de tema 7.3"},
             ]
             # "temas": []
         }
@@ -71,30 +130,24 @@ class PostActividadAvaladaTest(APITestCase):
 
         print(f'\n --->>> checando la DB <<<---')
 
-        print(f'\n --->>>#registros ActividadAvalada: {ActividadAvalada.objects.count()}')
+        cuenta = ActividadAvalada.objects.count()
+        print(f'\n --->>>#registros ActividadAvalada: {cuenta}')
         print(f'\n --->>>#registros Temas: {Tema.objects.count()}')
 
-        print(f'\n --->>>ActividadAvalada.nombre: {ActividadAvalada.objects.get().nombre}')
-        if Tema.objects.count() > 0:
-            print(f'\n --->>>Tema.nombre: {Tema.objects.get(id=1).nombre}')
-            print(f'\n --->>>Tema.nombre: {Tema.objects.get(id=2).nombre}')
-            print(f'\n --->>>Tema.nombre: {Tema.objects.get(id=3).nombre}')
+        datos = ActividadAvalada.objects.get(id=cuenta)
+        print(f'\n --->>>ActividadAvalada.nombre: {datos.nombre}')
+        datosTema = Tema.objects.filter(actividadAvalada=cuenta)
+        if datosTema.count() > 0:
+            for dato in datosTema:
+                print(f'\n --->>>Tema.nombre: {dato.nombre}')
 
-        print(f'\n --->>>ActividadAvalada.qrCodeImg: {ActividadAvalada.objects.get().qrCodeImg}')
+        print(f'\n --->>>ActividadAvalada.qrCodeImg: {ActividadAvalada.objects.get(id=cuenta).qrCodeImg}')
 
 
 class PutArchivoTest(APITestCase):
     def setUp(self):
-        institucion1 = Institucion.objects.create(nombreInstitucion='nombre institucion 1', rfc='rfc 1', contacto='contacto 1', telUno='telUno 1', telDos='telDos 1', telCelular='telCelular 1',
-                                                  email='email 1', pais='pais 1', estado='estado 1', ciudad='ciudad 1', deleMuni='deleMuni 1', colonia='colonia 1', calle='calle 1', cp='cp 1',
-                                                  numInterior='Interior 1', numExterior='Exterior 1')
 
-        capitulo1 = Capitulo.objects.create(titulo='titulo 1', descripcion='capitulo descripcion 1', puntos=33.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo1 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo1)
-        item1 = Item.objects.create(descripcion='item descripcion 1', puntos=3, subcapitulo=subcapitulo1)
-
-        ActividadAvalada.objects.create(institucion=institucion1, item=item1, nombre='nombre 1', emailContacto='emailContacto 1', numAsistentes=9, puntosAsignar=3.3,
-                                        fechaInicio=date.today()+relativedelta(days=8), lugar='lugar 1', solicitante='solicitante 1', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 1')
+        configDB()
 
         archivo = open('./uploads/testUnit.pdf', 'rb')
         archivoFile = SimpleUploadedFile(archivo.name, archivo.read(), content_type='application/pdf')
@@ -109,28 +162,20 @@ class PutArchivoTest(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         dato = ActividadAvalada.objects.get(id=1)
-        print(f'--->>>ANTES dato: {dato.id} - {dato.nombre} - {dato.archivo}')
+        print(f'--->>>ANTES dato: {dato.id} - nombre: {dato.nombre} - archivo: {dato.archivo}')
 
         response = self.client.put('/api/actividades-avaladas/1/archivo/', data=self.json, format='multipart')
         print(f'response JSON ===>>> \n {response.data} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         dato = ActividadAvalada.objects.get(id=1)
-        print(f'--->>>DESPUES dato: {dato.id} - {dato.nombre} - {dato.archivo}')
+        print(f'--->>>DESPUES dato: {dato.id} - nombre: {dato.nombre} - archivo: {dato.archivo}')
 
 
 class PutBannerTest(APITestCase):
     def setUp(self):
-        institucion1 = Institucion.objects.create(nombreInstitucion='nombre institucion 1', rfc='rfc 1', contacto='contacto 1', telUno='telUno 1', telDos='telDos 1', telCelular='telCelular 1',
-                                                  email='email 1', pais='pais 1', estado='estado 1', ciudad='ciudad 1', deleMuni='deleMuni 1', colonia='colonia 1', calle='calle 1', cp='cp 1',
-                                                  numInterior='Interior 1', numExterior='Exterior 1')
 
-        capitulo1 = Capitulo.objects.create(titulo='titulo 1', descripcion='capitulo descripcion 1', puntos=33.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo1 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo1)
-        item1 = Item.objects.create(descripcion='item descripcion 1', puntos=3, subcapitulo=subcapitulo1)
-
-        ActividadAvalada.objects.create(institucion=institucion1, item=item1, nombre='nombre 1', emailContacto='emailContacto 1', numAsistentes=9, puntosAsignar=3.3,
-                                        fechaInicio=date.today()+relativedelta(days=8), lugar='lugar 1', solicitante='solicitante 1', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 1')
+        configDB()
 
         banner = open('./uploads/testUnit.jpg', 'rb')
         bannerFile = SimpleUploadedFile(banner.name, banner.read(), content_type='image/jpg')
@@ -145,57 +190,20 @@ class PutBannerTest(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         dato = ActividadAvalada.objects.get(id=1)
-        print(f'--->>>ANTES dato: {dato.id} - {dato.nombre} - {dato.banner}')
+        print(f'--->>>ANTES dato: {dato.id} - nombre: {dato.nombre} - banner: {dato.banner}')
 
         response = self.client.put('/api/actividades-avaladas/1/banner/', data=self.json, format='multipart')
         print(f'response JSON ===>>> \n {response.data} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         dato = ActividadAvalada.objects.get(id=1)
-        print(f'--->>>DESPUES dato: {dato.id} - {dato.nombre} - {dato.banner}')
+        print(f'--->>>DESPUES dato: {dato.id} - nombre: {dato.nombre} - banner: {dato.banner}')
 
 
 class GetActividadAvaladaFilteredListTest(APITestCase):
     def setUp(self):
-        institucion1 = Institucion.objects.create(nombreInstitucion='nombre institucion 1', rfc='rfc 1', contacto='contacto 1', telUno='telUno 1', telDos='telDos 1', telCelular='telCelular 1',
-                                                  email='email 1', pais='pais 1', estado='estado 1', ciudad='ciudad 1', deleMuni='deleMuni 1', colonia='colonia 1', calle='calle 1', cp='cp 1',
-                                                  numInterior='Interior 1', numExterior='Exterior 1')
-        institucion2 = Institucion.objects.create(nombreInstitucion='nombre institucion 2', rfc='rfc 2', contacto='contacto 2', telUno='telUno 2', telDos='telDos 2', telCelular='telCelular 2',
-                                                  email='email 2', pais='pais 2', estado='estado 2', ciudad='ciudad 2', deleMuni='deleMuni 2', colonia='colonia 2', calle='calle 2', cp='cp 2',
-                                                  numInterior='Interior 2', numExterior='Exterior 2')
-        institucion3 = Institucion.objects.create(nombreInstitucion='nombre institucion 3', rfc='rfc 3', contacto='contacto 3', telUno='telUno 3', telDos='telDos 3', telCelular='telCelular 3',
-                                                  email='email 3', pais='pais 3', estado='estado 3', ciudad='ciudad 3', deleMuni='deleMuni 3', colonia='colonia 3', calle='calle 3', cp='cp 3',
-                                                  numInterior='Interior 3', numExterior='Exterior 3')
 
-        capitulo1 = Capitulo.objects.create(titulo='titulo 1', descripcion='capitulo descripcion 1', puntos=33.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo1 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo1)
-        item1 = Item.objects.create(descripcion='item descripcion 1', puntos=3, subcapitulo=subcapitulo1)
-        item2 = Item.objects.create(descripcion='item descripcion 2', puntos=6, subcapitulo=subcapitulo1)
-        item3 = Item.objects.create(descripcion='item descripcion 3', puntos=9, subcapitulo=subcapitulo1)
-
-        capitulo2 = Capitulo.objects.create(titulo='titulo 2', descripcion='capitulo descripcion 2', puntos=66.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo2 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo2)
-        subcapitulo4 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 4', comentarios='subcapitulo comentarios 4', capitulo=capitulo2)
-        item4 = Item.objects.create(descripcion='item descripcion 1', puntos=10, subcapitulo=subcapitulo2)
-        item5 = Item.objects.create(descripcion='item descripcion 2', puntos=20, subcapitulo=subcapitulo2)
-        item6 = Item.objects.create(descripcion='item descripcion 3', puntos=30, subcapitulo=subcapitulo2)
-
-        item7 = Item.objects.create(descripcion='item descripcion 4', puntos=30, subcapitulo=subcapitulo4)
-        item8 = Item.objects.create(descripcion='item descripcion 5', puntos=30, subcapitulo=subcapitulo4)
-        item9 = Item.objects.create(descripcion='item descripcion 6', puntos=30, subcapitulo=subcapitulo4)
-
-        ActividadAvalada.objects.create(institucion=institucion1, item=item1, nombre='nombre 1', emailContacto='emailContacto 1', numAsistentes=9, puntosAsignar=3.1, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 1', solicitante='solicitante 1', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 1', isPagado=False)
-        ActividadAvalada.objects.create(institucion=institucion1, item=item2, nombre='nombre 2', emailContacto='emailContacto 2', numAsistentes=9, puntosAsignar=3.2, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 2', solicitante='solicitante 2', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 2', isPagado=True)
-        ActividadAvalada.objects.create(institucion=institucion2, item=item3, nombre='nombre 3', emailContacto='emailContacto 3', numAsistentes=9, puntosAsignar=3.3, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 3', solicitante='solicitante 3', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 3', isPagado=False)
-        ActividadAvalada.objects.create(institucion=institucion2, item=item4, nombre='nombre 4', emailContacto='emailContacto 4', numAsistentes=9, puntosAsignar=3.4, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 4', solicitante='solicitante 4', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 4', isPagado=True)
-        ActividadAvalada.objects.create(institucion=institucion3, item=item5, nombre='nombre 5', emailContacto='emailContacto 5', numAsistentes=9, puntosAsignar=3.5, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 5', solicitante='solicitante 5', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 5', isPagado=False)
-        ActividadAvalada.objects.create(institucion=institucion3, item=item6, nombre='nombre 6', emailContacto='emailContacto 6', numAsistentes=9, puntosAsignar=3.6, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 6', solicitante='solicitante 6', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 6', isPagado=True)
+        configDB()
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
 
@@ -221,49 +229,8 @@ class GetActividadAvaladaFilteredListTest(APITestCase):
 
 class GetActividadAvaladaDetailTest(APITestCase):
     def setUp(self):
-        institucion1 = Institucion.objects.create(nombreInstitucion='nombre institucion 1', rfc='rfc 1', contacto='contacto 1', telUno='telUno 1', telDos='telDos 1', telCelular='telCelular 1',
-                                                  email='email 1', pais='pais 1', estado='estado 1', ciudad='ciudad 1', deleMuni='deleMuni 1', colonia='colonia 1', calle='calle 1', cp='cp 1',
-                                                  numInterior='Interior 1', numExterior='Exterior 1')
-        institucion2 = Institucion.objects.create(nombreInstitucion='nombre institucion 2', rfc='rfc 2', contacto='contacto 2', telUno='telUno 2', telDos='telDos 2', telCelular='telCelular 2',
-                                                  email='email 2', pais='pais 2', estado='estado 2', ciudad='ciudad 2', deleMuni='deleMuni 2', colonia='colonia 2', calle='calle 2', cp='cp 2',
-                                                  numInterior='Interior 2', numExterior='Exterior 2')
-        institucion3 = Institucion.objects.create(nombreInstitucion='nombre institucion 3', rfc='rfc 3', contacto='contacto 3', telUno='telUno 3', telDos='telDos 3', telCelular='telCelular 3',
-                                                  email='email 3', pais='pais 3', estado='estado 3', ciudad='ciudad 3', deleMuni='deleMuni 3', colonia='colonia 3', calle='calle 3', cp='cp 3',
-                                                  numInterior='Interior 3', numExterior='Exterior 3')
 
-        capitulo1 = Capitulo.objects.create(titulo='titulo 1', descripcion='capitulo descripcion 1', puntos=33.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo1 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo1)
-        item1 = Item.objects.create(descripcion='item descripcion 1', puntos=3, subcapitulo=subcapitulo1)
-        item2 = Item.objects.create(descripcion='item descripcion 2', puntos=6, subcapitulo=subcapitulo1)
-        item3 = Item.objects.create(descripcion='item descripcion 3', puntos=9, subcapitulo=subcapitulo1)
-
-        capitulo2 = Capitulo.objects.create(titulo='titulo 2', descripcion='capitulo descripcion 2', puntos=66.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo2 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo2)
-        subcapitulo4 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 4', comentarios='subcapitulo comentarios 4', capitulo=capitulo2)
-        item4 = Item.objects.create(descripcion='item descripcion 1', puntos=10, subcapitulo=subcapitulo2)
-        item5 = Item.objects.create(descripcion='item descripcion 2', puntos=20, subcapitulo=subcapitulo2)
-        item6 = Item.objects.create(descripcion='item descripcion 3', puntos=30, subcapitulo=subcapitulo2)
-
-        item7 = Item.objects.create(descripcion='item descripcion 4', puntos=30, subcapitulo=subcapitulo4)
-        item8 = Item.objects.create(descripcion='item descripcion 5', puntos=30, subcapitulo=subcapitulo4)
-        item9 = Item.objects.create(descripcion='item descripcion 6', puntos=30, subcapitulo=subcapitulo4)
-
-        ActividadAvalada.objects.create(institucion=institucion1, item=item1, nombre='nombre 1', emailContacto='emailContacto 1', numAsistentes=9, puntosAsignar=3.1, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 1', solicitante='solicitante 1', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 1', isPagado=False)
-        ActividadAvalada.objects.create(institucion=institucion1, item=item2, nombre='nombre 2', emailContacto='emailContacto 2', numAsistentes=9, puntosAsignar=3.2, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 2', solicitante='solicitante 2', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 2', isPagado=True)
-        aa3 = ActividadAvalada.objects.create(institucion=institucion2, item=item3, nombre='nombre 3', emailContacto='emailContacto 3', numAsistentes=9, puntosAsignar=3.3, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 3', solicitante='solicitante 3', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 3', isPagado=False)
-        ActividadAvalada.objects.create(institucion=institucion2, item=item4, nombre='nombre 4', emailContacto='emailContacto 4', numAsistentes=9, puntosAsignar=3.4, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 4', solicitante='solicitante 4', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 4', isPagado=True)
-        ActividadAvalada.objects.create(institucion=institucion3, item=item5, nombre='nombre 5', emailContacto='emailContacto 5', numAsistentes=9, puntosAsignar=3.5, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 5', solicitante='solicitante 5', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 5', isPagado=False)
-        ActividadAvalada.objects.create(institucion=institucion3, item=item6, nombre='nombre 6', emailContacto='emailContacto 6', numAsistentes=9, puntosAsignar=3.6, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 6', solicitante='solicitante 6', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 6', isPagado=True)
-
-        Tema.objects.create(nombre='tema nombre 1', actividadAvalada=aa3)
-        Tema.objects.create(nombre='tema nombre 2', actividadAvalada=aa3)
-        Tema.objects.create(nombre='tema nombre 3', actividadAvalada=aa3)
+        configDB()
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
 
@@ -271,74 +238,45 @@ class GetActividadAvaladaDetailTest(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         response = self.client.get('/api/actividades-avaladas/3/detail/')
-        print(f'response JSON ===>>> nombreNS=nombre 6 \n {json.dumps(response.json())} \n ---')
+        print(f'response JSON ===>>> pk=3 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         response = self.client.get('/api/actividades-avaladas/33/detail/')
-        print(f'response JSON ===>>> institucionNS=nombre institucion 3 \n {json.dumps(response.json())} \n ---')
+        print(f'response JSON ===>>> 404 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
 class PutActividadAvaladaTest(APITestCase):
     def setUp(self):
-        institucion1 = Institucion.objects.create(nombreInstitucion='nombre institucion 1', rfc='rfc 1', contacto='contacto 1', telUno='telUno 1', telDos='telDos 1', telCelular='telCelular 1',
-                                                  email='email 1', pais='pais 1', estado='estado 1', ciudad='ciudad 1', deleMuni='deleMuni 1', colonia='colonia 1', calle='calle 1', cp='cp 1',
-                                                  numInterior='Interior 1', numExterior='Exterior 1')
-        institucion2 = Institucion.objects.create(nombreInstitucion='nombre institucion 2', rfc='rfc 2', contacto='contacto 2', telUno='telUno 2', telDos='telDos 2', telCelular='telCelular 2',
-                                                  email='email 2', pais='pais 2', estado='estado 2', ciudad='ciudad 2', deleMuni='deleMuni 2', colonia='colonia 2', calle='calle 2', cp='cp 2',
-                                                  numInterior='Interior 2', numExterior='Exterior 2')
-        institucion3 = Institucion.objects.create(nombreInstitucion='nombre institucion 3', rfc='rfc 3', contacto='contacto 3', telUno='telUno 3', telDos='telDos 3', telCelular='telCelular 3',
-                                                  email='email 3', pais='pais 3', estado='estado 3', ciudad='ciudad 3', deleMuni='deleMuni 3', colonia='colonia 3', calle='calle 3', cp='cp 3',
-                                                  numInterior='Interior 3', numExterior='Exterior 3')
 
-        capitulo1 = Capitulo.objects.create(titulo='titulo 1', descripcion='capitulo descripcion 1', puntos=33.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo1 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo1)
-        item1 = Item.objects.create(descripcion='item descripcion 1', puntos=3, subcapitulo=subcapitulo1)
-        item2 = Item.objects.create(descripcion='item descripcion 2', puntos=6, subcapitulo=subcapitulo1)
-        item3 = Item.objects.create(descripcion='item descripcion 3', puntos=9, subcapitulo=subcapitulo1)
-
-        capitulo2 = Capitulo.objects.create(titulo='titulo 2', descripcion='capitulo descripcion 2', puntos=66.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo2 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo2)
-        subcapitulo4 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 4', comentarios='subcapitulo comentarios 4', capitulo=capitulo2)
-        item4 = Item.objects.create(descripcion='item descripcion 1', puntos=10, subcapitulo=subcapitulo2)
-        item5 = Item.objects.create(descripcion='item descripcion 2', puntos=20, subcapitulo=subcapitulo2)
-        item6 = Item.objects.create(descripcion='item descripcion 3', puntos=30, subcapitulo=subcapitulo2)
-
-        item7 = Item.objects.create(descripcion='item descripcion 4', puntos=30, subcapitulo=subcapitulo4)
-        item8 = Item.objects.create(descripcion='item descripcion 5', puntos=30, subcapitulo=subcapitulo4)
-        item9 = Item.objects.create(descripcion='item descripcion 6', puntos=30, subcapitulo=subcapitulo4)
-
-        ActividadAvalada.objects.create(institucion=institucion1, item=item1, nombre='nombre 1', emailContacto='emailContacto 1', numAsistentes=9, puntosAsignar=3.1, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 1', solicitante='solicitante 1', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 1', isPagado=False)
-        ActividadAvalada.objects.create(institucion=institucion1, item=item2, nombre='nombre 2', emailContacto='emailContacto 2', numAsistentes=9, puntosAsignar=3.2, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 2', solicitante='solicitante 2', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 2', isPagado=True)
-        ActividadAvalada.objects.create(institucion=institucion2, item=item3, nombre='nombre 3', emailContacto='emailContacto 3', numAsistentes=9, puntosAsignar=3.3, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 3', solicitante='solicitante 3', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 3', isPagado=False)
-        ActividadAvalada.objects.create(institucion=institucion2, item=item4, nombre='nombre 4', emailContacto='emailContacto 4', numAsistentes=9, puntosAsignar=3.4, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 4', solicitante='solicitante 4', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 4', isPagado=True)
-        ActividadAvalada.objects.create(institucion=institucion3, item=item5, nombre='nombre 5', emailContacto='emailContacto 5', numAsistentes=9, puntosAsignar=3.5, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 5', solicitante='solicitante 5', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 5', isPagado=False)
-        ActividadAvalada.objects.create(institucion=institucion3, item=item6, nombre='nombre 6', emailContacto='emailContacto 6', numAsistentes=9, puntosAsignar=3.6, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 6', solicitante='solicitante 6', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 6', isPagado=True)
+        configDB()
 
         self.json = {
-            "institucion": 3,
-            "item": 9,
-            "nombre": "nombre 33",
-            "emailContacto": "emailContacto 33",
-            "numAsistentes": 99,
-            "puntosAsignar": 33.3,
-            "fechaInicio": "2021-09-09",
-            "lugar": "lugar 33",
-            "solicitante": "solicitante 33",
-            "tipoPago": 2,
-            "porcentaje": 33,
-            "precio": 69.33,
-            "descripcion": "descripcion 33",
+            "institucion": 1,
+            # "item": 1,
+            "itemAsistente": 3,
+            "itemPonente": 6,
+            "itemCoordinador": 9,
+            "nombre": "nombre 7",
+            "emailContacto": "emailContacto 7",
+            "numAsistentes": 9,
+            # "puntosAsignar": 3.3,
+            "puntajeAsistente": 3.3,
+            "puntajePonente": 6.6,
+            "puntajeCoordinador": 9.9,
+            "fechaInicio": "2021-04-06",
+            "fechaTermino": "2021-04-06",
+            "fechaLimite": "2021-04-06",
+            "lugar": "lugar 7",
+            "solicitante": "solicitante 7",
+            "tipoPago": 1,
+            "porcentaje": 1,
+            "precio": 369.69,
+            "descripcion": "descripcion 7",
             "temas": [
-                {"nombre": "nombre de tema 333-1"},
-                {"nombre": "nombre de tema 333-2"},
-                {"nombre": "nombre de tema 333-3"},
+                {"nombre": "nombre de tema 7.1"},
+                {"nombre": "nombre de tema 7.2"},
+                {"nombre": "nombre de tema 7.3"},
             ]
             # "temas": []
         }
@@ -348,60 +286,28 @@ class PutActividadAvaladaTest(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        print(f'\n --->>>ActividadAvalada.qrCodeImg: {ActividadAvalada.objects.get(id=3).qrCodeImg}')
+        # print(f'\n --->>>ActividadAvalada.qrCodeImg: {ActividadAvalada.objects.get(id=3).qrCodeImg}')
+        print(f'\n---->>> original')
+        response = self.client.get('/api/actividades-avaladas/3/detail/')
+        print(f'response JSON ===>>> pk=3 \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+        print(f'\n---->>> modificada')
         response = self.client.put('/api/actividades-avaladas/3/update/', data=json.dumps(self.json), content_type="application/json")
-        print(f'response JSON ===>>> nombreNS=nombre 6 \n {json.dumps(response.json())} \n ---')
+        print(f'response JSON ===>>> pk=3 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         response = self.client.put('/api/actividades-avaladas/33/update/', data=json.dumps(self.json), content_type="application/json")
-        print(f'response JSON ===>>> institucionNS=nombre institucion 3 \n {json.dumps(response.json())} \n ---')
+        print(f'response JSON ===>>> 404 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-        print(f'\n --->>>ActividadAvalada.qrCodeImg: {ActividadAvalada.objects.get(id=3).qrCodeImg}')
+        # print(f'\n --->>>ActividadAvalada.qrCodeImg: {ActividadAvalada.objects.get(id=3).qrCodeImg}')
 
 
 class DeleteActividadAvaladaTest(APITestCase):
     def setUp(self):
-        institucion1 = Institucion.objects.create(nombreInstitucion='nombre institucion 1', rfc='rfc 1', contacto='contacto 1', telUno='telUno 1', telDos='telDos 1', telCelular='telCelular 1',
-                                                  email='email 1', pais='pais 1', estado='estado 1', ciudad='ciudad 1', deleMuni='deleMuni 1', colonia='colonia 1', calle='calle 1', cp='cp 1',
-                                                  numInterior='Interior 1', numExterior='Exterior 1')
-        institucion2 = Institucion.objects.create(nombreInstitucion='nombre institucion 2', rfc='rfc 2', contacto='contacto 2', telUno='telUno 2', telDos='telDos 2', telCelular='telCelular 2',
-                                                  email='email 2', pais='pais 2', estado='estado 2', ciudad='ciudad 2', deleMuni='deleMuni 2', colonia='colonia 2', calle='calle 2', cp='cp 2',
-                                                  numInterior='Interior 2', numExterior='Exterior 2')
-        institucion3 = Institucion.objects.create(nombreInstitucion='nombre institucion 3', rfc='rfc 3', contacto='contacto 3', telUno='telUno 3', telDos='telDos 3', telCelular='telCelular 3',
-                                                  email='email 3', pais='pais 3', estado='estado 3', ciudad='ciudad 3', deleMuni='deleMuni 3', colonia='colonia 3', calle='calle 3', cp='cp 3',
-                                                  numInterior='Interior 3', numExterior='Exterior 3')
 
-        capitulo1 = Capitulo.objects.create(titulo='titulo 1', descripcion='capitulo descripcion 1', puntos=33.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo1 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo1)
-        item1 = Item.objects.create(descripcion='item descripcion 1', puntos=3, subcapitulo=subcapitulo1)
-        item2 = Item.objects.create(descripcion='item descripcion 2', puntos=6, subcapitulo=subcapitulo1)
-        item3 = Item.objects.create(descripcion='item descripcion 3', puntos=9, subcapitulo=subcapitulo1)
-
-        capitulo2 = Capitulo.objects.create(titulo='titulo 2', descripcion='capitulo descripcion 2', puntos=66.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo2 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo2)
-        subcapitulo4 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 4', comentarios='subcapitulo comentarios 4', capitulo=capitulo2)
-        item4 = Item.objects.create(descripcion='item descripcion 1', puntos=10, subcapitulo=subcapitulo2)
-        item5 = Item.objects.create(descripcion='item descripcion 2', puntos=20, subcapitulo=subcapitulo2)
-        item6 = Item.objects.create(descripcion='item descripcion 3', puntos=30, subcapitulo=subcapitulo2)
-
-        item7 = Item.objects.create(descripcion='item descripcion 4', puntos=30, subcapitulo=subcapitulo4)
-        item8 = Item.objects.create(descripcion='item descripcion 5', puntos=30, subcapitulo=subcapitulo4)
-        item9 = Item.objects.create(descripcion='item descripcion 6', puntos=30, subcapitulo=subcapitulo4)
-
-        ActividadAvalada.objects.create(institucion=institucion1, item=item1, nombre='nombre 1', emailContacto='emailContacto 1', numAsistentes=9, puntosAsignar=3.1, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 1', solicitante='solicitante 1', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 1', isPagado=False)
-        ActividadAvalada.objects.create(institucion=institucion1, item=item2, nombre='nombre 2', emailContacto='emailContacto 2', numAsistentes=9, puntosAsignar=3.2, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 2', solicitante='solicitante 2', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 2', isPagado=True)
-        ActividadAvalada.objects.create(institucion=institucion2, item=item3, nombre='nombre 3', emailContacto='emailContacto 3', numAsistentes=9, puntosAsignar=3.3, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 3', solicitante='solicitante 3', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 3', isPagado=False)
-        ActividadAvalada.objects.create(institucion=institucion2, item=item4, nombre='nombre 4', emailContacto='emailContacto 4', numAsistentes=9, puntosAsignar=3.4, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 4', solicitante='solicitante 4', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 4', isPagado=True)
-        ActividadAvalada.objects.create(institucion=institucion3, item=item5, nombre='nombre 5', emailContacto='emailContacto 5', numAsistentes=9, puntosAsignar=3.5, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 5', solicitante='solicitante 5', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 5', isPagado=False)
-        ActividadAvalada.objects.create(institucion=institucion3, item=item6, nombre='nombre 6', emailContacto='emailContacto 6', numAsistentes=9, puntosAsignar=3.6, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 6', solicitante='solicitante 6', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 6', isPagado=True)
+        configDB()
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
 
@@ -425,73 +331,8 @@ class DeleteActividadAvaladaTest(APITestCase):
 
 class PostAsistenteActividadAvaladaTest(APITestCase):
     def setUp(self):
-        institucion1 = Institucion.objects.create(nombreInstitucion='nombre institucion 1', rfc='rfc 1', contacto='contacto 1', telUno='telUno 1', telDos='telDos 1', telCelular='telCelular 1',
-                                                  email='email 1', pais='pais 1', estado='estado 1', ciudad='ciudad 1', deleMuni='deleMuni 1', colonia='colonia 1', calle='calle 1', cp='cp 1',
-                                                  numInterior='Interior 1', numExterior='Exterior 1')
-        institucion2 = Institucion.objects.create(nombreInstitucion='nombre institucion 2', rfc='rfc 2', contacto='contacto 2', telUno='telUno 2', telDos='telDos 2', telCelular='telCelular 2',
-                                                  email='email 2', pais='pais 2', estado='estado 2', ciudad='ciudad 2', deleMuni='deleMuni 2', colonia='colonia 2', calle='calle 2', cp='cp 2',
-                                                  numInterior='Interior 2', numExterior='Exterior 2')
-        institucion3 = Institucion.objects.create(nombreInstitucion='nombre institucion 3', rfc='rfc 3', contacto='contacto 3', telUno='telUno 3', telDos='telDos 3', telCelular='telCelular 3',
-                                                  email='email 3', pais='pais 3', estado='estado 3', ciudad='ciudad 3', deleMuni='deleMuni 3', colonia='colonia 3', calle='calle 3', cp='cp 3',
-                                                  numInterior='Interior 3', numExterior='Exterior 3')
 
-        capitulo1 = Capitulo.objects.create(titulo='titulo 1', descripcion='capitulo descripcion 1', puntos=33.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo1 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo1)
-        item1 = Item.objects.create(descripcion='item descripcion 1', puntos=3, subcapitulo=subcapitulo1)
-        item2 = Item.objects.create(descripcion='item descripcion 2', puntos=6, subcapitulo=subcapitulo1)
-        item3 = Item.objects.create(descripcion='item descripcion 3', puntos=9, subcapitulo=subcapitulo1)
-
-        capitulo2 = Capitulo.objects.create(titulo='titulo 2', descripcion='capitulo descripcion 2', puntos=66.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo2 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo2)
-        subcapitulo4 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 4', comentarios='subcapitulo comentarios 4', capitulo=capitulo2)
-        item4 = Item.objects.create(descripcion='item descripcion 1', puntos=10, subcapitulo=subcapitulo4)
-        item5 = Item.objects.create(descripcion='item descripcion 2', puntos=20, subcapitulo=subcapitulo2)
-        item6 = Item.objects.create(descripcion='item descripcion 3', puntos=30, subcapitulo=subcapitulo2)
-
-        aa1 = ActividadAvalada.objects.create(institucion=institucion1, item=item1, nombre='nombre 1', emailContacto='emailContacto 1', numAsistentes=9, puntosAsignar=3.1,
-                                              fechaInicio=date.today()+relativedelta(days=5), lugar='lugar 1', solicitante='solicitante 1', tipoPago=1, porcentaje=1, precio=369.69,
-                                              descripcion='descripcion 1', isPagado=False)
-
-        aa2 = ActividadAvalada.objects.create(institucion=institucion1, item=item2, nombre='nombre 2', emailContacto='emailContacto 2', numAsistentes=9, puntosAsignar=3.2,
-                                              fechaInicio=date.today()+relativedelta(days=8), lugar='lugar 2', solicitante='solicitante 2', tipoPago=1, porcentaje=1, precio=369.69,
-                                              descripcion='descripcion 2', isPagado=True)
-
-        self.aa3 = ActividadAvalada.objects.create(institucion=institucion2, item=item3, nombre='nombre 3', emailContacto='emailContacto 3', numAsistentes=3, puntosAsignar=3.3,
-                                                   fechaInicio=date.today()+relativedelta(days=3), lugar='lugar 3', solicitante='solicitante 3', tipoPago=1, porcentaje=1, precio=369.69,
-                                                   descripcion='descripcion 3', isPagado=False)
-
-        aa4 = ActividadAvalada.objects.create(institucion=institucion2, item=item4, nombre='nombre 4', emailContacto='emailContacto 4', numAsistentes=9, puntosAsignar=3.4,
-                                              fechaInicio=date.today()+relativedelta(days=9), lugar='lugar 4', solicitante='solicitante 4', tipoPago=1, porcentaje=1, precio=369.69,
-                                              descripcion='descripcion 4', isPagado=True)
-
-        aa6 = ActividadAvalada.objects.create(id=6, institucion=institucion3, item=item5, nombre='nombre 5', emailContacto='emailContacto 5', numAsistentes=9, puntosAsignar=3.5,
-                                              fechaInicio=date.today()+relativedelta(days=10), lugar='lugar 5', solicitante='solicitante 5', tipoPago=1, porcentaje=1, precio=369.69,
-                                              descripcion='descripcion 5', isPagado=False)
-
-        aa9 = ActividadAvalada.objects.create(id=9, institucion=institucion3, item=item6, nombre='nombre 6', emailContacto='emailContacto 6', numAsistentes=9, puntosAsignar=3.6,
-                                              fechaInicio=date.today()+relativedelta(days=1), lugar='lugar 6', solicitante='solicitante 6', tipoPago=1, porcentaje=1, precio=369.69,
-                                              descripcion='descripcion 6', isPagado=True)
-
-        medico3 = Medico.objects.create(
-            id=3, nombre='roberto', apPaterno='quiroz', apMaterno='tolentino', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
-            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
-            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=333, aceptado=True)
-        medico6 = Medico.objects.create(
-            id=6, nombre='laura', apPaterno='cabrera', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
-            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
-            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=666, aceptado=False)
-        self.medico9 = Medico.objects.create(
-            id=9, nombre='juan gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
-            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
-            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999, aceptado=True)
-
-        AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=aa6)
-        AsistenteActividadAvalada.objects.create(medico=self.medico9, actividadAvalada=aa9)
-        AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=self.aa3)
-        # AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa3)
+        configDB()
 
         self.json = {
             "medico": 3,
@@ -503,13 +344,13 @@ class PostAsistenteActividadAvaladaTest(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        response = self.client.get('/api/actividades-avaladas/3/asistentes/cupos/')
-        print(f'response JSON ===>>> cupos \n {json.dumps(response.json())} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # response = self.client.get('/api/actividades-avaladas/3/asistentes/cupos/')
+        # print(f'response JSON ===>>> cupos \n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = self.client.get('/api/actividades-avaladas/333/asistentes/cupos/')
-        print(f'response JSON ===>>> cupos 404 \n {json.dumps(response.json())} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        # response = self.client.get('/api/actividades-avaladas/333/asistentes/cupos/')
+        # print(f'response JSON ===>>> cupos 404 \n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         # ------------CUPOS
 
         response = self.client.get('/api/actividades-avaladas/medicos/list/?nombreNS=gabr')
@@ -576,64 +417,8 @@ class PostAsistenteActividadAvaladaTest(APITestCase):
 
 class GetAsistenteActividadAvaladaFilteredListTest(APITestCase):
     def setUp(self):
-        institucion1 = Institucion.objects.create(nombreInstitucion='nombre institucion 1', rfc='rfc 1', contacto='contacto 1', telUno='telUno 1', telDos='telDos 1', telCelular='telCelular 1',
-                                                  email='email 1', pais='pais 1', estado='estado 1', ciudad='ciudad 1', deleMuni='deleMuni 1', colonia='colonia 1', calle='calle 1', cp='cp 1',
-                                                  numInterior='Interior 1', numExterior='Exterior 1')
-        institucion2 = Institucion.objects.create(nombreInstitucion='nombre institucion 2', rfc='rfc 2', contacto='contacto 2', telUno='telUno 2', telDos='telDos 2', telCelular='telCelular 2',
-                                                  email='email 2', pais='pais 2', estado='estado 2', ciudad='ciudad 2', deleMuni='deleMuni 2', colonia='colonia 2', calle='calle 2', cp='cp 2',
-                                                  numInterior='Interior 2', numExterior='Exterior 2')
-        institucion3 = Institucion.objects.create(nombreInstitucion='nombre institucion 3', rfc='rfc 3', contacto='contacto 3', telUno='telUno 3', telDos='telDos 3', telCelular='telCelular 3',
-                                                  email='email 3', pais='pais 3', estado='estado 3', ciudad='ciudad 3', deleMuni='deleMuni 3', colonia='colonia 3', calle='calle 3', cp='cp 3',
-                                                  numInterior='Interior 3', numExterior='Exterior 3')
 
-        capitulo1 = Capitulo.objects.create(titulo='titulo 1', descripcion='capitulo descripcion 1', puntos=33.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo1 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo1)
-        item1 = Item.objects.create(descripcion='item descripcion 1', puntos=3, subcapitulo=subcapitulo1)
-        item2 = Item.objects.create(descripcion='item descripcion 2', puntos=6, subcapitulo=subcapitulo1)
-        item3 = Item.objects.create(descripcion='item descripcion 3', puntos=9, subcapitulo=subcapitulo1)
-
-        capitulo2 = Capitulo.objects.create(titulo='titulo 2', descripcion='capitulo descripcion 2', puntos=66.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo2 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo2)
-        subcapitulo4 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 4', comentarios='subcapitulo comentarios 4', capitulo=capitulo2)
-        item4 = Item.objects.create(descripcion='item descripcion 1', puntos=10, subcapitulo=subcapitulo4)
-        item5 = Item.objects.create(descripcion='item descripcion 2', puntos=20, subcapitulo=subcapitulo2)
-        item6 = Item.objects.create(descripcion='item descripcion 3', puntos=30, subcapitulo=subcapitulo2)
-
-        aa1 = ActividadAvalada.objects.create(institucion=institucion1, item=item1, nombre='nombre 1', emailContacto='emailContacto 1', numAsistentes=9, puntosAsignar=3.1, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 1', solicitante='solicitante 1', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 1', isPagado=False)
-        aa2 = ActividadAvalada.objects.create(institucion=institucion1, item=item2, nombre='nombre 2', emailContacto='emailContacto 2', numAsistentes=9, puntosAsignar=3.2, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 2', solicitante='solicitante 2', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 2', isPagado=True)
-        aa3 = ActividadAvalada.objects.create(institucion=institucion2, item=item3, nombre='nombre 3', emailContacto='emailContacto 3', numAsistentes=3, puntosAsignar=3.3, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 3', solicitante='solicitante 3', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 3', isPagado=False)
-        aa4 = ActividadAvalada.objects.create(institucion=institucion2, item=item4, nombre='nombre 4', emailContacto='emailContacto 4', numAsistentes=9, puntosAsignar=3.4, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 4', solicitante='solicitante 4', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 4', isPagado=True)
-        aa5 = ActividadAvalada.objects.create(institucion=institucion3, item=item5, nombre='nombre 5', emailContacto='emailContacto 5', numAsistentes=9, puntosAsignar=3.5, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 5', solicitante='solicitante 5', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 5', isPagado=False)
-        aa6 = ActividadAvalada.objects.create(institucion=institucion3, item=item6, nombre='nombre 6', emailContacto='emailContacto 6', numAsistentes=9, puntosAsignar=3.6, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 6', solicitante='solicitante 6', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 6', isPagado=True)
-
-        medico3 = Medico.objects.create(
-            id=3, nombre='elianid', apPaterno='quiroz', apMaterno='tolentino', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
-            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
-            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-            telCelular='telCelular1', telParticular='telParticular1', email='elianidTolentino@mb.company', numRegistro=333, aceptado=True)
-        medico6 = Medico.objects.create(
-            id=6, nombre='laura', apPaterno='cabrera', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
-            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
-            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-            telCelular='telCelular1', telParticular='telParticular1', email='lauraCabrera@mb.company', numRegistro=666, aceptado=False)
-        medico9 = Medico.objects.create(
-            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
-            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
-            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999, aceptado=True)
-
-        AsistenteActividadAvalada.objects.create(medico=medico3, actividadAvalada=aa3)
-        AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=aa3)
-        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa6)
-        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa1)
-        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa2)
-        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa4)
+        configDB()
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
 
@@ -655,64 +440,8 @@ class GetAsistenteActividadAvaladaFilteredListTest(APITestCase):
 
 class DeleteAsistenteActividadAvaladaTest(APITestCase):
     def setUp(self):
-        institucion1 = Institucion.objects.create(nombreInstitucion='nombre institucion 1', rfc='rfc 1', contacto='contacto 1', telUno='telUno 1', telDos='telDos 1', telCelular='telCelular 1',
-                                                  email='email 1', pais='pais 1', estado='estado 1', ciudad='ciudad 1', deleMuni='deleMuni 1', colonia='colonia 1', calle='calle 1', cp='cp 1',
-                                                  numInterior='Interior 1', numExterior='Exterior 1')
-        institucion2 = Institucion.objects.create(nombreInstitucion='nombre institucion 2', rfc='rfc 2', contacto='contacto 2', telUno='telUno 2', telDos='telDos 2', telCelular='telCelular 2',
-                                                  email='email 2', pais='pais 2', estado='estado 2', ciudad='ciudad 2', deleMuni='deleMuni 2', colonia='colonia 2', calle='calle 2', cp='cp 2',
-                                                  numInterior='Interior 2', numExterior='Exterior 2')
-        institucion3 = Institucion.objects.create(nombreInstitucion='nombre institucion 3', rfc='rfc 3', contacto='contacto 3', telUno='telUno 3', telDos='telDos 3', telCelular='telCelular 3',
-                                                  email='email 3', pais='pais 3', estado='estado 3', ciudad='ciudad 3', deleMuni='deleMuni 3', colonia='colonia 3', calle='calle 3', cp='cp 3',
-                                                  numInterior='Interior 3', numExterior='Exterior 3')
 
-        capitulo1 = Capitulo.objects.create(titulo='titulo 1', descripcion='capitulo descripcion 1', puntos=33.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo1 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo1)
-        item1 = Item.objects.create(descripcion='item descripcion 1', puntos=3, subcapitulo=subcapitulo1)
-        item2 = Item.objects.create(descripcion='item descripcion 2', puntos=6, subcapitulo=subcapitulo1)
-        item3 = Item.objects.create(descripcion='item descripcion 3', puntos=9, subcapitulo=subcapitulo1)
-
-        capitulo2 = Capitulo.objects.create(titulo='titulo 2', descripcion='capitulo descripcion 2', puntos=66.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo2 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo2)
-        subcapitulo4 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 4', comentarios='subcapitulo comentarios 4', capitulo=capitulo2)
-        item4 = Item.objects.create(descripcion='item descripcion 1', puntos=10, subcapitulo=subcapitulo4)
-        item5 = Item.objects.create(descripcion='item descripcion 2', puntos=20, subcapitulo=subcapitulo2)
-        item6 = Item.objects.create(descripcion='item descripcion 3', puntos=30, subcapitulo=subcapitulo2)
-
-        aa1 = ActividadAvalada.objects.create(institucion=institucion1, item=item1, nombre='nombre 1', emailContacto='emailContacto 1', numAsistentes=9, puntosAsignar=3.1, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 1', solicitante='solicitante 1', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 1', isPagado=False)
-        aa2 = ActividadAvalada.objects.create(institucion=institucion1, item=item2, nombre='nombre 2', emailContacto='emailContacto 2', numAsistentes=9, puntosAsignar=3.2, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 2', solicitante='solicitante 2', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 2', isPagado=True)
-        aa3 = ActividadAvalada.objects.create(institucion=institucion2, item=item3, nombre='nombre 3', emailContacto='emailContacto 3', numAsistentes=3, puntosAsignar=3.3, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 3', solicitante='solicitante 3', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 3', isPagado=False)
-        aa4 = ActividadAvalada.objects.create(institucion=institucion2, item=item4, nombre='nombre 4', emailContacto='emailContacto 4', numAsistentes=9, puntosAsignar=3.4, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 4', solicitante='solicitante 4', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 4', isPagado=True)
-        aa5 = ActividadAvalada.objects.create(institucion=institucion3, item=item5, nombre='nombre 5', emailContacto='emailContacto 5', numAsistentes=9, puntosAsignar=3.5, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 5', solicitante='solicitante 5', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 5', isPagado=False)
-        aa6 = ActividadAvalada.objects.create(institucion=institucion3, item=item6, nombre='nombre 6', emailContacto='emailContacto 6', numAsistentes=9, puntosAsignar=3.6, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 6', solicitante='solicitante 6', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 6', isPagado=True)
-
-        medico3 = Medico.objects.create(
-            id=3, nombre='elianid', apPaterno='quiroz', apMaterno='tolentino', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
-            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
-            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-            telCelular='telCelular1', telParticular='telParticular1', email='elianidTolentino@mb.company', numRegistro=333, aceptado=True)
-        medico6 = Medico.objects.create(
-            id=6, nombre='laura', apPaterno='cabrera', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
-            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
-            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-            telCelular='telCelular1', telParticular='telParticular1', email='lauraCabrera@mb.company', numRegistro=666, aceptado=False)
-        medico9 = Medico.objects.create(
-            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
-            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
-            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999, aceptado=True)
-
-        AsistenteActividadAvalada.objects.create(medico=medico3, actividadAvalada=aa3)
-        AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=aa3)
-        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa6)
-        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa1)
-        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa2)
-        AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa4)
+        configDB()
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
 
@@ -742,49 +471,8 @@ class DeleteAsistenteActividadAvaladaTest(APITestCase):
 
 class PutActividadAvaladaPagadoTest(APITestCase):
     def setUp(self):
-        institucion1 = Institucion.objects.create(nombreInstitucion='nombre institucion 1', rfc='rfc 1', contacto='contacto 1', telUno='telUno 1', telDos='telDos 1', telCelular='telCelular 1',
-                                                  email='email 1', pais='pais 1', estado='estado 1', ciudad='ciudad 1', deleMuni='deleMuni 1', colonia='colonia 1', calle='calle 1', cp='cp 1',
-                                                  numInterior='Interior 1', numExterior='Exterior 1')
-        institucion2 = Institucion.objects.create(nombreInstitucion='nombre institucion 2', rfc='rfc 2', contacto='contacto 2', telUno='telUno 2', telDos='telDos 2', telCelular='telCelular 2',
-                                                  email='email 2', pais='pais 2', estado='estado 2', ciudad='ciudad 2', deleMuni='deleMuni 2', colonia='colonia 2', calle='calle 2', cp='cp 2',
-                                                  numInterior='Interior 2', numExterior='Exterior 2')
-        institucion3 = Institucion.objects.create(nombreInstitucion='nombre institucion 3', rfc='rfc 3', contacto='contacto 3', telUno='telUno 3', telDos='telDos 3', telCelular='telCelular 3',
-                                                  email='email 3', pais='pais 3', estado='estado 3', ciudad='ciudad 3', deleMuni='deleMuni 3', colonia='colonia 3', calle='calle 3', cp='cp 3',
-                                                  numInterior='Interior 3', numExterior='Exterior 3')
 
-        capitulo1 = Capitulo.objects.create(titulo='titulo 1', descripcion='capitulo descripcion 1', puntos=33.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo1 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo1)
-        item1 = Item.objects.create(descripcion='item descripcion 1', puntos=3, subcapitulo=subcapitulo1)
-        item2 = Item.objects.create(descripcion='item descripcion 2', puntos=6, subcapitulo=subcapitulo1)
-        item3 = Item.objects.create(descripcion='item descripcion 3', puntos=9, subcapitulo=subcapitulo1)
-
-        capitulo2 = Capitulo.objects.create(titulo='titulo 2', descripcion='capitulo descripcion 2', puntos=66.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo2 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo2)
-        subcapitulo4 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 4', comentarios='subcapitulo comentarios 4', capitulo=capitulo2)
-        item4 = Item.objects.create(descripcion='item descripcion 1', puntos=10, subcapitulo=subcapitulo2)
-        item5 = Item.objects.create(descripcion='item descripcion 2', puntos=20, subcapitulo=subcapitulo2)
-        item6 = Item.objects.create(descripcion='item descripcion 3', puntos=30, subcapitulo=subcapitulo2)
-
-        item7 = Item.objects.create(descripcion='item descripcion 4', puntos=30, subcapitulo=subcapitulo4)
-        item8 = Item.objects.create(descripcion='item descripcion 5', puntos=30, subcapitulo=subcapitulo4)
-        item9 = Item.objects.create(descripcion='item descripcion 6', puntos=30, subcapitulo=subcapitulo4)
-
-        ActividadAvalada.objects.create(institucion=institucion1, item=item1, nombre='nombre 1', emailContacto='emailContacto 1', numAsistentes=9, puntosAsignar=3.1, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 1', solicitante='solicitante 1', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 1', isPagado=False)
-        ActividadAvalada.objects.create(institucion=institucion1, item=item2, nombre='nombre 2', emailContacto='emailContacto 2', numAsistentes=9, puntosAsignar=3.2, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 2', solicitante='solicitante 2', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 2', isPagado=True)
-        aa3 = ActividadAvalada.objects.create(institucion=institucion2, item=item3, nombre='nombre 3', emailContacto='emailContacto 3', numAsistentes=9, puntosAsignar=3.3, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 3', solicitante='solicitante 3', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 3', isPagado=False)
-        ActividadAvalada.objects.create(institucion=institucion2, item=item4, nombre='nombre 4', emailContacto='emailContacto 4', numAsistentes=9, puntosAsignar=3.4, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 4', solicitante='solicitante 4', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 4', isPagado=True)
-        ActividadAvalada.objects.create(institucion=institucion3, item=item5, nombre='nombre 5', emailContacto='emailContacto 5', numAsistentes=9, puntosAsignar=3.5, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 5', solicitante='solicitante 5', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 5', isPagado=False)
-        ActividadAvalada.objects.create(institucion=institucion3, item=item6, nombre='nombre 6', emailContacto='emailContacto 6', numAsistentes=9, puntosAsignar=3.6, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 6', solicitante='solicitante 6', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 6', isPagado=True)
-
-        Tema.objects.create(nombre='tema nombre 1', actividadAvalada=aa3)
-        Tema.objects.create(nombre='tema nombre 2', actividadAvalada=aa3)
-        Tema.objects.create(nombre='tema nombre 3', actividadAvalada=aa3)
+        configDB()
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
 
@@ -808,49 +496,8 @@ class PutActividadAvaladaPagadoTest(APITestCase):
 
 class GetCostoAPagarTest(APITestCase):
     def setUp(self):
-        institucion1 = Institucion.objects.create(nombreInstitucion='nombre institucion 1', rfc='rfc 1', contacto='contacto 1', telUno='telUno 1', telDos='telDos 1', telCelular='telCelular 1',
-                                                  email='email 1', pais='pais 1', estado='estado 1', ciudad='ciudad 1', deleMuni='deleMuni 1', colonia='colonia 1', calle='calle 1', cp='cp 1',
-                                                  numInterior='Interior 1', numExterior='Exterior 1')
-        institucion2 = Institucion.objects.create(nombreInstitucion='nombre institucion 2', rfc='rfc 2', contacto='contacto 2', telUno='telUno 2', telDos='telDos 2', telCelular='telCelular 2',
-                                                  email='email 2', pais='pais 2', estado='estado 2', ciudad='ciudad 2', deleMuni='deleMuni 2', colonia='colonia 2', calle='calle 2', cp='cp 2',
-                                                  numInterior='Interior 2', numExterior='Exterior 2')
-        institucion3 = Institucion.objects.create(nombreInstitucion='nombre institucion 3', rfc='rfc 3', contacto='contacto 3', telUno='telUno 3', telDos='telDos 3', telCelular='telCelular 3',
-                                                  email='email 3', pais='pais 3', estado='estado 3', ciudad='ciudad 3', deleMuni='deleMuni 3', colonia='colonia 3', calle='calle 3', cp='cp 3',
-                                                  numInterior='Interior 3', numExterior='Exterior 3')
 
-        capitulo1 = Capitulo.objects.create(titulo='titulo 1', descripcion='capitulo descripcion 1', puntos=33.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo1 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo1)
-        item1 = Item.objects.create(descripcion='item descripcion 1', puntos=3, subcapitulo=subcapitulo1)
-        item2 = Item.objects.create(descripcion='item descripcion 2', puntos=6, subcapitulo=subcapitulo1)
-        item3 = Item.objects.create(descripcion='item descripcion 3', puntos=9, subcapitulo=subcapitulo1)
-
-        capitulo2 = Capitulo.objects.create(titulo='titulo 2', descripcion='capitulo descripcion 2', puntos=66.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo2 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo2)
-        subcapitulo4 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 4', comentarios='subcapitulo comentarios 4', capitulo=capitulo2)
-        item4 = Item.objects.create(descripcion='item descripcion 1', puntos=10, subcapitulo=subcapitulo2)
-        item5 = Item.objects.create(descripcion='item descripcion 2', puntos=20, subcapitulo=subcapitulo2)
-        item6 = Item.objects.create(descripcion='item descripcion 3', puntos=30, subcapitulo=subcapitulo2)
-
-        item7 = Item.objects.create(descripcion='item descripcion 4', puntos=30, subcapitulo=subcapitulo4)
-        item8 = Item.objects.create(descripcion='item descripcion 5', puntos=30, subcapitulo=subcapitulo4)
-        item9 = Item.objects.create(descripcion='item descripcion 6', puntos=30, subcapitulo=subcapitulo4)
-
-        ActividadAvalada.objects.create(institucion=institucion1, item=item1, nombre='nombre 1', emailContacto='emailContacto 1', numAsistentes=9, puntosAsignar=3.1, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 1', solicitante='solicitante 1', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 1', isPagado=False)
-        ActividadAvalada.objects.create(institucion=institucion1, item=item2, nombre='nombre 2', emailContacto='emailContacto 2', numAsistentes=9, puntosAsignar=3.2, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 2', solicitante='solicitante 2', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 2', isPagado=True)
-        aa3 = ActividadAvalada.objects.create(institucion=institucion2, item=item3, nombre='nombre 3', emailContacto='emailContacto 3', numAsistentes=9, puntosAsignar=3.3, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 3', solicitante='solicitante 3', tipoPago=1, porcentaje=10, precio=369.69, descripcion='descripcion 3', isPagado=False)
-        ActividadAvalada.objects.create(institucion=institucion2, item=item4, nombre='nombre 4', emailContacto='emailContacto 4', numAsistentes=9, puntosAsignar=3.4, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 4', solicitante='solicitante 4', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 4', isPagado=True)
-        ActividadAvalada.objects.create(institucion=institucion3, item=item5, nombre='nombre 5', emailContacto='emailContacto 5', numAsistentes=9, puntosAsignar=3.5, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 5', solicitante='solicitante 5', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 5', isPagado=False)
-        aa6 = ActividadAvalada.objects.create(institucion=institucion3, item=item6, nombre='nombre 6', emailContacto='emailContacto 6', numAsistentes=9, puntosAsignar=3.6, fechaInicio=date.today(
-        )+relativedelta(days=8), lugar='lugar 6', solicitante='solicitante 6', tipoPago=2, porcentaje=33, precio=0, descripcion='descripcion 6', isPagado=True)
-
-        Tema.objects.create(nombre='tema nombre 1', actividadAvalada=aa3)
-        Tema.objects.create(nombre='tema nombre 2', actividadAvalada=aa3)
-        Tema.objects.create(nombre='tema nombre 3', actividadAvalada=aa3)
+        configDB()
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
 
@@ -876,72 +523,8 @@ class GetCostoAPagarTest(APITestCase):
 
 class PostCargaMasivaExcelAsistenteActividadAvaladaTest(APITestCase):
     def setUp(self):
-        institucion1 = Institucion.objects.create(nombreInstitucion='nombre institucion 1', rfc='rfc 1', contacto='contacto 1', telUno='telUno 1', telDos='telDos 1', telCelular='telCelular 1',
-                                                  email='email 1', pais='pais 1', estado='estado 1', ciudad='ciudad 1', deleMuni='deleMuni 1', colonia='colonia 1', calle='calle 1', cp='cp 1',
-                                                  numInterior='Interior 1', numExterior='Exterior 1')
-        institucion2 = Institucion.objects.create(nombreInstitucion='nombre institucion 2', rfc='rfc 2', contacto='contacto 2', telUno='telUno 2', telDos='telDos 2', telCelular='telCelular 2',
-                                                  email='email 2', pais='pais 2', estado='estado 2', ciudad='ciudad 2', deleMuni='deleMuni 2', colonia='colonia 2', calle='calle 2', cp='cp 2',
-                                                  numInterior='Interior 2', numExterior='Exterior 2')
-        institucion3 = Institucion.objects.create(nombreInstitucion='nombre institucion 3', rfc='rfc 3', contacto='contacto 3', telUno='telUno 3', telDos='telDos 3', telCelular='telCelular 3',
-                                                  email='email 3', pais='pais 3', estado='estado 3', ciudad='ciudad 3', deleMuni='deleMuni 3', colonia='colonia 3', calle='calle 3', cp='cp 3',
-                                                  numInterior='Interior 3', numExterior='Exterior 3')
 
-        capitulo1 = Capitulo.objects.create(titulo='titulo 1', descripcion='capitulo descripcion 1', puntos=33.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo1 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo1)
-        item1 = Item.objects.create(descripcion='item descripcion 1', puntos=3, subcapitulo=subcapitulo1)
-        item2 = Item.objects.create(descripcion='item descripcion 2', puntos=6, subcapitulo=subcapitulo1)
-        item3 = Item.objects.create(descripcion='item descripcion 3', puntos=9, subcapitulo=subcapitulo1)
-
-        capitulo2 = Capitulo.objects.create(titulo='titulo 2', descripcion='capitulo descripcion 2', puntos=66.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo2 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo2)
-        subcapitulo4 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 4', comentarios='subcapitulo comentarios 4', capitulo=capitulo2)
-        item4 = Item.objects.create(descripcion='item descripcion 1', puntos=10, subcapitulo=subcapitulo4)
-        item5 = Item.objects.create(descripcion='item descripcion 2', puntos=20, subcapitulo=subcapitulo2)
-        item6 = Item.objects.create(descripcion='item descripcion 3', puntos=30, subcapitulo=subcapitulo2)
-
-        aa1 = ActividadAvalada.objects.create(institucion=institucion1, item=item1, nombre='nombre 1', emailContacto='emailContacto 1', numAsistentes=9, puntosAsignar=3.1,
-                                              fechaInicio=date.today()+relativedelta(days=5), lugar='lugar 1', solicitante='solicitante 1', tipoPago=1, porcentaje=1, precio=369.69,
-                                              descripcion='descripcion 1', isPagado=False)
-
-        aa2 = ActividadAvalada.objects.create(institucion=institucion1, item=item2, nombre='nombre 2', emailContacto='emailContacto 2', numAsistentes=9, puntosAsignar=3.2,
-                                              fechaInicio=date.today()+relativedelta(days=8), lugar='lugar 2', solicitante='solicitante 2', tipoPago=1, porcentaje=1, precio=369.69,
-                                              descripcion='descripcion 2', isPagado=True)
-
-        self.aa3 = ActividadAvalada.objects.create(institucion=institucion2, item=item3, nombre='nombre 3', emailContacto='emailContacto 3', numAsistentes=3, puntosAsignar=3.3,
-                                                   fechaInicio=date.today()+relativedelta(days=3), lugar='lugar 3', solicitante='solicitante 3', tipoPago=1, porcentaje=1, precio=369.69,
-                                                   descripcion='descripcion 3', isPagado=False)
-
-        aa4 = ActividadAvalada.objects.create(institucion=institucion2, item=item4, nombre='nombre 4', emailContacto='emailContacto 4', numAsistentes=9, puntosAsignar=3.4,
-                                              fechaInicio=date.today()+relativedelta(days=9), lugar='lugar 4', solicitante='solicitante 4', tipoPago=1, porcentaje=1, precio=369.69,
-                                              descripcion='descripcion 4', isPagado=True)
-
-        aa6 = ActividadAvalada.objects.create(id=6, institucion=institucion3, item=item5, nombre='nombre 5', emailContacto='emailContacto 5', numAsistentes=9, puntosAsignar=3.5,
-                                              fechaInicio=date.today()+relativedelta(days=10), lugar='lugar 5', solicitante='solicitante 5', tipoPago=1, porcentaje=1, precio=369.69,
-                                              descripcion='descripcion 5', isPagado=False)
-
-        aa9 = ActividadAvalada.objects.create(id=9, institucion=institucion3, item=item6, nombre='nombre 6', emailContacto='emailContacto 6', numAsistentes=9, puntosAsignar=3.6,
-                                              fechaInicio=date.today()+relativedelta(days=1), lugar='lugar 6', solicitante='solicitante 6', tipoPago=1, porcentaje=1, precio=369.69,
-                                              descripcion='descripcion 6', isPagado=True)
-
-        medico3 = Medico.objects.create(
-            id=3, nombre='elianid', apPaterno='tolentino', apMaterno='nose', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
-            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
-            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=333, aceptado=True)
-        medico6 = Medico.objects.create(
-            id=6, nombre='laura', apPaterno='cabrera', apMaterno='bejarano', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
-            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
-            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=666, aceptado=False)
-        self.medico9 = Medico.objects.create(
-            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
-            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
-            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999, aceptado=True)
-
-        AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=aa6)
-        AsistenteActividadAvalada.objects.create(medico=self.medico9, actividadAvalada=aa9)
-        AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=self.aa3)
+        configDB()
 
         archivo = open('./uploads/asistActiAvala.csv', 'rb')
         csvFile = SimpleUploadedFile(archivo.name, archivo.read(), content_type='text/csv')

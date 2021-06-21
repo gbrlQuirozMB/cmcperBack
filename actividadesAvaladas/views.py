@@ -95,13 +95,15 @@ class AsistenteActividadAvaladaCreateView(CreateAPIView):
     def post(self, request, *args, **kwargs):
         actAvaId = request.data.get('actividadAvalada')
 
-        numAsistentes = ActividadAvalada.objects.filter(id=actAvaId).values_list('numAsistentes', flat=True)
-        if not numAsistentes:
-            raise ResponseError(f'No existe Actividad avalada', 404)
+        # ya no existen numAsistentes, porque los asistentes se va creando cobre la marcha
+        # numAsistentes = ActividadAvalada.objects.filter(id=actAvaId).values_list('numAsistentes', flat=True)
+        # if not numAsistentes:
+        #     raise ResponseError(f'No existe Actividad avalada', 404)
 
-        asistentesRegistrados = AsistenteActividadAvalada.objects.filter(actividadAvalada=actAvaId).count()
-        if asistentesRegistrados >= numAsistentes[0]:
-            raise ResponseError(f'No se permite registrar mas de {numAsistentes[0]} asistentes', 409)
+        # ya no existen numAsistentes, porque los asistentes se va creando cobre la marcha
+        # asistentesRegistrados = AsistenteActividadAvalada.objects.filter(actividadAvalada=actAvaId).count()
+        # if asistentesRegistrados >= numAsistentes[0]:
+        #     raise ResponseError(f'No se permite registrar mas de {numAsistentes[0]} asistentes', 409)
 
         medicoId = request.data.get('medico')
         cuenta = AsistenteActividadAvalada.objects.filter(medico=medicoId, actividadAvalada=actAvaId).count()
@@ -114,10 +116,10 @@ class AsistenteActividadAvaladaCreateView(CreateAPIView):
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
-
-class CuposAsistentesDetailView(RetrieveAPIView):
-    queryset = ActividadAvalada.objects.filter()
-    serializer_class = CuposAsistentesSerializer
+# ya no existen cupos, porque los asistentes se va creando cobre la marcha
+# class CuposAsistentesDetailView(RetrieveAPIView):
+#     queryset = ActividadAvalada.objects.filter()
+#     serializer_class = CuposAsistentesSerializer
 
 
 class MedicosAIncribirseAAFilter(FilterSet):
