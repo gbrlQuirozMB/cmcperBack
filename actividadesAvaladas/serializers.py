@@ -129,7 +129,7 @@ class MedicosAIncribirseAASerializer(serializers.ModelSerializer):
 class MedicosAsistenteAASerializer(serializers.ModelSerializer):
     class Meta:
         model = AsistenteActividadAvalada
-        fields = ['id']
+        fields = ['id', 'tipo', 'isPagado']
 
     def to_representation(self, instance):
         repr = super().to_representation(instance)

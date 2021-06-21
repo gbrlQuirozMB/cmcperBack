@@ -186,12 +186,13 @@ class AsistentesUpExcel(APIView):
             # valorReng = {'numCertificado': 0,'nombre':''}
             for row in datosList:
                 datoMedico = Medico.objects.get(numRegistro=row[0])
-                AsistenteActividadAvalada.objects.create(medico=datoMedico, actividadAvalada=datoAA)
+                AsistenteActividadAvalada.objects.create(medico=datoMedico, actividadAvalada=datoAA, tipo=row[4].title())
                 # valorReng = {'numCertificado': row[0],'nombre': row[1]}
                 # datos['dadosAlta'].append(valorReng)
 
+            AsistenteActividadAvalada.objects.exclude(tipo__in=['Asistente','Ponente','Coordinador']).delete() #borrar registros que no cumplan con nombre correctos
             cuenta = AsistenteActividadAvalada.objects.filter(actividadAvalada=actAvaId).count()
-            respuesta = {"detail": "Datos subidos correctamente"}
+            respuesta = {"detail": "Se borraron los registros anteriores e incorrectos. Datos subidos correctamente"}
             respuesta['numRegistrosSubidos'] = cuenta
             # respuesta['detail'] = datos
             return Response(respuesta, status=status.HTTP_201_CREATED)

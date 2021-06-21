@@ -74,14 +74,14 @@ def configDB():
         cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
         telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999, aceptado=True)
 
-    AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=aa6)
-    AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=aa3)
-    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa9)
-    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa3)
-    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa6)
-    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa1)
-    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa2)
-    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa4)
+    AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=aa6, tipo='Participante')
+    AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=aa3, tipo='Participante')
+    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa9, tipo='Participante')
+    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa3, tipo='Participante')
+    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa6, tipo='Participante')
+    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa1, tipo='Participante')
+    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa2, tipo='Participante')
+    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa4, tipo='Participante')
 
 
 class PostActividadAvaladaTest(APITestCase):
@@ -336,7 +336,8 @@ class PostAsistenteActividadAvaladaTest(APITestCase):
 
         self.json = {
             "medico": 3,
-            "actividadAvalada": 3
+            "actividadAvalada": 3,
+            "tipo": "Ponente"
         }
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
@@ -370,10 +371,6 @@ class PostAsistenteActividadAvaladaTest(APITestCase):
         print(f'response JSON ===>>> 409 medico ya registrado \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
 
-        AsistenteActividadAvalada.objects.create(medico=self.medico9, actividadAvalada=self.aa3)  # se agrega para llenar el cupo
-        response = self.client.post('/api/actividades-avaladas/asistente/create/', data=json.dumps(self.json), content_type="application/json")
-        print(f'response JSON ===>>> 409 cupo lleno \n {json.dumps(response.json())} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
         # ------------AGREGAR y VARIAS BL
 
         self.json = {
@@ -382,13 +379,15 @@ class PostAsistenteActividadAvaladaTest(APITestCase):
         }
         response = self.client.post('/api/actividades-avaladas/asistente/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> 404 no existe actividad avalada\n {json.dumps(response.json())} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        # self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        
 
         self.json = {
             "medico": 333,
             "actividadAvalada": 3
         }
-        AsistenteActividadAvalada.objects.filter(id=3).delete()
+        # AsistenteActividadAvalada.objects.filter(id=3).delete()
         response = self.client.post('/api/actividades-avaladas/asistente/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> 400 no existe medico\n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -532,6 +531,13 @@ class PostCargaMasivaExcelAsistenteActividadAvaladaTest(APITestCase):
         self.json = {
             "archivo": csvFile
         }
+        
+        archivo = open('./uploads/asistActiAvalaBad.csv', 'rb')
+        csvFile = SimpleUploadedFile(archivo.name, archivo.read(), content_type='text/csv')
+
+        self.jsonBad = {
+            "archivo": csvFile
+        }
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
 
@@ -551,6 +557,14 @@ class PostCargaMasivaExcelAsistenteActividadAvaladaTest(APITestCase):
         datos = AsistenteActividadAvalada.objects.filter(actividadAvalada=3)
         for dato in datos:
             print(f'--->>>id: {dato.id} - medicoId: {dato.medico.id}')
+            
+        response = self.client.get('/api/actividades-avaladas/asistentes/list/?actividadAvalada=3')
+        print(f'response JSON ===>>> nombreNS=gabriel \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        response = self.client.post('/api/actividades-avaladas/3/asistentes/cargar-excel/create/', data=self.jsonBad, format='multipart')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
 
         # se prueba que no permita  registros repetidos
         # se prueba que no existan medico en DB

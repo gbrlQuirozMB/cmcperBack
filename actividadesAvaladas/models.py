@@ -106,6 +106,8 @@ class Tema(models.Model):
 class AsistenteActividadAvalada(models.Model):
     medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medicoAAA')
     actividadAvalada = models.ForeignKey(ActividadAvalada, on_delete=models.CASCADE, related_name='actividadAvaladaAAA')
+    tipo = models.CharField(max_length=30, blank=True) # participante, ponente, coordinador
+    isPagado = models.BooleanField(default=False, db_column='is_pagado')  # verificar si ya pago
 
     class Meta:
         db_table = 'actividades_avaladas_asistentes'
