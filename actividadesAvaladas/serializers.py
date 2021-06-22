@@ -16,7 +16,7 @@ class ActividadAvaladaSerializer(serializers.ModelSerializer):
         model = ActividadAvalada
         fields = ['id', 'institucion', 'nombre', 'emailContacto', 'fechaInicio', 'fechaTermino', 'lugar', 'solicitante', 'tipoPago', 'porcentaje', 'precio', 'descripcion', 'temas', 'qrCodeImg',
                   'itemAsistente', 'itemPonente', 'itemCoordinador', 'puntajeAsistente', 'puntajePonente', 'puntajeCoordinador', 'fechaLimite', 'codigoWeb']
-        read_only_fields = ['qrCodeImg','codigoWeb']
+        read_only_fields = ['qrCodeImg']
 
     def create(self, validated_data):
         if validated_data.get('temas') is None:

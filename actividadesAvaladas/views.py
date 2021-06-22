@@ -17,6 +17,9 @@ import codecs
 from django.core.exceptions import FieldError
 from django.db import IntegrityError
 
+from django.contrib.auth.base_user import BaseUserManager
+
+
 # Create your views here.
 
 
@@ -27,6 +30,7 @@ class ActividadAvaladaCreateView(CreateAPIView):
     def post(self, request, *args, **kwargs):
         serializer = ActividadAvaladaSerializer(data=request.data)
         if serializer.is_valid():
+            request.data['codigoWeb'] = BaseUserManager().make_random_password()  # letras mayusculas, minusculas y numeros
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)

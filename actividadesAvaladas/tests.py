@@ -46,7 +46,7 @@ def configDB():
     aa2 = ActividadAvalada.objects.create(institucion=institucion1,  nombre='nombre 2', emailContacto='emailContacto 2', fechaInicio=date.today()+relativedelta(days=8),
                                           lugar='lugar 2', solicitante='solicitante 2', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 2', isPagado=True)
     aa3 = ActividadAvalada.objects.create(institucion=institucion2,  nombre='nombre 3', emailContacto='emailContacto 3', fechaInicio=date.today()+relativedelta(days=8),
-                                          lugar='lugar 3', solicitante='solicitante 3', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 3', isPagado=False)
+                                          lugar='lugar 3', solicitante='solicitante 3', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 3', isPagado=False, codigoWeb='E27tpSgr2c')
     aa4 = ActividadAvalada.objects.create(institucion=institucion2,  nombre='nombre 4', emailContacto='emailContacto 4', fechaInicio=date.today()+relativedelta(days=8),
                                           lugar='lugar 4', solicitante='solicitante 4', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 4', isPagado=True)
     aa6 = ActividadAvalada.objects.create(id=6, institucion=institucion3,  nombre='nombre 5', emailContacto='emailContacto 5', fechaInicio=date.today()+relativedelta(days=8),
@@ -134,7 +134,8 @@ class PostActividadAvaladaTest(APITestCase):
         print(f'\n --->>>#registros ActividadAvalada: {cuenta}')
         print(f'\n --->>>#registros Temas: {Tema.objects.count()}')
 
-        datos = ActividadAvalada.objects.get(id=cuenta)
+        cuenta = 10 # porque jugue con los ids
+        datos = ActividadAvalada.objects.get(id=cuenta) 
         print(f'\n --->>>ActividadAvalada.nombre: {datos.nombre}')
         datosTema = Tema.objects.filter(actividadAvalada=cuenta)
         if datosTema.count() > 0:
@@ -293,6 +294,7 @@ class PutActividadAvaladaTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         print(f'\n---->>> modificada')
+        self.json['codigoWeb'] = 'newCode'
         response = self.client.put('/api/actividades-avaladas/3/update/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> pk=3 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
