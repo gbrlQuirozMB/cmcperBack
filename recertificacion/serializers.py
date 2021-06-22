@@ -320,3 +320,9 @@ class DetallesSubcapituloSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subcapitulo
         fields = '__all__'
+
+
+class QRItemDocumentoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RecertificacionItemDocumento
+        fields = ['id', 'documento']

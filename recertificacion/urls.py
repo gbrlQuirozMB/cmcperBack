@@ -73,5 +73,7 @@ urlpatterns = [
     path('documento-qr/create/', QRItemDocumentosCreateView.as_view(), ),
     path('codigo-web/create/', CodigoWEBitemDocumentosCreateView.as_view(), ),
 
+    path('documento-qr/<pk>/update/', QRItemDocumentoUpdateView.as_view(), ),
+
 
 ]

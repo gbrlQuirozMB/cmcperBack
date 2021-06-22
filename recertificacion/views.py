@@ -816,7 +816,7 @@ class QRItemDocumentosCreateView(CreateAPIView):
         request.data['notasRechazo'] = ''
         request.data['razonRechazo'] = ''
         request.data['tituloDescripcion'] = 'Generado por QR'
-        
+
         datosAA = ActividadAvalada.objects.filter(id=actividadAvaladaId)
         if datosAA.count() <= 0:
             raise ResponseError('No existe la actividad avalada', 404)
@@ -864,13 +864,13 @@ class CodigoWEBitemDocumentosCreateView(CreateAPIView):
         request.data['notasRechazo'] = ''
         request.data['razonRechazo'] = ''
         request.data['tituloDescripcion'] = 'Generado por QR'
-        
+
         datosAA = ActividadAvalada.objects.filter(codigoWeb=codigoWeb)
         if datosAA.count() <= 0:
             raise ResponseError('No existe codigo WEB la actividad avalada', 404)
         if datosAA.get().isPagado != True:
             raise ResponseError('No esta pagada la actividad avalada', 409)
-        
+
         datos = AsistenteActividadAvalada.objects.filter(medico=medicoId, actividadAvalada=datosAA.get().id)
         if datos.count() <= 0:
             raise ResponseError('No existe el medico en la actividad avalada', 404)
@@ -887,7 +887,7 @@ class CodigoWEBitemDocumentosCreateView(CreateAPIView):
         if datos.get().tipo == 'Coordinador':
             request.data['puntosOtorgados'] = datosAA.get().puntajeCoordinador
             request.data['item'] = datosAA.get().itemCoordinador.id
-        
+
         serializer = ItemDocumentoSerializer(data=request.data)
         if serializer.is_valid():
             cuenta = RecertificacionItemDocumento.objects.filter(medico=medicoId, item=request.data['item'], tituloDescripcion='Generado por QR').count()
@@ -896,3 +896,9 @@ class CodigoWEBitemDocumentosCreateView(CreateAPIView):
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
+
+
+class QRItemDocumentoUpdateView(UpdateAPIView):
+    queryset = RecertificacionItemDocumento.objects.filter()
+    serializer_class = QRItemDocumentoSerializer
+    http_method_names = ['put']
