@@ -2017,40 +2017,46 @@ class PostQRItemDocumentosCreate201Test(APITestCase):
 
     def test(self):
         self.client.force_authenticate(user=self.user)
-
+        
         cuenta = RecertificacionItemDocumento.objects.count()
         print(f'--->>>cuenta: {cuenta}')
+        
         response = self.client.post('/api/recertificacion/documento-qr/create/', data=json.dumps(self.json), content_type="application/json")
-        # print(f'response JSON ===>>> OK \n {json.dumps(response.data)} \n ---')
         print(f'response JSON ===>>> OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        
+        self.json['actividadAvalada'] = 99
+        response = self.client.post('/api/recertificacion/documento-qr/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> 404 actividad avalada \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
+        self.json['actividadAvalada'] = 9
+        ActividadAvalada.objects.filter(id=9).update(isPagado=False)
+        response = self.client.post('/api/recertificacion/documento-qr/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> 409 no pagada la actividad avalada \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+        
+        self.json['medico'] = 36
+        ActividadAvalada.objects.filter(id=9).update(isPagado=True)
+        response = self.client.post('/api/recertificacion/documento-qr/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> 404 no existe medico en la actividad avalada \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
+        self.json['medico'] = 1
+        AsistenteActividadAvalada.objects.filter(id=1).update(isPagado=False)
+        response = self.client.post('/api/recertificacion/documento-qr/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> 409 no pagada la asistencia actividad avalada \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+        
+        AsistenteActividadAvalada.objects.filter(id=1).update(isPagado=True)
+        response = self.client.post('/api/recertificacion/documento-qr/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> 409 ya se capturo \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+        
         cuenta = RecertificacionItemDocumento.objects.count()
         print(f'--->>>cuenta: {cuenta}')
 
-        response = self.client.post('/api/recertificacion/documento-qr/create/', data=json.dumps(self.json), content_type="application/json")
-        # print(f'response JSON ===>>> OK \n {json.dumps(response.data)} \n ---')
-        print(f'response JSON ===>>> 409 ya se capturo \n {json.dumps(response.json())} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
-
-        self.json = {
-            "medico": 1,
-            "actividadAvalada": 99
-        }
-
-        response = self.client.post('/api/recertificacion/documento-qr/create/', data=json.dumps(self.json), content_type="application/json")
-        # print(f'response JSON ===>>> OK \n {json.dumps(response.data)} \n ---')
-        print(f'response JSON ===>>> 409 no existe medico o actividad \n {json.dumps(response.json())} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
-
-        # datos = Item.objects.filter(subcapitulo=2)
-        # for dato in datos:
-        #     print(f'--->>>datos: {dato.id}')
-        # print(f'--->>>cuenta: {datos.count()}')
-
-        # datos = AsistenteActividadAvalada.objects.filter(medico=1, actividadAvalada=9)
-        # print(f'--->>>cuenta: {datos.count()}')
-        # print(f'--->>>cuenta: {datos.get().actividadAvalada.puntosAsignar}')
-
+        
 
 class PostCodigoWEBitemDocumentosCreateTest(APITestCase):
     def setUp(self):
@@ -2101,8 +2107,6 @@ class PostCodigoWEBitemDocumentosCreateTest(APITestCase):
         response = self.client.post('/api/recertificacion/codigo-web/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> 409 ya se capturo \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
-        
-        
         
         cuenta = RecertificacionItemDocumento.objects.count()
         print(f'--->>>cuenta: {cuenta}')

@@ -816,14 +816,31 @@ class QRItemDocumentosCreateView(CreateAPIView):
         request.data['notasRechazo'] = ''
         request.data['razonRechazo'] = ''
         request.data['tituloDescripcion'] = 'Generado por QR'
+        
+        datosAA = ActividadAvalada.objects.filter(id=actividadAvaladaId)
+        if datosAA.count() <= 0:
+            raise ResponseError('No existe la actividad avalada', 404)
+        if datosAA.get().isPagado != True:
+            raise ResponseError('No esta pagada la actividad avalada', 409)
 
         datos = AsistenteActividadAvalada.objects.filter(medico=medicoId, actividadAvalada=actividadAvaladaId)
         if datos.count() <= 0:
-            raise ResponseError('No existe el medico en la actividad avalada', 409)
+            raise ResponseError('No existe el medico en la actividad avalada', 404)
+        if datos.get().isPagado != True:
+            raise ResponseError('No esta pagada la asistencia a la actividad avalada', 409)
 
         request.data['fechaEmision'] = datos.get().actividadAvalada.fechaInicio
-        request.data['puntosOtorgados'] = datos.get().actividadAvalada.puntosAsignar
-        request.data['item'] = datos.get().actividadAvalada.item.id
+        # request.data['puntosOtorgados'] = datos.get().actividadAvalada.puntosAsignar
+        # request.data['item'] = datos.get().actividadAvalada.item.id
+        if datos.get().tipo == 'Asistente':
+            request.data['puntosOtorgados'] = datosAA.get().puntajeAsistente
+            request.data['item'] = datosAA.get().itemAsistente.id
+        if datos.get().tipo == 'Ponente':
+            request.data['puntosOtorgados'] = datosAA.get().puntajePonente
+            request.data['item'] = datosAA.get().itemPonente.id
+        if datos.get().tipo == 'Coordinador':
+            request.data['puntosOtorgados'] = datosAA.get().puntajeCoordinador
+            request.data['item'] = datosAA.get().itemCoordinador.id
 
         serializer = ItemDocumentoSerializer(data=request.data)
         if serializer.is_valid():
