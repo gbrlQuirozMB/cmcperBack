@@ -1104,7 +1104,7 @@ class GetCostoAPagar200Test(APITestCase):
     def setUp(self):
         # CatPagos.objects.create(descripcion='ECV - Examen loco!!!', precio=369.69, tipo=1)
         # CatPagos.objects.create(descripcion='RC - Examen crazy!!!', precio=963.69, tipo=6)
-        
+
         CatPagos.objects.create(descripcion='Examen Certificación Vigente', precio=123.45)
         CatPagos.objects.create(descripcion='Examen Convocatoria Nacional', precio=456.78)
         CatPagos.objects.create(descripcion='Examen Convocatoria Extranjero', precio=369.69)
@@ -1152,7 +1152,7 @@ class PutExamenPagado200Test(APITestCase):
     def setUp(self):
         # CatPagos.objects.create(descripcion='ECV - Examen loco!!!', precio=369.69, tipo=1)
         # CatPagos.objects.create(descripcion='RC - Examen crazy!!!', precio=963.69, tipo=6)
-        
+
         CatPagos.objects.create(descripcion='Examen Certificación Vigente', precio=123.45)
         CatPagos.objects.create(descripcion='Examen Convocatoria Nacional', precio=456.78)
         CatPagos.objects.create(descripcion='Examen Convocatoria Extranjero', precio=369.69)
@@ -1966,43 +1966,47 @@ class PutSeveralSelectList200Test(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
+def configDB():
+    medico1 = Medico.objects.create(
+        id=1, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+        deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+        cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+        telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=369)
+
+    capitulo1 = Capitulo.objects.create(titulo='titulo 1', descripcion='capitulo descripcion 1', puntos=33.0, maximo=50.0, minimo=50.0, isOpcional=False)
+    subcapitulo1 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo1)
+    item1 = Item.objects.create(descripcion='item descripcion 1', puntos=3, subcapitulo=subcapitulo1)
+    item2 = Item.objects.create(descripcion='item descripcion 2', puntos=6, subcapitulo=subcapitulo1)
+    item3 = Item.objects.create(descripcion='item descripcion 3', puntos=9, subcapitulo=subcapitulo1)
+
+    capitulo2 = Capitulo.objects.create(titulo='titulo 2', descripcion='capitulo descripcion 2', puntos=66.0, maximo=50.0, minimo=50.0, isOpcional=False)
+    subcapitulo2 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo2)
+    subcapitulo4 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 4', comentarios='subcapitulo comentarios 4', capitulo=capitulo2)
+    item4 = Item.objects.create(descripcion='item descripcion 1', puntos=10, subcapitulo=subcapitulo2)
+    item5 = Item.objects.create(descripcion='item descripcion 2', puntos=20, subcapitulo=subcapitulo2)
+    item6 = Item.objects.create(descripcion='item descripcion 3', puntos=30, subcapitulo=subcapitulo2)
+
+    item7 = Item.objects.create(descripcion='item descripcion 4', puntos=30, subcapitulo=subcapitulo4)
+    item8 = Item.objects.create(descripcion='item descripcion 5', puntos=30, subcapitulo=subcapitulo4)
+    item9 = Item.objects.create(descripcion='item descripcion 6', puntos=30, subcapitulo=subcapitulo4)
+
+    institucion3 = Institucion.objects.create(id=3, nombreInstitucion='nombre institucion 3', rfc='rfc 3', contacto='contacto 3', telUno='telUno 3', telDos='telDos 3', telCelular='telCelular 3',
+                                              email='email 3', pais='pais 3', estado='estado 3', ciudad='ciudad 3', deleMuni='deleMuni 3', colonia='colonia 3', calle='calle 3', cp='cp 3',
+                                              numInterior='Interior 3', numExterior='Exterior 3')
+
+    aa9 = ActividadAvalada.objects.create(id=9, institucion=institucion3, itemAsistente=item3, itemPonente=item6, itemCoordinador=item9, nombre='nombre 9', emailContacto='emailContacto 9',
+                                          puntajeAsistente=3.3, puntajePonente=6.6, puntajeCoordinador=9.9,
+                                          fechaInicio=date.today(), fechaTermino=date.today() + relativedelta(days=3), fechaLimite=date.today() + relativedelta(days=6),
+                                          lugar='lugar 9', solicitante='solicitante 9', tipoPago=1, porcentaje=33, precio=369.69, descripcion='descripcion 9', isPagado=True,
+                                          codigoWeb='AsdQwe69QO')
+
+    AsistenteActividadAvalada.objects.create(medico=medico1, actividadAvalada=aa9, tipo='Asistente', isPagado=True)
+
+
 class PostQRItemDocumentosCreate201Test(APITestCase):
     def setUp(self):
-        medico1 = Medico.objects.create(
-            id=1, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
-            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
-            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=369)
 
-        capitulo1 = Capitulo.objects.create(titulo='titulo 1', descripcion='capitulo descripcion 1', puntos=33.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo1 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo1)
-        item1 = Item.objects.create(descripcion='item descripcion 1', puntos=3, subcapitulo=subcapitulo1)
-        item2 = Item.objects.create(descripcion='item descripcion 2', puntos=6, subcapitulo=subcapitulo1)
-        item3 = Item.objects.create(descripcion='item descripcion 3', puntos=9, subcapitulo=subcapitulo1)
-
-        capitulo2 = Capitulo.objects.create(titulo='titulo 2', descripcion='capitulo descripcion 2', puntos=66.0, maximo=50.0, minimo=50.0, isOpcional=False)
-        subcapitulo2 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo2)
-        subcapitulo4 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 4', comentarios='subcapitulo comentarios 4', capitulo=capitulo2)
-        item4 = Item.objects.create(descripcion='item descripcion 1', puntos=10, subcapitulo=subcapitulo2)
-        item5 = Item.objects.create(descripcion='item descripcion 2', puntos=20, subcapitulo=subcapitulo2)
-        item6 = Item.objects.create(descripcion='item descripcion 3', puntos=30, subcapitulo=subcapitulo2)
-
-        item7 = Item.objects.create(descripcion='item descripcion 4', puntos=30, subcapitulo=subcapitulo4)
-        item8 = Item.objects.create(descripcion='item descripcion 5', puntos=30, subcapitulo=subcapitulo4)
-        item9 = Item.objects.create(descripcion='item descripcion 6', puntos=30, subcapitulo=subcapitulo4)
-
-        institucion3 = Institucion.objects.create(id=3, nombreInstitucion='nombre institucion 3', rfc='rfc 3', contacto='contacto 3', telUno='telUno 3', telDos='telDos 3', telCelular='telCelular 3',
-                                                  email='email 3', pais='pais 3', estado='estado 3', ciudad='ciudad 3', deleMuni='deleMuni 3', colonia='colonia 3', calle='calle 3', cp='cp 3',
-                                                  numInterior='Interior 3', numExterior='Exterior 3')
-
-        aa9 = ActividadAvalada.objects.create(id=9, institucion=institucion3, item=item6, nombre='nombre 6', emailContacto='emailContacto 6', numAsistentes=9, puntosAsignar=3.6,
-                                              fechaInicio=date.today()+relativedelta(days=9), lugar='lugar 6', solicitante='solicitante 6', tipoPago=1, porcentaje=1, precio=369.69,
-                                              descripcion='descripcion 6', isPagado=True)
-
-        AsistenteActividadAvalada.objects.create(medico=medico1, actividadAvalada=aa9)
-
-        # archivo = open('./uploads/image_4.png', 'rb')
-        # documento = SimpleUploadedFile(archivo.name, archivo.read(), content_type='image/png')
+        configDB()
 
         self.json = {
             "medico": 1,
@@ -2047,6 +2051,61 @@ class PostQRItemDocumentosCreate201Test(APITestCase):
         # print(f'--->>>cuenta: {datos.count()}')
         # print(f'--->>>cuenta: {datos.get().actividadAvalada.puntosAsignar}')
 
+
+class PostCodigoWEBitemDocumentosCreateTest(APITestCase):
+    def setUp(self):
+
+        configDB()
+
+        self.json = {
+            "medico": 1,
+            "codigoWeb": 'AsdQwe69QO'
+        }
+
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+        
+        cuenta = RecertificacionItemDocumento.objects.count()
+        print(f'--->>>cuenta: {cuenta}')
+        
+        response = self.client.post('/api/recertificacion/codigo-web/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        
+        self.json['codigoWeb'] = 'asd123'
+        response = self.client.post('/api/recertificacion/codigo-web/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> 404 no existe codigo WEB \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
+        self.json['codigoWeb'] = 'AsdQwe69QO'
+        ActividadAvalada.objects.filter(id=9).update(isPagado=False)
+        response = self.client.post('/api/recertificacion/codigo-web/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> 409 no pagada la actividad avalada \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+        
+        self.json['medico'] = 36
+        ActividadAvalada.objects.filter(id=9).update(isPagado=True)
+        response = self.client.post('/api/recertificacion/codigo-web/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> 404 no existe medico en la actividad avalada \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
+        self.json['medico'] = 1
+        AsistenteActividadAvalada.objects.filter(id=1).update(isPagado=False)
+        response = self.client.post('/api/recertificacion/codigo-web/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> 409 no pagada la asistencia actividad avalada \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+        
+        AsistenteActividadAvalada.objects.filter(id=1).update(isPagado=True)
+        response = self.client.post('/api/recertificacion/codigo-web/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> 409 ya se capturo \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+        
+        
+        
+        cuenta = RecertificacionItemDocumento.objects.count()
+        print(f'--->>>cuenta: {cuenta}')
 
 class variosTest(APITestCase):
     def setUp(self):

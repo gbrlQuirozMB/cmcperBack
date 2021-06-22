@@ -71,6 +71,7 @@ urlpatterns = [
     path('renovacion/medico/<medicoId>/detail/', RenovacionDetailView.as_view(), ),
 
     path('documento-qr/create/', QRItemDocumentosCreateView.as_view(), ),
+    path('codigo-web/create/', CodigoWEBitemDocumentosCreateView.as_view(), ),
 
 
 ]

@@ -74,14 +74,14 @@ def configDB():
         cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
         telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999, aceptado=True)
 
-    AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=aa6, tipo='Participante')
-    AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=aa3, tipo='Participante')
-    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa9, tipo='Participante')
-    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa3, tipo='Participante')
-    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa6, tipo='Participante')
-    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa1, tipo='Participante')
-    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa2, tipo='Participante')
-    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa4, tipo='Participante')
+    AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=aa6, tipo='Asistente')
+    AsistenteActividadAvalada.objects.create(medico=medico6, actividadAvalada=aa3, tipo='Asistente')
+    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa9, tipo='Asistente')
+    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa3, tipo='Asistente')
+    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa6, tipo='Asistente')
+    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa1, tipo='Asistente')
+    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa2, tipo='Asistente')
+    AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa4, tipo='Asistente')
 
 
 class PostActividadAvaladaTest(APITestCase):

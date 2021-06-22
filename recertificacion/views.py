@@ -32,7 +32,7 @@ import csv
 import codecs
 
 from certificados.models import Certificado
-from actividadesAvaladas.models import AsistenteActividadAvalada
+from actividadesAvaladas.models import AsistenteActividadAvalada, ActividadAvalada
 
 # Create your views here.
 # class CertificadoDatosDetailView(RetrieveAPIView):
@@ -825,6 +825,52 @@ class QRItemDocumentosCreateView(CreateAPIView):
         request.data['puntosOtorgados'] = datos.get().actividadAvalada.puntosAsignar
         request.data['item'] = datos.get().actividadAvalada.item.id
 
+        serializer = ItemDocumentoSerializer(data=request.data)
+        if serializer.is_valid():
+            cuenta = RecertificacionItemDocumento.objects.filter(medico=medicoId, item=request.data['item'], tituloDescripcion='Generado por QR').count()
+            if cuenta > 0:
+                raise ResponseError('Ya se capturo este QR', 409)
+            return self.create(request, *args, **kwargs)
+        log.info(f'campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
+
+
+class CodigoWEBitemDocumentosCreateView(CreateAPIView):
+    serializer_class = ItemDocumentoSerializer
+
+    def post(self, request, *args, **kwargs):
+        medicoId = request.data.get('medico')
+        codigoWeb = request.data.get('codigoWeb')
+
+        request.data['estatus'] = 1
+        request.data['observaciones'] = ''
+        request.data['notasRechazo'] = ''
+        request.data['razonRechazo'] = ''
+        request.data['tituloDescripcion'] = 'Generado por QR'
+        
+        datosAA = ActividadAvalada.objects.filter(codigoWeb=codigoWeb)
+        if datosAA.count() <= 0:
+            raise ResponseError('No existe codigo WEB la actividad avalada', 404)
+        if datosAA.get().isPagado != True:
+            raise ResponseError('No esta pagada la actividad avalada', 409)
+        
+        datos = AsistenteActividadAvalada.objects.filter(medico=medicoId, actividadAvalada=datosAA.get().id)
+        if datos.count() <= 0:
+            raise ResponseError('No existe el medico en la actividad avalada', 404)
+        if datos.get().isPagado != True:
+            raise ResponseError('No esta pagada la asistencia a la actividad avalada', 409)
+
+        request.data['fechaEmision'] = datos.get().actividadAvalada.fechaInicio
+        if datos.get().tipo == 'Asistente':
+            request.data['puntosOtorgados'] = datosAA.get().puntajeAsistente
+            request.data['item'] = datosAA.get().itemAsistente.id
+        if datos.get().tipo == 'Ponente':
+            request.data['puntosOtorgados'] = datosAA.get().puntajePonente
+            request.data['item'] = datosAA.get().itemPonente.id
+        if datos.get().tipo == 'Coordinador':
+            request.data['puntosOtorgados'] = datosAA.get().puntajeCoordinador
+            request.data['item'] = datosAA.get().itemCoordinador.id
+        
         serializer = ItemDocumentoSerializer(data=request.data)
         if serializer.is_valid():
             cuenta = RecertificacionItemDocumento.objects.filter(medico=medicoId, item=request.data['item'], tituloDescripcion='Generado por QR').count()
