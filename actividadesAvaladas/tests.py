@@ -45,8 +45,10 @@ def configDB():
                                           lugar='lugar 1', solicitante='solicitante 1', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 1', isPagado=False)
     aa2 = ActividadAvalada.objects.create(institucion=institucion1,  nombre='nombre 2', emailContacto='emailContacto 2', fechaInicio=date.today()+relativedelta(days=8),
                                           lugar='lugar 2', solicitante='solicitante 2', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 2', isPagado=True)
-    aa3 = ActividadAvalada.objects.create(institucion=institucion2,  nombre='nombre 3', emailContacto='emailContacto 3', fechaInicio=date.today()+relativedelta(days=8),
-                                          lugar='lugar 3', solicitante='solicitante 3', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 3', isPagado=False, codigoWeb='E27tpSgr2c')
+    aa3 = ActividadAvalada.objects.create(
+        institucion=institucion2, nombre='nombre 3', emailContacto='emailContacto 3', fechaInicio=date.today() + relativedelta(days=8),
+        fechaLimite=date.today() + relativedelta(days=16),
+        lugar='lugar 3', solicitante='solicitante 3', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 3', isPagado=False, codigoWeb='E27tpSgr2c')
     aa4 = ActividadAvalada.objects.create(institucion=institucion2,  nombre='nombre 4', emailContacto='emailContacto 4', fechaInicio=date.today()+relativedelta(days=8),
                                           lugar='lugar 4', solicitante='solicitante 4', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 4', isPagado=True)
     aa6 = ActividadAvalada.objects.create(id=6, institucion=institucion3,  nombre='nombre 5', emailContacto='emailContacto 5', fechaInicio=date.today()+relativedelta(days=8),
@@ -359,18 +361,23 @@ class PostAsistenteActividadAvaladaTest(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        response = self.client.get('/api/actividades-avaladas/medicos/list/?nombreNS=gabr')
-        print(f'response JSON ===>>> nombreNS=gabr\n {json.dumps(response.json())} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # response = self.client.get('/api/actividades-avaladas/medicos/list/?nombreNS=gabr')
+        # print(f'response JSON ===>>> nombreNS=gabr\n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = self.client.get('/api/actividades-avaladas/medicos/list/?nombreNS=gabriel')
-        print(f'response JSON ===>>> nombreNS=gabriel \n {json.dumps(response.json())} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # ------------BUSQUEDAS PARA AGREGAR
+        # response = self.client.get('/api/actividades-avaladas/medicos/list/?nombreNS=gabriel')
+        # print(f'response JSON ===>>> nombreNS=gabriel \n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # # ------------BUSQUEDAS PARA AGREGAR
 
+        ActividadAvalada.objects.filter(id=3).update(isPagado=True)
+        datos = ActividadAvalada.objects.get(id=3)
+        print(f'--->>>isPagado: {datos.isPagado}')
         response = self.client.post('/api/actividades-avaladas/asistente/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        datos = ActividadAvalada.objects.get(id=3)
+        print(f'--->>>isPagado: {datos.isPagado}')
 
         response = self.client.post('/api/actividades-avaladas/asistente/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> 409 medico ya registrado \n {json.dumps(response.json())} \n ---')
@@ -551,23 +558,33 @@ class PostCargaMasivaExcelAsistenteActividadAvaladaTest(APITestCase):
         cuenta = AsistenteActividadAvalada.objects.all().count()
         print(f'--->>>cuenta originales totales: {cuenta}')
 
+        ActividadAvalada.objects.filter(id=3).update(isPagado=True)
+        datos = ActividadAvalada.objects.get(id=3)
+        print(f'--->>>isPagado: {datos.isPagado}')
         response = self.client.post('/api/actividades-avaladas/3/asistentes/cargar-excel/create/', data=self.json, format='multipart')
         print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        datos = ActividadAvalada.objects.get(id=3)
+        print(f'--->>>isPagado: {datos.isPagado}')
 
         cuenta = AsistenteActividadAvalada.objects.all().count()
         print(f'--->>>cuenta: {cuenta}')
-
         datos = AsistenteActividadAvalada.objects.filter(actividadAvalada=3)
         for dato in datos:
             print(f'--->>>id: {dato.id} - medicoId: {dato.medico.id}')
+        print(f'\n')
+
+        ActividadAvalada.objects.filter(id=3).update(fechaLimite=date.today())
+        response = self.client.post('/api/actividades-avaladas/3/asistentes/cargar-excel/create/', data=self.json, format='multipart')
+        print(f'response JSON ===>>> 409 fecha limite alcanzada \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
 
         response = self.client.get('/api/actividades-avaladas/asistentes/list/?actividadAvalada=3')
-        print(f'response JSON ===>>> nombreNS=gabriel \n {json.dumps(response.json())} \n ---')
+        print(f'response JSON ===>>> actividadAvalada=3 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         response = self.client.post('/api/actividades-avaladas/3/asistentes/cargar-excel/create/', data=self.jsonBad, format='multipart')
-        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        print(f'response JSON ===>>> 409 el CSV esta mal hecho \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
 
         # se prueba que no permita  registros repetidos

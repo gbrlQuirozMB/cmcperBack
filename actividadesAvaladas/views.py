@@ -18,6 +18,8 @@ from django.core.exceptions import FieldError
 from django.db import IntegrityError
 
 from django.contrib.auth.base_user import BaseUserManager
+from datetime import date
+
 
 
 # Create your views here.
@@ -112,17 +114,6 @@ class AsistenteActividadAvaladaCreateView(CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         actAvaId = request.data.get('actividadAvalada')
-
-        # ya no existen numAsistentes, porque los asistentes se va creando cobre la marcha
-        # numAsistentes = ActividadAvalada.objects.filter(id=actAvaId).values_list('numAsistentes', flat=True)
-        # if not numAsistentes:
-        #     raise ResponseError(f'No existe Actividad avalada', 404)
-
-        # ya no existen numAsistentes, porque los asistentes se va creando cobre la marcha
-        # asistentesRegistrados = AsistenteActividadAvalada.objects.filter(actividadAvalada=actAvaId).count()
-        # if asistentesRegistrados >= numAsistentes[0]:
-        #     raise ResponseError(f'No se permite registrar mas de {numAsistentes[0]} asistentes', 409)
-
         medicoId = request.data.get('medico')
         cuenta = AsistenteActividadAvalada.objects.filter(medico=medicoId, actividadAvalada=actAvaId).count()
         if cuenta > 0:
@@ -130,6 +121,7 @@ class AsistenteActividadAvaladaCreateView(CreateAPIView):
 
         serializer = AsistenteActividadAvaladaSerializer(data=request.data)
         if serializer.is_valid():
+            ActividadAvalada.objects.filter(id=actAvaId).update(isPagado=False)
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
@@ -189,6 +181,10 @@ class AsistentesUpExcel(APIView):
     def post(self, request, *args, **kwargs):
         actAvaId = kwargs['pk']
         datoAA = ActividadAvalada.objects.get(id=actAvaId)
+        
+        if datoAA.fechaLimite <= date.today():
+            raise ResponseError('Fecha limite alcanzada, no puede cargar asistentes', 409)
+        
         AsistenteActividadAvalada.objects.filter(actividadAvalada=actAvaId).delete()
 
         archivo = request.data['archivo']
@@ -208,6 +204,7 @@ class AsistentesUpExcel(APIView):
             respuesta = {"detail": "Se borraron los registros anteriores e incorrectos. Datos subidos correctamente"}
             respuesta['numRegistrosSubidos'] = cuenta
             # respuesta['detail'] = datos
+            ActividadAvalada.objects.filter(id=actAvaId).update(isPagado=False)
             return Response(respuesta, status=status.HTTP_201_CREATED)
         except IntegrityError as e:
             respuesta = {"detail": "Sólo puede existir un Medico asistente por Actividad Avalada"}
