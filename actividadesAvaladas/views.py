@@ -79,6 +79,20 @@ class ActividadAvaladaUpdateView(UpdateAPIView):
     permission_classes = (permissions.IsAdminUser,)
     http_method_names = ['put']
 
+    def put(self, request, *args, **kwargs):
+        id = kwargs['pk']
+        try:
+            datos = ActividadAvalada.objects.get(id=id)
+            if datos.isPagado == True:
+                raise ResponseError(f'No se puede cambiar, la actividad ya esta pagada', 409)
+            cuenta = AsistenteActividadAvalada.objects.filter(actividadAvalada=id).count()
+            if cuenta > 0:
+                request.data['institucion'] = datos.institucion.id
+        except ActividadAvalada.DoesNotExist:
+            raise ResponseError(f'No encontrado.', 404)
+
+        return self.update(request, *args, **kwargs)
+
 
 class ActividadAvaladaDeleteView(DestroyAPIView):
     queryset = ActividadAvalada.objects.filter()
@@ -194,7 +208,7 @@ class AsistentesUpExcel(APIView):
                 # valorReng = {'numCertificado': row[0],'nombre': row[1]}
                 # datos['dadosAlta'].append(valorReng)
 
-            AsistenteActividadAvalada.objects.exclude(tipo__in=['Asistente','Ponente','Coordinador']).delete() #borrar registros que no cumplan con nombre correctos
+            AsistenteActividadAvalada.objects.exclude(tipo__in=['Asistente', 'Ponente', 'Coordinador']).delete()  # borrar registros que no cumplan con nombre correctos
             cuenta = AsistenteActividadAvalada.objects.filter(actividadAvalada=actAvaId).count()
             respuesta = {"detail": "Se borraron los registros anteriores e incorrectos. Datos subidos correctamente"}
             respuesta['numRegistrosSubidos'] = cuenta

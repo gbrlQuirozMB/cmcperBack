@@ -15,7 +15,7 @@ class ActividadAvaladaSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActividadAvalada
         fields = ['id', 'institucion', 'nombre', 'emailContacto', 'fechaInicio', 'fechaTermino', 'lugar', 'solicitante', 'tipoPago', 'porcentaje', 'precio', 'descripcion', 'temas', 'qrCodeImg',
-                  'itemAsistente', 'itemPonente', 'itemCoordinador', 'puntajeAsistente', 'puntajePonente', 'puntajeCoordinador', 'fechaLimite', 'codigoWeb']
+                  'itemAsistente', 'itemPonente', 'itemCoordinador', 'puntajeAsistente', 'puntajePonente', 'puntajeCoordinador', 'fechaLimite', 'codigoWeb', 'isPagado']
         read_only_fields = ['qrCodeImg']
 
     def create(self, validated_data):

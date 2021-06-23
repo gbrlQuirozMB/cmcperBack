@@ -134,8 +134,8 @@ class PostActividadAvaladaTest(APITestCase):
         print(f'\n --->>>#registros ActividadAvalada: {cuenta}')
         print(f'\n --->>>#registros Temas: {Tema.objects.count()}')
 
-        cuenta = 10 # porque jugue con los ids
-        datos = ActividadAvalada.objects.get(id=cuenta) 
+        cuenta = 10  # porque jugue con los ids
+        datos = ActividadAvalada.objects.get(id=cuenta)
         print(f'\n --->>>ActividadAvalada.nombre: {datos.nombre}')
         datosTema = Tema.objects.filter(actividadAvalada=cuenta)
         if datosTema.count() > 0:
@@ -296,12 +296,24 @@ class PutActividadAvaladaTest(APITestCase):
         print(f'\n---->>> modificada')
         self.json['codigoWeb'] = 'newCode'
         response = self.client.put('/api/actividades-avaladas/3/update/', data=json.dumps(self.json), content_type="application/json")
-        print(f'response JSON ===>>> pk=3 \n {json.dumps(response.json())} \n ---')
+        print(f'response JSON ===>>> pk=3, no cambia institucion porque hay asistentes \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         response = self.client.put('/api/actividades-avaladas/33/update/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> 404 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        ActividadAvalada.objects.filter(id=3).update(isPagado=True)
+        response = self.client.put('/api/actividades-avaladas/3/update/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> 409 ya pagada \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+
+        ActividadAvalada.objects.filter(id=3).update(isPagado=False)
+        AsistenteActividadAvalada.objects.filter(actividadAvalada=3).delete()
+        self.json['nombre'] = 'nombre 8'
+        response = self.client.put('/api/actividades-avaladas/3/update/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> ok si cambia la institucion porque NO hay asistentes \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # print(f'\n --->>>ActividadAvalada.qrCodeImg: {ActividadAvalada.objects.get(id=3).qrCodeImg}')
 
@@ -383,7 +395,6 @@ class PostAsistenteActividadAvaladaTest(APITestCase):
         print(f'response JSON ===>>> 404 no existe actividad avalada\n {json.dumps(response.json())} \n ---')
         # self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        
 
         self.json = {
             "medico": 333,
@@ -533,7 +544,7 @@ class PostCargaMasivaExcelAsistenteActividadAvaladaTest(APITestCase):
         self.json = {
             "archivo": csvFile
         }
-        
+
         archivo = open('./uploads/asistActiAvalaBad.csv', 'rb')
         csvFile = SimpleUploadedFile(archivo.name, archivo.read(), content_type='text/csv')
 
@@ -559,11 +570,11 @@ class PostCargaMasivaExcelAsistenteActividadAvaladaTest(APITestCase):
         datos = AsistenteActividadAvalada.objects.filter(actividadAvalada=3)
         for dato in datos:
             print(f'--->>>id: {dato.id} - medicoId: {dato.medico.id}')
-            
+
         response = self.client.get('/api/actividades-avaladas/asistentes/list/?actividadAvalada=3')
         print(f'response JSON ===>>> nombreNS=gabriel \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         response = self.client.post('/api/actividades-avaladas/3/asistentes/cargar-excel/create/', data=self.jsonBad, format='multipart')
         print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
