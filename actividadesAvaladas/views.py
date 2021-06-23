@@ -21,7 +21,6 @@ from django.contrib.auth.base_user import BaseUserManager
 from datetime import date
 
 
-
 # Create your views here.
 
 
@@ -174,6 +173,8 @@ class ActividadAvaladaPagadoView(UpdateAPIView):
 
     def put(self, request, *args, **kwargs):
         request.data['isPagado'] = True
+        actAvaId = kwargs['pk']
+        AsistenteActividadAvalada.objects.filter(actividadAvalada=actAvaId).update(isPagado=True)
         return self.update(request, *args, **kwargs)
 
 
@@ -181,10 +182,10 @@ class AsistentesUpExcel(APIView):
     def post(self, request, *args, **kwargs):
         actAvaId = kwargs['pk']
         datoAA = ActividadAvalada.objects.get(id=actAvaId)
-        
+
         if datoAA.fechaLimite <= date.today():
             raise ResponseError('Fecha limite alcanzada, no puede cargar asistentes', 409)
-        
+
         AsistenteActividadAvalada.objects.filter(actividadAvalada=actAvaId).delete()
 
         archivo = request.data['archivo']

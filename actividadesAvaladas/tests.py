@@ -45,14 +45,13 @@ def configDB():
                                           lugar='lugar 1', solicitante='solicitante 1', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 1', isPagado=False)
     aa2 = ActividadAvalada.objects.create(institucion=institucion1,  nombre='nombre 2', emailContacto='emailContacto 2', fechaInicio=date.today()+relativedelta(days=8),
                                           lugar='lugar 2', solicitante='solicitante 2', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 2', isPagado=True)
-    aa3 = ActividadAvalada.objects.create(
-        institucion=institucion2, nombre='nombre 3', emailContacto='emailContacto 3', fechaInicio=date.today() + relativedelta(days=8),
-        fechaLimite=date.today() + relativedelta(days=16),
-        lugar='lugar 3', solicitante='solicitante 3', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 3', isPagado=False, codigoWeb='E27tpSgr2c')
+    aa3 = ActividadAvalada.objects.create(institucion=institucion2, nombre='nombre 3', emailContacto='emailContacto 3',
+                                          fechaInicio=date.today() + relativedelta(days=8), fechaLimite=date.today() + relativedelta(days=16),
+                                          lugar='lugar 3', solicitante='solicitante 3', tipoPago=1, porcentaje=33, precio=369.69, descripcion='descripcion 3', isPagado=False, codigoWeb='E27tpSgr2c')
     aa4 = ActividadAvalada.objects.create(institucion=institucion2,  nombre='nombre 4', emailContacto='emailContacto 4', fechaInicio=date.today()+relativedelta(days=8),
                                           lugar='lugar 4', solicitante='solicitante 4', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 4', isPagado=True)
     aa6 = ActividadAvalada.objects.create(id=6, institucion=institucion3,  nombre='nombre 5', emailContacto='emailContacto 5', fechaInicio=date.today()+relativedelta(days=8),
-                                          lugar='lugar 5', solicitante='solicitante 5', tipoPago=1, porcentaje=1, precio=369.69, descripcion='descripcion 5', isPagado=False)
+                                          lugar='lugar 5', solicitante='solicitante 5', tipoPago=2, porcentaje=1, precio=369.69, descripcion='descripcion 5', isPagado=False)
     aa9 = ActividadAvalada.objects.create(id=9, institucion=institucion3,  nombre='nombre 6', emailContacto='emailContacto 6', fechaInicio=date.today()+relativedelta(days=8),
                                           lugar='lugar 6', solicitante='solicitante 6', tipoPago=6, porcentaje=33, precio=369.69, descripcion='descripcion 6', isPagado=True)
 
@@ -489,19 +488,25 @@ class PutActividadAvaladaPagadoTest(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        dato = ActividadAvalada.objects.get(id=3)
-        print(f'--->>>ANTES dato: {dato.id} - {dato.isPagado}')
+        datoAA = ActividadAvalada.objects.get(id=3)
+        print(f'--->>>ANTES dato: {datoAA.id} - {datoAA.isPagado}')
+        datosAAA = AsistenteActividadAvalada.objects.filter(actividadAvalada=3)
+        for dato in datosAAA:
+            print(f'--->>>medicoId: {dato.medico.id} - isPagado: {dato.isPagado}')
 
         response = self.client.put('/api/actividades-avaladas/3/pagado/')
         print(f'response JSON ===>>> ok\n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+        datoAA = ActividadAvalada.objects.get(id=3)
+        print(f'--->>>DESPUES dato: {datoAA.id} - {datoAA.isPagado}')
+        datosAAA = AsistenteActividadAvalada.objects.filter(actividadAvalada=3)
+        for dato in datosAAA:
+            print(f'--->>>medicoId: {dato.medico.id} - isPagado: {dato.isPagado}')
+
         response = self.client.put('/api/actividades-avaladas/33/pagado/')
         print(f'response JSON ===>>> 404 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-        dato = ActividadAvalada.objects.get(id=3)
-        print(f'--->>>DESPUES dato: {dato.id} - {dato.isPagado}')
 
 
 class GetCostoAPagarTest(APITestCase):
@@ -514,13 +519,17 @@ class GetCostoAPagarTest(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        # tipo=1->
+        datos = ActividadAvalada.objects.get(id=3)
+        asistentes = AsistenteActividadAvalada.objects.filter(actividadAvalada=3).count()
+        print(f'--->>>asistentes: {asistentes} - precio: {datos.precio} - porcentaje: {datos.porcentaje}')
         response = self.client.get('/api/actividades-avaladas/3/a-pagar/')
-        print(f'response JSON ===>>> ok\n {json.dumps(response.json())} \n ---')
+        print(f'response JSON ===>>> ok tipo=1 (porcentaje) \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+        datos = ActividadAvalada.objects.get(id=6)
+        print(f'--->>>tipoPago: {datos.tipoPago} - precio: {datos.precio} - porcentaje: {datos.porcentaje}')
         response = self.client.get('/api/actividades-avaladas/6/a-pagar/')
-        print(f'response JSON ===>>> ok\n {json.dumps(response.json())} \n ---')
+        print(f'response JSON ===>>> ok tipo=2 (precio) \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         response = self.client.get('/api/actividades-avaladas/33/a-pagar/')

@@ -144,10 +144,9 @@ class ActividadAvaladaPorPagarSerializer(serializers.ModelSerializer):
         repr['tipo'] = 5
         repr['descripcion'] = 'Actividad Asistencial'
         if instance.tipoPago == 1:
-            total = instance.precio - (instance.precio * (instance.porcentaje / 100))
+            asistentes = AsistenteActividadAvalada.objects.filter(actividadAvalada=instance.id).count()
+            total = asistentes * (instance.precio - (instance.precio * (instance.porcentaje / 100)))
             repr['aPagar'] = round(total, 2)
         else:
-            # total = instance.numAsistentes * instance.porcentaje
-            # repr['aPagar'] = round(total, 2)
-            repr['aPagar'] = 'se redefine'
+            repr['aPagar'] = instance.precio
         return repr

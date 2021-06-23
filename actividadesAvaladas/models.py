@@ -45,7 +45,7 @@ class ActividadAvalada(models.Model):
     solicitante = models.CharField(max_length=300)
     tipoPago = models.PositiveSmallIntegerField(db_column='tipo_pago', choices=(
         (1, 'Porcentaje'),
-        (2, 'Precio por Médico'),
+        (2, 'Precio'),
     ))
     porcentaje = models.DecimalField(max_digits=6, decimal_places=2, null=True, default=0)
     precio = models.DecimalField(max_digits=7, decimal_places=2, null=True, default=0)
@@ -106,7 +106,7 @@ class Tema(models.Model):
 class AsistenteActividadAvalada(models.Model):
     medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medicoAAA')
     actividadAvalada = models.ForeignKey(ActividadAvalada, on_delete=models.CASCADE, related_name='actividadAvaladaAAA')
-    tipo = models.CharField(max_length=30, blank=True) # participante, ponente, coordinador
+    tipo = models.CharField(max_length=30, blank=True)  # participante, ponente, coordinador
     isPagado = models.BooleanField(default=False, db_column='is_pagado')  # verificar si ya pago
 
     class Meta:
