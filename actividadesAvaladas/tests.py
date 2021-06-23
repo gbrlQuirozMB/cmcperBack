@@ -359,15 +359,6 @@ class PostAsistenteActividadAvaladaTest(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        # response = self.client.get('/api/actividades-avaladas/3/asistentes/cupos/')
-        # print(f'response JSON ===>>> cupos \n {json.dumps(response.json())} \n ---')
-        # self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        # response = self.client.get('/api/actividades-avaladas/333/asistentes/cupos/')
-        # print(f'response JSON ===>>> cupos 404 \n {json.dumps(response.json())} \n ---')
-        # self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        # ------------CUPOS
-
         response = self.client.get('/api/actividades-avaladas/medicos/list/?nombreNS=gabr')
         print(f'response JSON ===>>> nombreNS=gabr\n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)

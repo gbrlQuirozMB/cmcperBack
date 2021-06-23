@@ -134,11 +134,6 @@ class AsistenteActividadAvaladaCreateView(CreateAPIView):
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
-# ya no existen cupos, porque los asistentes se va creando cobre la marcha
-# class CuposAsistentesDetailView(RetrieveAPIView):
-#     queryset = ActividadAvalada.objects.filter()
-#     serializer_class = CuposAsistentesSerializer
-
 
 class MedicosAIncribirseAAFilter(FilterSet):
     nombreNS = CharFilter(field_name='nombre', lookup_expr='icontains')

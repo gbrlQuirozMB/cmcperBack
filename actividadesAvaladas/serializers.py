@@ -105,20 +105,6 @@ class AsistenteActividadAvaladaSerializer(serializers.ModelSerializer):
         model = AsistenteActividadAvalada
         fields = '__all__'
 
-# ya no existen cupos, porque los asistentes se va creando cobre la marcha
-# class CuposAsistentesSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = ActividadAvalada
-#         fields = ['numAsistentes']
-
-#     def to_representation(self, instance):
-#         repr = super().to_representation(instance)
-#         asistentesRegistrados = AsistenteActividadAvalada.objects.filter(actividadAvalada=instance.id).count()
-#         repr['asistentesRegistrados'] = asistentesRegistrados
-#         repr['porRegistrar'] = instance.numAsistentes - asistentesRegistrados
-
-#         return repr
-
 
 class MedicosAIncribirseAASerializer(serializers.ModelSerializer):
     class Meta:
