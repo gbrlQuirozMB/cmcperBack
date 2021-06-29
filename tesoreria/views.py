@@ -9,7 +9,8 @@ from django.contrib.auth.models import User
 from convocatoria.models import ConvocatoriaEnrolado
 from recertificacion.models import PorExamen, Renovacion, RecertificacionItemDocumento
 from certificados.models import Certificado
-from actividadesAvaladas.models import ActividadAvalada
+from actividadesAvaladas.models import ActividadAvalada, AsistenteActividadAvalada
+from catalogos.models import CatPagos
 
 from api.logger import log
 from api.exceptions import *
@@ -28,8 +29,9 @@ class SubirPagoCreateView(CreateAPIView):
         request.data['estatus'] = 3
         serializer = PagoSerializer(data=request.data)
         if serializer.is_valid():
-            datoUser = User.objects.filter(is_superuser=True, is_staff=True).values_list('id')
-            Notificacion.objects.create(titulo='Convocatoria', mensaje='Se subió un pago', destinatario=datoUser[0][0], remitente=0)
+            datoUser = User.objects.filter(is_superuser=True, is_staff=True).values_list('id') # obteniendo al admin
+            datosCatalogo = CatPagos.objects.get(id=request.data.get('tipo')) # obteniendo la descripcion del tipo de pago
+            Notificacion.objects.create(titulo=datosCatalogo.descripcion, mensaje='Se subió un pago', destinatario=datoUser[0][0], remitente=0)
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
@@ -115,7 +117,8 @@ class PagoAceptarUpdateView(UpdateAPIView):
             cuenta = ActividadAvalada.objects.filter(id=dato.externoId).count()
             if cuenta == 1:
                 request.data['estatus'] = 1
-                ActividadAvalada.objects.filter(id=dato.externoId).update(isPagado=True)
+                ActividadAvalada.objects.filter(id=dato.externoId).update(isPagado=True) # ponemos en pagado a la Act Avala
+                AsistenteActividadAvalada.objects.filter(actividadAvalada=dato.externoId).update(isPagado=True) # ponemos en pagado a los asistentes de la Act Avala
                 return self.update(request, *args, **kwargs)
 
 class PagoRechazarUpdateView(UpdateAPIView):
@@ -177,7 +180,8 @@ class PagoRechazarUpdateView(UpdateAPIView):
             cuenta = ActividadAvalada.objects.filter(id=dato.externoId).count()
             if cuenta == 1:
                 request.data['estatus'] = 2
-                ActividadAvalada.objects.filter(id=dato.externoId).update(isPagado=False)
+                ActividadAvalada.objects.filter(id=dato.externoId).update(isPagado=False) # ponemos en pagado a la Act Avala
+                AsistenteActividadAvalada.objects.filter(actividadAvalada=dato.externoId).update(isPagado=False) # ponemos en pagado a los asistentes de la Act Avala
                 return self.update(request, *args, **kwargs)
 
 

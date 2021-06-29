@@ -22,6 +22,13 @@ class PagosListSerializer(serializers.ModelSerializer):
         repr = super().to_representation(instance)
         if instance.medico != None:
             repr['medicoNombreApPaterno'] = instance.medico.nombre + ' ' + instance.medico.apPaterno
+        else:
+            repr['medicoNombreApPaterno'] = None
+        if instance.institucion != None:
+            repr['institucionNombre'] = instance.institucion.nombreInstitucion
+        else:
+            repr['institucionNombre'] = None
+            
         try:
             dato = CatPagos.objects.get(id=instance.tipo)
             repr['descripcion'] = dato.descripcion
