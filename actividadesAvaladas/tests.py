@@ -1,6 +1,8 @@
 from instituciones.models import *
 from actividadesAvaladas.models import *
 from recertificacion.models import Capitulo, Subcapitulo, Item
+from tesoreria.models import Pago
+
 
 from django.test import TestCase
 from rest_framework.test import APITestCase
@@ -83,6 +85,9 @@ def configDB():
     AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa1, tipo='Asistente')
     AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa2, tipo='Asistente')
     AsistenteActividadAvalada.objects.create(medico=medico9, actividadAvalada=aa4, tipo='Asistente')
+    
+    Pago.objects.create(id=12, institucion=institucion2, concepto='concepto 12', comprobante='archvivo_12.jpg', monto=1212.12, nota='nota 12', estatus=3, tipo=5, externoId=6, numeroPago=3)  # actividad avalada -> 5
+    
 
 
 class PostActividadAvaladaTest(APITestCase):

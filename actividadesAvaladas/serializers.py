@@ -1,6 +1,8 @@
 from rest_framework import fields, serializers
 from .models import *
+
 from preregistro.models import Medico
+from tesoreria.models import Pago
 
 
 class TemaSerializer(serializers.ModelSerializer):
@@ -149,4 +151,6 @@ class ActividadAvaladaPorPagarSerializer(serializers.ModelSerializer):
             repr['aPagar'] = round(total, 2)
         else:
             repr['aPagar'] = instance.precio
+        cuenta = Pago.objects.filter(externoId=instance.id).count()
+        repr['numeroPago'] = cuenta + 1 
         return repr
