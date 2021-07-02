@@ -6,7 +6,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.schemas import SchemaGenerator
 from rest_framework.views import APIView
-from rest_framework_swagger import renderers
+# from rest_framework_swagger import renderers
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
@@ -30,22 +30,38 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
 
-
-class SwaggerSchemaView(APIView):
-    permission_classes = [AllowAny]
-    authentication_classes = [TokenAuthentication]
-    renderer_classes = [
-        renderers.OpenAPIRenderer,
-        renderers.SwaggerUIRenderer
-    ]
-
-    def get(self, request):
-        generator = SchemaGenerator(title='CMCPER API')
-        schema = generator.get_schema(request=request, public=True)
-
-        return Response(schema)
+from drf_yasg2.views import get_schema_view
+from drf_yasg2 import openapi
+from rest_framework import permissions
 
 
+
+# class SwaggerSchemaView(APIView):
+#     permission_classes = [AllowAny]
+#     authentication_classes = [TokenAuthentication]
+#     renderer_classes = [
+#         renderers.OpenAPIRenderer,
+#         renderers.SwaggerUIRenderer
+#     ]
+
+#     def get(self, request):
+#         generator = SchemaGenerator(title='CMCPER API')
+#         schema = generator.get_schema(request=request, public=True)
+
+#         return Response(schema)
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="CMCPER API",
+        default_version='v1',
+        description="Proyecto CMCPER",
+        # terms_of_service="https://www.google.com/policies/terms/",
+        contact=openapi.Contact(email="gabriel@mb.company"),
+        # license=openapi.License(name="BSD License"),
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
 class CustomAuthToken(ObtainAuthToken):
 
     def post(self, request, *args, **kwargs):

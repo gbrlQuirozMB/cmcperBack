@@ -49,6 +49,8 @@ from actividadesAvaladas.models import AsistenteActividadAvalada, ActividadAvala
 
 
 class CertificadoDatosDetailView(RetrieveAPIView):
+    serializer_class = CertificadoDatosSerializer
+    
     def get(self, request, *args, **kwargs):
         medicoId = kwargs['medicoId']
         try:

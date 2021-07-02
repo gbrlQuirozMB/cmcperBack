@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ["*"]
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:8000',
-    'http://76879e7f3c48.ngrok.io',  # back
+    'http://96eaebe70898.ngrok.io',  # back
     'http://localhost:4200',
     # 'http://54625c39d9d4.ngrok.io',  # front
 )
@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_filters', # hay que instalarlo antes -> pip install django-filter
     'rest_framework',
-    'rest_framework_swagger',
+    # 'rest_framework_swagger',
+    'drf_yasg2',
     'rest_framework.authtoken',
     'rest_auth',
     'corsheaders',

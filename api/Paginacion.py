@@ -44,7 +44,7 @@ class Paginacion:
             direc = 'desc'
         else:
             direc = 'asc'
-        log.info(f'se obtienen: {cuenta} registros, registros por pagina: {size}, direccion: {direc}, ordenados por: {orderBy}')
+        # log.info(f'se obtienen: {cuenta} registros, registros por pagina: {size}, direccion: {direc}, ordenados por: {orderBy}')
 
         page = self.page
         try:
