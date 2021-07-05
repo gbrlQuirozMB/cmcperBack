@@ -8,7 +8,11 @@ from rest_framework.response import Response
 
 from .serializers import *
 
-from api.logger import log
+# from api.logger import log
+import logging
+log = logging.getLogger(__name__)
+
+
 from api.exceptions import *
 
 from django.template.loader import render_to_string

@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_filters', # hay que instalarlo antes -> pip install django-filter
+    'django_filters',  # hay que instalarlo antes -> pip install django-filter
     'rest_framework',
     # 'rest_framework_swagger',
     'drf_yasg2',
@@ -194,8 +194,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 # STATIC_ROOT = config('STATIC_ROOT', default="./static/")
-MEDIA_URL=config('MEDIA_URL', default="/uploads/")
-MEDIA_ROOT=config('MEDIA_ROOT', default="./uploads/")
+MEDIA_URL = config('MEDIA_URL', default="/uploads/")
+MEDIA_ROOT = config('MEDIA_ROOT', default="./uploads/")
 
 
 # Claves de STRIPE
@@ -219,4 +219,40 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='billy@booster.com.mx')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='billy123!')
 EMAIL_PORT = config('EMAIL_PORT', default=465)
 
-#PRUEBA BILLY
+# # Django Logging Information
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+
+#     'formatters': {
+#         'personal': {
+#             'format': '{asctime}s - {levelname}s [{pathname}s:{lineno}s]-> \n {message}s',
+#             'style': '{',
+#         }
+#     },
+
+#     # Define the handlers
+#     'handlers': {
+#         'file': {
+#             # 'level': 'INFO',
+#             'class': 'logging.FileHandler',
+#             'filename': 'errores_2.log',
+#             'formatter': 'personal',
+#         },
+
+#         'console': {
+#             # 'level': 'INFO',
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'personal',
+#         },
+#     },
+
+#     # Define the loggers
+#     'loggers': {
+#         'django': {
+#             'handlers': ['file', 'console'],
+#             'level': 'INFO',
+#             'propagate': True,
+#         },
+#     },
+# }
