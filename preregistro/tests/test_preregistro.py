@@ -269,7 +269,7 @@ class PutFotoPerfil200Test(APITestCase):
                               cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06',
                               fechaFinResi='2000-07-07', telCelular='telCelular1', telParticular='telParticular1', email='email1')
 
-        archivo = open('./uploads/banner.png', 'rb')
+        archivo = open('./uploads/testUnit.png', 'rb')
         imgFile = SimpleUploadedFile(archivo.name, archivo.read(), content_type='image/png')
 
         self.json = {

@@ -41,6 +41,11 @@ class PostInstitucionTest(APITestCase):
         response = self.client.post('/api/instituciones/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> ok \n {json.dumps(response.data)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        
+        del self.json['nombreInstitucion']
+        response = self.client.post('/api/instituciones/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> ok \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class GetInstitucionFilteredListTest(APITestCase):
