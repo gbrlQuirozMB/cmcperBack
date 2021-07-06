@@ -12,7 +12,9 @@ from certificados.models import Certificado
 from actividadesAvaladas.models import ActividadAvalada, AsistenteActividadAvalada
 from catalogos.models import CatPagos
 
-from api.logger import log
+# from api.logger import log
+import logging
+log = logging.getLogger('django')
 from api.exceptions import *
 
 from rest_framework import response, status, permissions
@@ -33,7 +35,7 @@ class SubirPagoCreateView(CreateAPIView):
             datosCatalogo = CatPagos.objects.get(id=request.data.get('tipo')) # obteniendo la descripcion del tipo de pago
             Notificacion.objects.create(titulo=datosCatalogo.descripcion, mensaje='Se subió un pago', destinatario=datoUser[0][0], remitente=0)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -51,7 +53,7 @@ class PagosListView(ListAPIView):
 
     def get_queryset(self):
         estatus = self.kwargs['estatus']
-        log.info(f'se busca por: estatus: {estatus}')
+        log.error(f'--->>>se busca por: estatus: {estatus}')
 
         return getQuerysetEstatus(estatus)
 

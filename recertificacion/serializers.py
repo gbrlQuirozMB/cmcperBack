@@ -1,7 +1,9 @@
 from preregistro.models import Medico
 from .models import *
 from rest_framework import fields, serializers
-from api.logger import log
+# from api.logger import log
+import logging
+log = logging.getLogger('django')
 from api.exceptions import *
 
 import datetime

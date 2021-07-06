@@ -8,12 +8,11 @@ from rest_framework.response import Response
 
 from .serializers import *
 
-# from api.logger import log
+# # from api.logger import log
 import logging
-# log = logging.getLogger(__name__)
 log = logging.getLogger('django')
-# log.setLevel(logging.INFO)
-
+import logging
+log = logging.getLogger('django')
 
 from api.exceptions import *
 
@@ -36,7 +35,7 @@ class InstitucionCreateView(CreateAPIView):
         serializer = InstitucionSerializer(data=request.data)
         if serializer.is_valid():
             return self.create(request, *args, **kwargs)
-        log.error(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 

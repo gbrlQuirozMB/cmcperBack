@@ -6,7 +6,9 @@ from rest_framework import status, permissions
 
 from .serializers import *
 
-from api.logger import log
+# from api.logger import log
+import logging
+log = logging.getLogger('django')
 from api.exceptions import *
 
 
@@ -19,7 +21,7 @@ class ComunicadoCreateView(CreateAPIView):
         serializer = ComunicadoSerializer(data=request.data)
         if serializer.is_valid():
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 

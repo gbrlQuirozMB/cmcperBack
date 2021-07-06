@@ -2,7 +2,9 @@ from django.shortcuts import render
 from rest_framework.generics import DestroyAPIView, ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView
 from preregistro.models import Medico
 
-from api.logger import log
+# from api.logger import log
+import logging
+log = logging.getLogger('django')
 from api.exceptions import *
 
 from .serializers import *
@@ -166,7 +168,7 @@ class ItemDocumentosCreateView(CreateAPIView):
         serializer = ItemDocumentoSerializer(data=request.data)
         if serializer.is_valid():
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -223,7 +225,7 @@ class ItemDocumentosFilteredListView(ListAPIView):
         estatus = self.kwargs['estatus']
         nombre = self.kwargs['nombre']
         apPaterno = self.kwargs['apPaterno']
-        log.info(f'se busca por:  estatus: {estatus} - nombre: {nombre} - apPaterno: {apPaterno}')
+        log.error(f'--->>>se busca por:  estatus: {estatus} - nombre: {nombre} - apPaterno: {apPaterno}')
 
         return getQuerysetItemDocumentosFiltered(estatus, nombre, apPaterno)
 
@@ -395,7 +397,7 @@ class SolicitudExamenCreateView(CreateAPIView):
                 raise ResponseError('Error al enviar correo', 500)
 
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -428,7 +430,7 @@ class DocumentoCedulaEspecialidadCreateView(CreateAPIView):
         if serializer.is_valid():
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -443,7 +445,7 @@ class DocumentoCertificadoCreateView(CreateAPIView):
         if serializer.is_valid():
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -463,7 +465,7 @@ class DocumentoFotoCreateView(CreateAPIView):
             PorExamenDocumento.objects.create(catTiposDocumento=catTiposDocumento, porExamen=porExamen)
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -478,7 +480,7 @@ class DocumentoCartaSolicitudCreateView(CreateAPIView):
         if serializer.is_valid():
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -548,7 +550,7 @@ class RenovacionPagadoCreateView(CreateAPIView):
         if serializer.is_valid():
             RecertificacionItemDocumento.objects.filter(medico=request.data['medico']).delete()
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -754,7 +756,7 @@ class FechasExamenCreateView(CreateAPIView):
         serializer = FechasExamenRecertificacionSerializer(data=request.data)
         if serializer.is_valid():
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -790,7 +792,7 @@ class RenovacionCreateView(CreateAPIView):
         serializer = RenovacionSerializer(data=request.data)
         if serializer.is_valid():
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -850,7 +852,7 @@ class QRItemDocumentosCreateView(CreateAPIView):
             if cuenta > 0:
                 raise ResponseError('Ya se capturo este QR', 409)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -896,7 +898,7 @@ class CodigoWEBitemDocumentosCreateView(CreateAPIView):
             if cuenta > 0:
                 raise ResponseError('Ya se capturo este QR', 409)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 

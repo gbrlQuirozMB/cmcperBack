@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from rest_framework.generics import ListAPIView
-from api.logger import log
+# from api.logger import log
+import logging
+log = logging.getLogger('django')
 from api.exceptions import *
 from .serializers import *
 from .models import *
@@ -18,7 +20,7 @@ class CatMotivoRechazoListView(ListAPIView):
 
     def get_queryset(self):
         textoBusqueda = self.kwargs['textoBusqueda']
-        log.info(f'se busca por: textoBusqueda: {textoBusqueda}')
+        log.error(f'--->>>se busca por: textoBusqueda: {textoBusqueda}')
         if textoBusqueda == 'all':
             queryset = CatMotivosRechazo.objects.filter()
             return queryset
@@ -35,7 +37,7 @@ class CatMotivosRechazoCreateView(CreateAPIView):
         serializer = CatMotivosRechazoSerializer(data=request.data)
         if serializer.is_valid():
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -58,7 +60,7 @@ class CatPagosCreateView(CreateAPIView):
         serializer = CatPagosSerializer(data=request.data)
         if serializer.is_valid():
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 

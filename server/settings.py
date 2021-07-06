@@ -220,7 +220,7 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='billy123!')
 EMAIL_PORT = config('EMAIL_PORT', default=465)
 
 
-# # Django Logging Information
+# Django Logging Information
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -257,7 +257,7 @@ LOGGING = {
             'class': 'logging.handlers.TimedRotatingFileHandler',
             'when': 'midnight',
             'backupCount': '3',
-            'filename': 'errores_2.log',
+            'filename': 'errores.log',
             'formatter': 'personal',
         }
     },

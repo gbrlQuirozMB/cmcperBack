@@ -5,7 +5,9 @@ from .serializers import *
 from preregistro.models import Medico
 from django.shortcuts import render
 from rest_framework.generics import DestroyAPIView, ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView, get_object_or_404
-from api.logger import log
+# from api.logger import log
+import logging
+log = logging.getLogger('django')
 from api.exceptions import *
 import json
 from datetime import date
@@ -79,15 +81,15 @@ class ConvocatoriaCreateView(CreateAPIView):
         serializer = ConvocatoriaSerializer(data=request.data)
         campoSedes = request.data.get('sedes')
         if campoSedes is None:
-            log.info(f'campos incorrectos: sedes')
+            log.error(f'--->>>campos incorrectos: sedes')
             raise CamposIncorrectos({"sedes": ["Este campo es requerido"]})
         campoTiposExamen = request.data.get('tiposExamen')
         if campoTiposExamen is None:
-            log.info(f'campos incorrectos: tiposExamen')
+            log.error(f'--->>>campos incorrectos: tiposExamen')
             raise CamposIncorrectos({"tiposExamen": ["Este campo es requerido"]})
         if serializer.is_valid():
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -142,7 +144,7 @@ class ConvocatoriaEnroladoCreateView(CreateAPIView):
         serializer = ConvocatoriaEnroladoSerializer(data=request.data)
         if serializer.is_valid():
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -186,7 +188,7 @@ class DocumentoRevalidacionCreateView(CreateAPIView):
         serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
         if serializer.is_valid():
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -201,7 +203,7 @@ class DocumentoCurpCreateView(CreateAPIView):
         if serializer.is_valid():
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -216,7 +218,7 @@ class DocumentoActaNacimientoCreateView(CreateAPIView):
         if serializer.is_valid():
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -231,7 +233,7 @@ class DocumentoCartaSolicitudCreateView(CreateAPIView):
         if serializer.is_valid():
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -246,7 +248,7 @@ class DocumentoConstanciaPosgradoCreateView(CreateAPIView):
         if serializer.is_valid():
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -261,7 +263,7 @@ class DocumentoCedulaEspecialidadCreateView(CreateAPIView):
         if serializer.is_valid():
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -276,7 +278,7 @@ class DocumentoTituloLicenciaturaCreateView(CreateAPIView):
         if serializer.is_valid():
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -291,7 +293,7 @@ class DocumentoCedulaProfesionalCreateView(CreateAPIView):
         if serializer.is_valid():
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -306,7 +308,7 @@ class DocumentoConstanciaCirugiaCreateView(CreateAPIView):
         if serializer.is_valid():
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -321,7 +323,7 @@ class DocumentoCartaProfesorCreateView(CreateAPIView):
         if serializer.is_valid():
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -337,7 +339,7 @@ class DocumentoFotoCreateView(CreateAPIView):
         if serializer.is_valid():
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -456,7 +458,7 @@ class ConvocatoriaEnroladosMedicoListView(ListAPIView):
             isAceptado = False
         nombre = self.kwargs['nombre']
         apPaterno = self.kwargs['apPaterno']
-        log.info(f'se busca por: convocatoriaId: {convocatoriaId} - isAceptado: {isAceptado} - nombre: {nombre} - apPaterno: {apPaterno}')
+        log.error(f'--->>>se busca por: convocatoriaId: {convocatoriaId} - isAceptado: {isAceptado} - nombre: {nombre} - apPaterno: {apPaterno}')
 
         return getQuerysetEnroladosMedico(convocatoriaId, isAceptado, nombre, apPaterno)
 
@@ -471,7 +473,7 @@ class ConvocatoriaEnroladosMedicoEndPoint(APIView):
             isAceptado = False
         nombre = kwargs['nombre']
         apPaterno = kwargs['apPaterno']
-        log.info(f'se busca por: convocatoriaId: {convocatoriaId} - isAceptado: {isAceptado} - nombre: {nombre} - apPaterno: {apPaterno}')
+        log.error(f'--->>>se busca por: convocatoriaId: {convocatoriaId} - isAceptado: {isAceptado} - nombre: {nombre} - apPaterno: {apPaterno}')
 
         queryset = getQuerysetEnroladosMedico(convocatoriaId, isAceptado, nombre, apPaterno)
 
@@ -563,9 +565,9 @@ class ConvocatoriaEnroladoMedicoAPagarEndPoint(APIView):
         except ConvocatoriaEnrolado.DoesNotExist:
             cuenta = ConvocatoriaEnrolado.objects.filter(medico=medicoId, convocatoria=convocatoriaId).count()
             if cuenta == 1:
-                log.info(f'No tiene permitido pagar - convocatoriaId: {convocatoriaId} y medicoId: {medicoId}')
+                log.error(f'--->>>No tiene permitido pagar - convocatoriaId: {convocatoriaId} y medicoId: {medicoId}')
                 raise ResponseError(f'No tiene permitido pagar - convocatoriaId: {convocatoriaId} y medicoId: {medicoId}', 409)
-            log.info(f'No existe registro - convocatoriaId: {convocatoriaId} y medicoId: {medicoId}')
+            log.error(f'--->>>No existe registro - convocatoriaId: {convocatoriaId} y medicoId: {medicoId}')
             raise ResponseError(f'No existe registro con convocatoriaId: {convocatoriaId} y medicoId: {medicoId}', 404)
 
     def get(self, request, *args, **kwargs):

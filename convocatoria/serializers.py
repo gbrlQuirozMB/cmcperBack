@@ -1,7 +1,9 @@
 from preregistro.models import Medico
 from .models import *
 from rest_framework import fields, serializers
-from api.logger import log
+# from api.logger import log
+import logging
+log = logging.getLogger('django')
 from api.exceptions import *
 
 
@@ -45,13 +47,13 @@ class ConvocatoriaSerializer(serializers.ModelSerializer):
         sedesData = validated_data.pop('sedes')
         for dato in sedesData:
             if not bool(dato):
-                log.info(f'campos incorrectos: catSedes')
+                log.error(f'--->>>campos incorrectos: catSedes')
                 raise CamposIncorrectos({"catSedes": ["Este campo es requerido"]})
 
         tiposExameneData = validated_data.pop('tiposExamen')
         for dato in tiposExameneData:
             if not bool(dato):
-                log.info(f'campos incorrectos: catTiposExamen')
+                log.error(f'--->>>campos incorrectos: catTiposExamen')
                 raise CamposIncorrectos({"catTiposExamen": ["Este campo es requerido"]})
 
         convocatoria = Convocatoria.objects.create(**validated_data)
@@ -67,13 +69,13 @@ class ConvocatoriaSerializer(serializers.ModelSerializer):
         for dato in sedesData:
 
             if not bool(dato):
-                log.info(f'campos incorrectos: catSedes')
+                log.error(f'--->>>campos incorrectos: catSedes')
                 raise CamposIncorrectos({"catSedes": ["Este campo es requerido"]})
 
         tiposExameneData = validated_data.pop('tiposExamen')
         for dato in tiposExameneData:
             if not bool(dato):
-                log.info(f'campos incorrectos: catTiposExamen')
+                log.error(f'--->>>campos incorrectos: catTiposExamen')
                 raise CamposIncorrectos({"catTiposExamen": ["Este campo es requerido"]})
 
         instance.fechaInicio = validated_data.get('fechaInicio', instance.fechaInicio)
