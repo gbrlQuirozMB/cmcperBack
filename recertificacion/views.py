@@ -148,7 +148,8 @@ class ItemDocumentosListView(ListAPIView):
 
     def get_queryset(self):
         itemId = self.kwargs['itemId']
-        queryset = RecertificacionItemDocumento.objects.filter(item=itemId)
+        medicoId = self.kwargs['medicoId']
+        queryset = RecertificacionItemDocumento.objects.filter(item=itemId, medico=medicoId)
         if not queryset:
             raise ResponseError('No hay documentos', 404)
         # print(f'--->>>queryset: {queryset is None}')
