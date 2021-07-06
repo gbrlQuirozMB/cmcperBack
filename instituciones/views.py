@@ -10,7 +10,9 @@ from .serializers import *
 
 # from api.logger import log
 import logging
-log = logging.getLogger(__name__)
+# log = logging.getLogger(__name__)
+log = logging.getLogger('django')
+# log.setLevel(logging.INFO)
 
 
 from api.exceptions import *
@@ -34,7 +36,7 @@ class InstitucionCreateView(CreateAPIView):
         serializer = InstitucionSerializer(data=request.data)
         if serializer.is_valid():
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 

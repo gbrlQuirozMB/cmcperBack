@@ -195,8 +195,8 @@ STATIC_URL = '/static/'
 
 # STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 STATIC_ROOT = config('STATIC_ROOT', default="./static/")
-MEDIA_URL=config('MEDIA_URL', default="/uploads/")
-MEDIA_ROOT=config('MEDIA_ROOT', default="./uploads/")
+MEDIA_URL = config('MEDIA_URL', default="/uploads/")
+MEDIA_ROOT = config('MEDIA_ROOT', default="./uploads/")
 
 # Claves de STRIPE
 if DEBUG:
@@ -221,42 +221,6 @@ EMAIL_PORT = config('EMAIL_PORT', default=465)
 
 
 # # Django Logging Information
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-
-#     'formatters': {
-#         'personal': {
-#             'format': '{asctime}s - {levelname}s [{pathname}s:{lineno}s]-> \n {message}s',
-#             'style': '{',
-#         }
-#     },
-
-#     # Define the handlers
-#     'handlers': {
-#         'file': {
-#             # 'level': 'INFO',
-#             'class': 'logging.FileHandler',
-#             'filename': 'errores_2.log',
-#             'formatter': 'personal',
-#         },
-
-#         'console': {
-#             # 'level': 'INFO',
-#             'class': 'logging.StreamHandler',
-#             'formatter': 'personal',
-#         },
-#     },
-
-#     # Define the loggers
-#     'loggers': {
-#         'django': {
-#             'handlers': ['file', 'console'],
-#             'level': 'INFO',
-#             'propagate': True,
-#         },
-#     },
-# }
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -271,47 +235,37 @@ LOGGING = {
     'formatters': {
         'django.server': {
             '()': 'django.utils.log.ServerFormatter',
-            'format': '[{server_time}] {message}',
+            'format': '{server_time}] {message}',
             'style': '{',
         },
         'personal': {
-            'format': '{asctime}s - {levelname}s [{pathname}s:{lineno}s]-> \n {message}s',
+            'format': '{asctime} - {levelname} [{pathname}:{lineno}]-> \n {message}',
+            'datefmt': '%Y-%m-%d %H:%M',
             'style': '{',
-        }        
+        }
     },
     'handlers': {
         'console': {
             'level': 'INFO',
             'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',
+            # 'formatter': 'django.server',
         },
-        # 'django.server': {
-        #     'level': 'INFO',
-        #     'class': 'logging.StreamHandler',
-        #     'formatter': 'django.server',
-        # },
-        # 'mail_admins': {
-        #     'level': 'ERROR',
-        #     'filters': ['require_debug_false'],
-        #     'class': 'django.utils.log.AdminEmailHandler'
-        # },
         'file': {
             'level': 'INFO',
-            'class': 'logging.FileHandler',
+            # 'class': 'logging.FileHandler',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'when': 'midnight',
+            'backupCount': '3',
             'filename': 'errores_2.log',
             'formatter': 'personal',
-            # 'formatter': 'django.server',
-        }        
+        }
     },
     'loggers': {
         'django': {
             'handlers': ['console', 'file'],
             'level': 'INFO',
-        },
-        # 'django.server': {
-        #     'handlers': ['django.server', 'file'],
-        #     'level': 'INFO',
-        #     'propagate': False,
-        # },
+            # 'propagate': True,
+        }
     }
 }

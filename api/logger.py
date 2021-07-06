@@ -6,10 +6,11 @@ log.basicConfig(
     format="%(asctime)s - %(levelname)s [%(pathname)s:%(lineno)s]-> \n %(message)s",
     datefmt="%Y-%m-%d %H:%M",
     handlers=[
-        log.FileHandler("errores.log"),
+        # log.FileHandler("errores.log"),
+        log.handlers.TimedRotatingFileHandler("errores.log", when='midnight', backupCount=3),
         log.StreamHandler()
     ],
-    level=log.DEBUG,
+    level=log.INFO,
     # disable_existing_loggers=False,
     # propagate=True,
 )
