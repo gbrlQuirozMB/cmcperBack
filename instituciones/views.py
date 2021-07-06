@@ -11,8 +11,6 @@ from .serializers import *
 # # from api.logger import log
 import logging
 log = logging.getLogger('django')
-import logging
-log = logging.getLogger('django')
 
 from api.exceptions import *
 
