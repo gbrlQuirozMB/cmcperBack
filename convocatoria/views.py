@@ -737,7 +737,7 @@ class ConvocatoriaEnroladosDownExcel(View):
     def get(self, request, *args, **kwargs):
         convocatoriaId = self.kwargs['convocatoriaId']
         try:
-            queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId).values_list('id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno',
+            queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId, isAceptado=True).values_list('id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno',
                                                                                                     'calificacion', 'isAprobado')
             # print(f'--->>>queryset como tupla(values_list): {queryset}')
             if not queryset:
