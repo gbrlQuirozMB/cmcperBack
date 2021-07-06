@@ -36,6 +36,7 @@ urlpatterns = [
     path('api/comunicados/', include('comunicados.urls')),
     path('api/instituciones/', include('instituciones.urls')),
     path('api/actividades-avaladas/', include('actividadesAvaladas.urls')),
+    path('api/facturacion/', include('facturacion.urls')),
 
     path('api/admin/password_reset/', auth_views.PasswordResetView.as_view(template_name='admin/password_reset.html'), name='password_reset'),
     path('api/admin/password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='admin/password_reset_done.html'), name='password_reset_done'),

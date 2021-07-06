@@ -1,0 +1,8 @@
+from django.urls import path
+from .views import *
+
+app_name = 'facturacion'
+
+urlpatterns = [
+    path('conceptoPago/list/', ConceptoPagoListView.as_view()),
+]
