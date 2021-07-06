@@ -71,7 +71,7 @@ class Medico(models.Model):
     motivo = models.TextField(blank=True)
     numRegistro = models.IntegerField(blank=True, null=True, db_column='num_registro')
     username = models.CharField(max_length=150, blank=True)
-    fotoPerfil = models.FileField(blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'gif'])], db_column='foto_perfil', upload_to='preregistro')
+    fotoPerfil = models.FileField(blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'gif', 'jpeg'])], db_column='foto_perfil', upload_to='preregistro')
     # agregando por mas cosas solicitadas redes sociales
     instagram = models.CharField(max_length=300, blank=True)
     facebook = models.CharField(max_length=300, blank=True)

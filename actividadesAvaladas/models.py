@@ -32,7 +32,7 @@ class ActividadAvalada(models.Model):
     nombre = models.CharField(max_length=200)
     emailContacto = models.CharField(max_length=50, db_column='email_contacto')
     archivo = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf'])], upload_to='actividadesAvaladas')
-    banner = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'gif'])], upload_to='actividadesAvaladas')
+    banner = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'gif', 'jpeg'])], upload_to='actividadesAvaladas')
     # numAsistentes = models.PositiveSmallIntegerField(db_column='numero_asistentes')
     # puntosAsignar = models.DecimalField(max_digits=6, decimal_places=2, db_column='puntos_asignar')
     puntajeAsistente = models.DecimalField(max_digits=6, decimal_places=2, default=0, db_column='puntaje_asistente')
