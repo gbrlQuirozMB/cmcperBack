@@ -43,3 +43,15 @@ class GetFormaPagoListTest(APITestCase):
         response = self.client.get('/api/facturacion/formaPago/list/')
         print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+class GetUsoCFDIListTest(APITestCase):
+    def setUp(self):
+        UsoCFDI.objects.create(usoCFDI = 'UsoCFDI1', descripcion = 'Descripcion1', orden = 1)
+        UsoCFDI.objects.create(usoCFDI = 'UsoCFDI2', descripcion = 'Descripcion2', orden = 2)
+        UsoCFDI.objects.create(usoCFDI = 'UsoCFDI3', descripcion = 'Descripcion3', orden = 3)
+        self.user = User.objects.create_user(username = 'billy', is_staff = True)
+    def test(self):
+        self.client.force_authenticate(user = self.user)
+        response = self.client.get('/api/facturacion/usoCFDI/list/')
+        print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

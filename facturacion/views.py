@@ -15,3 +15,7 @@ class MonedaListView(ListAPIView):
 class FormaPagoListView(ListAPIView):
     queryset = FormaPago.objects.all()
     serializer_class = FormaPagoSerializer
+
+class UsoCFDIListView(ListAPIView):
+    queryset = UsoCFDI.objects.all()
+    serializer_class = UsoCFDISerializer
