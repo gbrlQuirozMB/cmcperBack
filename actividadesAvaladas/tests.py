@@ -597,6 +597,7 @@ class PostCargaMasivaExcelAsistenteActividadAvaladaTest(APITestCase):
         print(f'response JSON ===>>> actividadAvalada=3 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+        ActividadAvalada.objects.filter(id=3).update(fechaLimite=date.today()+relativedelta(days=9))
         response = self.client.post('/api/actividades-avaladas/3/asistentes/cargar-excel/create/', data=self.jsonBad, format='multipart')
         print(f'response JSON ===>>> 409 el CSV esta mal hecho \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)

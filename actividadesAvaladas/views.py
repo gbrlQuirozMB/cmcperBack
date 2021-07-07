@@ -186,12 +186,15 @@ class AsistentesUpExcel(APIView):
         datoAA = ActividadAvalada.objects.get(id=actAvaId)
 
         if datoAA.fechaLimite <= date.today():
+            log.error(f'--->>> Fecha limite alcanzada, no puede cargar asistentes')
             raise ResponseError('Fecha limite alcanzada, no puede cargar asistentes', 409)
 
         AsistenteActividadAvalada.objects.filter(actividadAvalada=actAvaId).delete()
 
         archivo = request.data['archivo']
-        datosList = list(csv.reader(codecs.iterdecode(archivo, 'utf-8'), delimiter=','))
+        # archivo = request.FILES['archivo']
+        datosList = list(csv.reader(codecs.iterdecode(archivo, 'utf-8', errors='ignore'), delimiter=','))
+        # datosList = list(csv.reader(codecs.iterdecode(archivo, 'utf-8'), delimiter=','))
         datosList.pop(0)
         try:
             # datos = {'dadosAlta':[]}
@@ -210,8 +213,10 @@ class AsistentesUpExcel(APIView):
             ActividadAvalada.objects.filter(id=actAvaId).update(isPagado=False)
             return Response(respuesta, status=status.HTTP_201_CREATED)
         except IntegrityError as e:
+            log.error(f'--->>> Sólo puede existir un Medico asistente por Actividad Avalada')
             respuesta = {"detail": "Sólo puede existir un Medico asistente por Actividad Avalada"}
             return Response(respuesta, status=status.HTTP_409_CONFLICT)
         except Exception as e:
+            log.error(f'--->>> {str(e)}')
             respuesta = {"detail": str(e)}
             return Response(respuesta, status=status.HTTP_409_CONFLICT)
