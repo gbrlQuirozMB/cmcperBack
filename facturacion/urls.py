@@ -5,4 +5,5 @@ app_name = 'facturacion'
 
 urlpatterns = [
     path('conceptoPago/list/', ConceptoPagoListView.as_view()),
+    path('moneda/list/', MonedaListView.as_view()),
 ]

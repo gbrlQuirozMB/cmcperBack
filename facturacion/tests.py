@@ -19,3 +19,15 @@ class GetConceptoPagoListTest(APITestCase):
         response = self.client.get('/api/facturacion/conceptoPago/list/')
         print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+class GetMonedaListTest(APITestCase):
+    def setUp(self):
+        Moneda.objects.create(moneda = 'Moneda1', descripcion = 'Descripcion1', decimales = 1, porcentajeVariacion = '1%', orden = 1)
+        Moneda.objects.create(moneda = 'Moneda2', descripcion = 'Descripcion2', decimales = 2, porcentajeVariacion = '2%', orden = 2)
+        Moneda.objects.create(moneda = 'Moneda3', descripcion = 'Descripcion3', decimales = 3, porcentajeVariacion = '3%', orden = 3)
+        self.user = User.objects.create_user(username = 'billy', is_staff = True)
+    def test(self):
+        self.client.force_authenticate(user = self.user)
+        response = self.client.get('/api/facturacion/moneda/list/')
+        print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
