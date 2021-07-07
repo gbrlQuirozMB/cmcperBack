@@ -7,3 +7,15 @@ from .serializers import *
 class ConceptoPagoListView(ListAPIView):
     queryset = ConceptoPago.objects.all()
     serializer_class = ConceptoPagoSerializer
+
+class MonedaListView(ListAPIView):
+    queryset = Moneda.objects.all()
+    serializer_class = MonedaSerializer
+
+class FormaPagoListView(ListAPIView):
+    queryset = FormaPago.objects.all()
+    serializer_class = FormaPagoSerializer
+
+class UsoCFDIListView(ListAPIView):
+    queryset = UsoCFDI.objects.all()
+    serializer_class = UsoCFDISerializer

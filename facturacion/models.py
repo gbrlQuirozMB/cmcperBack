@@ -14,6 +14,7 @@ class Moneda(models.Model):
     moneda = models.CharField(max_length = 100)
     descripcion = models.CharField(max_length = 100)
     decimales = models.IntegerField()
+    tipoCambio = models.IntegerField(default = 1)
     porcentajeVariacion = models.CharField(max_length = 10)
     orden = models.IntegerField()
     inactivo = models.BooleanField(default = False)
