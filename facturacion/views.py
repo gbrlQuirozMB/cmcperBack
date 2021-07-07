@@ -11,3 +11,7 @@ class ConceptoPagoListView(ListAPIView):
 class MonedaListView(ListAPIView):
     queryset = Moneda.objects.all()
     serializer_class = MonedaSerializer
+
+class FormaPagoListView(ListAPIView):
+    queryset = FormaPago.objects.all()
+    serializer_class = FormaPagoSerializer

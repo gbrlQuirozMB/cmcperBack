@@ -31,3 +31,15 @@ class GetMonedaListTest(APITestCase):
         response = self.client.get('/api/facturacion/moneda/list/')
         print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+class GetFormaPagoListTest(APITestCase):
+    def setUp(self):
+        FormaPago.objects.create(formaPago = 1, descripcion = 'Descripcion1', orden = 1, abreviatura = 'Abreviatura1')
+        FormaPago.objects.create(formaPago = 2, descripcion = 'Descripcion2', orden = 2, abreviatura = 'Abreviatura2')
+        FormaPago.objects.create(formaPago = 3, descripcion = 'Descripcion3', orden = 3, abreviatura = 'Abreviatura3')
+        self.user = User.objects.create_user(username = 'billy', is_staff = True)
+    def test(self):
+        self.client.force_authenticate(user = self.user)
+        response = self.client.get('/api/facturacion/formaPago/list/')
+        print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

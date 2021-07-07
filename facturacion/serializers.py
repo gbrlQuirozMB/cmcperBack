@@ -10,3 +10,8 @@ class MonedaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Moneda
         fields = '__all__'
+
+class FormaPagoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FormaPago
+        fields = '__all__'
