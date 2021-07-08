@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import *
+from instituciones.models import *
 
 class ConceptoPagoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,3 +21,8 @@ class UsoCFDISerializer(serializers.ModelSerializer):
     class Meta:
         model = UsoCFDI
         fields = '__all__'
+
+class AvalSerializer(serializers.ModelSerializer):#Aval se refiere al modelo de Institucion
+    class Meta:
+        model = Institucion
+        fields = ['nombreInstitucion', 'rfc', 'contacto', 'telUno', 'email']

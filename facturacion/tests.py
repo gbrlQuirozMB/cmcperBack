@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from rest_framework import status
 from .models import *
 import json
+from instituciones.models import *
 
 class GetConceptoPagoListTest(APITestCase):
     def setUp(self):
@@ -53,5 +54,29 @@ class GetUsoCFDIListTest(APITestCase):
     def test(self):
         self.client.force_authenticate(user = self.user)
         response = self.client.get('/api/facturacion/usoCFDI/list/')
+        print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+class GetAvalListTest(APITestCase):#Aval se refiere al modelo de Institucion
+    def setUp(self):
+        Institucion.objects.create(
+            nombreInstitucion = 'NombreInstitucion1', rfc = 'Rfc1', contacto = 'Contacto1', telUno = 'TelUno1', telDos = 'TelDos1', telCelular = 'TelCelular1',
+            email = 'Email1', pais = 'Pais1', estado = 'estado1', ciudad = 'Ciudad1', deleMuni = 'DeleMuni1', colonia = 'Colonia1', calle = 'Calle1',
+            cp = 'Cp1', numInterior = 'NumInterior1', numExterior = 'NumExterior1', username = 'Username1'
+        )
+        Institucion.objects.create(
+            nombreInstitucion = 'NombreInstitucion2', rfc = 'Rfc2', contacto = 'Contacto2', telUno = 'TelUno2', telDos = 'TelDos2', telCelular = 'TelCelular2',
+            email = 'Email2', pais = 'Pais2', estado = 'estado2', ciudad = 'Ciudad2', deleMuni = 'DeleMuni2', colonia = 'Colonia2', calle = 'Calle2',
+            cp = 'Cp2', numInterior = 'NumInterior2', numExterior = 'NumExterior2', username = 'Username2'
+        )
+        Institucion.objects.create(
+            nombreInstitucion = 'NombreInstitucion3', rfc = 'Rfc3', contacto = 'Contacto3', telUno = 'TelUno3', telDos = 'TelDos3', telCelular = 'TelCelular3',
+            email = 'Email3', pais = 'Pais3', estado = 'estado3', ciudad = 'Ciudad3', deleMuni = 'DeleMuni3', colonia = 'Colonia3', calle = 'Calle3',
+            cp = 'Cp3', numInterior = 'NumInterior3', numExterior = 'NumExterior3', username = 'Username3'
+        )
+        self.user = User.objects.create_user(username = 'billy', is_staff = True)
+    def test(self):
+        self.client.force_authenticate(user = self.user)
+        response = self.client.get('/api/facturacion/aval/list/')
         print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
