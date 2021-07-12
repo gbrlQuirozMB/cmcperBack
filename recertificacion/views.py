@@ -65,7 +65,7 @@ class CertificadoDatosDetailView(RetrieveAPIView):
 
 
 class AvanceMedicoCapituloDetailView(RetrieveAPIView):
-    # serializer_class = AvanceMedicoCapituloSerializer
+    serializer_class = AvanceMedicoCapituloSerializer
 
     def get(self, request, *args, **kwargs):
         medicoId = kwargs['medicoId']
@@ -810,6 +810,13 @@ class RenovacionDetailView(RetrieveAPIView):
 
 
 class QRItemDocumentosCreateView(CreateAPIView):
+    """
+    Sólo se recibe el siguiente json:
+    {
+    "medico": int,
+    "actividadAvalada": int
+    }
+    """
     serializer_class = ItemDocumentoSerializer
 
     def post(self, request, *args, **kwargs):
@@ -858,6 +865,13 @@ class QRItemDocumentosCreateView(CreateAPIView):
 
 
 class CodigoWEBitemDocumentosCreateView(CreateAPIView):
+    """
+    Sólo se recibe el siguiente json:
+    {
+    "medico": int,
+    "codigoWeb": string
+    }
+    """
     serializer_class = ItemDocumentoSerializer
 
     def post(self, request, *args, **kwargs):
@@ -904,6 +918,12 @@ class CodigoWEBitemDocumentosCreateView(CreateAPIView):
 
 
 class QRItemDocumentoUpdateView(UpdateAPIView):
+    """
+    Sólo se recibe el siguiente json:
+    {
+    "documento": archivoFile
+    }
+    """
     queryset = RecertificacionItemDocumento.objects.filter()
     serializer_class = QRItemDocumentoSerializer
     http_method_names = ['put']

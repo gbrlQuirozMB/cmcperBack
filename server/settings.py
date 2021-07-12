@@ -256,7 +256,7 @@ LOGGING = {
             # 'class': 'logging.FileHandler',
             'class': 'logging.handlers.TimedRotatingFileHandler',
             'when': 'midnight',
-            'backupCount': '3',
+            'backupCount': 3,
             'filename': 'errores.log',
             'formatter': 'personal',
         }
