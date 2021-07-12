@@ -13,6 +13,7 @@ accesslog = '-'
 
 #async
 # pip install gevent
-workers = os.cpu_count() * 2 + 1
+# workers = os.cpu_count() * 2 + 1
+workers = 1 #no corre la chingadera por diferentes versiones de python
 worker_class = 'gevent'
 worker_connections = 500
