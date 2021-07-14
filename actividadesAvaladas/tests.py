@@ -233,6 +233,9 @@ class GetActividadAvaladaFilteredListTest(APITestCase):
         print(f'response JSON ===>>> pagado=True\n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+        response = self.client.get('/api/actividades-avaladas/list/?idInstitucion=1')
+        print(f'response JSON ===>>> idInstitucion=1\n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 class GetActividadAvaladaDetailTest(APITestCase):
     def setUp(self):

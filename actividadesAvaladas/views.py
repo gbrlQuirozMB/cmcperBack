@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.generics import DestroyAPIView, ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView
-from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter, BooleanFilter
+from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter, BooleanFilter, NumberFilter
 from rest_framework import status, permissions
 
 from .serializers import *
@@ -57,10 +57,11 @@ class ActividadAvaladaFilter(FilterSet):
     nombreNS = CharFilter(field_name='nombre', lookup_expr='icontains')
     institucionNS = CharFilter(field_name='institucion__nombreInstitucion', lookup_expr='icontains')
     pagado = CharFilter(field_name='isPagado')
+    idInstitucion = NumberFilter(field_name='institucion_id', lookup_expr='exact')
 
     class Meta:
         model = ActividadAvalada
-        fields = ['nombreNS', 'institucionNS', 'pagado']
+        fields = ['nombreNS', 'institucionNS', 'pagado', 'idInstitucion']
 
 
 class ActividadAvaladaFilteredListView(ListAPIView):
