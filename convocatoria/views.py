@@ -789,20 +789,30 @@ class PublicarCalificaciones(APIView):
     def get(self, request, *args, **kwargs):
         convocatoriaId = self.kwargs['convocatoriaId']
         try:
+            # ordenamos segun requerimientos, para asignar el numero de registro
             queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId).values_list('id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno',
                                                                                                     'convocatoria__fechaExamen', 'calificacion', 'medico__email', 'isAprobado', 'medico__id',
-                                                                                                    'isPublicado')
+                                                                                                    'isPublicado').order_by('medico__apPaterno', 'medico__apMaterno', 'medico__nombre')
             # print(f'--->>>queryset como tupla(values_list): {queryset}')
             if not queryset:
                 respuesta = {"detail": "Registros no encontrados"}
                 return Response(respuesta, status=status.HTTP_404_NOT_FOUND)
-
+            
+            # obtenemos el ultimo numero de registro existente 
+            ultimoNumRegistro = Medico.objects.all().order_by('-numRegistro')[:1]
+            
             for dato in queryset:
                 if dato[8] and not dato[10]:  # se checa que este aprobado y no publicado
                     # hay que crear un nuevo campo de isPublicado y con ese verificar si se crea o no un certificado nuevo
                     medico = Medico.objects.get(id=dato[9])
                     Certificado.objects.create(medico=medico, documento='', descripcion='generado automaticamente por convocatoria', isVencido=False, estatus=1)
                     ConvocatoriaEnrolado.objects.filter(medico=dato[9]).update(isPublicado=True)
+                    
+                    # aumentamos el ultimo numero de registro para asignarlo
+                    valor = int(ultimoNumRegistro.get().numRegistro)
+                    valor += 1
+                    # asignamos el numero de registro segun se tenga y en orden segun los criterios
+                    Medico.objects.filter(id=dato[9]).update(numRegistro=valor)
 
                 datos = {
                     'nombre': dato[2],

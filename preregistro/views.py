@@ -105,7 +105,8 @@ class PreregistroAceptadoUpdateView(UpdateAPIView):
         # user.user_permissions.set([41, 44, 37, 40, 34])
         user.user_permissions.set([permisoChMed, permisoAdConv, permisoViConv, permisoAdMen, permisoViMen])
         # actualiza el status del registro para que este aceptado
-        Medico.objects.filter(id=pk).update(aceptado=True, numRegistro=pk, username=username)
+        # Medico.objects.filter(id=pk).update(aceptado=True, numRegistro=pk, username=username)
+        Medico.objects.filter(id=pk).update(aceptado=True, username=username)
         Notificacion.objects.create(titulo='Preregistro', mensaje='Su preregistro se aprobó', destinatario=pk, remitente=0)
         # print(f'--->>>password: {password}')
         try:
@@ -154,7 +155,7 @@ class PreregistroRechazadoUpdateView(UpdateAPIView):
             emailRecha.attach_alternative(htmlContentRecha, "text/html")
             # email.attach(filename, resultado.getvalue(), "application/pdf")
             emailRecha.send()
-            # Medico.objects.filter(id=pk).delete()
+            Medico.objects.filter(id=pk).delete()
         except:
             raise ResponseError('Error al enviar correo', 500)
         return self.update(request, *args, **kwargs)

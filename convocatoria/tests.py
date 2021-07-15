@@ -1588,12 +1588,12 @@ class GetPublicarCalificaciones200Test(APITestCase):
         catTiposExamen3 = CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion3')
 
         medico3 = Medico.objects.create(
-            id=3, nombre='elianid', apPaterno='tolentino', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            id=3, nombre='elianid', apPaterno='tolentino', apMaterno='bejarano', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
             deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
             cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
             telCelular='telCelular1', telParticular='telParticular1', email='elianid@mb.company', numRegistro=3)
         medico6 = Medico.objects.create(
-            id=6, nombre='laura', apPaterno='cabrera', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            id=6, nombre='laura', apPaterno='cabrera', apMaterno='vargas', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
             deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
             cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
             telCelular='telCelular1', telParticular='telParticular1', email='laura@mb.company', numRegistro=6)
@@ -1608,8 +1608,12 @@ class GetPublicarCalificaciones200Test(APITestCase):
         convocatoria6 = Convocatoria.objects.create(id=6, fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',
                                                     horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1')
 
-        ConvocatoriaEnrolado.objects.create(medico=medico3, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=catTiposExamen1, calificacion=9, isAprobado=True, isPublicado=True)
-        ConvocatoriaEnrolado.objects.create(medico=medico6, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=catTiposExamen1, calificacion=5, isAprobado=False, isPublicado=False)
+        # ConvocatoriaEnrolado.objects.create(medico=medico3, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=catTiposExamen1, calificacion=9, isAprobado=True, isPublicado=True)
+        # ConvocatoriaEnrolado.objects.create(medico=medico6, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=catTiposExamen1, calificacion=5, isAprobado=False, isPublicado=False)
+        # ConvocatoriaEnrolado.objects.create(medico=medico9, convocatoria=convocatoria6, catSedes=catSedes3, catTiposExamen=catTiposExamen3, calificacion=6, isAprobado=True, isPublicado=False)
+        
+        ConvocatoriaEnrolado.objects.create(medico=medico3, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=catTiposExamen1, calificacion=9, isAprobado=True, isPublicado=False)
+        ConvocatoriaEnrolado.objects.create(medico=medico6, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=catTiposExamen1, calificacion=5, isAprobado=True, isPublicado=False)
         ConvocatoriaEnrolado.objects.create(medico=medico9, convocatoria=convocatoria6, catSedes=catSedes3, catTiposExamen=catTiposExamen3, calificacion=6, isAprobado=True, isPublicado=False)
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
@@ -1626,6 +1630,18 @@ class GetPublicarCalificaciones200Test(APITestCase):
         
         cuentaCertificados =  Certificado.objects.count()
         print(f'--->>>cuentaCertificados: {cuentaCertificados}')
+        
+        # ---- probando que  si se asignen bien los numRegistro
+        # datos = Certificado.objects.all().order_by('medico__apPaterno', 'medico__apMaterno', 'medico__nombre')
+        datos = Certificado.objects.all()
+        for dato in datos:
+            print(f'--->>>dato: id:{dato.id} - medico.id:{dato.medico.id} - medico.numRegistro:{dato.medico.numRegistro} - {dato.medico.apPaterno} {dato.medico.apMaterno} {dato.medico.nombre}')
+            
+        numRegistroMayorTotal = Medico.objects.all().order_by('-numRegistro')[:1]
+        valor = int(numRegistroMayorTotal.get().numRegistro)
+        print(f'--->>>valor: {valor}')   
+        # ---- probando que  si se asignen bien los numRegistro
+             
         
 
         # response = self.client.get('/api/convocatoria/66/enrolados/publicar/list/')  
