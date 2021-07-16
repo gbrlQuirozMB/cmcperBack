@@ -340,6 +340,14 @@ class ActualizaVigenciaCertificados(APIView):
 
     def put(self, request, *args, **kwargs):
         try:
+            # para quitarle al medico su certificacion
+            itemIds = []
+            for dato in Certificado.objects.filter(isVencido=False, fechaCaducidad__lt=date.today()):
+                if dato.medico.id not in itemIds:
+                    itemIds.append(dato.medico.id)
+            Medico.objects.filter(pk__in=itemIds).update(isCertificado=False)
+            # print(f'--->>>itemIds: {itemIds}')
+            
             cuentaVencidos = Certificado.objects.filter(isVencido=False, fechaCaducidad__lt=date.today()).update(estatus=3, isVencido=True)
             cuentaVigentes = Certificado.objects.filter(isVencido=False, fechaCaducidad__gte=date.today()).update(estatus=1, isVencido=False)
             cuentaPorVencer = Certificado.objects.filter(isVencido=False, fechaCaducidad__range=[date.today(), date.today()+relativedelta(years=1)]).update(estatus=2, isVencido=False)
@@ -689,6 +697,10 @@ class PublicarCalificaciones(APIView):
 
                     PorExamen.objects.filter(medico=dato[9]).delete()
                     RecertificacionItemDocumento.objects.filter(medico=dato[9]).delete()
+                    
+                    # actualizamos a que el medico de nuevo este certificado
+                    medico.isCertificado = True
+                    medico.save(update_fields=['isCertificado'])
 
                 datos = {
                     'nombre': dato[2],

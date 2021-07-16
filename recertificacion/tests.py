@@ -950,6 +950,11 @@ class PutActualizaVigenciaCertificados200Test(APITestCase):
 
     def test(self):
         self.client.force_authenticate(user=self.user)
+        
+        # pongo todos  como medicos certificados
+        Medico.objects.update(isCertificado=True)
+        for dato in Medico.objects.all():
+            print(f'--->>>dato.id: {dato.id} - dato.isCertificado: {dato.isCertificado}')
 
         response = self.client.put('/api/recertificacion/actualiza-vigencia-certificados/update/')
         print(f'response JSON ===>>> OK \n {json.dumps(response.json())} \n ---')
@@ -959,7 +964,11 @@ class PutActualizaVigenciaCertificados200Test(APITestCase):
         queryset = Certificado.objects.all().values_list('id', 'fechaCaducidad', 'estatus', 'isVencido', 'descripcion').order_by('id')
         for dato in queryset:
             print(f'--->>>dato: {dato[0]} - {dato[1]} - {dato[2]} - {dato[3]} - {dato[4]}')
-
+            
+        for dato in Medico.objects.all():
+            print(f'--->>>dato.id: {dato.id} - dato.isCertificado: {dato.isCertificado}')
+        
+        
 
 class PostSolicitarExamen201Test(APITestCase):
     def setUp(self):
