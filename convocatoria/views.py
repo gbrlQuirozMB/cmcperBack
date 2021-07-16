@@ -812,7 +812,7 @@ class PublicarCalificaciones(APIView):
                     valor = int(ultimoNumRegistro.get().numRegistro)
                     valor += 1
                     # asignamos el numero de registro segun se tenga y en orden segun los criterios
-                    Medico.objects.filter(id=dato[9]).update(numRegistro=valor)
+                    Medico.objects.filter(id=dato[9]).update(numRegistro=valor, isCertificado=True)
 
                 datos = {
                     'nombre': dato[2],
