@@ -82,6 +82,8 @@ class Medico(models.Model):
     # mas cambios solicitados
     telConsultorioPublico = models.CharField(max_length=15, blank=True, db_column='tel_consultorio_publico')
     telCelularPublico = models.CharField(max_length=15, blank=True, db_column='tel_celular_publico')
+    # ajustes para los reportes y mas
+    isCertificado = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'pre_registro_medico'
