@@ -109,7 +109,7 @@ class PagoAceptarUpdateView(UpdateAPIView):
                 request.data['estatus'] = 1
                 Renovacion.objects.filter(id=dato.externoId).delete()
                 RecertificacionItemDocumento.objects.filter(medico=dato.medico.id).delete()
-                Medico.objects.filter(id=dato.externoId).update(isCertificado=True)
+                # Medico.objects.filter(id=dato.medico.id).update(isCertificado=True)  #quiza no sea tan buena idea meter aqui el update porque es un proceso de tesoreria
                 return self.update(request, *args, **kwargs)
         
         # si se esta aceptando el pago de una ACTIVIDAD AVALADA

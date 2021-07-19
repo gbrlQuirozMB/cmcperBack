@@ -558,6 +558,7 @@ class RenovacionPagadoCreateView(CreateAPIView):
         serializer = CertificadoPagadoSerializer(data=request.data)
         if serializer.is_valid():
             RecertificacionItemDocumento.objects.filter(medico=request.data['medico']).delete()
+            Medico.objects.filter(id=request.data['medico']).update(isCertificado=True) # una vez que paga el medico pasa a ser certificado
             return self.create(request, *args, **kwargs)
         log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
