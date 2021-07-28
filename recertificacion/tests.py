@@ -1661,17 +1661,17 @@ class GetPublicarCalificaciones200Test(APITestCase):
         fechaExamen2 = FechasExamenRecertificacion.objects.create(fechaExamen='2021-08-01', descripcion='segunda fecha')
         fechaExamen3 = FechasExamenRecertificacion.objects.create(fechaExamen='2021-12-01', descripcion='tercera fecha')
 
-        PorExamen.objects.create(medico=medico9, estatus=3, isAprobado=True, calificacion=0, isPagado=False, isAceptado=False, fechaExamen=fechaExamen1, isPublicado=False)  # 1
-        PorExamen.objects.create(medico=medico6, estatus=2, isAprobado=False, calificacion=0, isPagado=False, isAceptado=False, fechaExamen=fechaExamen1, isPublicado=False)  # 2
-        PorExamen.objects.create(medico=medico3, estatus=1, isAprobado=True, calificacion=0, isPagado=False, isAceptado=False, fechaExamen=fechaExamen1, isPublicado=False)  # 3
+        PorExamen.objects.create(medico=medico9, estatus=3, isAprobado=True, calificacion=0, isPagado=True, isAceptado=False, fechaExamen=fechaExamen1, isPublicado=False)  # 1
+        PorExamen.objects.create(medico=medico6, estatus=2, isAprobado=False, calificacion=0, isPagado=True, isAceptado=False, fechaExamen=fechaExamen1, isPublicado=False)  # 2
+        PorExamen.objects.create(medico=medico3, estatus=1, isAprobado=True, calificacion=0, isPagado=True, isAceptado=False, fechaExamen=fechaExamen1, isPublicado=False)  # 3
 
-        archivo = open('./uploads/recertificacion.csv', 'rb')
-        csvFile = SimpleUploadedFile(archivo.name, archivo.read(), content_type='text/csv')
+        # archivo = open('./uploads/recertificacion.csv', 'rb')
+        # csvFile = SimpleUploadedFile(archivo.name, archivo.read(), content_type='text/csv')
 
-        self.json = {
-            "archivo": csvFile
-        }
-
+        # self.json = {
+        #     "archivo": csvFile
+        # }
+        
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
 
     def test(self):
@@ -1680,14 +1680,23 @@ class GetPublicarCalificaciones200Test(APITestCase):
         cuentaCertificados = Certificado.objects.count()
         print(f'--->>>cuentaCertificados: {cuentaCertificados}')
 
-        response = self.client.get('/api/recertificacion/por-examen/fecha/1/publicar/list/')
+        response = self.client.get('/api/recertificacion/por-examen/fecha/1/publicar/list/?fInicial=2021-04-06&fFinal=2026-04-06')
         print(f'response JSON ===>>> ok \n {response.content} \n ---')
         # print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
         # print(f'response JSON ===>>> ok \n {response.json()} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        response = self.client.get('/api/recertificacion/por-examen/fecha/1/publicar/list/?fInicial=2021-04-06')
+        print(f'response JSON ===>>> ok \n {response.content} \n ---')
+        # print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        # print(f'response JSON ===>>> ok \n {response.json()} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
 
         cuentaCertificados = Certificado.objects.count()
         print(f'--->>>cuentaCertificados: {cuentaCertificados}')
+        for dato in Certificado.objects.all():
+            print(f'--->>>id: {dato.id} - fechaCertificacion: {dato.fechaCertificacion} - fechaCaducidad: {dato.fechaCaducidad}')
+        
 
 
 class GetEnviarCorreoDocumentos200Test(APITestCase):

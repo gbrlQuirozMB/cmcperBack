@@ -680,6 +680,12 @@ class PublicarCalificaciones(APIView):
 
     def get(self, request, *args, **kwargs):
         fechaExamenId = self.kwargs['fechaExamenId']
+        fInicial = request.query_params.get('fInicial', None)
+        fFinal = request.query_params.get('fFinal', None)
+        if fInicial is None or fFinal is None:
+            respuesta = {"detail": "Se deben indicar las fechas"}
+            return Response(respuesta, status=status.HTTP_409_CONFLICT)
+        
         try:
             queryset = PorExamen.objects.filter(fechaExamen=fechaExamenId, isPagado=True).values_list('id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno',
                                                                                                       'fechaExamen__fechaExamen', 'calificacion', 'medico__email', 'isAprobado', 'medico__id',
@@ -693,7 +699,8 @@ class PublicarCalificaciones(APIView):
                 if dato[8] and not dato[10]:  # se checa que este aprobado y no publicado
                     # hay que crear un nuevo campo de isPublicado y con ese verificar si se crea o no un certificado nuevo
                     medico = Medico.objects.get(id=dato[9])
-                    Certificado.objects.create(medico=medico, documento='', descripcion='generado automaticamente por recertificacion examen', isVencido=False, estatus=1)
+                    Certificado.objects.create(medico=medico, documento='', descripcion='generado automaticamente por recertificacion examen', isVencido=False, estatus=1, 
+                                               fechaCertificacion=fInicial, fechaCaducidad=fFinal)
                     PorExamen.objects.filter(medico=dato[9]).update(isPublicado=True)
 
                     PorExamen.objects.filter(medico=dato[9]).delete()
