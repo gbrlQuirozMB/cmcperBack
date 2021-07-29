@@ -701,10 +701,13 @@ class PublicarCalificaciones(APIView):
                     medico = Medico.objects.get(id=dato[9])
                     Certificado.objects.create(medico=medico, documento='', descripcion='generado automaticamente por recertificacion examen', isVencido=False, estatus=1, 
                                                fechaCertificacion=fInicial, fechaCaducidad=fFinal)
-                    PorExamen.objects.filter(medico=dato[9]).update(isPublicado=True)
-
+                    # PorExamen.objects.filter(medico=dato[9]).update(isPublicado=True)
                     PorExamen.objects.filter(medico=dato[9]).delete()
+                    
+                    # se borran los registros en la tabla que es de trabajo y se mueven a la tabla para archivarlos para reportes
+                    registrosAMover = list(RecertificacionItemDocumento.objects.filter(medico=dato[9]))
                     RecertificacionItemDocumento.objects.filter(medico=dato[9]).delete()
+                    ArchivoDocumentosRecetificacion.objects.bulk_create(registrosAMover)
                     
                     # actualizamos a que el medico de nuevo este certificado
                     medico.isCertificado = True

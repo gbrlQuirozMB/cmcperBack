@@ -1664,6 +1664,26 @@ class GetPublicarCalificaciones200Test(APITestCase):
         PorExamen.objects.create(medico=medico9, estatus=3, isAprobado=True, calificacion=0, isPagado=True, isAceptado=False, fechaExamen=fechaExamen1, isPublicado=False)  # 1
         PorExamen.objects.create(medico=medico6, estatus=2, isAprobado=False, calificacion=0, isPagado=True, isAceptado=False, fechaExamen=fechaExamen1, isPublicado=False)  # 2
         PorExamen.objects.create(medico=medico3, estatus=1, isAprobado=True, calificacion=0, isPagado=True, isAceptado=False, fechaExamen=fechaExamen1, isPublicado=False)  # 3
+        
+        capitulo1 = Capitulo.objects.create(titulo='titulo 1', descripcion='capitulo descripcion 1', puntos=33.0, maximo=50.0, minimo=50.0, isOpcional=False)
+        subcapitulo1 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo1)
+        item1 = Item.objects.create(descripcion='item descripcion 1', puntos=3, subcapitulo=subcapitulo1)
+        item2 = Item.objects.create(descripcion='item descripcion 2', puntos=6, subcapitulo=subcapitulo1)
+        item3 = Item.objects.create(descripcion='item descripcion 3', puntos=9, subcapitulo=subcapitulo1)
+
+        capitulo2 = Capitulo.objects.create(titulo='titulo 2', descripcion='capitulo descripcion 2', puntos=66.0, maximo=50.0, minimo=50.0, isOpcional=False)
+        subcapitulo2 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo2)
+        subcapitulo4 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 4', comentarios='subcapitulo comentarios 4', capitulo=capitulo2)
+        item4 = Item.objects.create(descripcion='item descripcion 1', puntos=10, subcapitulo=subcapitulo2)
+        item5 = Item.objects.create(descripcion='item descripcion 2', puntos=20, subcapitulo=subcapitulo2)
+        item6 = Item.objects.create(descripcion='item descripcion 3', puntos=30, subcapitulo=subcapitulo2)
+
+        item7 = Item.objects.create(descripcion='item descripcion 4', puntos=30, subcapitulo=subcapitulo4)
+        item8 = Item.objects.create(descripcion='item descripcion 5', puntos=30, subcapitulo=subcapitulo4)
+        item9 = Item.objects.create(descripcion='item descripcion 6', puntos=30, subcapitulo=subcapitulo4)
+        
+        RecertificacionItemDocumento.objects.create(medico=medico9, item=item9, documento='documento-1', tituloDescripcion='tituloDescripcion-1', fechaEmision='2021-06-04', puntosOtorgados=3.69,
+                                                    estatus=1, observaciones='observaciones-1', notasRechazo='notasRechazo-1', razonRechazo='razonRechazo-1')
 
         # archivo = open('./uploads/recertificacion.csv', 'rb')
         # csvFile = SimpleUploadedFile(archivo.name, archivo.read(), content_type='text/csv')
@@ -1677,6 +1697,8 @@ class GetPublicarCalificaciones200Test(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
+        print(f'--->>>cuenta archivo: {ArchivoDocumentosRecetificacion.objects.count()}')
+        
         cuentaCertificados = Certificado.objects.count()
         print(f'--->>>cuentaCertificados: {cuentaCertificados}')
 
@@ -1696,6 +1718,8 @@ class GetPublicarCalificaciones200Test(APITestCase):
         print(f'--->>>cuentaCertificados: {cuentaCertificados}')
         for dato in Certificado.objects.all():
             print(f'--->>>id: {dato.id} - fechaCertificacion: {dato.fechaCertificacion} - fechaCaducidad: {dato.fechaCaducidad}')
+            
+        print(f'--->>>cuenta archivo: {ArchivoDocumentosRecetificacion.objects.count()}')
         
 
 

@@ -146,3 +146,26 @@ class Renovacion(models.Model):
     class Meta:
         db_table = 'recertificacion_renovaciones'
         ordering = ['-actualizado_en']
+        
+        
+class ArchivoDocumentosRecetificacion(models.Model):
+    creado_en = models.DateTimeField(auto_now_add=True)
+    actualizado_en = models.DateTimeField(auto_now=True)
+    medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medicoADR')
+    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='itemADR')
+    documento = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif', 'jpeg'])], upload_to='recertificacion')
+    tituloDescripcion = models.CharField(max_length=300, db_column='titulo_descripcion')
+    fechaEmision = models.DateField(db_column='fecha_emision')
+    puntosOtorgados = models.DecimalField(max_digits=6, decimal_places=2, db_column='puntos_otorgados')
+    estatus = models.PositiveSmallIntegerField(blank=True, choices=(
+        (1, 'Aceptado'),
+        (2, 'Rechazado'),
+        (3, 'Pendiente')
+    ))
+    observaciones = models.TextField(blank=True, db_column='observaciones')
+    notasRechazo = models.TextField(blank=True, db_column='notas_rechzo')
+    razonRechazo = models.CharField(max_length=200, blank=True, db_column='razon_rechazo')
+
+    class Meta:
+        db_table = 'archivo_documentos_recertificacion'
+        ordering = ['-actualizado_en']

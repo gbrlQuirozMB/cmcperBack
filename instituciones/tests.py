@@ -226,3 +226,50 @@ class PutCorreoInstitucionTest(APITestCase):
             print(f'last_name: {dato.last_name}')
             print(f'user_permissions: {dato.get_user_permissions()}')   
             print(f'is_staff: {dato.is_staff}')
+
+
+
+
+
+class DBTest(APITestCase):
+    def setUp(self):
+        Institucion.objects.create(nombreInstitucion='nombre institucion 1', rfc='rfc 1', contacto='contacto 1', telUno='telUno 1', telDos='telDos 1', telCelular='telCelular 1', email='email 1',
+                                   pais='pais 1', estado='estado 1', ciudad='ciudad 1', deleMuni='deleMuni 1', colonia='colonia 1', calle='calle 1', cp='cp 1', numInterior='Interior 1',
+                                   numExterior='Exterior 1')
+        Institucion.objects.create(nombreInstitucion='nombre institucion 2', rfc='rfc 2', contacto='contacto 2', telUno='telUno 2', telDos='telDos 2', telCelular='telCelular 2', email='email 2',
+                                   pais='pais 2', estado='estado 2', ciudad='ciudad 2', deleMuni='deleMuni 2', colonia='colonia 2', calle='calle 2', cp='cp 2', numInterior='Interior 2',
+                                   numExterior='Exterior 2')
+        Institucion.objects.create(nombreInstitucion='nombre institucion 3', rfc='rfc 3', contacto='contacto 3', telUno='telUno 3', telDos='telDos 3', telCelular='telCelular 3', email='email 3',
+                                   pais='pais 3', estado='estado 3', ciudad='ciudad 3', deleMuni='deleMuni 3', colonia='colonia 3', calle='calle 3', cp='cp 3', numInterior='Interior 3',
+                                   numExterior='Exterior 3')
+        Institucion.objects.create(nombreInstitucion='nombre institucion 4', rfc='rfc 3', contacto='contacto 4', telUno='telUno 4', telDos='telDos 4', telCelular='telCelular 4', email='email 4',
+                                   pais='pais 4', estado='estado 4', ciudad='ciudad 4', deleMuni='deleMuni 4', colonia='colonia 4', calle='calle 4', cp='cp 4', numInterior='Interior 4',
+                                   numExterior='Exterior 4')
+
+
+    def test(self):
+        
+        registrosAMover = list(Institucion.objects.filter(rfc='rfc 3'))
+        
+        for dato in Institucion.objects.all():
+            print(f'--->>>id: {dato.id} - rfc: {dato.rfc}')
+            
+        print(f'--->>> cuenta Total(original): {Institucion.objects.count()}')
+        
+        # se borran de la tabla origen
+        Institucion.objects.filter(rfc='rfc 3').delete()
+        print(f'--->>> cuenta Total(borrados): {Institucion.objects.count()}')
+        for dato in Institucion.objects.all():
+            print(f'--->>>id: {dato.id} - rfc: {dato.rfc}')
+            
+        Institucion.objects.create(nombreInstitucion='nombre institucion 5', rfc='rfc 5', contacto='contacto 5', telUno='telUno 5', telDos='telDos 5', telCelular='telCelular 5', email='email 5',
+                                pais='pais 5', estado='estado 5', ciudad='ciudad 5', deleMuni='deleMuni 5', colonia='colonia 5', calle='calle 5', cp='cp 5', numInterior='Interior 5',
+                                numExterior='Exterior 5')
+        
+        # se pasan a la tabla destino
+        Institucion.objects.bulk_create(registrosAMover)
+        print(f'--->>> cuenta Total(movidos): {Institucion.objects.count()}')
+        
+        
+        for dato in Institucion.objects.all():
+            print(f'--->>>id: {dato.id} - rfc: {dato.rfc}')
