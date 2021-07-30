@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import *
 from instituciones.models import *
+from preregistro.models import *
 
 class ConceptoPagoListSerializer(serializers.ModelSerializer):
     class Meta:
@@ -25,4 +26,9 @@ class UsoCFDIListSerializer(serializers.ModelSerializer):
 class AvalFilteredListSerializer(serializers.ModelSerializer):#Aval se refiere al modelo de Institucion
     class Meta:
         model = Institucion
-        fields = ['nombreInstitucion']
+        fields = '__all__'
+
+class MedicoFilteredListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Medico
+        fields = ['nombre', 'apPaterno', 'apMaterno', 'rfc', 'estado', 'deleMuni', 'colonia', 'calle', 'cp', 'numInterior', 'numExterior', 'rfcFacturacion', 'razonSocial', 'telCelular', 'email', 'isExtranjero', 'aceptado', 'isCertificado']

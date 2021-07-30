@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework.generics import ListAPIView
-from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter
+from django_filters.rest_framework import DjangoFilterBackend, FilterSet
+from django_filters import CharFilter
 from rest_framework import status, permissions
 from .serializers import *
 from instituciones.models import *
@@ -32,3 +33,19 @@ class AvalFilteredListView(ListAPIView):
     serializer_class = AvalFilteredListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = AvalFilter
+
+class MedicoFilter(FilterSet):
+    nombreNS = CharFilter(field_name='nombre', lookup_expr='icontains')
+    apPaternoNS = CharFilter(field_name='apPaterno', lookup_expr='icontains')
+    apMaternoNS = CharFilter(field_name='apMaterno', lookup_expr='icontains')
+    rfcNS = CharFilter(field_name='rfc', lookup_expr='icontains')
+    isCertificadoNS = CharFilter(field_name='isCertificado')
+    class Meta:
+        model = Medico
+        fields = ['nombreNS', 'apPaternoNS', 'apMaternoNS', 'rfcNS', 'isCertificadoNS']
+
+class MedicoFilteredListView(ListAPIView):
+    queryset = Medico.objects.all()
+    serializer_class = MedicoFilteredListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = MedicoFilter

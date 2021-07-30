@@ -3,8 +3,9 @@ from rest_framework.test import APITestCase
 from django.contrib.auth.models import User
 from rest_framework import status
 from .models import *
-import json
+import json, datetime
 from instituciones.models import *
+from preregistro.models import *
 
 class GetConceptoPagoListTest(APITestCase):
     def setUp(self):
@@ -78,5 +79,53 @@ class GetAvalFilteredListTest(APITestCase):#Aval se refiere al modelo de Institu
     def test(self):
         self.client.force_authenticate(user = self.user)
         response = self.client.get('/api/facturacion/aval/list/?nombreInstitucionNS=1')
+        print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+class GetMedicoFilteredListTest(APITestCase):#Aval se refiere al modelo de Institucion
+    def setUp(self):
+        Medico.objects.create(
+            nombre = 'Nombre1', apPaterno = 'ApPaterno1', apMaterno = 'ApMaterno1', rfc = 'Rfc1', curp = 'Curp1', fechaNac = datetime.datetime.strptime('2001-01-01', '%Y-%m-%d'),
+            sexo = 'M', pais = 'Pais1', estado = 'estado1', ciudad = 'Ciudad1', deleMuni = 'DeleMuni1', colonia = 'Colonia1', calle = 'Calle1', cp = 'Cp1',
+            numInterior = 'NumInterior1', numExterior = 'NumExterior1', rfcFacturacion = 'RfcFacturacion1', razonSocial = 'razonSocial1',
+            fechaInicioResi = datetime.datetime.strptime('2001-01-01', '%Y-%m-%d'), fechaFinResi = datetime.datetime.strptime('2001-01-01', '%Y-%m-%d'),
+            isExtranjero = True, aceptado = True, isCertificado = True
+        )
+        Medico.objects.create(
+            nombre = 'Nombre2', apPaterno = 'ApPaterno2', apMaterno = 'ApMaterno2', rfc = 'Rfc2', curp = 'Curp2', fechaNac = datetime.datetime.strptime('2002-02-02', '%Y-%m-%d'),
+            sexo = 'F', pais = 'Pais2', estado = 'estado2', ciudad = 'Ciudad2', deleMuni = 'DeleMuni2', colonia = 'Colonia2', calle = 'Calle2', cp = 'Cp2',
+            numInterior = 'NumInterior2', numExterior = 'NumExterior2', rfcFacturacion = 'RfcFacturacion2', razonSocial = 'razonSocial2',
+            fechaInicioResi = datetime.datetime.strptime('2002-02-02', '%Y-%m-%d'), fechaFinResi = datetime.datetime.strptime('2002-02-02', '%Y-%m-%d'),
+            isExtranjero = True, aceptado = True
+        )
+        Medico.objects.create(
+            nombre = 'Nombre3', apPaterno = 'ApPaterno3', apMaterno = 'ApMaterno3', rfc = 'Rfc3', curp = 'Curp3', fechaNac = datetime.datetime.strptime('2003-03-03', '%Y-%m-%d'),
+            sexo = 'M', pais = 'Pais3', estado = 'estado3', ciudad = 'Ciudad3', deleMuni = 'DeleMuni3', colonia = 'Colonia3', calle = 'Calle3', cp = 'Cp3',
+            numInterior = 'NumInterior3', numExterior = 'NumExterior3', rfcFacturacion = 'RfcFacturacion3', razonSocial = 'razonSocial3',
+            fechaInicioResi = datetime.datetime.strptime('2003-03-03', '%Y-%m-%d'), fechaFinResi = datetime.datetime.strptime('2003-03-03', '%Y-%m-%d'),
+            isExtranjero = True
+        )
+        Medico.objects.create(
+            nombre = 'Nombre4', apPaterno = 'ApPaterno4', apMaterno = 'ApMaterno4', rfc = 'Rfc4', curp = 'Curp4', fechaNac = datetime.datetime.strptime('2004-04-04', '%Y-%m-%d'),
+            sexo = 'F', pais = 'Pais4', estado = 'estado4', ciudad = 'Ciudad4', deleMuni = 'DeleMuni4', colonia = 'Colonia4', calle = 'Calle4', cp = 'Cp4',
+            numInterior = 'NumInterior4', numExterior = 'NumExterior4', rfcFacturacion = 'RfcFacturacion4', razonSocial = 'razonSocial4',
+            fechaInicioResi = datetime.datetime.strptime('2004-04-04', '%Y-%m-%d'), fechaFinResi = datetime.datetime.strptime('2004-04-04', '%Y-%m-%d')
+        )
+        self.user = User.objects.create_user(username = 'billy', is_staff = True)
+    def test(self):
+        self.client.force_authenticate(user = self.user)
+        response = self.client.get('/api/facturacion/medico/list/?nombreNS=1')
+        print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.get('/api/facturacion/medico/list/?apPaternoNS=2')
+        print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.get('/api/facturacion/medico/list/?apMaternoNS=3')
+        print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.get('/api/facturacion/medico/list/?rfcNS=4')
+        print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.get('/api/facturacion/medico/list/?isCertificadoNS=True')
         print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
