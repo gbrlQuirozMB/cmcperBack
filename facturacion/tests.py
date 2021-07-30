@@ -57,7 +57,7 @@ class GetUsoCFDIListTest(APITestCase):
         print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-class GetAvalListTest(APITestCase):#Aval se refiere al modelo de Institucion
+class GetAvalFilteredListTest(APITestCase):#Aval se refiere al modelo de Institucion
     def setUp(self):
         Institucion.objects.create(
             nombreInstitucion = 'NombreInstitucion1', rfc = 'Rfc1', contacto = 'Contacto1', telUno = 'TelUno1', telDos = 'TelDos1', telCelular = 'TelCelular1',
@@ -77,6 +77,6 @@ class GetAvalListTest(APITestCase):#Aval se refiere al modelo de Institucion
         self.user = User.objects.create_user(username = 'billy', is_staff = True)
     def test(self):
         self.client.force_authenticate(user = self.user)
-        response = self.client.get('/api/facturacion/aval/list/')
+        response = self.client.get('/api/facturacion/aval/list/?nombreInstitucionNS=1')
         print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
