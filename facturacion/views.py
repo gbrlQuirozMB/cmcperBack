@@ -51,8 +51,13 @@ class MedicoFilter(FilterSet):
         model = Medico
         fields = ['nombreNS', 'apPaternoNS', 'apMaternoNS', 'rfcNS', 'isCertificadoNS']
 
+class MedicoPagination(PageNumberPagination):
+    page_size = 20
+    max_page_size = 20
+
 class MedicoFilteredListView(ListAPIView):
     queryset = Medico.objects.all()
     serializer_class = MedicoFilteredListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = MedicoFilter
+    pagination_class = MedicoPagination
