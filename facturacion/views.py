@@ -1,7 +1,9 @@
 from django.shortcuts import render
+import rest_framework
 from rest_framework.generics import ListAPIView
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 from django_filters import CharFilter
+from rest_framework.pagination import PageNumberPagination
 from rest_framework import status, permissions
 from .serializers import *
 from instituciones.models import *
@@ -28,11 +30,16 @@ class AvalFilter(FilterSet):#Aval se refiere al modelo de Institucion
         model = Institucion
         fields = ['nombreInstitucionNS']
 
+class AvalPagination(PageNumberPagination):
+    page_size = 20
+    max_page_size = 20
+
 class AvalFilteredListView(ListAPIView):
     queryset = Institucion.objects.all()
     serializer_class = AvalFilteredListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = AvalFilter
+    pagination_class = AvalPagination
 
 class MedicoFilter(FilterSet):
     nombreNS = CharFilter(field_name='nombre', lookup_expr='icontains')
