@@ -26,7 +26,7 @@ class UsoCFDIListSerializer(serializers.ModelSerializer):
 class AvalFilteredListSerializer(serializers.ModelSerializer):#Aval se refiere al modelo de Institucion
     class Meta:
         model = Institucion
-        fields = '__all__'
+        fields = ['nombreInstitucion', 'rfc', 'telUno', 'email', 'estado', 'deleMuni', 'colonia', 'calle', 'numInterior', 'numExterior', 'cp']
 
 class MedicoFilteredListSerializer(serializers.ModelSerializer):
     class Meta:
