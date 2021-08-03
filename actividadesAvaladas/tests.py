@@ -236,7 +236,25 @@ class GetActividadAvaladaFilteredListTest(APITestCase):
         response = self.client.get('/api/actividades-avaladas/list/?idInstitucion=1')
         print(f'response JSON ===>>> idInstitucion=1\n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        # ----------------------------------------------------------------------------------------PAGINACION
+        # response = self.client.get('/api/actividades-avaladas/list/')
+        # print(f'response JSON ===>>> idInstitucion=1\n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+        # response = self.client.get('/api/actividades-avaladas/list/?page=2')
+        # print(f'response JSON ===>>> idInstitucion=1\n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        # response = self.client.get('/api/actividades-avaladas/list/?page_size=6')
+        # print(f'response JSON ===>>> idInstitucion=1\n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        # response = self.client.get('/api/actividades-avaladas/list/?page_size=2&pagado=True')
+        # print(f'response JSON ===>>> idInstitucion=1\n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        
 class GetActividadAvaladaDetailTest(APITestCase):
     def setUp(self):
 

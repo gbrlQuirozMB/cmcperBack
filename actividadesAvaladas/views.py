@@ -23,6 +23,8 @@ from django.contrib.auth.base_user import BaseUserManager
 from datetime import date
 
 
+# from rest_framework.pagination import PageNumberPagination
+
 # Create your views here.
 
 
@@ -53,6 +55,15 @@ class ActividadAvaladaBannerUpdateView(UpdateAPIView):
     permission_classes = (permissions.IsAdminUser,)
 
 
+
+# PAGINACION
+# class StandardResultsSetPagination(PageNumberPagination):
+#     page_size = 2
+#     page_size_query_param = 'page_size'
+#     max_page_size = 3
+
+
+
 class ActividadAvaladaFilter(FilterSet):
     nombreNS = CharFilter(field_name='nombre', lookup_expr='icontains')
     institucionNS = CharFilter(field_name='institucion__nombreInstitucion', lookup_expr='icontains')
@@ -70,6 +81,7 @@ class ActividadAvaladaFilteredListView(ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_class = ActividadAvaladaFilter
     permission_classes = (permissions.IsAdminUser,)
+    # pagination_class = StandardResultsSetPagination
 
 
 class ActividadAvaladaDetailView(RetrieveAPIView):
