@@ -1,3 +1,4 @@
+from django.db.models import fields
 from rest_framework import serializers
 from .models import *
 from instituciones.models import *
@@ -32,3 +33,8 @@ class MedicoFilteredListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Medico
         fields = ['nombre', 'apPaterno', 'apMaterno', 'rfc', 'estado', 'deleMuni', 'colonia', 'calle', 'cp', 'numInterior', 'numExterior', 'rfcFacturacion', 'razonSocial', 'telCelular', 'email', 'isExtranjero', 'aceptado', 'isCertificado']
+
+class IdUltimaFacturaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Factura
+        fields = ['id']

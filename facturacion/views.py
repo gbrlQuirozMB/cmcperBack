@@ -61,3 +61,7 @@ class MedicoFilteredListView(ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_class = MedicoFilter
     pagination_class = MedicoPagination
+
+class IdUltimaFacturaView(ListAPIView):
+    queryset = Factura.objects.all().order_by('-id')[:1]
+    serializer_class = IdUltimaFacturaSerializer

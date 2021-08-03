@@ -129,3 +129,13 @@ class GetMedicoFilteredListTest(APITestCase):#Aval se refiere al modelo de Insti
         response = self.client.get('/api/facturacion/medico/list/?isCertificadoNS=True')
         print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+class GetIdUltimaFacturaTest(APITestCase):
+    def setUp(self):
+        Factura.objects.create(codigoPostal = '01234')
+        Factura.objects.create(codigoPostal = '56789')
+        self.user = User.objects.create_user(username = 'billy', is_staff = True)
+    def test(self):
+        self.client.force_authenticate(user = self.user)
+        response = self.client.get('/api/facturacion/factura/idUltimaFactura')
+        print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
