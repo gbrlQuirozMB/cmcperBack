@@ -1,4 +1,7 @@
 from django.db import models
+from instituciones.models import *
+from preregistro.models import *
+import os
 
 class FormaPago(models.Model):
     formaPago = models.IntegerField()
@@ -55,6 +58,48 @@ class ConceptoPago(models.Model):
     precio = models.IntegerField(null = True)
     inactivo = models.BooleanField(default = False)
     claveSAT = models.CharField(max_length = 50)
-    unidadMedida = models.ForeignKey(UnidadMedida, on_delete = models.CASCADE, null = True)
+    unidadMedida = models.ForeignKey(UnidadMedida, on_delete = models.SET_NULL, null = True)
     class Meta:
         db_table = 'facturacionConceptoPago'
+
+def rutaTimbrado(instance, nombreArchivo):
+    rfc = ''
+    if instance.institucion:
+        rfc = instance.institucion.rfc
+    else:
+        rfc = instance.medico.rfc
+    return os.path.join('facturasTimbradas/', rfc, instance.fecha.date().strftime("%d-%m-%Y"), nombreArchivo)
+def rutaCancelado(instance, nombreArchivo):
+    rfc = ''
+    if instance.institucion:
+        rfc = instance.institucion.rfc
+    else:
+        rfc = instance.medico.rfc
+    return os.path.join('facturasCanceladas/', rfc, instance.fecha.date().strftime("%d-%m-%Y"), nombreArchivo)
+
+class Factura(models.Model):
+    fecha = models.DateTimeField(auto_now = True)
+    institucion = models.ForeignKey(Institucion, on_delete = models.SET_NULL, null = True)
+    medico = models.ForeignKey(Medico, on_delete = models.SET_NULL, null = True)
+    usoCFDI = models.ForeignKey(UsoCFDI, on_delete = models.SET_NULL, null = True)
+    codigoPostal = models.CharField(max_length = 150)
+    formaPago = models.ForeignKey(FormaPago, on_delete = models.SET_NULL, null = True)
+    moneda = models.ForeignKey(Moneda, on_delete = models.SET_NULL, null = True)
+    comentarios = models.CharField(max_length = 250, null = True, blank = True)
+    folio = models.CharField(max_length = 50, null = True)
+    subtotal = models.DecimalField(decimal_places = 6, max_digits = 21, null = True)
+    iva = models.DecimalField(decimal_places = 6, max_digits = 21, null = True)
+    total = models.DecimalField(decimal_places = 6, max_digits = 21, null = True)
+    uuid = models.CharField(max_length = 50, null = True)
+    cadenaOriginal = models.TextField(null = True)
+    numeroCertificado = models.CharField(max_length = 50,  null = True)
+    numeroCertificadoSAT = models.CharField(max_length = 50,  null = True)
+    selloSAT = models.TextField(null = True)
+    selloCFDI = models.TextField(null = True)
+    fechaTimbrado = models.DateTimeField(null = True)
+    fechaCancelado = models.DateTimeField(null = True)
+    xmlTimbrado = models.FileField(upload_to = rutaTimbrado, null = True)
+    xmlCancelado = models.FileField(upload_to = rutaCancelado, null = True)
+    pdf = models.CharField(max_length = 500, null = True)
+    class Meta:
+        db_table = 'facturacionFactura'
