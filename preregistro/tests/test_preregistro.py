@@ -36,7 +36,7 @@ class Post201Test(APITestCase):
             "numExterior": "111",
             "rfcFacturacion": "111",
             "cedProfesional": "333333",
-            "cedEspecialidad": "666666",
+            # "cedEspecialidad": "666666",
             "cedCirugiaGral": "999999",
             "hospitalResi": "hospital del issste",
             "telJefEnse": "7719876543",

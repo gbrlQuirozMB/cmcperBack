@@ -48,7 +48,7 @@ class Medico(models.Model):
     numExteriorConsult = models.CharField(max_length=10, blank=True, db_column='num_exterior_consult')
     # pantalla 6
     cedProfesional = models.CharField(max_length=20, db_column='ced_profesional')
-    cedEspecialidad = models.CharField(max_length=20, db_column='ced_especialidad')
+    cedEspecialidad = models.CharField(max_length=20, blank=True, db_column='ced_especialidad')
     cedCirugiaGral = models.CharField(max_length=20, db_column='ced_cirugia_gral')
     hospitalResi = models.CharField(max_length=150, db_column='hospital_residencia')
     telJefEnse = models.CharField(max_length=15, db_column='tel_jefatura_ense')
