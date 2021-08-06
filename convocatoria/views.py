@@ -458,7 +458,7 @@ class ConvocatoriaEnroladosMedicoListView(ListAPIView):
             isAceptado = False
         nombre = self.kwargs['nombre']
         apPaterno = self.kwargs['apPaterno']
-        log.error(f'--->>>se busca por: convocatoriaId: {convocatoriaId} - isAceptado: {isAceptado} - nombre: {nombre} - apPaterno: {apPaterno}')
+        # log.error(f'--->>>se busca por: convocatoriaId: {convocatoriaId} - isAceptado: {isAceptado} - nombre: {nombre} - apPaterno: {apPaterno}')
 
         return getQuerysetEnroladosMedico(convocatoriaId, isAceptado, nombre, apPaterno)
 
@@ -473,7 +473,7 @@ class ConvocatoriaEnroladosMedicoEndPoint(APIView):
             isAceptado = False
         nombre = kwargs['nombre']
         apPaterno = kwargs['apPaterno']
-        log.error(f'--->>>se busca por: convocatoriaId: {convocatoriaId} - isAceptado: {isAceptado} - nombre: {nombre} - apPaterno: {apPaterno}')
+        # log.error(f'--->>>se busca por: convocatoriaId: {convocatoriaId} - isAceptado: {isAceptado} - nombre: {nombre} - apPaterno: {apPaterno}')
 
         queryset = getQuerysetEnroladosMedico(convocatoriaId, isAceptado, nombre, apPaterno)
 

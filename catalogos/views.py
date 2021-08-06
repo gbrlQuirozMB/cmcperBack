@@ -20,7 +20,7 @@ class CatMotivoRechazoListView(ListAPIView):
 
     def get_queryset(self):
         textoBusqueda = self.kwargs['textoBusqueda']
-        log.error(f'--->>>se busca por: textoBusqueda: {textoBusqueda}')
+        # log.error(f'--->>>se busca por: textoBusqueda: {textoBusqueda}')
         if textoBusqueda == 'all':
             queryset = CatMotivosRechazo.objects.filter()
             return queryset

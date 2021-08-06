@@ -226,7 +226,7 @@ class ItemDocumentosFilteredListView(ListAPIView):
         estatus = self.kwargs['estatus']
         nombre = self.kwargs['nombre']
         apPaterno = self.kwargs['apPaterno']
-        log.error(f'--->>>se busca por:  estatus: {estatus} - nombre: {nombre} - apPaterno: {apPaterno}')
+        # log.error(f'--->>>se busca por:  estatus: {estatus} - nombre: {nombre} - apPaterno: {apPaterno}')
 
         return getQuerysetItemDocumentosFiltered(estatus, nombre, apPaterno)
 

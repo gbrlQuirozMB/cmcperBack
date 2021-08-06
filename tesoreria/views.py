@@ -53,7 +53,7 @@ class PagosListView(ListAPIView):
 
     def get_queryset(self):
         estatus = self.kwargs['estatus']
-        log.error(f'--->>>se busca por: estatus: {estatus}')
+        # log.error(f'--->>>se busca por: estatus: {estatus}')
 
         return getQuerysetEstatus(estatus)
 
