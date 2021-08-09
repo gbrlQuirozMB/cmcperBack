@@ -136,7 +136,7 @@ class ConvocatoriaEnroladoCreateView(CreateAPIView):
         convocatoriaId = request.data['convocatoria']
         cuenta = ConvocatoriaEnrolado.objects.filter(medico=medicoId, convocatoria=convocatoriaId).count()
         if cuenta > 0:
-            log.info('Ya existe el médico enrolado a esta convocatoria')
+            log.error(f'--->>>Ya existe el médico enrolado a esta convocatoria')
             raise ResponseError('Ya existe el médico enrolado a esta convocatoria', 409)
         request.data['isPagado'] = False
         request.data['comentario'] = ''
