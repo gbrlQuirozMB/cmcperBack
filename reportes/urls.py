@@ -7,5 +7,6 @@ app_name = 'reportes'
 
 urlpatterns = [
     path('med-residentes/list/', MedResidenteFilteredListView.as_view(), ),
+    path('med-residentes/<pk>/detail/', MedResidenteDetailView.as_view(), ),
 
 ]

@@ -55,21 +55,38 @@ class MedResidenteFilteredListTest(APITestCase):
 
         # ponemos todos lo registros como residentes
         Medico.objects.all().update(isCertificado=False)
-        
+
         response = self.client.get('/api/reportes/med-residentes/list/?telConsultorioNS=rio1')
         print(f'response JSON ===>>> telConsutorioNS=rio1 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         response = self.client.get('/api/reportes/med-residentes/list/?sexo=F')
         print(f'response JSON ===>>> sexo=F \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         # # buscar en un solo campo de entrada separados por comas
         # response = self.client.get('/api/reportes/med-residentes/list/?nombreCompletoNS=laura grissel,cabrera,bejarano')
         # print(f'response JSON ===>>> nombreCompletoNS=laura grissel,cabrera,bejarano \n {json.dumps(response.json())} \n ---')
         # self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         # buscar en cada uno de los campos nombre, apPaterno y apMaterno
         response = self.client.get('/api/reportes/med-residentes/list/?nombre=laura grissel&apPaterno=cabrera&apMaterno=bejarano')
         print(f'response JSON ===>>> nombre=laura grissel&apPaterno=cabrera&apMaterno=bejarano \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class MedResidenteDetailTest(APITestCase):
+    def setUp(self):
+        configDB()
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/reportes/med-residentes/3/detail/')
+        print(f'response JSON ===>>> obtiene solo lo residentes (isCertificado=False) \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        response = self.client.get('/api/reportes/med-residentes/1/detail/')
+        print(f'response JSON ===>>> 404 (isCertificado=True) \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

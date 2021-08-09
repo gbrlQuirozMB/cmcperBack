@@ -36,3 +36,8 @@ class MedResidenteFilteredListView(ListAPIView):
     serializer_class = MedResidenteListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = MedResidenteFilter
+
+
+class MedResidenteDetailView(RetrieveAPIView):
+    queryset = Medico.objects.filter(isCertificado=False)
+    serializer_class = MedResidenteSerializer
