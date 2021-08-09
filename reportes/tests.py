@@ -6,6 +6,8 @@ import json
 from rest_framework import status
 
 from preregistro.models import *
+from catalogos.models import *
+from convocatoria.models import *
 
 
 def configDB():
@@ -19,12 +21,12 @@ def configDB():
         deleMuni='deleMuni2', colonia='colonia', calle='calle2', cp='cp2', numExterior='numExterior2', rfcFacturacion='rfcFacturacion2', cedProfesional='cedProfesional2',
         cedEspecialidad='cedEspecialidad2', cedCirugiaGral='cedCirugiaGral2', hospitalResi='hospitalResi2', telJefEnse='telJefEnse2', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
         telCelular='telCelular2', telParticular='telParticular2', email='laura@mb.company', numRegistro=222, aceptado=False, telConsultorio='telConsultorio2', sexo='F', isCertificado=True)
-    Medico.objects.create(
+    medico3 = Medico.objects.create(
         nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp3', fechaNac='2020-09-09', pais='pais3', estado='estado3', ciudad='ciudad3',
         deleMuni='deleMuni3', colonia='colonia', calle='calle3', cp='cp3', numExterior='numExterior3', rfcFacturacion='rfcFacturacion3', cedProfesional='cedProfesional3',
         cedEspecialidad='cedEspecialidad3', cedCirugiaGral='cedCirugiaGral3', hospitalResi='hospitalResi3', telJefEnse='telJefEnse3', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
         telCelular='telCelular3', telParticular='telParticular3', email='gabriel@mb.company', numRegistro=333, aceptado=True, telConsultorio='telConsultorio3', sexo='M', isCertificado=False)
-    Medico.objects.create(
+    medico6 = Medico.objects.create(
         nombre='gisela', apPaterno='paredes', apMaterno='cruz', rfc='quog??0406', curp='curp4', fechaNac='2020-09-09', pais='pais4', estado='estado4', ciudad='ciudad4',
         deleMuni='deleMuni4', colonia='colonia', calle='calle4', cp='cp4', numExterior='numExterior4', rfcFacturacion='rfcFacturacion4', cedProfesional='cedProfesional4',
         cedEspecialidad='cedEspecialidad4', cedCirugiaGral='cedCirugiaGral4', hospitalResi='hospitalResi4', telJefEnse='telJefEnse4', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
@@ -39,6 +41,21 @@ def configDB():
         deleMuni='deleMuni6', colonia='colonia', calle='calle6', cp='cp6', numExterior='numExterior6', rfcFacturacion='rfcFacturacion6', cedProfesional='cedProfesional6',
         cedEspecialidad='cedEspecialidad6', cedCirugiaGral='cedCirugiaGral6', hospitalResi='hospitalResi6', telJefEnse='telJefEnse6', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
         telCelular='telCelular6', telParticular='telParticular6', email='gabriel@mb.company', numRegistro=666, aceptado=True, telConsultorio='telConsultorio6', sexo='M', isCertificado=False)
+
+    catSedes1 = CatSedes.objects.create(descripcion='sedeDescripcion1', direccion='sedeDireccion1', latitud=11.111111, longitud=-111.111111)
+    catSedes2 = CatSedes.objects.create(descripcion='sedeDescripcion2', direccion='sedeDireccion2', latitud=22.222222, longitud=-222.222222)
+
+    catTiposExamen1 = CatTiposExamen.objects.create(descripcion='Normal', precio=11.11, precioExtrangero=111.11)
+    catTiposExamen2 = CatTiposExamen.objects.create(descripcion='Especial', precio=22.22, precioExtrangero=222.22)
+
+    # catTiposExamen1 = CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion1')
+    # catTiposExamen2 = CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion3')
+
+    convocatoria1 = Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona1',
+                                                detalles='detalles1')
+
+    ConvocatoriaEnrolado.objects.create(medico=medico3, convocatoria=convocatoria1, catSedes=catSedes2, catTiposExamen=catTiposExamen2, calificacion=9, isAprobado=True, isPublicado=False)
+    ConvocatoriaEnrolado.objects.create(medico=medico6, convocatoria=convocatoria1, catSedes=catSedes1, catTiposExamen=catTiposExamen1, calificacion=5, isAprobado=True, isPublicado=False)
 
 
 class MedResidenteFilteredListTest(APITestCase):
@@ -86,7 +103,24 @@ class MedResidenteDetailTest(APITestCase):
         response = self.client.get('/api/reportes/med-residentes/3/detail/')
         print(f'response JSON ===>>> obtiene solo lo residentes (isCertificado=False) \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         response = self.client.get('/api/reportes/med-residentes/1/detail/')
+        print(f'response JSON ===>>> 404 (isCertificado=True) \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class MedResidenteExtraDetailTest(APITestCase):
+    def setUp(self):
+        configDB()
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/reportes/med-residentes/3/extras/')
+        print(f'response JSON ===>>> obtiene solo lo residentes (isCertificado=False) \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/reportes/med-residentes/1/extras/')
         print(f'response JSON ===>>> 404 (isCertificado=True) \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

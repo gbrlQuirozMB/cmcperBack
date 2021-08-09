@@ -5,6 +5,8 @@ from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFi
 from .serializers import *
 
 from preregistro.models import Medico
+from convocatoria.models import *
+
 
 from django.db.models import Q
 
@@ -41,3 +43,22 @@ class MedResidenteFilteredListView(ListAPIView):
 class MedResidenteDetailView(RetrieveAPIView):
     queryset = Medico.objects.filter(isCertificado=False)
     serializer_class = MedResidenteSerializer
+
+
+# para un solo medico en una sola convocatoria
+class MedResidenteExtrasDetailView(RetrieveAPIView):
+    queryset = ConvocatoriaEnrolado.objects.filter()
+    serializer_class = MedResidenteExtrasDetailView
+    lookup_field = 'medico'
+    lookup_url_kwarg = 'medicoId'
+
+
+# # desconozco si puedan existir varios registros de un medico en la convocatoria
+# class MedResidenteExtrasDetailView(ListAPIView):
+#     serializer_class = MedResidenteExtrasDetailView
+
+#     def get_queryset(self):
+#         medicoId = self.kwargs['medicoId']
+#         queryset = ConvocatoriaEnrolado.objects.filter(medico=medicoId).order_by('-id')[:1]
+
+#         return queryset

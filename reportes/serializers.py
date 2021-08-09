@@ -1,6 +1,7 @@
 from rest_framework import fields, serializers
 from .models import *
 from preregistro.models import Medico
+from convocatoria.models import *
 
 
 class MedResidenteListSerializer(serializers.ModelSerializer):
@@ -21,3 +22,16 @@ class MedResidenteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Medico
         fields = '__all__'
+
+
+class MedResidenteExtrasDetailView(serializers.ModelSerializer):
+    class Meta:
+        model = ConvocatoriaEnrolado
+        fields = ['catSedes', 'catTiposExamen']
+
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        repr['catTiposExamen'] = instance.catTiposExamen.descripcion
+        repr['catSedes'] = instance.catSedes.descripcion
+        
+        return repr
