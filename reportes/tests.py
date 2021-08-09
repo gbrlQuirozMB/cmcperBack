@@ -26,7 +26,7 @@ def configDB():
         deleMuni='deleMuni3', colonia='colonia', calle='calle3', cp='cp3', numExterior='numExterior3', rfcFacturacion='rfcFacturacion3', cedProfesional='cedProfesional3',
         cedEspecialidad='cedEspecialidad3', cedCirugiaGral='cedCirugiaGral3', hospitalResi='hospitalResi3', telJefEnse='telJefEnse3', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
         telCelular='telCelular3', telParticular='telParticular3', email='gabriel@mb.company', numRegistro=333, aceptado=True, telConsultorio='telConsultorio3', sexo='M', isCertificado=False)
-    medico6 = Medico.objects.create(
+    medico4 = Medico.objects.create(
         nombre='gisela', apPaterno='paredes', apMaterno='cruz', rfc='quog??0406', curp='curp4', fechaNac='2020-09-09', pais='pais4', estado='estado4', ciudad='ciudad4',
         deleMuni='deleMuni4', colonia='colonia', calle='calle4', cp='cp4', numExterior='numExterior4', rfcFacturacion='rfcFacturacion4', cedProfesional='cedProfesional4',
         cedEspecialidad='cedEspecialidad4', cedCirugiaGral='cedCirugiaGral4', hospitalResi='hospitalResi4', telJefEnse='telJefEnse4', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
@@ -55,10 +55,10 @@ def configDB():
                                                 detalles='detalles1')
 
     ConvocatoriaEnrolado.objects.create(medico=medico3, convocatoria=convocatoria1, catSedes=catSedes2, catTiposExamen=catTiposExamen2, calificacion=9, isAprobado=True, isPublicado=False)
-    ConvocatoriaEnrolado.objects.create(medico=medico6, convocatoria=convocatoria1, catSedes=catSedes1, catTiposExamen=catTiposExamen1, calificacion=5, isAprobado=True, isPublicado=False)
+    ConvocatoriaEnrolado.objects.create(medico=medico4, convocatoria=convocatoria1, catSedes=catSedes1, catTiposExamen=catTiposExamen1, calificacion=5, isAprobado=True, isPublicado=False)
 
 
-class MedResidenteFilteredListTest(APITestCase):
+class GetMedResidenteFilteredListTest(APITestCase):
     def setUp(self):
         configDB()
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
@@ -92,7 +92,7 @@ class MedResidenteFilteredListTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-class MedResidenteDetailTest(APITestCase):
+class GetMedResidenteDetailTest(APITestCase):
     def setUp(self):
         configDB()
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
@@ -109,7 +109,7 @@ class MedResidenteDetailTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
-class MedResidenteExtraDetailTest(APITestCase):
+class GetMedResidenteExtraDetailTest(APITestCase):
     def setUp(self):
         configDB()
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
@@ -124,3 +124,54 @@ class MedResidenteExtraDetailTest(APITestCase):
         response = self.client.get('/api/reportes/med-residentes/1/extras/')
         print(f'response JSON ===>>> 404 (isCertificado=True) \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class PutMedResidenteTest(APITestCase):
+    def setUp(self):
+        configDB()
+
+        self.json = {
+            "nombre": "gabriel",
+            "apPaterno": "quiroz",
+            "apMaterno": "olvera",
+            "rfc": "quog000406",
+            "curp": "quog000406CURP",
+            "fechaNac": "2020-12-09",
+            "pais": "mexico",
+            "estado": "hidalgo",
+            "ciudad": "pachuca",
+            "deleMuni": "pachuca de soto",
+            "colonia": "issste",
+            "calle": "rio moctezuma",
+            "cp": "42083",
+            "numExterior": "111",
+            "rfcFacturacion": "111",
+            "cedProfesional": "333333",
+            "cedEspecialidad": "666666",
+            "cedCirugiaGral": "999999",
+            "hospitalResi": "hospital del issste",
+            "telJefEnse": "7719876543",
+            "fechaInicioResi": "1999-06-09",
+            "fechaFinResi": "2000-07-10",
+            "telCelular": "7711896189",
+            "telParticular": "7711234567",
+            "email": "doctor@medico.com"
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        # response = self.client.put('/api/reportes/med-residentes/3/update/', data=json.dumps(self.json), content_type="application/json")
+        # print(f'response JSON ===>>> obtiene solo lo residentes (isCertificado=False) \n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # response = self.client.put('/api/reportes/med-residentes/1/update/', data=json.dumps(self.json), content_type="application/json")
+        # print(f'response JSON ===>>> 404 (isCertificado=True) \n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        # se reutiliza en endpoint ya existente
+        response = self.client.put('/api/preregistro/update/3/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
