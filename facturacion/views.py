@@ -7,6 +7,8 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework import status, permissions
 from .serializers import *
 from instituciones.models import *
+from django.db.models import Value
+from django.db.models.functions import Concat
 
 class ConceptoPagoListView(ListAPIView):
     queryset = ConceptoPago.objects.all()
@@ -25,7 +27,7 @@ class UsoCFDIListView(ListAPIView):
     serializer_class = UsoCFDIListSerializer
 
 class AvalFilter(FilterSet):#Aval se refiere al modelo de Institucion
-    nombreInstitucionNS = CharFilter(field_name='nombreInstitucion', lookup_expr='icontains')
+    nombreInstitucionNS = CharFilter(field_name = 'nombreInstitucion', lookup_expr = 'icontains')
     class Meta:
         model = Institucion
         fields = ['nombreInstitucionNS']
@@ -42,14 +44,15 @@ class AvalFilteredListView(ListAPIView):
     pagination_class = AvalPagination
 
 class MedicoFilter(FilterSet):
-    nombreNS = CharFilter(field_name='nombre', lookup_expr='icontains')
-    apPaternoNS = CharFilter(field_name='apPaterno', lookup_expr='icontains')
-    apMaternoNS = CharFilter(field_name='apMaterno', lookup_expr='icontains')
-    rfcNS = CharFilter(field_name='rfc', lookup_expr='icontains')
-    isCertificadoNS = CharFilter(field_name='isCertificado')
+    nombreCompletoNS = CharFilter(method = 'nombreCompletoFilter')
+    rfcNS = CharFilter(field_name = 'rfc', lookup_expr = 'icontains')
+    isCertificadoNS = CharFilter(field_name = 'isCertificado')
     class Meta:
         model = Medico
-        fields = ['nombreNS', 'apPaternoNS', 'apMaternoNS', 'rfcNS', 'isCertificadoNS']
+        fields = ['nombreCompletoNS', 'rfcNS', 'isCertificadoNS']
+    def nombreCompletoFilter(self, queryset, name, value):
+        queryset = Medico.objects.annotate(completo = Concat('nombre', Value(' '), 'apPaterno', Value(' '), 'apMaterno'))
+        return queryset.filter(completo=value)
 
 class MedicoPagination(PageNumberPagination):
     page_size = 20
