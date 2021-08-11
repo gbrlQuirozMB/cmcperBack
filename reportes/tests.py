@@ -93,23 +93,20 @@ class GetMedResidenteFilteredListTest(APITestCase):
         # ponemos todos lo registros como residentes
         Medico.objects.all().update(isCertificado=False)
 
-        response = self.client.get('/api/reportes/med-residentes/list/?telConsultorioNS=rio1')
-        print(f'response JSON ===>>> telConsutorioNS=rio1 \n {json.dumps(response.json())} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
         response = self.client.get('/api/reportes/med-residentes/list/?sexo=F')
         print(f'response JSON ===>>> sexo=F \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        # # buscar en un solo campo de entrada separados por comas
-        # response = self.client.get('/api/reportes/med-residentes/list/?nombreCompletoNS=laura grissel,cabrera,bejarano')
-        # print(f'response JSON ===>>> nombreCompletoNS=laura grissel,cabrera,bejarano \n {json.dumps(response.json())} \n ---')
-        # self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        # buscar en cada uno de los campos nombre, apPaterno y apMaterno
-        response = self.client.get('/api/reportes/med-residentes/list/?nombre=laura grissel&apPaterno=cabrera&apMaterno=bejarano')
-        print(f'response JSON ===>>> nombre=laura grissel&apPaterno=cabrera&apMaterno=bejarano \n {json.dumps(response.json())} \n ---')
+        
+        response = self.client.get('/api/reportes/med-residentes/list/?nombreCompletoNS=Quiroz Olvera')
+        print(f'response JSON ===>>> nombreCompletoNS=Quiroz Olvera \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        Medico.objects.filter(id=3).update(creado_en='2022-08-11T14:10:40.875138-05:00')
+        response = self.client.get('/api/reportes/med-residentes/list/?anioInscr=2022')
+        print(f'response JSON ===>>> anioInscr=2022 \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
 
 
 class GetMedResidenteDetailTest(APITestCase):

@@ -18,22 +18,18 @@ from datetime import date
 
 
 class MedResidenteFilter(FilterSet):
-    telConsultorioNS = CharFilter(field_name='telConsultorio', lookup_expr='icontains')
-    telParticularNS = CharFilter(field_name='telParticular', lookup_expr='icontains')
-    telJefEnseNS = CharFilter(field_name='telJefEnse', lookup_expr='icontains')
-    emailNS = CharFilter(field_name='email', lookup_expr='icontains')
-    # nombreCompletoNS = CharFilter(method='nombreCompletoFilter')
-
+    nombreCompletoNS = CharFilter(method='nombreCompletoFilter')
+    hospitalResiNS = CharFilter(field_name='hospitalResi', lookup_expr='icontains')
+    estadoNS = CharFilter(field_name='estado', lookup_expr='icontains')
+    anioInscr = CharFilter(field_name='creado_en', lookup_expr='icontains')
+    
     class Meta:
         model = Medico
-        # fields = ['telConsultorioNS', 'telParticularNS', 'telJefEnseNS', 'emailNS', 'sexo', 'nombreCompletoNS']
-        fields = ['telConsultorioNS', 'telParticularNS', 'telJefEnseNS', 'emailNS', 'sexo', 'nombre', 'apPaterno', 'apMaterno']
+        fields = ['nombreCompletoNS', 'hospitalResiNS', 'estadoNS', 'sexo', 'anioInscr']
 
-    # def nombreCompletoFilter(self, queryset, name, value):
-    #     # print(f'--->>>value: {value}')
-    #     # return Medico.objects.filter(Q(nombre__icontains=value) | Q(apPaterno__icontains=value) | Q(apMaterno__icontains=value)) #uso de OR
-    #     valSeparados = value.split(',')
-    #     return Medico.objects.filter(nombre__icontains=valSeparados[0], apPaterno__icontains=valSeparados[1], apMaterno__icontains=valSeparados[2])
+    def nombreCompletoFilter(self, queryset, name, value):
+        queryset = Medico.objects.annotate(completo=Concat('nombre', Value(' '), 'apPaterno', Value(' '), 'apMaterno'))
+        return queryset.filter(completo__icontains=value)
 
 
 class MedResidenteFilteredListView(ListAPIView):
@@ -82,7 +78,6 @@ class MedCertificadoFilter(FilterSet):
     anioCertificacion = NumberFilter(field_name='anioCertificacion', lookup_expr='icontains')
     # estatusNS = CharFilter(method='estatusFilter')
     estatus = CharFilter(field_name='medicoC__estatus')
-    # falta: tipo (profesor/consejero) -> hay que crear los campos
     isConsejero = CharFilter(field_name='isConsejero')
     isProfesor = CharFilter(field_name='isProfesor')
 
