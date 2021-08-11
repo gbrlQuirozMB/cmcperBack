@@ -2,6 +2,7 @@ from rest_framework import fields, serializers
 from .models import *
 from preregistro.models import Medico
 from convocatoria.models import *
+from certificados.models import Certificado
 
 
 class MedResidenteListSerializer(serializers.ModelSerializer):
@@ -33,5 +34,24 @@ class MedResidenteExtrasDetailView(serializers.ModelSerializer):
         repr = super().to_representation(instance)
         repr['catTiposExamen'] = instance.catTiposExamen.descripcion
         repr['catSedes'] = instance.catSedes.descripcion
-        
+
+        return repr
+
+
+class MedCertificadoListSerializer(serializers.ModelSerializer):
+    sexo = serializers.CharField(source='get_sexo_display', read_only=True)
+
+    class Meta:
+        model = Medico
+        fields = ['id', 'numRegistro', 'telConsultorio', 'telParticular', 'telCelular', 'email', 'sexo']
+
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        repr['nombreCompleto'] = instance.nombre + ' ' + instance.apPaterno + ' ' + instance.apMaterno
+        try:
+            dato = Certificado.objects.filter(medico=instance.id)[0]
+            repr['estatusVigencia'] = dato.get_estatus_display()
+        except:
+            repr['estatusVigencia'] = 'No existe'
+
         return repr

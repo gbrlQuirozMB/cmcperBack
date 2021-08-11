@@ -36,6 +36,9 @@ import locale
 
 from certificados.models import Certificado
 
+import datetime
+
+
 # from django_filters import rest_framework
 # from django_filters import rest_framework as filters
 
@@ -811,8 +814,10 @@ class PublicarCalificaciones(APIView):
                     # aumentamos el ultimo numero de registro para asignarlo
                     valor = int(ultimoNumRegistro.get().numRegistro)
                     valor += 1
+                    # creamos el año de la certificacion
+                    anio = datetime.date.today().year
                     # asignamos el numero de registro segun se tenga y en orden segun los criterios
-                    Medico.objects.filter(id=dato[9]).update(numRegistro=valor, isCertificado=True)
+                    Medico.objects.filter(id=dato[9]).update(numRegistro=valor, isCertificado=True, anioCertificacion=anio)
 
                 datos = {
                     'nombre': dato[2],

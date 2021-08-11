@@ -83,7 +83,11 @@ class Medico(models.Model):
     telConsultorioPublico = models.CharField(max_length=15, blank=True, db_column='tel_consultorio_publico')
     telCelularPublico = models.CharField(max_length=15, blank=True, db_column='tel_celular_publico')
     # ajustes para los reportes y mas
-    isCertificado = models.BooleanField(default=False)
+    isCertificado = models.BooleanField(default=False, db_column='is_certificado')
+    isConsejero = models.BooleanField(default=False, db_column='is_consejero')
+    isProfesor = models.BooleanField(default=False, db_column='is_profesor')
+    anioCertificacion = models.PositiveSmallIntegerField(default=0, db_column='anio_certificacion')
+    
 
     class Meta:
         db_table = 'pre_registro_medico'

@@ -1635,7 +1635,7 @@ class GetPublicarCalificaciones200Test(APITestCase):
         # datos = Certificado.objects.all().order_by('medico__apPaterno', 'medico__apMaterno', 'medico__nombre')
         datos = Certificado.objects.all()
         for dato in datos:
-            print(f'--->>>dato: id:{dato.id} - medico.id:{dato.medico.id} - medico.numRegistro:{dato.medico.numRegistro} - {dato.medico.apPaterno} {dato.medico.apMaterno} {dato.medico.nombre}')
+            print(f'--->>>dato: id:{dato.id} - medico.id:{dato.medico.id} - medico.numRegistro:{dato.medico.numRegistro} - {dato.medico.apPaterno} {dato.medico.apMaterno} {dato.medico.nombre} - anioCertificacion: {dato.medico.anioCertificacion}')
             
         numRegistroMayorTotal = Medico.objects.all().order_by('-numRegistro')[:1]
         valor = int(numRegistroMayorTotal.get().numRegistro)
