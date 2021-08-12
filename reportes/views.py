@@ -22,7 +22,7 @@ class MedResidenteFilter(FilterSet):
     hospitalResiNS = CharFilter(field_name='hospitalResi', lookup_expr='icontains')
     estadoNS = CharFilter(field_name='estado', lookup_expr='icontains')
     anioInscr = CharFilter(field_name='creado_en', lookup_expr='icontains')
-    
+
     class Meta:
         model = Medico
         fields = ['nombreCompletoNS', 'hospitalResiNS', 'estadoNS', 'sexo', 'anioInscr']
@@ -102,4 +102,10 @@ class MedCertificadoFilteredListView(ListAPIView):
     serializer_class = MedCertificadoListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = MedCertificadoFilter
+    permission_classes = (permissions.IsAdminUser,)
+
+
+class MedCertificadoDetailView(RetrieveAPIView):
+    queryset = Medico.objects.filter(isCertificado=True)
+    serializer_class = MedCertificadoSerializer
     permission_classes = (permissions.IsAdminUser,)

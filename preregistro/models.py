@@ -87,7 +87,18 @@ class Medico(models.Model):
     isConsejero = models.BooleanField(default=False, db_column='is_consejero')
     isProfesor = models.BooleanField(default=False, db_column='is_profesor')
     anioCertificacion = models.PositiveSmallIntegerField(default=0, db_column='anio_certificacion')
-    
+    # campos necesarios para los reportespara los medicos certificados
+    isFinado = models.BooleanField(default=False, db_column='is_finado')
+    isRetirado = models.BooleanField(default=False, db_column='is_retirado')
+    isExprofesor = models.BooleanField(default=False, db_column='is_exprofesor')
+    isExpresidente = models.BooleanField(default=False, db_column='is_expresidente')
+    # FALTAN: tipoConsejero y region
+    titularHospital = models.CharField(max_length=300, blank=True, db_column='titular_hospital')
+    diplomaConacem = models.CharField(max_length=300, blank=True, db_column='diploma_conacem')
+    univEgreso = models.CharField(max_length=300, blank=True, db_column='universidad_egreso')
+    hospLaborPrim = models.CharField(max_length=300, blank=True, db_column='hosp_labora_primario')
+    hospLaborSec = models.CharField(max_length=300, blank=True, db_column='hosp_labora_secundario')
+    isConsultaPrivada = models.BooleanField(default=False, db_column='is_consulta_privada')
 
     class Meta:
         db_table = 'pre_registro_medico'

@@ -96,17 +96,15 @@ class GetMedResidenteFilteredListTest(APITestCase):
         response = self.client.get('/api/reportes/med-residentes/list/?sexo=F')
         print(f'response JSON ===>>> sexo=F \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         response = self.client.get('/api/reportes/med-residentes/list/?nombreCompletoNS=Quiroz Olvera')
         print(f'response JSON ===>>> nombreCompletoNS=Quiroz Olvera \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         Medico.objects.filter(id=3).update(creado_en='2022-08-11T14:10:40.875138-05:00')
         response = self.client.get('/api/reportes/med-residentes/list/?anioInscr=2022')
         print(f'response JSON ===>>> anioInscr=2022 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-
 
 
 class GetMedResidenteDetailTest(APITestCase):
@@ -249,3 +247,20 @@ class GetMedCertificadoFilteredListTest(APITestCase):
 
         # anio = datetime.date.today().year
         # print(f'--->>>anio: {anio} - type: {type(anio)}')
+
+
+class GetMedCertificadoDetailTest(APITestCase):
+    def setUp(self):
+        configDB()
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/reportes/med-certificados/1/detail/')
+        print(f'response JSON ===>>> obtiene solo lo certificados (isCertificado=True) \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/reportes/med-certificados/3/detail/')
+        print(f'response JSON ===>>> 404 (isCertificado=True) \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

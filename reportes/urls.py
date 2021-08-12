@@ -11,6 +11,7 @@ urlpatterns = [
     path('med-residentes/<medicoId>/extras/', MedResidenteExtrasDetailView.as_view(), ),
 
     path('med-certificados/list/', MedCertificadoFilteredListView.as_view(), ),
+    path('med-certificados/<pk>/detail/', MedCertificadoDetailView.as_view(), ),
 
 
 ]

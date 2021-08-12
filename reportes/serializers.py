@@ -55,3 +55,9 @@ class MedCertificadoListSerializer(serializers.ModelSerializer):
             repr['estatusVigencia'] = 'No existe'
 
         return repr
+
+
+class MedCertificadoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Medico
+        fields = '__all__'
