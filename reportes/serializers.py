@@ -61,3 +61,20 @@ class MedCertificadoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Medico
         fields = '__all__'
+
+
+class MedCertificadoFechasSerializer(serializers.ModelSerializer):
+    estatus = serializers.CharField(source='get_estatus_display')
+
+    class Meta:
+        model = Certificado
+        fields = ['fechaCertificacion', 'fechaCaducidad', 'estatus']
+
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        repr['nombre'] = instance.medico.nombre + ' ' + instance.medico.apPaterno
+        repr['numRegistro'] = instance.medico.numRegistro
+        anio = int(instance.fechaCaducidad.strftime('%Y'))
+        repr['anioProxima'] = anio
+
+        return repr

@@ -249,7 +249,7 @@ class GetMedCertificadoFilteredListTest(APITestCase):
         # print(f'--->>>anio: {anio} - type: {type(anio)}')
 
 
-class GetMedCertificadoDetailTest(APITestCase):
+class GetMedCertificadoFechasTest(APITestCase):
     def setUp(self):
         configDB()
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
@@ -257,10 +257,10 @@ class GetMedCertificadoDetailTest(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        response = self.client.get('/api/reportes/med-certificados/1/detail/')
+        response = self.client.get('/api/reportes/med-certificados/3/fecha-ultima-certificacion/')
         print(f'response JSON ===>>> obtiene solo lo certificados (isCertificado=True) \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = self.client.get('/api/reportes/med-certificados/3/detail/')
+        response = self.client.get('/api/reportes/med-certificados/1/fecha-ultima-certificacion/')
         print(f'response JSON ===>>> 404 (isCertificado=True) \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

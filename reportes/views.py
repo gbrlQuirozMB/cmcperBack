@@ -1,3 +1,4 @@
+from api.exceptions import *
 from django.shortcuts import render
 from rest_framework.generics import DestroyAPIView, ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter, NumberFilter
@@ -13,6 +14,9 @@ from django.db.models.functions import Concat
 
 from datetime import date
 
+from rest_framework.response import Response
+import logging
+log = logging.getLogger('django')
 
 # Create your views here.
 
@@ -109,3 +113,17 @@ class MedCertificadoDetailView(RetrieveAPIView):
     queryset = Medico.objects.filter(isCertificado=True)
     serializer_class = MedCertificadoSerializer
     permission_classes = (permissions.IsAdminUser,)
+
+
+class MedCertificadoFechasDetailView(RetrieveAPIView):
+    serializer_class = MedCertificadoFechasSerializer
+
+    def get(self, request, *args, **kwargs):
+        medicoId = kwargs['medicoId']
+        try:
+            queryset = Certificado.objects.filter(medico=medicoId)[0]
+            serializer = MedCertificadoFechasSerializer(queryset)
+        except:
+            raise ResponseError('No hay certificado para el ID de Medico dado', 404)
+
+        return Response(serializer.data)
