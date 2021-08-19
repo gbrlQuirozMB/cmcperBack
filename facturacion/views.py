@@ -52,7 +52,7 @@ class MedicoFilter(FilterSet):
         fields = ['nombreCompletoNS', 'rfcNS', 'isCertificadoNS']
     def nombreCompletoFilter(self, queryset, name, value):
         queryset = Medico.objects.annotate(completo = Concat('nombre', Value(' '), 'apPaterno', Value(' '), 'apMaterno'))
-        return queryset.filter(completo=value)
+        return queryset.filter(completo__icontains = value)
 
 class MedicoPagination(PageNumberPagination):
     page_size = 20
