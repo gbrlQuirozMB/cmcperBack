@@ -2,7 +2,7 @@ from django.shortcuts import render
 import rest_framework
 from rest_framework.generics import ListAPIView
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
-from django_filters import CharFilter
+from django_filters import CharFilter, NumberFilter
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import status, permissions
 from .serializers import *
@@ -46,10 +46,11 @@ class AvalFilteredListView(ListAPIView):
 class MedicoFilter(FilterSet):
     nombreCompletoNS = CharFilter(method = 'nombreCompletoFilter')
     rfcNS = CharFilter(field_name = 'rfc', lookup_expr = 'icontains')
+    noCertificadoNS = NumberFilter(field_name='numRegistro', lookup_expr = 'icontains')
     isCertificadoNS = CharFilter(field_name = 'isCertificado')
     class Meta:
         model = Medico
-        fields = ['nombreCompletoNS', 'rfcNS', 'isCertificadoNS']
+        fields = ['nombreCompletoNS', 'rfcNS', 'noCertificadoNS', 'isCertificadoNS']
     def nombreCompletoFilter(self, queryset, name, value):
         queryset = Medico.objects.annotate(completo = Concat('nombre', Value(' '), 'apPaterno', Value(' '), 'apMaterno'))
         return queryset.filter(completo__icontains = value)
