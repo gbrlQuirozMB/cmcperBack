@@ -45,7 +45,7 @@ class AvalFilteredListView(ListAPIView):
 
 class MedicoFilter(FilterSet):
     nombreCompletoNS = CharFilter(method = 'nombreCompletoFilter')
-    rfcNS = CharFilter(field_name = 'rfc', lookup_expr = 'icontains')
+    rfcNS = CharFilter(field_name = 'rfcFacturacion', lookup_expr = 'icontains')
     noCertificadoNS = NumberFilter(field_name='numRegistro', lookup_expr = 'icontains')
     isCertificadoNS = CharFilter(field_name = 'isCertificado')
     class Meta:

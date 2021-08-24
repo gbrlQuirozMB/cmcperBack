@@ -85,32 +85,32 @@ class GetAvalFilteredListTest(APITestCase):#Aval se refiere al modelo de Institu
 class GetMedicoFilteredListTest(APITestCase):#Aval se refiere al modelo de Institucion
     def setUp(self):
         Medico.objects.create(
-            nombre = 'Nombre1', apPaterno = 'ApPaterno1', apMaterno = 'ApMaterno1', rfc = 'Rfc1', curp = 'Curp1', fechaNac = datetime.datetime.strptime('2001-01-01', '%Y-%m-%d'),
-            sexo = 'M', pais = 'Pais1', estado = 'Estado1', ciudad = 'Ciudad1', deleMuni = 'DeleMuni1', colonia = 'Colonia1', calle = 'Calle1', cp = 'Cp1',
-            numInterior = 'NumInterior1', numExterior = 'NumExterior1', rfcFacturacion = 'RfcFacturacion1', razonSocial = 'razonSocial1',
-            fechaInicioResi = datetime.datetime.strptime('2001-01-01', '%Y-%m-%d'), fechaFinResi = datetime.datetime.strptime('2001-01-01', '%Y-%m-%d'),
-            isExtranjero = True, aceptado = True
+            nombre = 'Nombre1', apPaterno = 'ApPaterno1', apMaterno = 'ApMaterno1', rfcFacturacion = 'RfcFacturacion1', usoCfdi = 'P01', razonSocial = 'razonSocial1',
+            telCelular = '1111111111', email = 'email1@email.com', isExtranjero = True, aceptado = True,
+            estadoFisc = 'EstadoFisc1', deleMuniFisc = 'DeleMuniFisc1', coloniaFisc = 'ColoniaFisc1', calleFisc = 'CalleFisc1', cpFisc = 'CpFisc1',
+            numInteriorFisc = 'NumInteriorFisc1', numExteriorFisc = 'NumExteriorFisc1',
+            fechaNac = datetime.datetime.strptime('2001-01-01', '%Y-%m-%d'), fechaInicioResi = datetime.datetime.strptime('2001-01-01', '%Y-%m-%d'), fechaFinResi = datetime.datetime.strptime('2001-01-01', '%Y-%m-%d')
         )
         Medico.objects.create(
-            nombre = 'Nombre2', apPaterno = 'ApPaterno2', apMaterno = 'ApMaterno2', rfc = 'Rfc2', curp = 'Curp2', fechaNac = datetime.datetime.strptime('2002-02-02', '%Y-%m-%d'),
-            sexo = 'F', pais = 'Pais2', estado = 'Estado2', ciudad = 'Ciudad2', deleMuni = 'DeleMuni2', colonia = 'Colonia2', calle = 'Calle2', cp = 'Cp2',
-            numInterior = 'NumInterior2', numExterior = 'NumExterior2', rfcFacturacion = 'RfcFacturacion2', razonSocial = 'razonSocial2',
-            fechaInicioResi = datetime.datetime.strptime('2002-02-02', '%Y-%m-%d'), fechaFinResi = datetime.datetime.strptime('2002-02-02', '%Y-%m-%d'),
-            isExtranjero = True, aceptado = True
+            nombre = 'Nombre2', apPaterno = 'ApPaterno2', apMaterno = 'ApMaterno2', rfcFacturacion = 'RfcFacturacion2', usoCfdi = 'P01', razonSocial = 'razonSocial2',
+            telCelular = '2222222222', email = 'email2@email.com', isExtranjero = True, aceptado = True,
+            estadoFisc = 'EstadoFisc2', deleMuniFisc = 'DeleMuniFisc2', coloniaFisc = 'ColoniaFisc2', calleFisc = 'CalleFisc2', cpFisc = 'CpFisc2',
+            numInteriorFisc = 'NumInteriorFisc2', numExteriorFisc = 'NumExteriorFisc2',
+            fechaNac = datetime.datetime.strptime('2002-02-02', '%Y-%m-%d'), fechaInicioResi = datetime.datetime.strptime('2002-02-02', '%Y-%m-%d'), fechaFinResi = datetime.datetime.strptime('2002-02-02', '%Y-%m-%d')
         )
         Medico.objects.create(
-            nombre = 'Nombre3', apPaterno = 'ApPaterno3', apMaterno = 'ApMaterno3', rfc = 'Rfc3', curp = 'Curp3', fechaNac = datetime.datetime.strptime('2003-03-03', '%Y-%m-%d'),
-            sexo = 'M', pais = 'Pais3', estado = 'Estado3', ciudad = 'Ciudad3', deleMuni = 'DeleMuni3', colonia = 'Colonia3', calle = 'Calle3', cp = 'Cp3',
-            numInterior = 'NumInterior3', numExterior = 'NumExterior3', rfcFacturacion = 'RfcFacturacion3', razonSocial = 'razonSocial3',
-            fechaInicioResi = datetime.datetime.strptime('2003-03-03', '%Y-%m-%d'), fechaFinResi = datetime.datetime.strptime('2003-03-03', '%Y-%m-%d'),
-            isExtranjero = True, aceptado = True, isCertificado = True, numRegistro = 333
+            nombre = 'Nombre3', apPaterno = 'ApPaterno3', apMaterno = 'ApMaterno3', rfcFacturacion = 'RfcFacturacion3', usoCfdi = 'G03', razonSocial = 'razonSocial3',
+            telCelular = '3333333333', email = 'email3@email.com', isExtranjero = True, aceptado = True, numRegistro = 333, isCertificado = True, anioCertificacion = 2003,
+            estadoFisc = 'EstadoFisc3', deleMuniFisc = 'DeleMuniFisc3', coloniaFisc = 'ColoniaFisc3', calleFisc = 'CalleFisc3', cpFisc = 'CpFisc3',
+            numInteriorFisc = 'NumInteriorFisc3', numExteriorFisc = 'NumExteriorFisc3',
+            fechaNac = datetime.datetime.strptime('2003-03-03', '%Y-%m-%d'), fechaInicioResi = datetime.datetime.strptime('2003-03-03', '%Y-%m-%d'), fechaFinResi = datetime.datetime.strptime('2003-03-03', '%Y-%m-%d')
         )
         Medico.objects.create(
-            nombre = 'Nombre4', apPaterno = 'ApPaterno4', apMaterno = 'ApMaterno4', rfc = 'Rfc4', curp = 'Curp4', fechaNac = datetime.datetime.strptime('2004-04-04', '%Y-%m-%d'),
-            sexo = 'M', pais = 'Pais4', estado = 'Estado4', ciudad = 'Ciudad4', deleMuni = 'DeleMuni4', colonia = 'Colonia4', calle = 'Calle4', cp = 'Cp4',
-            numInterior = 'NumInterior4', numExterior = 'NumExterior4', rfcFacturacion = 'RfcFacturacion4', razonSocial = 'razonSocial4',
-            fechaInicioResi = datetime.datetime.strptime('2004-04-04', '%Y-%m-%d'), fechaFinResi = datetime.datetime.strptime('2004-04-04', '%Y-%m-%d'),
-            isExtranjero = True, aceptado = True, isCertificado = True, numRegistro = 334
+            nombre = 'Nombre4', apPaterno = 'ApPaterno4', apMaterno = 'ApMaterno4', rfcFacturacion = 'RfcFacturacion4', usoCfdi = 'G03', razonSocial = 'razonSocial4',
+            telCelular = '4444444444', email = 'email4@email.com', isExtranjero = True, aceptado = True, numRegistro = 334, isCertificado = True, anioCertificacion = 2004,
+            estadoFisc = 'EstadoFisc4', deleMuniFisc = 'DeleMuniFisc4', coloniaFisc = 'ColoniaFisc4', calleFisc = 'CalleFisc4', cpFisc = 'CpFisc4',
+            numInteriorFisc = 'NumInteriorFisc4', numExteriorFisc = 'NumExteriorFisc4',
+            fechaNac = datetime.datetime.strptime('2004-04-04', '%Y-%m-%d'), fechaInicioResi = datetime.datetime.strptime('2004-04-04', '%Y-%m-%d'), fechaFinResi = datetime.datetime.strptime('2004-04-04', '%Y-%m-%d')
         )
         self.user = User.objects.create_user(username = 'billy', is_staff = True)
     def test(self):
