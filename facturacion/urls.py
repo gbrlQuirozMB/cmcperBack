@@ -11,4 +11,5 @@ urlpatterns = [
     path('aval/list/', AvalFilteredListView.as_view()),#Aval se refiere al modelo de Institucion
     path('medico/list/', MedicoFilteredListView.as_view()),
     path('factura/idUltimaFactura/', IdUltimaFacturaView.as_view()),
+    path('pais/list/', PaisListView.as_view()),
 ]

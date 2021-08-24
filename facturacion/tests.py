@@ -134,3 +134,15 @@ class GetIdUltimaFacturaTest(APITestCase):
         self.client.force_authenticate(user = self.user)
         response = self.client.get('/api/facturacion/factura/idUltimaFactura/')
         print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
+
+class GetPaisListTest(APITestCase):
+    def setUp(self):
+        Pais.objects.create(pais = '111', descripcion = 'Descripcion1')
+        Pais.objects.create(pais = '222', descripcion = 'Descripcion2')
+        Pais.objects.create(pais = '333', descripcion = 'Descripcion3')
+        self.user = User.objects.create_user(username = 'billy', is_staff = True)
+    def test(self):
+        self.client.force_authenticate(user = self.user)
+        response = self.client.get('/api/facturacion/pais/list/')
+        print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

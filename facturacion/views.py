@@ -69,3 +69,7 @@ class MedicoFilteredListView(ListAPIView):
 class IdUltimaFacturaView(ListAPIView):
     queryset = Factura.objects.all().order_by('-id')[:1]
     serializer_class = IdUltimaFacturaSerializer
+
+class PaisListView(ListAPIView):
+    queryset = Pais.objects.all()
+    serializer_class = PaisListSerializer

@@ -38,3 +38,8 @@ class IdUltimaFacturaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Factura
         fields = ['id']
+
+class PaisListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pais
+        fields = '__all__'
