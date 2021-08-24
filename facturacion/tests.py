@@ -132,5 +132,5 @@ class GetIdUltimaFacturaTest(APITestCase):
         self.user = User.objects.create_user(username = 'billy', is_staff = True)
     def test(self):
         self.client.force_authenticate(user = self.user)
-        response = self.client.get('/api/facturacion/factura/idUltimaFactura')
+        response = self.client.get('/api/facturacion/factura/idUltimaFactura/')
         print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
