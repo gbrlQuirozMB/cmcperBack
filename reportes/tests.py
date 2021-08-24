@@ -75,7 +75,7 @@ def configDB():
     Certificado.objects.create(medico=medico4, documento='certificado_de_chingon.PDF', descripcion='es un chingo el tipo', isVencido=True, fechaCertificacion='2000-04-06',
                                fechaCaducidad='2005-04-06', estatus=2)
     Certificado.objects.create(medico=medico3, documento='certificado_de_chingon.PDF', descripcion='es un chingo el tipo', isVencido=True, fechaCertificacion='2016-05-06',
-                               fechaCaducidad='2021-05-06', estatus=1)
+                               fechaCaducidad='2021-05-06', estatus=2)
 
 
 class GetMedResidenteFilteredListTest(APITestCase):

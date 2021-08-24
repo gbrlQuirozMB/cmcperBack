@@ -99,6 +99,16 @@ class Medico(models.Model):
     hospLaborPrim = models.CharField(max_length=300, blank=True, db_column='hosp_labora_primario')
     hospLaborSec = models.CharField(max_length=300, blank=True, db_column='hosp_labora_secundario')
     isConsultaPrivada = models.BooleanField(default=False, db_column='is_consulta_privada')
+    # para los datos fiscales
+    paisFisc = models.CharField(max_length=100, blank=True, null=True, db_column='pais_fiscal')
+    estadoFisc = models.CharField(max_length=100, blank=True, null=True, db_column='estado_fiscal')
+    ciudadFisc = models.CharField(max_length=100, blank=True, null=True, db_column='ciudad_fiscal')
+    deleMuniFisc = models.CharField(max_length=100, blank=True, null=True, db_column='delegacion_municipio_fiscal')
+    coloniaFisc = models.CharField(max_length=100, blank=True, null=True, db_column='colonia_fiscal')
+    calleFisc = models.CharField(max_length=100, blank=True, null=True, db_column='calle_fiscal')
+    cpFisc = models.CharField(max_length=10, blank=True, null=True, db_column='cp_fiscal')
+    numInteriorFisc = models.CharField(max_length=10, blank=True, null=True, db_column='num_interior_fiscal')
+    numExteriorFisc = models.CharField(max_length=10, blank=True, null=True, db_column='num_exterior_fiscal')
 
     class Meta:
         db_table = 'pre_registro_medico'
