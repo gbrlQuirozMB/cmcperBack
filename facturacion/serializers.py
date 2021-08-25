@@ -43,3 +43,8 @@ class PaisListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pais
         fields = '__all__'
+
+class FacturaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Factura
+        fields = ['fecha', 'institucion', 'medico', 'usoCFDI', 'formaPago', 'moneda', 'comentarios', 'folio', 'subtotal', 'iva', 'total']

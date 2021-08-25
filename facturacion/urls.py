@@ -12,4 +12,5 @@ urlpatterns = [
     path('medico/list/', MedicoFilteredListView.as_view()),
     path('factura/idUltimaFactura/', IdUltimaFacturaView.as_view()),
     path('pais/list/', PaisListView.as_view()),
+    path('create/', FacturaCreateView.as_view()),
 ]

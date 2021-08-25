@@ -146,3 +146,53 @@ class GetPaisListTest(APITestCase):
         response = self.client.get('/api/facturacion/pais/list/')
         print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+class PostFacturaTest(APITestCase):
+    def setUp(self):
+        Institucion.objects.create(
+            nombreInstitucion = 'NombreInstitucion', rfc = 'Rfc', contacto = 'Contacto', telUno = 'TelUno', telDos = 'TelDos', telCelular = 'TelCelular',
+            email = 'Email', pais = 'Pais', estado = 'estado', ciudad = 'Ciudad', deleMuni = 'DeleMuni', colonia = 'Colonia', calle = 'Calle',
+            cp = 'Cp', numInterior = 'NumInterior', numExterior = 'NumExterior', username = 'Username'
+        )
+        Medico.objects.create(
+            nombre = 'Nombre', apPaterno = 'ApPaterno', apMaterno = 'ApMaterno', rfcFacturacion = 'RfcFacturacion', usoCfdi = 'G03', razonSocial = 'razonSocial',
+            telCelular = '01234', email = 'email@email.com', isExtranjero = True, aceptado = True, numRegistro = 56789, isCertificado = True, anioCertificacion = 2020,
+            estadoFisc = 'EstadoFisc', deleMuniFisc = 'DeleMuniFisc', coloniaFisc = 'ColoniaFisc', calleFisc = 'CalleFisc', cpFisc = 'CpFisc',
+            numInteriorFisc = 'NumInteriorFisc', numExteriorFisc = 'NumExteriorFisc',
+            fechaNac = datetime.datetime.strptime('1980-01-01', '%Y-%m-%d'), fechaInicioResi = datetime.datetime.strptime('2019-01-01', '%Y-%m-%d'), fechaFinResi = datetime.datetime.strptime('2020-01-01', '%Y-%m-%d')
+        )
+        UsoCFDI.objects.create(usoCFDI = 'UsoCFDI1', descripcion = 'Descripcion1', orden = 1)
+        FormaPago.objects.create(formaPago = 1, descripcion = 'Descripcion1', orden = 1, abreviatura = 'Abreviatura1')
+        Moneda.objects.create(moneda = 'Moneda1', descripcion = 'Descripcion1', decimales = 1, porcentajeVariacion = '1%', orden = 1)
+        Pais.objects.create(pais = '111', descripcion = 'Descripcion1')
+        unidadMedida = UnidadMedida.objects.create(unidadMedida = 'UnidadMedida', nombre = 'Nombre', descripcion = 'Descripcion', nota = 'nota', simbolo = 'Simbolo')
+        ConceptoPago.objects.create(conceptoPago = 'ConceptoPago1', precio = 100, claveSAT = 'claveSAT', unidadMedida = unidadMedida)
+        ConceptoPago.objects.create(conceptoPago = 'ConceptoPago2', precio = 100, claveSAT = 'claveSAT', unidadMedida = unidadMedida)
+        conceptosPago = [{'idConceptoPago' : '1', 'cantidad' : '1'}, {'idConceptoPago' : '2', 'cantidad' : '1'}]
+        self.json = {
+            "fecha": "2021-01-01",
+            "institucion  ": "1",
+            #"medico ": "1",
+            "usoCFDI": "1",
+            "formaPago": "1",
+            "moneda": "1",
+            "comentarios": "Sin comentarios",
+            "folio": "1",
+            "subtotal": "200.00",
+            "iva": "32.00",
+            "total": "232.00",
+            "importeLetra": "Doscientos treinta y dos pesos 00 MXN",
+            "agregarDireccion": "True",
+            "certificado": "2020",
+            "recertificacion": "2025",
+            "idPais": "1",
+            "numRegIdTrib": "0123456789",
+            "conceptosPago ": conceptosPago
+        }
+        self.user = User.objects.create_user(username = 'billy', is_staff = True)
+    def test(self):
+        self.client.force_authenticate(user = self.user)
+        response = self.client.post('/api/facturacion/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> 201-OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(1, Factura.objects.count())

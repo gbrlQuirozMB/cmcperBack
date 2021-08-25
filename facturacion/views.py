@@ -1,6 +1,6 @@
 from django.shortcuts import render
 import rest_framework
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 from django_filters import CharFilter, NumberFilter
 from rest_framework.pagination import PageNumberPagination
@@ -73,3 +73,9 @@ class IdUltimaFacturaView(ListAPIView):
 class PaisListView(ListAPIView):
     queryset = Pais.objects.all()
     serializer_class = PaisListSerializer
+
+class FacturaCreateView(CreateAPIView):
+    serializer_class = FacturaSerializer
+    def post(self, request, *args, **kwargs):
+        print(request.data)
+        return self.create(request, *args, **kwargs)
