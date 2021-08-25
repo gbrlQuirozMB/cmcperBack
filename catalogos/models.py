@@ -60,3 +60,9 @@ class CatPagos(models.Model):
     class Meta:
         db_table = 'cat_pagos'
         ordering = ['descripcion']
+
+class CatEntidad(models.Model):
+    entidad = models.CharField(max_length = 50)
+    region = models.CharField(max_length = 50)
+    class Meta:
+        db_table = 'cat_entidad'
