@@ -149,11 +149,11 @@ class GetPaisListTest(APITestCase):
 
 class PostFacturaTest(APITestCase):
     def setUp(self):
-        Institucion.objects.create(
+        """ Institucion.objects.create(
             nombreInstitucion = 'NombreInstitucion', rfc = 'Rfc', contacto = 'Contacto', telUno = 'TelUno', telDos = 'TelDos', telCelular = 'TelCelular',
             email = 'Email', pais = 'Pais', estado = 'estado', ciudad = 'Ciudad', deleMuni = 'DeleMuni', colonia = 'Colonia', calle = 'Calle',
             cp = 'Cp', numInterior = 'NumInterior', numExterior = 'NumExterior', username = 'Username'
-        )
+        ) """
         Medico.objects.create(
             nombre = 'Nombre', apPaterno = 'ApPaterno', apMaterno = 'ApMaterno', rfcFacturacion = 'RfcFacturacion', usoCfdi = 'G03', razonSocial = 'razonSocial',
             telCelular = '01234', email = 'email@email.com', isExtranjero = True, aceptado = True, numRegistro = 56789, isCertificado = True, anioCertificacion = 2020,
@@ -171,8 +171,8 @@ class PostFacturaTest(APITestCase):
         conceptosPago = [{'idConceptoPago' : '1', 'cantidad' : '1'}, {'idConceptoPago' : '2', 'cantidad' : '1'}]
         self.json = {
             "fecha": "2021-01-01",
-            "institucion  ": "1",
-            #"medico ": "1",
+            #"institucion": "1",
+            "medico": "1",
             "usoCFDI": "1",
             "formaPago": "1",
             "moneda": "1",

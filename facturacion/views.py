@@ -81,16 +81,6 @@ class PaisListView(ListAPIView):
 class FacturaCreateView(CreateAPIView):
     serializer_class = FacturaSerializer
     def post(self, request, *args, **kwargs):
-        print('----------------------------------------------------------------------------------------------------')
-        print(request.data)
-        print('----------------------------------------------------------------------------------------------------')
-        print('----------------------------------------------------------------------------------------------------')
-        for concepto in request.data['conceptosPago']:
-            print('----------')
-            print(concepto['idConceptoPago'])
-            print(concepto['cantidad'])
-            print('----------')
-        print('----------------------------------------------------------------------------------------------------')
         serializer = FacturaSerializer(data = request.data)
         if serializer.is_valid():
             return self.create(request, *args, **kwargs)
