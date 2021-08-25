@@ -1,5 +1,7 @@
+from django.http.response import HttpResponse
 from django.shortcuts import render
-import rest_framework
+import rest_framework, logging, json
+from api.exceptions import *
 from rest_framework.generics import CreateAPIView, ListAPIView
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 from django_filters import CharFilter, NumberFilter
@@ -9,6 +11,8 @@ from .serializers import *
 from instituciones.models import *
 from django.db.models import Value
 from django.db.models.functions import Concat
+
+log = logging.getLogger('django')
 
 class ConceptoPagoListView(ListAPIView):
     queryset = ConceptoPago.objects.all()
@@ -77,5 +81,18 @@ class PaisListView(ListAPIView):
 class FacturaCreateView(CreateAPIView):
     serializer_class = FacturaSerializer
     def post(self, request, *args, **kwargs):
+        print('----------------------------------------------------------------------------------------------------')
         print(request.data)
-        return self.create(request, *args, **kwargs)
+        print('----------------------------------------------------------------------------------------------------')
+        print('----------------------------------------------------------------------------------------------------')
+        for concepto in request.data['conceptosPago']:
+            print('----------')
+            print(concepto['idConceptoPago'])
+            print(concepto['cantidad'])
+            print('----------')
+        print('----------------------------------------------------------------------------------------------------')
+        serializer = FacturaSerializer(data = request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.info(f'campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
