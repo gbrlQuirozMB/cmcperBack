@@ -86,3 +86,7 @@ class CatPagosUpdateView(UpdateAPIView):
     serializer_class = CatPagosSerializer
     permission_classes = (permissions.IsAdminUser,)
     http_method_names = ['put']
+
+class CatEntidadListView(ListAPIView):
+    queryset = CatEntidad.objects.all()
+    serializer_class = CatEntidadListSerializer
