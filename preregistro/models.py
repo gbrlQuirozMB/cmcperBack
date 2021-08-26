@@ -92,7 +92,8 @@ class Medico(models.Model):
     isRetirado = models.BooleanField(default=False, db_column='is_retirado')
     isExprofesor = models.BooleanField(default=False, db_column='is_exprofesor')
     isExpresidente = models.BooleanField(default=False, db_column='is_expresidente')
-    # FALTAN: tipoConsejero y region
+    # FALTAN: tipoConsejero y 
+    regionGeografica = models.CharField(max_length=300, blank=True, db_column='region_geografica')
     titularHospital = models.CharField(max_length=300, blank=True, db_column='titular_hospital')
     diplomaConacem = models.CharField(max_length=300, blank=True, db_column='diploma_conacem')
     univEgreso = models.CharField(max_length=300, blank=True, db_column='universidad_egreso')
