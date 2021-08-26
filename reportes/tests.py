@@ -86,23 +86,30 @@ class GetMedResidenteFilteredListTest(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
+        Medico.objects.filter(id=3).update(isCertificado=True)
         response = self.client.get('/api/reportes/med-residentes/list/')
+        print(f'response JSON ===>>> obtiene solo lo residentes (isCertificado=False) \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Medico.objects.filter(id=3).update(isCertificado=True)
+        Medico.objects.all().update(isCertificado=True)
+        response = self.client.get('/api/reportes/med-residentes/list/?isCertificado=False&nombreCompletoNS=Quiroz Olvera')
         print(f'response JSON ===>>> obtiene solo lo residentes (isCertificado=False) \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # ponemos todos lo registros como residentes
         Medico.objects.all().update(isCertificado=False)
 
-        response = self.client.get('/api/reportes/med-residentes/list/?sexo=F')
+        response = self.client.get('/api/reportes/med-residentes/list/?isCertificado=False&sexo=F')
         print(f'response JSON ===>>> sexo=F \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = self.client.get('/api/reportes/med-residentes/list/?nombreCompletoNS=Quiroz Olvera')
+        response = self.client.get('/api/reportes/med-residentes/list/?isCertificado=False&nombreCompletoNS=Quiroz Olvera')
         print(f'response JSON ===>>> nombreCompletoNS=Quiroz Olvera \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         Medico.objects.filter(id=3).update(creado_en='2022-08-11T14:10:40.875138-05:00')
-        response = self.client.get('/api/reportes/med-residentes/list/?anioInscr=2022')
+        response = self.client.get('/api/reportes/med-residentes/list/?isCertificado=False&anioInscr=2022')
         print(f'response JSON ===>>> anioInscr=2022 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -207,31 +214,31 @@ class GetMedCertificadoFilteredListTest(APITestCase):
         # ponemos todos lo registros como certificados
         Medico.objects.all().update(isCertificado=True)
 
-        response = self.client.get('/api/reportes/med-certificados/list/?numRegistro=333')
+        response = self.client.get('/api/reportes/med-certificados/list/?isCertificado=True&numRegistro=333')
         print(f'response JSON ===>>> numRegistro=333 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = self.client.get('/api/reportes/med-certificados/list/?nombreCompletoNS=Quiroz Olvera')
+        response = self.client.get('/api/reportes/med-certificados/list/?isCertificado=True&nombreCompletoNS=Quiroz Olvera')
         print(f'response JSON ===>>> nombreCompletoNS=Quiroz Olvera \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = self.client.get('/api/reportes/med-certificados/list/?estatus=1')
+        response = self.client.get('/api/reportes/med-certificados/list/?isCertificado=True&estatus=1')
         print(f'response JSON ===>>> estatus=1 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = self.client.get('/api/reportes/med-certificados/list/?estatus=1&numRegistro=333')
+        response = self.client.get('/api/reportes/med-certificados/list/?isCertificado=True&estatus=1&numRegistro=333')
         print(f'response JSON ===>>> estatus=1&numRegistro=333 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = self.client.get('/api/reportes/med-certificados/list/?anioCertificacion=2022')
+        response = self.client.get('/api/reportes/med-certificados/list/?isCertificado=True&anioCertificacion=2022')
         print(f'response JSON ===>>> anioCertificacion=2022 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = self.client.get('/api/reportes/med-certificados/list/?isConsejero=True')
+        response = self.client.get('/api/reportes/med-certificados/list/?isCertificado=True&isCertificado=True&isConsejero=True')
         print(f'response JSON ===>>> isConsejero=True \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = self.client.get('/api/reportes/med-certificados/list/?isProfesor=True')
+        response = self.client.get('/api/reportes/med-certificados/list/?isCertificado=True&isProfesor=True')
         print(f'response JSON ===>>> isProfesor=True7 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

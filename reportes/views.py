@@ -29,7 +29,8 @@ class MedResidenteFilter(FilterSet):
 
     class Meta:
         model = Medico
-        fields = ['nombreCompletoNS', 'hospitalResiNS', 'estadoNS', 'sexo', 'anioInscr']
+        fields = ['nombreCompletoNS', 'hospitalResiNS', 'estadoNS', 'sexo', 'anioInscr', 'isCertificado']
+        # fields = ['nombreCompletoNS', 'hospitalResiNS', 'estadoNS', 'sexo', 'anioInscr']
 
     def nombreCompletoFilter(self, queryset, name, value):
         queryset = Medico.objects.annotate(completo=Concat('nombre', Value(' '), 'apPaterno', Value(' '), 'apMaterno'))
@@ -42,6 +43,10 @@ class MedResidenteFilteredListView(ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_class = MedResidenteFilter
     permission_classes = (permissions.IsAdminUser,)
+
+    # def get_queryset(self):
+    #     queryset = Medico.objects.filter(isCertificado=False)
+    #     return queryset
 
 
 class MedResidenteDetailView(RetrieveAPIView):
@@ -82,12 +87,12 @@ class MedCertificadoFilter(FilterSet):
     anioCertificacion = NumberFilter(field_name='anioCertificacion', lookup_expr='icontains')
     # estatusNS = CharFilter(method='estatusFilter')
     estatus = CharFilter(field_name='medicoC__estatus')
-    isConsejero = CharFilter(field_name='isConsejero')
-    isProfesor = CharFilter(field_name='isProfesor')
+    # isConsejero = CharFilter(field_name='isConsejero')
+    # isProfesor = CharFilter(field_name='isProfesor')
 
     class Meta:
         model = Medico
-        fields = ['nombreCompletoNS', 'telCelularNS', 'emailNS', 'numRegistro', 'hospitalResiNS', 'estadoNS', 'sexo', 'anioCertificacion', 'estatus', 'isConsejero', 'isProfesor']
+        fields = ['nombreCompletoNS', 'telCelularNS', 'emailNS', 'numRegistro', 'hospitalResiNS', 'estadoNS', 'sexo', 'anioCertificacion', 'estatus', 'isConsejero', 'isProfesor', 'isCertificado']
 
     def nombreCompletoFilter(self, queryset, name, value):
         queryset = Medico.objects.annotate(completo=Concat('nombre', Value(' '), 'apPaterno', Value(' '), 'apMaterno'))
