@@ -98,6 +98,8 @@ class Factura(models.Model):
     subtotal = models.DecimalField(decimal_places = 6, max_digits = 21, null = True)
     iva = models.DecimalField(decimal_places = 6, max_digits = 21, null = True)
     total = models.DecimalField(decimal_places = 6, max_digits = 21, null = True)
+    pais = models.ForeignKey(Pais, on_delete = models.SET_NULL, null = True)
+    numRegIdTrib = models.CharField(max_length = 50, null = True)
     uuid = models.CharField(max_length = 50, null = True)
     cadenaOriginal = models.TextField(null = True)
     numeroCertificado = models.CharField(max_length = 50,  null = True)
@@ -111,3 +113,10 @@ class Factura(models.Model):
     pdf = models.CharField(max_length = 500, null = True)
     class Meta:
         db_table = 'facturacionFactura'
+
+class ConceptoFactura(models.Model):
+    factura = models.ForeignKey(Factura, on_delete = models.CASCADE)
+    conceptoPago = models.ForeignKey(ConceptoPago, on_delete = models.CASCADE)
+    cantidad = models.IntegerField()
+    class Meta:
+        db_table = 'facturacionConceptoFactura'

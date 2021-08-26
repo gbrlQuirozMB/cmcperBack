@@ -32,3 +32,8 @@ class CatPagosFilteredListSerializer(serializers.ModelSerializer):
     class Meta:
         model = CatPagos
         fields = '__all__'
+
+class CatEntidadListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CatEntidad
+        fields = '__all__'

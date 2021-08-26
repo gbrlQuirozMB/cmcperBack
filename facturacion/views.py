@@ -1,6 +1,8 @@
+from django.http.response import HttpResponse
 from django.shortcuts import render
-import rest_framework
-from rest_framework.generics import ListAPIView
+import rest_framework, logging, json
+from api.exceptions import *
+from rest_framework.generics import CreateAPIView, ListAPIView
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 from django_filters import CharFilter, NumberFilter
 from rest_framework.pagination import PageNumberPagination
@@ -9,6 +11,8 @@ from .serializers import *
 from instituciones.models import *
 from django.db.models import Value
 from django.db.models.functions import Concat
+
+log = logging.getLogger('django')
 
 class ConceptoPagoListView(ListAPIView):
     queryset = ConceptoPago.objects.all()
@@ -45,7 +49,7 @@ class AvalFilteredListView(ListAPIView):
 
 class MedicoFilter(FilterSet):
     nombreCompletoNS = CharFilter(method = 'nombreCompletoFilter')
-    rfcNS = CharFilter(field_name = 'rfc', lookup_expr = 'icontains')
+    rfcNS = CharFilter(field_name = 'rfcFacturacion', lookup_expr = 'icontains')
     noCertificadoNS = NumberFilter(field_name='numRegistro', lookup_expr = 'icontains')
     isCertificadoNS = CharFilter(field_name = 'isCertificado')
     class Meta:
@@ -69,3 +73,16 @@ class MedicoFilteredListView(ListAPIView):
 class IdUltimaFacturaView(ListAPIView):
     queryset = Factura.objects.all().order_by('-id')[:1]
     serializer_class = IdUltimaFacturaSerializer
+
+class PaisListView(ListAPIView):
+    queryset = Pais.objects.all()
+    serializer_class = PaisListSerializer
+
+class FacturaCreateView(CreateAPIView):
+    serializer_class = FacturaSerializer
+    def post(self, request, *args, **kwargs):
+        serializer = FacturaSerializer(data = request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.info(f'campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)

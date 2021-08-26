@@ -205,3 +205,15 @@ class PutCatPagosTest(APITestCase):
         response = self.client.get('/api/catalogo/pagos/list/?descripcionNS=extranjero')
         print(f'response JSON ===>>> descripcionNS=descripcion1 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+class GetCatEntidadListTest(APITestCase):
+    def setUp(self):
+        CatEntidad.objects.create(entidad = 'Entidad1', region = 'Region1')
+        CatEntidad.objects.create(entidad = 'Entidad2', region = 'Region2')
+        CatEntidad.objects.create(entidad = 'Entidad3', region = 'Region3')
+        self.user = User.objects.create_user(username = 'billy', is_staff = True)
+    def test(self):
+        self.client.force_authenticate(user = self.user)
+        response = self.client.get('/api/catalogo/entidad/list/')
+        print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
