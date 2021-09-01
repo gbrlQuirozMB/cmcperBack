@@ -90,3 +90,4 @@ class CatPagosUpdateView(UpdateAPIView):
 class CatEntidadListView(ListAPIView):
     queryset = CatEntidad.objects.all()
     serializer_class = CatEntidadListSerializer
+    permission_classes = (permissions.AllowAny,)

@@ -213,7 +213,7 @@ class GetCatEntidadListTest(APITestCase):
         CatEntidad.objects.create(entidad = 'Entidad3', region = 'Region3')
         self.user = User.objects.create_user(username = 'billy', is_staff = True)
     def test(self):
-        self.client.force_authenticate(user = self.user)
+        #self.client.force_authenticate(user = self.user)
         response = self.client.get('/api/catalogo/entidad/list/')
         print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
