@@ -155,7 +155,7 @@ class PostFacturaTest(APITestCase):
             cp = 'Cp', numInterior = 'NumInterior', numExterior = 'NumExterior', username = 'Username'
         ) """
         Medico.objects.create(
-            nombre = 'Nombre', apPaterno = 'ApPaterno', apMaterno = 'ApMaterno', rfcFacturacion = 'RfcFacturacion', usoCfdi = 'G03', razonSocial = 'razonSocial',
+            nombre = 'Nombre', apPaterno = 'ApPaterno', apMaterno = 'ApMaterno', rfcFacturacion = 'RfcFacturacion', usoCfdi = 'G03', razonSocial = 'RazonSocial',
             telCelular = '01234', email = 'email@email.com', isExtranjero = True, aceptado = True, numRegistro = 56789, isCertificado = True, anioCertificacion = 2020,
             estadoFisc = 'EstadoFisc', deleMuniFisc = 'DeleMuniFisc', coloniaFisc = 'ColoniaFisc', calleFisc = 'CalleFisc', cpFisc = 'CpFisc',
             numInteriorFisc = 'NumInteriorFisc', numExteriorFisc = 'NumExteriorFisc',

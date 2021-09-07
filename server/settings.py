@@ -197,7 +197,7 @@ STATIC_URL = '/static/'
 # STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 STATIC_ROOT = config('STATIC_ROOT', default="./static/")
 MEDIA_URL = config('MEDIA_URL', default="/uploads/")
-MEDIA_ROOT = config('MEDIA_ROOT', default="./uploads/")
+MEDIA_ROOT=config('MEDIA_ROOT', default="uploads/")
 
 # Claves de STRIPE
 if DEBUG:
