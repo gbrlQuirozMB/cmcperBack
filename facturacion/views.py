@@ -17,6 +17,7 @@ from django.template.loader import get_template, render_to_string
 from xhtml2pdf import pisa
 from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
+from datetime import datetime
 
 log = logging.getLogger('django')
 
@@ -152,10 +153,16 @@ def crearPDF(factura, datos):
     pisa.CreatePDF(html.encode('utf-8'), dest = pdf, encoding = 'utf-8')
     factura.pdf = rutaPDF
     factura.save()
-    """ if factura.enviarCorreo == 1:
-        html_content = render_to_string('email.html', {'nombre' : factura.clienteFactura.razonSocial, 'hoy' : datetime.now().year})
-        text_content = strip_tags(html_content)
-        email = EmailMultiAlternatives('Mastertrade', text_content, 'admin@mastertrade.com.mx', [factura.clienteFactura.correo])
-        email.attach_alternative(html_content, 'text/html')
-        email.attach(nombreArchivo, open(rutaPDF, 'rb').read(), 'application/pdf')
-        email.send() """
+    enviarCorreo(factura, nombreArchivo)
+
+def enviarCorreo(factura, nombreArchivo):
+    email = ''
+    if factura.institucion:
+        email = factura.institucion.email
+    else:
+        email = factura.medico.email
+    html_content = render_to_string('email.html', {'nombre' : factura.razonSocial, 'hoy' : datetime.now().year})
+    text_content = strip_tags(html_content)
+    email = EmailMultiAlternatives('CMCPER', text_content, 'admin@cmcper.com.mx', [email])
+    email.attach_alternative(html_content, 'text/html')
+    email.attach(nombreArchivo, open(factura.pdf, 'rb').read(), 'application/pdf')
