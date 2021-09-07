@@ -12,6 +12,7 @@ from .serializers import *
 import json
 
 from datetime import date
+from dateutil.relativedelta import relativedelta
 
 import requests
 
@@ -134,18 +135,18 @@ class PostConvocatoria200Test(APITestCase):
 
 class GetList200Test(APITestCase):
     def setUp(self):
-        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1',
-                                    )
-        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona2', detalles='detalles1',
-                                    )
-        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-03-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona3', detalles='detalles1',
-                                    )
-        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona4', detalles='detalles1',
-                                    )
-        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona5', detalles='detalles1',
-                                    )
-        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-03-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona6', detalles='detalles1',
-                                    )
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino=date.today() + relativedelta(days=8),
+                                    fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1', )
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino=date.today() + relativedelta(days=-8),
+                                    fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona2', detalles='detalles1', )
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino=date.today() + relativedelta(days=8),
+                                    fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona3', detalles='detalles1', )
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino=date.today() + relativedelta(days=-8),
+                                    fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona4', detalles='detalles1', )
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino=date.today() + relativedelta(days=8),
+                                    fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona5', detalles='detalles1', )
+        Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino=date.today() + relativedelta(days=8),
+                                    fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona6', detalles='detalles1', )
 
         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
 
@@ -1089,10 +1090,10 @@ class GetCostoAPagar200Test(APITestCase):
 
         self.catTiposExamen1 = CatTiposExamen.objects.create(id=1, descripcion='Normal', precio=111.11, precioExtrangero=222.22)
         self.catTiposExamen2 = CatTiposExamen.objects.create(id=2, descripcion='Especial', precio=333.33, precioExtrangero=444.44)
-        
+
         # CatPagos.objects.create(descripcion='Exam Conv Nacional', precio=369.69, tipo=2)
         # CatPagos.objects.create(descripcion='Exam Conv Extran', precio=963.69, tipo=3)
-        
+
         CatPagos.objects.create(descripcion='Examen Certificación Vigente', precio=123.45)
         CatPagos.objects.create(descripcion='Examen Convocatoria Nacional', precio=456.78)
         CatPagos.objects.create(descripcion='Examen Convocatoria Extranjero', precio=369.69)
@@ -1144,9 +1145,6 @@ class GetCostoAPagar200Test(APITestCase):
         response = self.client.get('/api/convocatoria/6/medico/9/a-pagar/')
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-
-
 
         # # no puede pagar
         # ConvocatoriaEnrolado.objects.filter(id=3).update(isAceptado=False)
@@ -1575,8 +1573,6 @@ class PutProcesaExcel200Test(APITestCase):
             print(f'--->>>id: {dato.id} - calificacion: {dato.calificacion}')
 
 
-
-
 class GetPublicarCalificaciones200Test(APITestCase):
     def setUp(self):
         catSedes1 = CatSedes.objects.create(descripcion='sedeDescripcion1', direccion='sedeDireccion1', latitud=11.235698, longitud=-111.235689)
@@ -1611,7 +1607,7 @@ class GetPublicarCalificaciones200Test(APITestCase):
         # ConvocatoriaEnrolado.objects.create(medico=medico3, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=catTiposExamen1, calificacion=9, isAprobado=True, isPublicado=True)
         # ConvocatoriaEnrolado.objects.create(medico=medico6, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=catTiposExamen1, calificacion=5, isAprobado=False, isPublicado=False)
         # ConvocatoriaEnrolado.objects.create(medico=medico9, convocatoria=convocatoria6, catSedes=catSedes3, catTiposExamen=catTiposExamen3, calificacion=6, isAprobado=True, isPublicado=False)
-        
+
         ConvocatoriaEnrolado.objects.create(medico=medico3, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=catTiposExamen1, calificacion=9, isAprobado=True, isPublicado=False)
         ConvocatoriaEnrolado.objects.create(medico=medico6, convocatoria=convocatoria6, catSedes=catSedes1, catTiposExamen=catTiposExamen1, calificacion=5, isAprobado=True, isPublicado=False)
         ConvocatoriaEnrolado.objects.create(medico=medico9, convocatoria=convocatoria6, catSedes=catSedes3, catTiposExamen=catTiposExamen3, calificacion=6, isAprobado=True, isPublicado=False)
@@ -1621,33 +1617,30 @@ class GetPublicarCalificaciones200Test(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        cuentaCertificados =  Certificado.objects.count()
+        cuentaCertificados = Certificado.objects.count()
         print(f'--->>>cuentaCertificados: {cuentaCertificados}')
-        
+
         response = self.client.get('/api/convocatoria/6/enrolados/publicar/list/')  # regresa TODOS
         print(f'response JSON ===>>> \n {response.content} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
-        cuentaCertificados =  Certificado.objects.count()
+
+        cuentaCertificados = Certificado.objects.count()
         print(f'--->>>cuentaCertificados: {cuentaCertificados}')
-        
+
         # ---- probando que  si se asignen bien los numRegistro
         # datos = Certificado.objects.all().order_by('medico__apPaterno', 'medico__apMaterno', 'medico__nombre')
         datos = Certificado.objects.all()
         for dato in datos:
             print(f'--->>>dato: id:{dato.id} - medico.id:{dato.medico.id} - medico.numRegistro:{dato.medico.numRegistro} - {dato.medico.apPaterno} {dato.medico.apMaterno} {dato.medico.nombre} - anioCertificacion: {dato.medico.anioCertificacion}')
-            
+
         numRegistroMayorTotal = Medico.objects.all().order_by('-numRegistro')[:1]
         valor = int(numRegistroMayorTotal.get().numRegistro)
-        print(f'--->>>valor: {valor}')   
+        print(f'--->>>valor: {valor}')
         # ---- probando que  si se asignen bien los numRegistro
-             
-        
 
-        # response = self.client.get('/api/convocatoria/66/enrolados/publicar/list/')  
+        # response = self.client.get('/api/convocatoria/66/enrolados/publicar/list/')
         # print(f'response JSON ===>>> no encntrados \n {response.content} \n ---')
         # self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
 
 
 class baseDatosTest(APITestCase):
@@ -1681,7 +1674,6 @@ class baseDatosTest(APITestCase):
         # print(f'--->>>dato: {serializer.errors}')
 
         response = self.client.get('/api/convocatoria/ficha-registro-pdf/1/')
-        
 
 
 # ES DE PRUEBA NO USAR!!!
