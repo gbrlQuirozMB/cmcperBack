@@ -1,15 +1,14 @@
+from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter
+from rest_framework.generics import DestroyAPIView, ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView
+from rest_framework import status, permissions
+from .models import *
+from .serializers import *
+from api.exceptions import *
 from django.shortcuts import render
 from rest_framework.generics import ListAPIView
 # from api.logger import log
 import logging
 log = logging.getLogger('django')
-from api.exceptions import *
-from .serializers import *
-from .models import *
-
-from rest_framework import status, permissions
-from rest_framework.generics import DestroyAPIView, ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView
-from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter
 
 
 # Create your views here.
@@ -87,7 +86,14 @@ class CatPagosUpdateView(UpdateAPIView):
     permission_classes = (permissions.IsAdminUser,)
     http_method_names = ['put']
 
+
 class CatEntidadListView(ListAPIView):
     queryset = CatEntidad.objects.all()
     serializer_class = CatEntidadListSerializer
+    permission_classes = (permissions.AllowAny,)
+
+
+class CatSedesListView(ListAPIView):
+    queryset = CatSedes.objects.all()
+    serializer_class = CatSedesSerializer
     permission_classes = (permissions.AllowAny,)

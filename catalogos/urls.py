@@ -16,4 +16,5 @@ urlpatterns = [
     path('pagos/<pk>/update/', CatPagosUpdateView.as_view(), ),
 
     path('entidad/list/', CatEntidadListView.as_view()),
+    path('sedes/list/', CatSedesListView.as_view()),
 ]
