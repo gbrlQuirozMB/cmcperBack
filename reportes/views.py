@@ -26,11 +26,12 @@ class MedResidenteFilter(FilterSet):
     hospitalResiNS = CharFilter(field_name='hospitalResi', lookup_expr='icontains')
     estadoNS = CharFilter(field_name='estado', lookup_expr='icontains')
     anioInscr = CharFilter(field_name='creado_en', lookup_expr='icontains')
+    sede = CharFilter(field_name='medicoE__catSedes')
+    convocatoria = CharFilter(field_name='medicoE__convocatoria')
 
     class Meta:
         model = Medico
-        fields = ['nombreCompletoNS', 'hospitalResiNS', 'estadoNS', 'sexo', 'anioInscr', 'isCertificado']
-        # fields = ['nombreCompletoNS', 'hospitalResiNS', 'estadoNS', 'sexo', 'anioInscr']
+        fields = ['nombreCompletoNS', 'hospitalResiNS', 'estadoNS', 'sexo', 'anioInscr', 'isCertificado', 'sede', 'convocatoria']
 
     def nombreCompletoFilter(self, queryset, name, value):
         queryset = Medico.objects.annotate(completo=Concat('nombre', Value(' '), 'apPaterno', Value(' '), 'apMaterno'))

@@ -64,10 +64,12 @@ def configDB():
     # catTiposExamen1 = CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion1')
     # catTiposExamen2 = CatTiposExamen.objects.create(descripcion='tiposExameneDescripcion3')
 
-    convocatoria1 = Convocatoria.objects.create(fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06', horaExamen='09:09', nombre='convocatoria chingona1',
+    convocatoria1 = Convocatoria.objects.create(fechaInicio='2020-04-04', fechaTermino='2021-11-11', fechaExamen='2021-04-04', horaExamen='09:09', nombre='convocatoria chingona1',
                                                 detalles='detalles1')
+    convocatoria2 = Convocatoria.objects.create(fechaInicio='2020-06-06', fechaTermino='2021-12-12', fechaExamen='2021-06-06', horaExamen='06:06', nombre='convocatoria chingona2',
+                                                detalles='detalles2')
 
-    ConvocatoriaEnrolado.objects.create(medico=medico3, convocatoria=convocatoria1, catSedes=catSedes2, catTiposExamen=catTiposExamen2, calificacion=9, isAprobado=True, isPublicado=False)
+    ConvocatoriaEnrolado.objects.create(medico=medico3, convocatoria=convocatoria2, catSedes=catSedes2, catTiposExamen=catTiposExamen2, calificacion=9, isAprobado=True, isPublicado=False)
     ConvocatoriaEnrolado.objects.create(medico=medico4, convocatoria=convocatoria1, catSedes=catSedes1, catTiposExamen=catTiposExamen1, calificacion=5, isAprobado=True, isPublicado=False)
 
     Certificado.objects.create(medico=medico3, documento='certificado_de_chingon.PDF', descripcion='es un chingo el tipo', isVencido=False, fechaCertificacion='2021-04-06',
@@ -86,31 +88,43 @@ class GetMedResidenteFilteredListTest(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        Medico.objects.filter(id=3).update(isCertificado=True)
-        response = self.client.get('/api/reportes/med-residentes/list/')
-        print(f'response JSON ===>>> obtiene solo lo residentes (isCertificado=False) \n {json.dumps(response.json())} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # # Medico.objects.filter(id=3).update(isCertificado=True)
+        # response = self.client.get('/api/reportes/med-residentes/list/')
+        # print(f'response JSON ===>>> obtiene solo lo residentes (isCertificado=False) \n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        # Medico.objects.filter(id=3).update(isCertificado=True)
-        Medico.objects.all().update(isCertificado=True)
-        response = self.client.get('/api/reportes/med-residentes/list/?isCertificado=False&nombreCompletoNS=Quiroz Olvera')
-        print(f'response JSON ===>>> obtiene solo lo residentes (isCertificado=False) \n {json.dumps(response.json())} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # # Medico.objects.filter(id=3).update(isCertificado=True)
+        # Medico.objects.all().update(isCertificado=True)
+        # response = self.client.get('/api/reportes/med-residentes/list/?isCertificado=False&nombreCompletoNS=Quiroz Olvera')
+        # print(f'response JSON ===>>> obtiene solo lo residentes (isCertificado=False) \n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # ponemos todos lo registros como residentes
         Medico.objects.all().update(isCertificado=False)
 
-        response = self.client.get('/api/reportes/med-residentes/list/?isCertificado=False&sexo=F')
-        print(f'response JSON ===>>> sexo=F \n {json.dumps(response.json())} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # response = self.client.get('/api/reportes/med-residentes/list/?isCertificado=False&sexo=F')
+        # print(f'response JSON ===>>> sexo=F \n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = self.client.get('/api/reportes/med-residentes/list/?isCertificado=False&nombreCompletoNS=Quiroz Olvera')
-        print(f'response JSON ===>>> nombreCompletoNS=Quiroz Olvera \n {json.dumps(response.json())} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # response = self.client.get('/api/reportes/med-residentes/list/?isCertificado=False&nombreCompletoNS=Quiroz Olvera')
+        # print(f'response JSON ===>>> nombreCompletoNS=Quiroz Olvera \n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        Medico.objects.filter(id=3).update(creado_en='2022-08-11T14:10:40.875138-05:00')
-        response = self.client.get('/api/reportes/med-residentes/list/?isCertificado=False&anioInscr=2022')
-        print(f'response JSON ===>>> anioInscr=2022 \n {json.dumps(response.json())} \n ---')
+        # Medico.objects.filter(id=3).update(creado_en='2022-08-11T14:10:40.875138-05:00')
+        # response = self.client.get('/api/reportes/med-residentes/list/?isCertificado=False&anioInscr=2022')
+        # print(f'response JSON ===>>> anioInscr=2022 \n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        response = self.client.get('/api/reportes/med-residentes/list/?isCertificado=False&sede=1')
+        print(f'response JSON ===>>> sede=1 \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        response = self.client.get('/api/reportes/med-residentes/list/?isCertificado=False&convocatoria=1')
+        print(f'response JSON ===>>> convocatoria=1 \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        response = self.client.get('/api/reportes/med-residentes/list/?isCertificado=False&convocatoria=2')
+        print(f'response JSON ===>>> convocatoria=2 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
