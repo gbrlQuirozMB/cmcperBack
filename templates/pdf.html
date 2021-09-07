@@ -1,0 +1,180 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Factura</title>
+        <style type="text/css">
+            body{
+                padding: 0px;
+                margin: 0px;
+            }
+            table {
+                border-collapse: collapse;
+            }
+            @page {
+                size: a4 portrait;
+                @frame content_frame {
+                    width: 100%;
+                    height: 900px;
+                    padding: 50px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div style="width: 100%; padding: 2px; background-color: #E9EBEE;">
+            <table>
+                <tr>
+                    <td style="width: 50%">
+                        <img src="https://cmcper.sandboxmb.com/assets/img/login/Logo%20ingresar.png">
+                    </td>
+                    <td style="width: 50%; text-align: center;">
+                        <h3 style="color: #DC3545; background-color: #FFFFFF; padding-top: 2px; padding-bottom: 2px; border-radius: 3px;">Folio No. {{ factura.folio }}</h3>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="width: 100%; padding: 2px 2px; background-color: #01AFCA; color: white; padding: 20px; margin-top: 20px;">
+            RFC: CMC9107125P1<br>
+            Dirección: Flamencos No. 74, Col. San José Insurgentes México, Distrito Federal, C.P. 03900.<br>
+            Teléfonos: (55) 5615 3654<br>
+            01 800 836 3250<br>
+        </div>
+        <div style="width: 100%; padding: 2px 2px; background-color: transparent; margin-top: 20px;">
+            <table>
+                <tr>
+                    <td style="width: 50%;">
+                        <table>
+                            <tr>
+                                <td>
+                                    consejo@cmcper.org.mx<br><br>
+                                    {{ factura.razonSocial }}<br>
+                                    RFC: {{ factura.rfc }}<br>
+                                {% if factura.medico %}
+                                {% if factura.medico.isExtranjero %}
+                                    Extranjero Residencial Fiscal<br>
+                                    No. Registro de Identidad Tributaria: {{ factura.numRegIdTrib }}<br>
+                                {% endif %}
+                                {% endif %}
+                                {% if agregarDireccion %}
+                                    <br>
+                                    {{ factura.calle }} No. Int. {{ factura.numInterior }} No. Ext. {{ factura.numExterior }}<br>
+                                    Col. {{ factura.colonia }} C.P {{ factura.codigoPostal }}<br>
+                                    {{ factura.deleMuni }} {{ factura.estado }}<br>
+                                {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td style="width: 50%; background-color: transparent;">
+                        <table style="margin-bottom: 2px; font-size: small; border-radius: 10px;">
+                            <tr>
+                                <td style="width: 34%; border-radius: 10px 0px 0px 10px; background-color: #ECEDEF; font-weight: bold;">
+                                    Fecha de Expedición:<br>
+                                    Lugar de Expedición:<br>
+                                    Regimen Físcal:<br>
+                                    Tipo de comprobante:<br>
+                                    Uso de CFDI:<br>
+                                    Método de pago:<br>
+                                    Forma de pago:<br>
+                                    Moneda:
+                                </td>
+                                <td style="width: 66%; border-radius: 0px 10px 10px 0px; background-color: #ECEDEF;">
+                                    {{ factura.fecha }}<br>
+                                    C.P 42084<br>
+                                    Personas morales con firmas no lucrativas<br>
+                                    I- Ingreso<br>
+                                    {{ factura.usoCFDI.usoCFDI }} - {{ factura.usoCFDI.descripcion }}<br>
+                                    <br>
+                                    {{ factura.formaPago.formaPago }} - {{ factura.formaPago.descripcion }}<br>
+                                    {{ factura.moneda.moneda }} - {{ factura.moneda.descripcion }}
+                                </td>
+                            </tr>
+                        </table>
+                        {% if factura.medico %}
+                        <table style="margin-bottom: 2px; text-align: center;">
+                            <tr>
+                                <td colspan="2" style="background-color: #01AFCA; color : #FFFFFF; border-radius: 5px 5px 0px 0px;">
+                                    <strong>Registro interno</strong>
+                                </td>
+                            </tr>
+                            <tr style="background-color: #ECEDEF;">
+                                <td>
+                                    <strong>No. certificado:</strong><br>
+                                    {{ factura.medico.numRegistro }}<br>
+                                </td>
+                                <td>
+                                    <strong>Periodo de Certificación:</strong><br>
+                                    {{ certificado }} - {{ recertificacion }}
+                                </td>
+                            </tr>
+                        </table>
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="width: 100%; padding: 2px 2px; margin-top: 20px;">
+            <table style="width: 100%; text-align: center; border-radius: 2px;">
+                <tr style="background-color: #ACBDCA;">
+                    <td style="width: 10%; border: none; font-weight: bold;">CANT</td>
+                    <td style="width: 20%; border: none; font-weight: bold;">UNIDAD DE MEDIDA</td>
+                    <td style="width: 20%; border: none; font-weight: bold;">CLAVE PROD/SERV</td>
+                    <td style="width: 20%; border: none; font-weight: bold;">DESCRIPCIÓN</td>
+                    <td style="width: 15%; border: none; font-weight: bold;">PRECIO UNITARIO</td>
+                    <td style="width: 15%; border: none; font-weight: bold;">IMPORTE</td>
+                </tr>
+                {% for conceptoPago in conceptosPago %}
+                <tr style="background-color: #ECEDEF;">
+                    <td style="width: 10%; border: none;">{{ conceptoPago.concepto.cantidad }}</td>
+                    <td style="width: 20%; border: none;">{{ conceptoPago.concepto.conceptoPago.unidadMedida.unidadMedida }} - {{ conceptoPago.concepto.conceptoPago.unidadMedida.nombre }}</td>
+                    <td style="width: 20%; border: none;">{{ conceptoPago.concepto.conceptoPago.claveSAT }}</td>
+                    <td style="width: 20%; border: none;">{{ conceptoPago.concepto.conceptoPago.conceptoPago }}</td>
+                    <td style="width: 15%; border: none;">${{ conceptoPago.concepto.conceptoPago.precio }}</td>
+                    <td style="width: 15%; border: none;">${{ conceptoPago.total }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div style="padding: 2px 2px; background-color: #FFFFFF; margin-top: 20px;">
+            <table>
+                <tr>
+                    <td style="width: 58%;">
+                        La reproducción apócrifa de este comprobante constituye un delito en los términos de las disposiciones fiscales
+                        <table style="background-color: #ECEDEF; border-radius: 2px; text-align: center;">
+                            <tr>
+                                <td colspan="3" style="border: none; background-color: #ACBDCA;font-weight: bold;">IMPORTE TOTAL CON LETRA</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="border: none;">{{ importeLetra }}</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td style="width: 42%;">
+                        <table style="width: 100%; background-color: #E9EBEE; border-radius: 2px; text-align: center;">
+                            <tr>
+                                <td colspan="2" style="border: none; background-color: #ACBDCA; font-weight: bold;">A PAGAR</td>
+                            </tr>
+                            <tr>
+                                <td style="border: none; background-color: #ECEDEF;">SUB-TOTAL: </td>
+                                <td style="border: none; background-color: #ECEDEF;">$ {{ factura.subtotal }}</td>
+                            </tr>
+                            <tr>
+                                <td style="border: none; background-color: #ECEDEF;">IVA</td>
+                                <td style="border: none; background-color: #ECEDEF;">$ {{ factura.iva }}</td>
+                            </tr>
+                            <tr>
+                                <td style="border: none; background-color: #ECEDEF; font-weight: bold;">TOTAL</td>
+                                <td style="border: none; background-color: #ECEDEF; font-weight: bold;">$ {{ factura.total }}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="width: 100%; padding: 2px 2px; background-color: #01AFCA; text-align: center; color: #FFFFFF; margin-top: 20px;">
+            https://www.cmcper.org.mx<br><br><br>
+            <h4 style="margin: 0px; padding: 0px;">Este documento es una presentación impresa de un CFDI</h4>
+        </div>
+    </body>
+</html>

@@ -11,6 +11,13 @@ from .serializers import *
 from instituciones.models import *
 from django.db.models import Value
 from django.db.models.functions import Concat
+import os
+from django.conf import settings
+from django.template.loader import get_template, render_to_string
+from xhtml2pdf import pisa
+from django.utils.html import strip_tags
+from django.core.mail import EmailMultiAlternatives
+from datetime import datetime
 
 log = logging.getLogger('django')
 
@@ -83,6 +90,79 @@ class FacturaCreateView(CreateAPIView):
     def post(self, request, *args, **kwargs):
         serializer = FacturaSerializer(data = request.data)
         if serializer.is_valid():
+            factura = serializer.save()
+            if factura.institucion:
+                factura.rfc = factura.institucion.rfc
+                factura.razonSocial = factura.institucion.nombreInstitucion
+                factura.estado = factura.institucion.estado
+                factura.deleMuni = factura.institucion.deleMuni
+                factura.colonia = factura.institucion.colonia
+                factura.calle = factura.institucion.calle
+                factura.numInterior = factura.institucion.numInterior
+                factura.numExterior = factura.institucion.numExterior
+                factura.codigoPostal = factura.institucion.cp
+            else:
+                factura.rfc = factura.medico.rfcFacturacion
+                factura.razonSocial = factura.medico.razonSocial
+                factura.estado = factura.medico.estadoFisc
+                factura.deleMuni = factura.medico.deleMuniFisc
+                factura.colonia = factura.medico.coloniaFisc
+                factura.calle = factura.medico.calleFisc
+                factura.numInterior = factura.medico.numInteriorFisc
+                factura.numExterior = factura.medico.numExteriorFisc
+                factura.codigoPostal = factura.medico.cpFisc
+            factura.save()
+            datos = {}
+            datos['factura'] = factura
+            datos['importeLetra'] = request.data['importeLetra']
+            datos['agregarDireccion'] = request.data['agregarDireccion']
+            datos['certificado'] = request.data['certificado']
+            datos['recertificacion'] = request.data['recertificacion']
+            conceptosPago = []
+            for conceptoPago in request.data['conceptosPago']:
+                conceptoPagoObject = ConceptoFactura.objects.create(
+                    factura = factura,
+                    conceptoPago = ConceptoPago.objects.get(id = conceptoPago['idConceptoPago']),
+                    cantidad = conceptoPago['cantidad']
+                )
+                conceptosPago.append({
+                    'concepto' : conceptoPagoObject,
+                    'total' : int(conceptoPagoObject.conceptoPago.precio) * int(conceptoPagoObject.cantidad)
+                })
+            datos['conceptosPago'] = conceptosPago
+            crearPDF(factura, datos)
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
+
+def crearPDF(factura, datos):
+    try:
+        os.remove(factura.pdf)
+    except:
+        pass
+    template = get_template('pdf.html')
+    html = template.render(datos)
+    carpeta = 'facturasPDF/'
+    try:
+        os.mkdir(os.path.join(settings.MEDIA_ROOT, carpeta))
+    except:
+        pass
+    nombreArchivo = str(factura.folio) + '.pdf'
+    rutaPDF = os.path.join(settings.MEDIA_ROOT, carpeta, nombreArchivo)
+    pdf = open(rutaPDF, 'wb+')
+    pisa.CreatePDF(html.encode('utf-8'), dest = pdf, encoding = 'utf-8')
+    factura.pdf = rutaPDF
+    factura.save()
+    enviarCorreo(factura, nombreArchivo)
+
+def enviarCorreo(factura, nombreArchivo):
+    email = ''
+    if factura.institucion:
+        email = factura.institucion.email
+    else:
+        email = factura.medico.email
+    html_content = render_to_string('email.html', {'nombre' : factura.razonSocial, 'hoy' : datetime.now().year})
+    text_content = strip_tags(html_content)
+    email = EmailMultiAlternatives('CMCPER', text_content, 'admin@cmcper.com.mx', [email])
+    email.attach_alternative(html_content, 'text/html')
+    email.attach(nombreArchivo, open(factura.pdf, 'rb').read(), 'application/pdf')
