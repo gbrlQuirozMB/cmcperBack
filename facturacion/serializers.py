@@ -32,7 +32,7 @@ class AvalFilteredListSerializer(serializers.ModelSerializer):#Aval se refiere a
 class MedicoFilteredListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Medico
-        fields = ['nombre', 'apPaterno', 'apMaterno', 'estadoFisc', 'deleMuniFisc', 'coloniaFisc', 'calleFisc', 'cpFisc', 'numInteriorFisc', 'numExteriorFisc', 'rfcFacturacion', 'usoCfdi', 'razonSocial', 'telCelular', 'email', 'numRegistro', 'isExtranjero', 'anioCertificacion']
+        fields = ['id', 'nombre', 'apPaterno', 'apMaterno', 'estadoFisc', 'deleMuniFisc', 'coloniaFisc', 'calleFisc', 'cpFisc', 'numInteriorFisc', 'numExteriorFisc', 'rfcFacturacion', 'usoCfdi', 'razonSocial', 'telCelular', 'email', 'numRegistro', 'isExtranjero', 'anioCertificacion']
 
 class IdUltimaFacturaSerializer(serializers.ModelSerializer):
     class Meta:
