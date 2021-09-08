@@ -104,14 +104,14 @@ class ConvocatoriaListSerializer(serializers.ModelSerializer):
         fields = ['id', 'nombre', 'fechaInicio', 'fechaTermino', 'fechaExamen']
 
 
-class CatSedesSerializer(serializers.ModelSerializer):
+class CatSedesInternalSerializer(serializers.ModelSerializer):
     class Meta:
         model = CatSedes
         fields = '__all__'
 
 
 class SedeGetDetailSerializer(serializers.ModelSerializer):
-    catSedes = CatSedesSerializer(read_only=True)
+    catSedes = CatSedesInternalSerializer(read_only=True)
 
     class Meta:
         model = Sede
