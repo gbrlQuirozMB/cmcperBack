@@ -1,6 +1,7 @@
 from django.http.response import HttpResponse
 from django.shortcuts import render
 import rest_framework, logging, json
+from rest_framework import exceptions
 from api.exceptions import *
 from rest_framework.generics import CreateAPIView, ListAPIView
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
@@ -21,6 +22,7 @@ from datetime import datetime
 from xml.dom import minidom
 from django.core.files.base import ContentFile
 from suds.client import Client
+from suds.plugin import MessagePlugin
 
 log = logging.getLogger('django')
 
@@ -347,3 +349,44 @@ def facturar(factura, root):
         factura.fechaTimbrado = fechaTimbrado
         factura.xmlTimbrado.save(factura.clienteFactura.rfc + ".xml", ContentFile(str(xmlSAT)))
         factura.save()
+
+class MyPlugin(MessagePlugin):
+    def __init__(self):
+        self.lastSentStr = None
+        self.lastReceivedStr = None
+    def sending(self, context):
+        self.lastSentStr = str(context.envelope)
+    def received(self, context):
+        self.lastReceivedStr = str(context.reply)
+
+def cancelarFactura(factura):
+        response = {}
+        logging.basicConfig(level = logging.INFO)
+        logging.getLogger('suds.client').setLevel(logging.DEBUG)
+        logging.getLogger('suds.transport').setLevel(logging.DEBUG)
+        logging.getLogger('suds.xsd.schema').setLevel(logging.DEBUG)
+        logging.getLogger('suds.wsdl').setLevel(logging.DEBUG)
+        url = "https://demo-facturacion.finkok.com/servicios/soap/cancel.wsdl"
+        usuario = 'sno1213140'
+        contrasena = 'f64c803d307deb29c6346cea2bc58c817d39a2008bddec1dde9e36d8cf73'
+        certificado = '30001000000400002434'
+        emisor = 'EKU9003173C9'
+        """ url = "https://facturacion.finkok.com/servicios/soap/stamp.wsdl"
+        usuario = 'mastertrade'
+        contrasena = '475b63e3f0e5f56b4a672fd7b26eb4018f06c0e0cc3c4c47bafe82c5d644'
+        certificado = '00001000000502229154'
+        emisor = 'TTA1511107W5' """
+        facturas = [factura.uuid]
+        context = ssl._create_unverified_context()
+        ssl._create_default_https_context = ssl._create_unverified_context
+        plugin = MyPlugin()
+        client = Client(url, cache = None, plugins=[plugin])
+        listaFacturas = client.factory.create("UUIDS")
+        listaFacturas.uuids = {"string" : facturas}
+        result = client.service.sign_cancel(listaFacturas, usuario, contrasena, emisor, certificado)
+        try:
+            xml = plugin.lastReceivedStr[2 : len(plugin.lastReceivedStr) - 1]
+            factura.xmlCancelado.save(factura.clienteFactura.rfc + ".xml", ContentFile(str(xml)))
+            return True
+        except:
+            return False
