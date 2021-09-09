@@ -195,4 +195,3 @@ class PostFacturaTest(APITestCase):
         response = self.client.post('/api/facturacion/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> 201-OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        #self.assertEqual(1, Factura.objects.count())

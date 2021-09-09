@@ -18,6 +18,8 @@ from xhtml2pdf import pisa
 from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
 from datetime import datetime
+from xml.dom import minidom
+from django.core.files.base import ContentFile
 
 log = logging.getLogger('django')
 
@@ -130,7 +132,8 @@ class FacturaCreateView(CreateAPIView):
                     'total' : int(conceptoPagoObject.conceptoPago.precio) * int(conceptoPagoObject.cantidad)
                 })
             datos['conceptosPago'] = conceptosPago
-            crearPDF(factura, datos)
+            #crearPDF(factura, datos)
+            crearXML(factura)
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
@@ -153,9 +156,8 @@ def crearPDF(factura, datos):
     pisa.CreatePDF(html.encode('utf-8'), dest = pdf, encoding = 'utf-8')
     factura.pdf = rutaPDF
     factura.save()
-    enviarCorreo(factura, nombreArchivo)
 
-def enviarCorreo(factura, nombreArchivo):
+def enviarCorreo(factura):
     email = ''
     if factura.institucion:
         email = factura.institucion.email
@@ -165,4 +167,127 @@ def enviarCorreo(factura, nombreArchivo):
     text_content = strip_tags(html_content)
     email = EmailMultiAlternatives('CMCPER', text_content, 'admin@cmcper.com.mx', [email])
     email.attach_alternative(html_content, 'text/html')
-    email.attach(nombreArchivo, open(factura.pdf, 'rb').read(), 'application/pdf')
+    email.attach(str(factura.folio) + '.pdf', open(factura.pdf, 'rb').read(), 'application/pdf')
+
+def crearXML(factura):
+    if factura.xmlTimbrado:
+        ruta = os.path.join(settings.MEDIA_ROOT, str(factura.xmlTimbrado))
+        os.remove(ruta)
+        factura.xmlTimbrado = None
+    factura.save()
+    #CREA XML
+    root = minidom.Document()
+    #COMPROBANTE
+    comprobante = root.createElement('cfdi:Comprobante')
+    comprobante.setAttribute('xmlns:cfdi', 'http://www.sat.gob.mx/cfd/3')
+    comprobante.setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
+    comprobante.setAttribute('xsi:schemaLocation', 'http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv33.xsd')
+    comprobante.setAttribute('Version', '3.3')
+    comprobante.setAttribute('Folio', str(factura.folio))
+    comprobante.setAttribute('Fecha', factura.fecha.strftime('%Y-%m-%dT%H:%M:%S'))
+    comprobante.setAttribute('Moneda', str(factura.moneda.moneda))
+    comprobante.setAttribute('TipoDeComprobante', 'I')
+    comprobante.setAttribute('MetodoPago', 'PUE')
+    comprobante.setAttribute('FormaPago', str(factura.formaPago.formaPago))
+    comprobante.setAttribute('LugarExpedicion', str(factura.codigoPostal))
+    comprobante.setAttribute('SubTotal', str(round(factura.subtotal, factura.moneda.decimales)))
+    comprobante.setAttribute('Total', str(round(factura.total, factura.moneda.decimales)))
+    root.appendChild(comprobante)
+    #COMPROBANTE - EMISOR
+    emisor = root.createElement('cfdi:Emisor')
+    #emisor.setAttribute('Rfc', 'TTA1511107W5')
+    emisor.setAttribute('Rfc', 'EKU9003173C9')
+    emisor.setAttribute('Nombre', 'CMCPER')
+    emisor.setAttribute('RegimenFiscal', '624')
+    comprobante.appendChild(emisor)
+    #COMPROBANTE - RECEPTOR
+    receptor = root.createElement('cfdi:Receptor')
+    receptor.setAttribute('Rfc', str(factura.rfc))
+    receptor.setAttribute('Nombre', str(factura.razonSocial))
+    receptor.setAttribute('UsoCFDI', str(factura.usoCFDI.usoCFDI))
+    comprobante.appendChild(receptor)
+    conceptosFactura = ConceptoFactura.objects.filter(factura = factura)
+    if conceptosFactura.count() > 0:
+        #COMPROBANTE - CONCEPTOS
+        conceptos = root.createElement('cfdi:Conceptos')
+        #COMPROBANTE - CONCEPTOS - CONCEPTO
+        for conceptoFactura in conceptosFactura:
+            concepto = root.createElement('cfdi:Concepto')
+            concepto.setAttribute('ClaveProdServ', str(conceptoFactura.conceptoPago.claveSAT))
+            concepto.setAttribute('Cantidad', str(conceptoFactura.cantidad))
+            concepto.setAttribute('ClaveUnidad', str(conceptoFactura.conceptoPago.unidadMedida.unidadMedida))
+            concepto.setAttribute('Descripcion', str(conceptoFactura.conceptoPago.conceptoPago))
+            concepto.setAttribute('ValorUnitario', str(conceptoFactura.conceptoPago.precio))
+            concepto.setAttribute('Importe', str(round(int(conceptoFactura.conceptoPago.precio) * int(conceptoFactura.cantidad), factura.moneda.decimales)))
+            #COMPROBANTE - CONCEPTOS - CONCEPTO - IMPUESTOS
+            """ impuestosConcepto = ImpuestoConcepto.objects.filter(conceptoFactura = conceptoFactura)
+            if impuestosConcepto.count() > 0:
+                totalTraslados = 0
+                totalRetenciones = 0
+                impuestos = root.createElement('cfdi:Impuestos')
+                impuestosConceptoTraslado = impuestosConcepto.filter(tipoImpuesto = 1)
+                if impuestosConceptoTraslado.count() > 0:
+                    #COMPROBANTE - CONCEPTOS - CONCEPTO - IMPUESTOS - TRASLADOS
+                    traslados = root.createElement('cfdi:Traslados')
+                    for impuestoConceptoTraslado in impuestosConceptoTraslado:
+                        #COMPROBANTE - CONCEPTOS - CONCEPTO - IMPUESTOS - TRASLADOS - TRASLADO
+                        traslado = root.createElement('cfdi:Traslado')
+                        traslado.setAttribute('Base', str(round(impuestoConceptoTraslado.base, factura.moneda.decimales)))
+                        traslado.setAttribute('Impuesto', '00' + str(impuestoConceptoTraslado.impuesto))
+                        if impuestoConceptoTraslado.factor == 1:
+                            factor = 'Tasa'
+                        if impuestoConceptoTraslado.factor == 2:
+                            factor = 'Cuota'
+                        if impuestoConceptoTraslado.factor == 3:
+                            factor = 'Exento'
+                        traslado.setAttribute('TipoFactor', factor)
+                        if impuestoConceptoTraslado.factor != 3:
+                            traslado.setAttribute('TasaOCuota', str(impuestoConceptoTraslado.tasa))
+                            traslado.setAttribute('Importe', str(round(impuestoConceptoTraslado.importe, factura.moneda.decimales)))
+                        traslados.appendChild(traslado)
+                        totalTraslados = totalTraslados + impuestoConceptoTraslado.importe
+                    impuestos.appendChild(traslados)
+                concepto.appendChild(impuestos) """
+            conceptos.appendChild(concepto)
+        comprobante.appendChild(conceptos)
+        """ if impuestosConcepto.count() > 0:
+            #COMPROBANTE - IMPUESTOS
+            impuestos = root.createElement('cfdi:Impuestos')
+            if totalRetenciones > 0:
+                impuestos.setAttribute('TotalImpuestosRetenidos', str(round(totalRetenciones, factura.moneda.decimales)))
+            if totalTraslados > 0:
+                impuestos.setAttribute('TotalImpuestosTrasladados', str(round(totalTraslados, factura.moneda.decimales)))
+            if impuestosConceptoRetencion.count() > 0:
+                #COMPROBANTE - IMPUESTOS - RETENCIONES
+                retenciones = root.createElement('cfdi:Retenciones')
+                for impuestoConceptoRetencion in impuestosConceptoRetencion:
+                    #COMPROBANTE - IMPUESTOS - RETENCIONES - RETENCION
+                    retencion = root.createElement('cfdi:Retencion')
+                    retencion.setAttribute('Impuesto', '00' + str(impuestoConceptoRetencion.impuesto))
+                    if impuestoConceptoTraslado.factor != 3:
+                        retencion.setAttribute('Importe', str(round(impuestoConceptoRetencion.importe, factura.moneda.decimales)))
+                    retenciones.appendChild(retencion)
+                impuestos.appendChild(retenciones)
+            if impuestosConceptoTraslado.count() > 0:
+                #COMPROBANTE - IMPUESTOS - TRASLADOS
+                traslados = root.createElement('cfdi:Traslados')
+                for impuestoConceptoTraslado in impuestosConceptoTraslado:
+                    #COMPROBANTE - IMPUESTOS - TRASLADOS - TRASLADO
+                    traslado = root.createElement('cfdi:Traslado')
+                    traslado.setAttribute('Impuesto', '00' + str(impuestoConceptoTraslado.impuesto))
+                    if impuestoConceptoTraslado.factor == 1:
+                        factor = 'Tasa'
+                    if impuestoConceptoTraslado.factor == 2:
+                        factor = 'Cuota'
+                    if impuestoConceptoTraslado.factor == 3:
+                        factor = 'Exento'
+                    traslado.setAttribute('TipoFactor', factor)
+                    if impuestoConceptoTraslado.factor != 3:
+                        traslado.setAttribute('TasaOCuota', str(impuestoConceptoTraslado.tasa))
+                        traslado.setAttribute('Importe', str(round(impuestoConceptoTraslado.importe, factura.moneda.decimales)))
+                    traslados.appendChild(traslado)
+                impuestos.appendChild(traslados)
+            comprobante.appendChild(impuestos) """
+    #GUARDA XML
+    xml = root.toprettyxml(encoding = "utf-8")
+    factura.xmlTimbrado.save(factura.folio + ".xml", ContentFile(xml))
