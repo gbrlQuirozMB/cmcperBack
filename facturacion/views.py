@@ -11,7 +11,7 @@ from .serializers import *
 from instituciones.models import *
 from django.db.models import Value
 from django.db.models.functions import Concat
-import os
+import os, base64, ssl
 from django.conf import settings
 from django.template.loader import get_template, render_to_string
 from xhtml2pdf import pisa
@@ -20,6 +20,7 @@ from django.core.mail import EmailMultiAlternatives
 from datetime import datetime
 from xml.dom import minidom
 from django.core.files.base import ContentFile
+from suds.client import Client
 
 log = logging.getLogger('django')
 
@@ -133,6 +134,7 @@ class FacturaCreateView(CreateAPIView):
                 })
             datos['conceptosPago'] = conceptosPago
             #crearPDF(factura, datos)
+            #crearXML(factura)
             crearXML(factura)
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
@@ -291,3 +293,57 @@ def crearXML(factura):
     #GUARDA XML
     xml = root.toprettyxml(encoding = "utf-8")
     factura.xmlTimbrado.save(factura.folio + ".xml", ContentFile(xml))
+    #facturar(factura, root)
+
+def facturar(factura, root):
+    url = "https://demo-facturacion.finkok.com/servicios/soap/stamp.wsdl"
+    usuario = 'sno1213140'
+    contrasena = 'f64c803d307deb29c6346cea2bc58c817d39a2008bddec1dde9e36d8cf73'
+    """ url = "https://facturacion.finkok.com/servicios/soap/stamp.wsdl"
+    usuario = 'mastertrade'
+    contrasena = '475b63e3f0e5f56b4a672fd7b26eb4018f06c0e0cc3c4c47bafe82c5d644' """
+    #COMIENZA A FACTURAR
+    xmlstr = root.toxml(encoding = "utf-8")
+    encodedBytes = base64.b64encode(xmlstr)
+    encodedStr = str(encodedBytes, "utf-8")
+    context = ssl._create_unverified_context()
+    ssl._create_default_https_context = ssl._create_unverified_context
+    client = Client(url, cache = None)
+    xmlSAT = None
+    contenido = client.service.sign_stamp(encodedStr, usuario, contrasena)
+    xmlSAT = contenido.xml
+    try:
+        #OBTIENE PETICION SOAP
+        peticion = client.last_sent()
+        archivoPeticion = open('request.xml', 'w')
+        archivoPeticion.write(str(peticion))
+        archivoPeticion.close()
+    except:
+        pass
+    try:
+        #OBTIENE RESPUESTA SOAP
+        respuesta = client.last_received()
+        archivoRespuesta = open('response.xml', 'w')
+        archivoRespuesta.write(str(respuesta))
+        archivoRespuesta.close()
+    except:
+        pass
+    #OBTIENE XMLSAT
+    if xmlSAT is not None:
+        #OBTIENE DATOS DE XMLSAT
+        xmlParsed = minidom.parseString(str(xmlSAT))
+        comprobante = xmlParsed.getElementsByTagName('cfdi:Comprobante')[0]
+        complemento = comprobante.getElementsByTagName('cfdi:Complemento')[0]
+        timbre = complemento.getElementsByTagName('tfd:TimbreFiscalDigital')[0]
+        uuid = timbre.getAttribute("UUID")
+        selloSAT = timbre.getAttribute("SelloSAT")
+        numeroCertificado = comprobante.getAttribute("NoCertificado")
+        fechaTimbrado = timbre.getAttribute("FechaTimbrado")
+        fechaTimbradoStr = datetime.strptime(fechaTimbrado, '%Y-%m-%dT%H:%M:%S')
+        #GUARDA DATOS DE XMLSAT EN FACTURA
+        factura.uuid = uuid
+        factura.numeroCertificado = numeroCertificado
+        factura.selloSAT = selloSAT
+        factura.fechaTimbrado = fechaTimbrado
+        factura.xmlTimbrado.save(factura.clienteFactura.rfc + ".xml", ContentFile(str(xmlSAT)))
+        factura.save()

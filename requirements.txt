@@ -38,6 +38,7 @@ ruamel.yaml.clib==0.2.4
 simplejson==3.17.2
 six==1.15.0
 sqlparse==0.4.1
+suds-community==0.8.4
 toml==0.10.2
 uritemplate==3.0.1
 urllib3==1.26.3
