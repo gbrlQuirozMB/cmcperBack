@@ -136,7 +136,7 @@ class FacturaCreateView(CreateAPIView):
                 })
             datos['conceptosPago'] = conceptosPago
             #crearPDF(factura, datos)
-            crearXML(factura)
+            #crearXML(factura)
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
@@ -309,29 +309,29 @@ class MyPlugin(MessagePlugin):
         self.lastReceivedStr = str(context.reply)
 
 def cancelarFactura(factura):
-        response = {}
         logging.basicConfig(level = logging.INFO)
         logging.getLogger('suds.client').setLevel(logging.DEBUG)
         logging.getLogger('suds.transport').setLevel(logging.DEBUG)
         logging.getLogger('suds.xsd.schema').setLevel(logging.DEBUG)
         logging.getLogger('suds.wsdl').setLevel(logging.DEBUG)
-        url = "https://demo-facturacion.finkok.com/servicios/soap/cancel.wsdl"
-        usuario = 'sno1213140'
-        contrasena = 'f64c803d307deb29c6346cea2bc58c817d39a2008bddec1dde9e36d8cf73'
+        #DATOS PARA PRUEBAS
+        url = "https://demo-facturacion.finkok.com/servicios/soap/stamp.wsdl"
+        usuario = 'clientedeprueba'
+        contrasena = '20cf7fc55fd9e99021840be6dac7ffdb48e96ef67d83d357de4b0a9e2fa7'
         certificado = '30001000000400002434'
         emisor = 'EKU9003173C9'
         """ url = "https://facturacion.finkok.com/servicios/soap/stamp.wsdl"
-        usuario = 'mastertrade'
-        contrasena = '475b63e3f0e5f56b4a672fd7b26eb4018f06c0e0cc3c4c47bafe82c5d644'
-        certificado = '00001000000502229154'
-        emisor = 'TTA1511107W5' """
+        usuario = ''
+        contrasena = ''
+        certificado = ''
+        emisor = 'CMC9107125P1' """
         facturas = [factura.uuid]
         context = ssl._create_unverified_context()
         ssl._create_default_https_context = ssl._create_unverified_context
         plugin = MyPlugin()
         client = Client(url, cache = None, plugins=[plugin])
         listaFacturas = client.factory.create("UUIDS")
-        listaFacturas.uuids = {"string" : facturas}
+        listaFacturas.uuids.string = facturas
         result = client.service.sign_cancel(listaFacturas, usuario, contrasena, emisor, certificado)
         try:
             xml = plugin.lastReceivedStr[2 : len(plugin.lastReceivedStr) - 1]
