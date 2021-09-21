@@ -92,7 +92,7 @@ class Medico(models.Model):
     isRetirado = models.BooleanField(default=False, db_column='is_retirado')
     isExprofesor = models.BooleanField(default=False, db_column='is_exprofesor')
     isExpresidente = models.BooleanField(default=False, db_column='is_expresidente')
-    # FALTAN: tipoConsejero y 
+    # FALTAN: tipoConsejero
     regionGeografica = models.CharField(max_length=300, blank=True, db_column='region_geografica')
     titularHospital = models.CharField(max_length=300, blank=True, db_column='titular_hospital')
     diplomaConacem = models.CharField(max_length=300, blank=True, db_column='diploma_conacem')
@@ -110,6 +110,11 @@ class Medico(models.Model):
     cpFisc = models.CharField(max_length=10, blank=True, null=True, db_column='cp_fiscal')
     numInteriorFisc = models.CharField(max_length=10, blank=True, null=True, db_column='num_interior_fiscal')
     numExteriorFisc = models.CharField(max_length=10, blank=True, null=True, db_column='num_exterior_fiscal')
+    tipoAspirante = models.CharField(max_length=15, choices=(
+        ('Normal', 'Normal'),
+        ('Extemporaneo', 'Extemporaneo'),
+        ('Especial', 'Especial')
+    ), default="---")
 
     class Meta:
         db_table = 'pre_registro_medico'
