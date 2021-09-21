@@ -1662,6 +1662,9 @@ class baseDatosTest(APITestCase):
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
 
         ConvocatoriaEnrolado.objects.create(medico=medico, convocatoria=convocatoria, catSedes=catSedes, catTiposExamen=catTiposExamen)
+        
+        catTiposDocumento11 = CatTiposDocumento.objects.create(id=11,descripcion='documento11')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento11)
 
     def test(self):
         # datoConvocatoria = Convocatoria.objects.get(id=1)
@@ -1674,6 +1677,7 @@ class baseDatosTest(APITestCase):
         # print(f'--->>>dato: {serializer.errors}')
 
         response = self.client.get('/api/convocatoria/ficha-registro-pdf/1/')
+        print(f'response JSON ===>>> \n {response.content} \n ---')
 
 
 # ES DE PRUEBA NO USAR!!!
