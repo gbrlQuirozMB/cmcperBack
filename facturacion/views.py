@@ -2,6 +2,7 @@ from django.http.response import HttpResponse
 from django.shortcuts import render
 import rest_framework, logging, json
 from rest_framework import exceptions
+from rest_framework.views import APIView
 from api.exceptions import *
 from rest_framework.generics import CreateAPIView, ListAPIView
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
@@ -23,6 +24,7 @@ from xml.dom import minidom
 from django.core.files.base import ContentFile
 from suds.client import Client
 from suds.plugin import MessagePlugin
+from rest_framework.response import Response
 
 log = logging.getLogger('django')
 
@@ -315,13 +317,13 @@ def cancelarFactura(factura):
         logging.getLogger('suds.xsd.schema').setLevel(logging.DEBUG)
         logging.getLogger('suds.wsdl').setLevel(logging.DEBUG)
         #DATOS PARA PRUEBAS
-        url = "https://demo-facturacion.finkok.com/servicios/soap/stamp.wsdl"
+        url = "https://demo-facturacion.finkok.com/servicios/soap/cancel.wsdl"
         usuario = 'clientedeprueba'
         contrasena = '20cf7fc55fd9e99021840be6dac7ffdb48e96ef67d83d357de4b0a9e2fa7'
         certificado = '30001000000400002434'
         emisor = 'EKU9003173C9'
         #DATOS PARA PRODUCCIÓN
-        """ url = "https://facturacion.finkok.com/servicios/soap/stamp.wsdl"
+        """ url = "https://facturacion.finkok.com/servicios/soap/cancel.wsdl"
         usuario = ''
         contrasena = ''
         certificado = ''
@@ -332,11 +334,11 @@ def cancelarFactura(factura):
         plugin = MyPlugin()
         client = Client(url, cache = None, plugins=[plugin])
         listaFacturas = client.factory.create("UUIDS")
-        listaFacturas.uuids.string = facturas
+        listaFacturas.uuids = {"string" : facturas}
         result = client.service.sign_cancel(listaFacturas, usuario, contrasena, emisor, certificado)
         try:
             xml = plugin.lastReceivedStr[2 : len(plugin.lastReceivedStr) - 1]
-            factura.xmlCancelado.save(factura.clienteFactura.rfc + ".xml", ContentFile(str(xml)))
+            factura.xmlCancelado.save(factura.folio + ".xml", ContentFile(str(xml)))
             return True
         except:
             return False
@@ -344,3 +346,11 @@ def cancelarFactura(factura):
 class FacturaFilteredListView(ListAPIView):
     queryset = Factura.objects.all()
     serializer_class = FacturaFilteredListSerializer
+
+class FacturaCancelarView(APIView):
+    def post(self, request):
+        factura = Factura.objects.get(id = request.data['id'])
+        if cancelarFactura(factura):
+            return Response({}, status = status.HTTP_200_OK)
+        else:
+            return Response({}, status = status.HTTP_417_EXPECTATION_FAILED)

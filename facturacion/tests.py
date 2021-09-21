@@ -207,3 +207,21 @@ class GetFacturaFilteredListTest(APITestCase):
         response = self.client.get('/api/facturacion/list/')
         print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+class PostFacturaCancelarTest(APITestCase):
+    def setUp(self):
+        Factura.objects.create()
+        Factura.objects.create()
+        Factura.objects.create()
+        self.json = {
+            "id": "1"
+        }
+        self.user = User.objects.create_user(username = 'billy', is_staff = True)
+    def test(self):
+        self.client.force_authenticate(user = self.user)
+        response = self.client.post('/api/facturacion/cancelar/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
+        try:
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        except:
+            self.assertEqual(response.status_code, status.HTTP_417_EXPECTATION_FAILED)
