@@ -13,4 +13,5 @@ urlpatterns = [
     path('factura/idUltimaFactura/', IdUltimaFacturaView.as_view()),
     path('pais/list/', PaisListView.as_view()),
     path('create/', FacturaCreateView.as_view()),
+    path('list/', FacturaFilteredListView.as_view()),
 ]

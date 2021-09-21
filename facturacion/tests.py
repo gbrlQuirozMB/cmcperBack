@@ -195,3 +195,15 @@ class PostFacturaTest(APITestCase):
         response = self.client.post('/api/facturacion/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> 201-OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+class GetFacturaFilteredListTest(APITestCase):
+    def setUp(self):
+        Factura.objects.create()
+        Factura.objects.create()
+        Factura.objects.create()
+        self.user = User.objects.create_user(username = 'billy', is_staff = True)
+    def test(self):
+        self.client.force_authenticate(user = self.user)
+        response = self.client.get('/api/facturacion/list/')
+        print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

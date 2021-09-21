@@ -135,8 +135,9 @@ class FacturaCreateView(CreateAPIView):
                     'total' : int(conceptoPagoObject.conceptoPago.precio) * int(conceptoPagoObject.cantidad)
                 })
             datos['conceptosPago'] = conceptosPago
-            #crearPDF(factura, datos)
-            #crearXML(factura)
+            crearPDF(factura, datos)
+            crearXML(factura)
+            enviarCorreo(factura)
             return self.create(request, *args, **kwargs)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
@@ -198,10 +199,10 @@ def crearXML(factura):
     root.appendChild(comprobante)
     #COMPROBANTE - EMISOR
     emisor = root.createElement('cfdi:Emisor')
-    #RFC PARA PRODUCCIÓN
-    #emisor.setAttribute('Rfc', 'CMC9107125P1')
     #RFC PRAR PRUEBAS
     emisor.setAttribute('Rfc', 'EKU9003173C9')
+    #RFC PARA PRODUCCIÓN
+    #emisor.setAttribute('Rfc', 'CMC9107125P1')
     emisor.setAttribute('Nombre', 'CMCPER')
     emisor.setAttribute('RegimenFiscal', '603')#PERSONAS MORALES CON FINES NO LUCRATIVOS
     comprobante.appendChild(emisor)
@@ -257,7 +258,6 @@ def crearXML(factura):
             traslados.appendChild(traslado)
             impuestos.appendChild(traslados)
             comprobante.appendChild(impuestos)
-    #GUARDA XML
     facturar(factura, root)
 
 def facturar(factura, root):
@@ -320,6 +320,7 @@ def cancelarFactura(factura):
         contrasena = '20cf7fc55fd9e99021840be6dac7ffdb48e96ef67d83d357de4b0a9e2fa7'
         certificado = '30001000000400002434'
         emisor = 'EKU9003173C9'
+        #DATOS PARA PRODUCCIÓN
         """ url = "https://facturacion.finkok.com/servicios/soap/stamp.wsdl"
         usuario = ''
         contrasena = ''
@@ -339,3 +340,7 @@ def cancelarFactura(factura):
             return True
         except:
             return False
+
+class FacturaFilteredListView(ListAPIView):
+    queryset = Factura.objects.all()
+    serializer_class = FacturaFilteredListSerializer
