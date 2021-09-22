@@ -1824,7 +1824,7 @@ class PostFechasExamenes200Test(APITestCase):
 
         response = self.client.post('/api/recertificacion/fechas-examen/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> ok \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
 class PutFechasExamenes200Test(APITestCase):

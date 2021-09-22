@@ -63,7 +63,7 @@ class PorExamen(models.Model):
         (3, 'Pendiente')
     ))
     isAprobado = models.BooleanField(default=False, db_column='is_aprobado')  # verificar si se le da su certificado
-    calificacion = models.PositiveSmallIntegerField(blank=True, null=True)
+    calificacion = models.DecimalField(blank=True, null=True, max_digits=6, decimal_places=2) # ahora se pide que sea decimal
     isPagado = models.BooleanField(default=False, db_column='is_pagado')  # verificar si ya pago
     isAceptado = models.BooleanField(default=False, db_column='is_aceptado')  # se activa para validar que aceptaron todos sus documentos
     isPublicado = models.BooleanField(default=False, db_column='is_publicado')  # verificar si se le da su certificado por primera vez
