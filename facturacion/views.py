@@ -163,18 +163,6 @@ def crearPDF(factura, datos):
     factura.pdf = rutaPDF
     factura.save()
 
-def enviarCorreo(factura):
-    email = ''
-    if factura.institucion:
-        email = factura.institucion.email
-    else:
-        email = factura.medico.email
-    html_content = render_to_string('email.html', {'nombre' : factura.razonSocial, 'hoy' : datetime.now().year})
-    text_content = strip_tags(html_content)
-    email = EmailMultiAlternatives('CMCPER', text_content, 'admin@cmcper.com.mx', [email])
-    email.attach_alternative(html_content, 'text/html')
-    email.attach(str(factura.folio) + '.pdf', open(factura.pdf, 'rb').read(), 'application/pdf')
-
 def crearXML(factura):
     if factura.xmlTimbrado:
         ruta = os.path.join(settings.MEDIA_ROOT, str(factura.xmlTimbrado))
@@ -300,6 +288,21 @@ def facturar(factura, root):
         factura.fechaTimbrado = fechaTimbrado
         factura.xmlTimbrado.save(factura.folio + ".xml", ContentFile(str(xmlSAT)))
         factura.save()
+
+def enviarCorreo(factura):
+    email = ''
+    if factura.institucion:
+        email = factura.institucion.email
+    else:
+        email = factura.medico.email
+    html_content = render_to_string('email.html', {'nombre' : factura.razonSocial, 'hoy' : datetime.now().year})
+    text_content = strip_tags(html_content)
+    email = EmailMultiAlternatives('CMCPER', text_content, 'admin@cmcper.com.mx', [email])
+    email.attach_alternative(html_content, 'text/html')
+    email.attach(str(factura.folio) + '.pdf', open(factura.pdf, 'rb').read(), 'application/pdf')
+    if factura.xmlTimbrado:
+        email.attach(str(factura.folio) + '.xml', open(factura.xmlTimbrado, 'rb').read(), 'application/xml')
+    email.send()
 
 class MyPlugin(MessagePlugin):
     def __init__(self):
