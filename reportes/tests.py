@@ -285,3 +285,15 @@ class GetMedCertificadoFechasTest(APITestCase):
         response = self.client.get('/api/reportes/med-certificados/1/fecha-ultima-certificacion/')
         print(f'response JSON ===>>> 404 (isCertificado=True) \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+# class GetPruebaPdf(APITestCase):
+#     def setUp(self):
+#         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+        
+#     def test(self):
+#         self.client.force_authenticate(user=self.user)
+        
+#         response = self.client.get('/api/reportes/pruebas/36/pdf/')
+#         print(f'response JSON ===>>> \n {json.dumps(response.json())} \n ---')
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)

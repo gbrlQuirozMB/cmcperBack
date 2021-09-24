@@ -1,3 +1,6 @@
+import urllib3
+from rest_framework.views import APIView
+
 from api.exceptions import *
 from django.shortcuts import render
 from rest_framework.generics import DestroyAPIView, ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView
@@ -133,3 +136,15 @@ class MedCertificadoFechasDetailView(RetrieveAPIView):
             raise ResponseError('No hay certificado para el ID de Medico dado', 404)
 
         return Response(serializer.data)
+
+
+# class PruebasPdfDetailView(APIView):
+#     permission_classes = (permissions.AllowAny,)
+    
+#     def get(self, request, *args, **kwargs):
+#         medicoId = kwargs['medicoId']
+#         http = urllib3.PoolManager()
+#         url = f'http://127.0.0.1:8080/reportes/medico/{medicoId}/'
+#         print(f'--->>>url: {url}')
+#         r = http.request('GET', url)
+#         return Response(r.data)
