@@ -25,6 +25,7 @@ from django.core.files.base import ContentFile
 from suds.client import Client
 from suds.plugin import MessagePlugin
 from rest_framework.response import Response
+from django.core import serializers
 
 log = logging.getLogger('django')
 
@@ -140,7 +141,7 @@ class FacturaCreateView(CreateAPIView):
             crearPDF(factura, datos)
             crearXML(factura)
             enviarCorreo(factura)
-            return self.create(request, *args, **kwargs)
+            return Response(serializers.serialize('json', [factura]), status = status.HTTP_201_CREATED)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
