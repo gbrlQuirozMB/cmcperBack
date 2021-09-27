@@ -1,3 +1,24 @@
+import datetime
+from certificados.models import Certificado
+import locale
+import codecs
+import csv
+from django.contrib.auth.models import User
+from notificaciones.models import Notificacion
+from django.core.mail import EmailMultiAlternatives
+from django.utils.html import strip_tags
+from django.template.loader import render_to_string
+from api.Paginacion import Paginacion
+import ssl
+from django.views import View
+from xhtml2pdf import pisa
+from django.template.loader import get_template
+from rest_framework.response import Response
+from django.http import HttpResponse, JsonResponse, Http404
+from rest_framework.parsers import JSONParser
+from datetime import date
+import json
+from api.exceptions import *
 from django.db.models.query import EmptyQuerySet
 from rest_framework import response, status, permissions
 from rest_framework.views import APIView
@@ -8,35 +29,6 @@ from rest_framework.generics import DestroyAPIView, ListAPIView, CreateAPIView, 
 # from api.logger import log
 import logging
 log = logging.getLogger('django')
-from api.exceptions import *
-import json
-from datetime import date
-from rest_framework.parsers import JSONParser
-from django.http import HttpResponse, JsonResponse, Http404
-from rest_framework.response import Response
-
-from django.template.loader import get_template
-from xhtml2pdf import pisa
-from django.views import View
-import ssl
-
-from api.Paginacion import Paginacion
-
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
-from django.core.mail import EmailMultiAlternatives
-
-from notificaciones.models import Notificacion
-from django.contrib.auth.models import User
-
-import csv
-import codecs
-
-import locale
-
-from certificados.models import Certificado
-
-import datetime
 
 
 # from django_filters import rest_framework
@@ -740,8 +732,8 @@ class ConvocatoriaEnroladosDownExcel(View):
     def get(self, request, *args, **kwargs):
         convocatoriaId = self.kwargs['convocatoriaId']
         try:
-            queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId, isAceptado=True).values_list('id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno',
-                                                                                                    'calificacion', 'isAprobado')
+            queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId, isAceptado=True).values_list(
+                'id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno', 'calificacion', 'isAprobado')
             # print(f'--->>>queryset como tupla(values_list): {queryset}')
             if not queryset:
                 respuesta = {"detail": "Registros no encontrados"}
@@ -800,17 +792,17 @@ class PublicarCalificaciones(APIView):
             if not queryset:
                 respuesta = {"detail": "Registros no encontrados"}
                 return Response(respuesta, status=status.HTTP_404_NOT_FOUND)
-            
-            # obtenemos el ultimo numero de registro existente 
+
+            # obtenemos el ultimo numero de registro existente
             ultimoNumRegistro = Medico.objects.all().order_by('-numRegistro')[:1]
-            
+
             for dato in queryset:
                 if dato[8] and not dato[10]:  # se checa que este aprobado y no publicado
                     # hay que crear un nuevo campo de isPublicado y con ese verificar si se crea o no un certificado nuevo
                     medico = Medico.objects.get(id=dato[9])
                     Certificado.objects.create(medico=medico, documento='', descripcion='generado automaticamente por convocatoria', isVencido=False, estatus=1)
                     ConvocatoriaEnrolado.objects.filter(medico=dato[9]).update(isPublicado=True)
-                    
+
                     # aumentamos el ultimo numero de registro para asignarlo
                     valor = int(ultimoNumRegistro.get().numRegistro)
                     valor += 1
@@ -842,6 +834,52 @@ class PublicarCalificaciones(APIView):
         except Exception as e:
             respuesta = {"detail": str(e)}
             return Response(respuesta, status=status.HTTP_409_CONFLICT)
+
+
+def campoVacioNoEntero(valor, nombreCampo):
+    if valor is None:
+        log.error(f'--->>>falta dato en campo {nombreCampo}')
+        raise CamposIncorrectos(f'falta dato en campo {nombreCampo}')
+    try:
+        temporal = int(valor)
+    except ValueError:
+        log.error(f'--->>>campo {nombreCampo} tiene un tipo de dato incorrecto')
+        raise CamposIncorrectos(f'campo {nombreCampo} tiene un tipo de dato incorrecto')
+
+
+class AgregarDocumentosExtrasCreateView(CreateAPIView):
+    permission_classes = (permissions.IsAdminUser,)
+
+    def post(self, request, *args, **kwargs):
+        medicoId = request.data.get('medico')
+        convocatoriaId = request.data.get('convocatoria')
+        campoVacioNoEntero(medicoId, 'medico')
+        campoVacioNoEntero(convocatoriaId, 'convocatoria')
+        cedCurr = ConvocatoriaEnroladoDocumento.objects.create(medico=Medico.objects.get(id=medicoId),
+                                                               convocatoria=Convocatoria.objects.get(id=convocatoriaId),
+                                                               catTiposDocumento=CatTiposDocumento.objects.get(id=15), isValidado=True, documento='Currículo.pdf')
+        cartNoImp = ConvocatoriaEnroladoDocumento.objects.create(medico=Medico.objects.get(id=medicoId),
+                                                                 convocatoria=Convocatoria.objects.get(id=convocatoriaId),
+                                                                 catTiposDocumento=CatTiposDocumento.objects.get(id=16), isValidado=True, documento='Carta de No Impedimento.pdf')
+        listado = ConvocatoriaEnroladoDocumento.objects.create(medico=Medico.objects.get(id=medicoId),
+                                                               convocatoria=Convocatoria.objects.get(id=convocatoriaId),
+                                                               catTiposDocumento=CatTiposDocumento.objects.get(id=17), isValidado=True, documento='Listado de Cirugías con Firma de Profesor.pdf')
+        firma = ConvocatoriaEnroladoDocumento.objects.create(medico=Medico.objects.get(id=medicoId),
+                                                             convocatoria=Convocatoria.objects.get(id=convocatoriaId),
+                                                             catTiposDocumento=CatTiposDocumento.objects.get(id=18), isValidado=True, documento='Firma del Profesor.pdf')
+        tesis = ConvocatoriaEnroladoDocumento.objects.create(medico=Medico.objects.get(id=medicoId),
+                                                             convocatoria=Convocatoria.objects.get(id=convocatoriaId),
+                                                             catTiposDocumento=CatTiposDocumento.objects.get(id=19), isValidado=True, documento='Tesis de Cirugía Plástica.pdf')
+        json = {
+            'medicoId': medicoId,
+            'convocatoriaId': convocatoriaId,
+            'docCurriculo': cedCurr.id,
+            'docCartaNoImp': cartNoImp.id,
+            'listCiru': listado.id,
+            'firmaProfesor': firma.id,
+            'tesisCiru': tesis.id,
+        }
+        return Response(json, status.HTTP_201_CREATED)
 
 
 # ES DE PRUEBA NO USAR!!!

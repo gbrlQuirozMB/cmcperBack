@@ -423,7 +423,14 @@ class PostDocumento200Test(APITestCase):
         catTiposDocumento9 = CatTiposDocumento.objects.create(descripcion='Constancia de Cirugía General')
         catTiposDocumento10 = CatTiposDocumento.objects.create(descripcion='Carta de Profesor Titular')
         catTiposDocumento11 = CatTiposDocumento.objects.create(descripcion='Ficha de Registro')
-        catTiposDocumento12 = CatTiposDocumento.objects.create(descripcion='Fotografía')
+        catTiposDocumento12 = CatTiposDocumento.objects.create(descripcion='Fotografía Digital')
+        catTiposDocumento13 = CatTiposDocumento.objects.create(descripcion='Certificado')
+        catTiposDocumento14 = CatTiposDocumento.objects.create(descripcion='Fotografía Diploma')
+        catTiposDocumento15 = CatTiposDocumento.objects.create(descripcion='Currículo')
+        catTiposDocumento16 = CatTiposDocumento.objects.create(descripcion='Carta de No Impedimento')
+        catTiposDocumento17 = CatTiposDocumento.objects.create(descripcion='Listado de Cirugías con Firma de Profesor')
+        catTiposDocumento18 = CatTiposDocumento.objects.create(descripcion='Firma del Profesor')
+        catTiposDocumento19 = CatTiposDocumento.objects.create(descripcion='Tesis de Cirugía Plástica')
 
         CatMotivosRechazo.objects.create(descripcion='descripcion1', tipo=1)
         CatMotivosRechazo.objects.create(descripcion='descripcion2', tipo=2)
@@ -584,7 +591,14 @@ class GetDocumentosList200Test(APITestCase):
         catTiposDocumento9 = CatTiposDocumento.objects.create(descripcion='Constancia de Cirugía General')
         catTiposDocumento10 = CatTiposDocumento.objects.create(descripcion='Carta de Profesor Titular')
         catTiposDocumento11 = CatTiposDocumento.objects.create(descripcion='Ficha de Registro')
-        catTiposDocumento12 = CatTiposDocumento.objects.create(descripcion='Fotografía')
+        catTiposDocumento12 = CatTiposDocumento.objects.create(descripcion='Fotografía Digital')
+        catTiposDocumento13 = CatTiposDocumento.objects.create(descripcion='Certificado')
+        catTiposDocumento14 = CatTiposDocumento.objects.create(descripcion='Fotografía Diploma')
+        catTiposDocumento15 = CatTiposDocumento.objects.create(descripcion='Currículo')
+        catTiposDocumento16 = CatTiposDocumento.objects.create(descripcion='Carta de No Impedimento')
+        catTiposDocumento17 = CatTiposDocumento.objects.create(descripcion='Listado de Cirugías con Firma de Profesor')
+        catTiposDocumento18 = CatTiposDocumento.objects.create(descripcion='Firma del Profesor')
+        catTiposDocumento19 = CatTiposDocumento.objects.create(descripcion='Tesis de Cirugía Plástica')
 
         CatMotivosRechazo.objects.create(descripcion='descripcion1', tipo=1)
         CatMotivosRechazo.objects.create(descripcion='descripcion2', tipo=2)
@@ -643,7 +657,14 @@ class PutDocumento200Test(APITestCase):
         catTiposDocumento9 = CatTiposDocumento.objects.create(descripcion='Constancia de Cirugía General')
         catTiposDocumento10 = CatTiposDocumento.objects.create(descripcion='Carta de Profesor Titular')
         catTiposDocumento11 = CatTiposDocumento.objects.create(descripcion='Ficha de Registro')
-        catTiposDocumento12 = CatTiposDocumento.objects.create(descripcion='Fotografía')
+        catTiposDocumento12 = CatTiposDocumento.objects.create(descripcion='Fotografía Digital')
+        catTiposDocumento13 = CatTiposDocumento.objects.create(descripcion='Certificado')
+        catTiposDocumento14 = CatTiposDocumento.objects.create(descripcion='Fotografía Diploma')
+        catTiposDocumento15 = CatTiposDocumento.objects.create(descripcion='Currículo')
+        catTiposDocumento16 = CatTiposDocumento.objects.create(descripcion='Carta de No Impedimento')
+        catTiposDocumento17 = CatTiposDocumento.objects.create(descripcion='Listado de Cirugías con Firma de Profesor')
+        catTiposDocumento18 = CatTiposDocumento.objects.create(descripcion='Firma del Profesor')
+        catTiposDocumento19 = CatTiposDocumento.objects.create(descripcion='Tesis de Cirugía Plástica')
 
         CatMotivosRechazo.objects.create(descripcion='descripcion1', tipo=1)
         CatMotivosRechazo.objects.create(descripcion='descripcion2', tipo=2)
@@ -844,6 +865,15 @@ class PutDocumentoAceptar200Test(APITestCase):
         catTiposDocumento8 = CatTiposDocumento.objects.create(descripcion='Cédula Profesional')
         catTiposDocumento9 = CatTiposDocumento.objects.create(descripcion='Constancia de Cirugía General')
         catTiposDocumento10 = CatTiposDocumento.objects.create(descripcion='Carta de Profesor Titular')
+        catTiposDocumento11 = CatTiposDocumento.objects.create(descripcion='Ficha de Registro')
+        catTiposDocumento12 = CatTiposDocumento.objects.create(descripcion='Fotografía Digital')
+        catTiposDocumento13 = CatTiposDocumento.objects.create(descripcion='Certificado')
+        catTiposDocumento14 = CatTiposDocumento.objects.create(descripcion='Fotografía Diploma')
+        catTiposDocumento15 = CatTiposDocumento.objects.create(descripcion='Currículo')
+        catTiposDocumento16 = CatTiposDocumento.objects.create(descripcion='Carta de No Impedimento')
+        catTiposDocumento17 = CatTiposDocumento.objects.create(descripcion='Listado de Cirugías con Firma de Profesor')
+        catTiposDocumento18 = CatTiposDocumento.objects.create(descripcion='Firma del Profesor')
+        catTiposDocumento19 = CatTiposDocumento.objects.create(descripcion='Tesis de Cirugía Plástica')
 
         CatMotivosRechazo.objects.create(descripcion='descripcion1', tipo=1)
         CatMotivosRechazo.objects.create(descripcion='descripcion2', tipo=2)
@@ -905,6 +935,15 @@ class PutDocumentoRechazar200Test(APITestCase):
         catTiposDocumento8 = CatTiposDocumento.objects.create(descripcion='Cédula Profesional')
         catTiposDocumento9 = CatTiposDocumento.objects.create(descripcion='Constancia de Cirugía General')
         catTiposDocumento10 = CatTiposDocumento.objects.create(descripcion='Carta de Profesor Titular')
+        catTiposDocumento11 = CatTiposDocumento.objects.create(descripcion='Ficha de Registro')
+        catTiposDocumento12 = CatTiposDocumento.objects.create(descripcion='Fotografía Digital')
+        catTiposDocumento13 = CatTiposDocumento.objects.create(descripcion='Certificado')
+        catTiposDocumento14 = CatTiposDocumento.objects.create(descripcion='Fotografía Diploma')
+        catTiposDocumento15 = CatTiposDocumento.objects.create(descripcion='Currículo')
+        catTiposDocumento16 = CatTiposDocumento.objects.create(descripcion='Carta de No Impedimento')
+        catTiposDocumento17 = CatTiposDocumento.objects.create(descripcion='Listado de Cirugías con Firma de Profesor')
+        catTiposDocumento18 = CatTiposDocumento.objects.create(descripcion='Firma del Profesor')
+        catTiposDocumento19 = CatTiposDocumento.objects.create(descripcion='Tesis de Cirugía Plástica')
 
         CatMotivosRechazo.objects.create(descripcion='descripcion1', tipo=1)
         CatMotivosRechazo.objects.create(descripcion='descripcion2', tipo=2)
@@ -969,6 +1008,15 @@ class PutEngargoladoAceptar200Test(APITestCase):
         catTiposDocumento8 = CatTiposDocumento.objects.create(descripcion='Cédula Profesional')
         catTiposDocumento9 = CatTiposDocumento.objects.create(descripcion='Constancia de Cirugía General')
         catTiposDocumento10 = CatTiposDocumento.objects.create(descripcion='Carta de Profesor Titular')
+        catTiposDocumento11 = CatTiposDocumento.objects.create(descripcion='Ficha de Registro')
+        catTiposDocumento12 = CatTiposDocumento.objects.create(descripcion='Fotografía Digital')
+        catTiposDocumento13 = CatTiposDocumento.objects.create(descripcion='Certificado')
+        catTiposDocumento14 = CatTiposDocumento.objects.create(descripcion='Fotografía Diploma')
+        catTiposDocumento15 = CatTiposDocumento.objects.create(descripcion='Currículo')
+        catTiposDocumento16 = CatTiposDocumento.objects.create(descripcion='Carta de No Impedimento')
+        catTiposDocumento17 = CatTiposDocumento.objects.create(descripcion='Listado de Cirugías con Firma de Profesor')
+        catTiposDocumento18 = CatTiposDocumento.objects.create(descripcion='Firma del Profesor')
+        catTiposDocumento19 = CatTiposDocumento.objects.create(descripcion='Tesis de Cirugía Plástica')
 
         CatMotivosRechazo.objects.create(descripcion='descripcion1', tipo=1)
         CatMotivosRechazo.objects.create(descripcion='descripcion2', tipo=2)
@@ -1030,6 +1078,15 @@ class PutEngargoladoRechazar200Test(APITestCase):
         catTiposDocumento8 = CatTiposDocumento.objects.create(descripcion='Cédula Profesional')
         catTiposDocumento9 = CatTiposDocumento.objects.create(descripcion='Constancia de Cirugía General')
         catTiposDocumento10 = CatTiposDocumento.objects.create(descripcion='Carta de Profesor Titular')
+        catTiposDocumento11 = CatTiposDocumento.objects.create(descripcion='Ficha de Registro')
+        catTiposDocumento12 = CatTiposDocumento.objects.create(descripcion='Fotografía Digital')
+        catTiposDocumento13 = CatTiposDocumento.objects.create(descripcion='Certificado')
+        catTiposDocumento14 = CatTiposDocumento.objects.create(descripcion='Fotografía Diploma')
+        catTiposDocumento15 = CatTiposDocumento.objects.create(descripcion='Currículo')
+        catTiposDocumento16 = CatTiposDocumento.objects.create(descripcion='Carta de No Impedimento')
+        catTiposDocumento17 = CatTiposDocumento.objects.create(descripcion='Listado de Cirugías con Firma de Profesor')
+        catTiposDocumento18 = CatTiposDocumento.objects.create(descripcion='Firma del Profesor')
+        catTiposDocumento19 = CatTiposDocumento.objects.create(descripcion='Tesis de Cirugía Plástica')
 
         CatMotivosRechazo.objects.create(descripcion='descripcion1', tipo=1)
         CatMotivosRechazo.objects.create(descripcion='descripcion2', tipo=2)
@@ -1241,6 +1298,14 @@ class GetEnviarCorreoEngargolado200Test(APITestCase):
         catTiposDocumento9 = CatTiposDocumento.objects.create(descripcion='Constancia de Cirugía General')
         catTiposDocumento10 = CatTiposDocumento.objects.create(descripcion='Carta de Profesor Titular')
         catTiposDocumento11 = CatTiposDocumento.objects.create(descripcion='Ficha de Registro')
+        catTiposDocumento12 = CatTiposDocumento.objects.create(descripcion='Fotografía Digital')
+        catTiposDocumento13 = CatTiposDocumento.objects.create(descripcion='Certificado')
+        catTiposDocumento14 = CatTiposDocumento.objects.create(descripcion='Fotografía Diploma')
+        catTiposDocumento15 = CatTiposDocumento.objects.create(descripcion='Currículo')
+        catTiposDocumento16 = CatTiposDocumento.objects.create(descripcion='Carta de No Impedimento')
+        catTiposDocumento17 = CatTiposDocumento.objects.create(descripcion='Listado de Cirugías con Firma de Profesor')
+        catTiposDocumento18 = CatTiposDocumento.objects.create(descripcion='Firma del Profesor')
+        catTiposDocumento19 = CatTiposDocumento.objects.create(descripcion='Tesis de Cirugía Plástica')
 
         CatMotivosRechazo.objects.create(descripcion='descripcion1', tipo=1)
         CatMotivosRechazo.objects.create(descripcion='descripcion2', tipo=2)
@@ -1340,7 +1405,14 @@ class GetEnviarCorreoDocumentos200Test(APITestCase):
         catTiposDocumento9 = CatTiposDocumento.objects.create(descripcion='Constancia de Cirugía General')
         catTiposDocumento10 = CatTiposDocumento.objects.create(descripcion='Carta de Profesor Titular')
         catTiposDocumento11 = CatTiposDocumento.objects.create(descripcion='Ficha de Registro')
-        catTiposDocumento12 = CatTiposDocumento.objects.create(descripcion='Fotografía')
+        catTiposDocumento12 = CatTiposDocumento.objects.create(descripcion='Fotografía Digital')
+        catTiposDocumento13 = CatTiposDocumento.objects.create(descripcion='Certificado')
+        catTiposDocumento14 = CatTiposDocumento.objects.create(descripcion='Fotografía Diploma')
+        catTiposDocumento15 = CatTiposDocumento.objects.create(descripcion='Currículo')
+        catTiposDocumento16 = CatTiposDocumento.objects.create(descripcion='Carta de No Impedimento')
+        catTiposDocumento17 = CatTiposDocumento.objects.create(descripcion='Listado de Cirugías con Firma de Profesor')
+        catTiposDocumento18 = CatTiposDocumento.objects.create(descripcion='Firma del Profesor')
+        catTiposDocumento19 = CatTiposDocumento.objects.create(descripcion='Tesis de Cirugía Plástica')
 
         CatMotivosRechazo.objects.create(descripcion='descripcion1', tipo=1)
         CatMotivosRechazo.objects.create(descripcion='descripcion2', tipo=2)
@@ -1662,8 +1734,8 @@ class baseDatosTest(APITestCase):
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
 
         ConvocatoriaEnrolado.objects.create(medico=medico, convocatoria=convocatoria, catSedes=catSedes, catTiposExamen=catTiposExamen)
-        
-        catTiposDocumento11 = CatTiposDocumento.objects.create(id=11,descripcion='documento11')
+
+        catTiposDocumento11 = CatTiposDocumento.objects.create(id=11, descripcion='documento11')
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento11)
 
     def test(self):
@@ -1678,6 +1750,69 @@ class baseDatosTest(APITestCase):
 
         response = self.client.get('/api/convocatoria/ficha-registro-pdf/1/')
         print(f'response JSON ===>>> \n {response.content} \n ---')
+
+
+class PostAgregarDocumentosExtras(APITestCase):
+    def setUp(self):
+        catTiposDocumento1 = CatTiposDocumento.objects.create(descripcion='Revalidación')
+        catTiposDocumento2 = CatTiposDocumento.objects.create(descripcion='CURP')
+        catTiposDocumento3 = CatTiposDocumento.objects.create(descripcion='Acta de Nacimiento')
+        catTiposDocumento4 = CatTiposDocumento.objects.create(descripcion='Carta de Solicitud de Examen')
+        catTiposDocumento5 = CatTiposDocumento.objects.create(descripcion='Constancia de Posgrado')
+        catTiposDocumento6 = CatTiposDocumento.objects.create(descripcion='Cédula de Especialidad')
+        catTiposDocumento7 = CatTiposDocumento.objects.create(descripcion='Título de la Licenciatura')
+        catTiposDocumento8 = CatTiposDocumento.objects.create(descripcion='Cédula Profesional')
+        catTiposDocumento9 = CatTiposDocumento.objects.create(descripcion='Constancia de Cirugía General')
+        catTiposDocumento10 = CatTiposDocumento.objects.create(descripcion='Carta de Profesor Titular')
+        catTiposDocumento11 = CatTiposDocumento.objects.create(descripcion='Ficha de Registro')
+        catTiposDocumento12 = CatTiposDocumento.objects.create(descripcion='Fotografía Digital')
+        catTiposDocumento13 = CatTiposDocumento.objects.create(descripcion='Certificado')
+        catTiposDocumento14 = CatTiposDocumento.objects.create(descripcion='Fotografía Diploma')
+        catTiposDocumento15 = CatTiposDocumento.objects.create(descripcion='Currículo')
+        catTiposDocumento16 = CatTiposDocumento.objects.create(descripcion='Carta de No Impedimento')
+        catTiposDocumento17 = CatTiposDocumento.objects.create(descripcion='Listado de Cirugías con Firma de Profesor')
+        catTiposDocumento18 = CatTiposDocumento.objects.create(descripcion='Firma del Profesor')
+        catTiposDocumento19 = CatTiposDocumento.objects.create(descripcion='Tesis de Cirugía Plástica')
+
+        Medico.objects.create(
+            id=3, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', estudioExtranjero=True)
+
+        Convocatoria.objects.create(id=6, fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',
+                                                   horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1')
+
+        self.json = {
+            "medico": 3,
+            "convocatoria": 6
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+        # self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post('/api/convocatoria/documentos-extras/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>>  \n {json.dumps(response.json())} \n ---')
+        # print(f'response JSON ===>>> \n {response.data} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        datos = ConvocatoriaEnroladoDocumento.objects.filter()
+        self.assertEqual(datos.count(), 5)
+        print(f'--->>> cuenta: {datos.count()}')
+        # print(f'--->>> documento: {datos.get(id=1).documento}')
+        # print(f'--->>> documento: {datos.get(id=2).documento}')
+        # print(f'--->>> documento: {datos.get(id=3).documento}')
+        # print(f'--->>> documento: {datos.get(id=4).documento}')
+        # print(f'--->>> documento: {datos.get(id=5).documento}')
+        
+        for dato in datos:
+            print(f'--->>> dato.id: {dato.id} - dato.documento: {dato.documento}')
+            
+        
+        
 
 
 # ES DE PRUEBA NO USAR!!!
