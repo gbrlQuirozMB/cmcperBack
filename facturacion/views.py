@@ -349,8 +349,8 @@ def cancelarFactura(factura):
 
 class FacturaFilter(FilterSet):
     rfcNS = CharFilter(field_name = 'rfc', lookup_expr = 'icontains')
-    fechaInicioNS = DateFilter(field_name='fecha', lookup_expr = "gte")
-    fechaFinNS = DateFilter(field_name='fecha', lookup_expr = "lte")
+    fechaInicioNS = DateFilter(field_name = 'fecha', lookup_expr = "gte")
+    fechaFinNS = DateFilter(field_name = 'fecha', lookup_expr = "lte")
     class Meta:
         model = Factura
         fields = ['rfcNS', 'fechaInicioNS', 'fechaInicioNS']
