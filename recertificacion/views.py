@@ -1,3 +1,23 @@
+from actividadesAvaladas.models import AsistenteActividadAvalada, ActividadAvalada
+from certificados.models import Certificado
+import codecs
+import csv
+from django.views import View
+from django.http import HttpResponse
+from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter
+from django.contrib.auth.models import User
+from notificaciones.models import Notificacion
+from rest_framework.views import APIView
+from django.core.mail import EmailMultiAlternatives
+from django.utils.html import strip_tags
+from django.template.loader import render_to_string
+from dateutil.relativedelta import relativedelta
+from datetime import date
+from rest_framework import status, permissions
+from rest_framework.response import Response
+from rest_framework.renderers import JSONRenderer
+from .serializers import *
+from api.exceptions import *
 from django.shortcuts import render
 from rest_framework.generics import DestroyAPIView, ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView
 from preregistro.models import Medico
@@ -5,36 +25,10 @@ from preregistro.models import Medico
 # from api.logger import log
 import logging
 log = logging.getLogger('django')
-from api.exceptions import *
 
-from .serializers import *
-from rest_framework.renderers import JSONRenderer
-from rest_framework.response import Response
-from rest_framework import status, permissions
 
-from datetime import date
-from dateutil.relativedelta import relativedelta
-
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
-from django.core.mail import EmailMultiAlternatives
-
-from rest_framework.views import APIView
-
-from notificaciones.models import Notificacion
-from django.contrib.auth.models import User
-
-from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter
 # from django_filters import rest_framework as filters
 
-from django.http import HttpResponse
-from django.views import View
-
-import csv
-import codecs
-
-from certificados.models import Certificado
-from actividadesAvaladas.models import AsistenteActividadAvalada, ActividadAvalada
 
 # Create your views here.
 # class CertificadoDatosDetailView(RetrieveAPIView):
@@ -52,7 +46,7 @@ from actividadesAvaladas.models import AsistenteActividadAvalada, ActividadAvala
 
 class CertificadoDatosDetailView(RetrieveAPIView):
     serializer_class = CertificadoDatosSerializer
-    
+
     def get(self, request, *args, **kwargs):
         medicoId = kwargs['medicoId']
         try:
@@ -289,6 +283,18 @@ class CapituloUpdateView(UpdateAPIView):
     http_method_names = ['put']
 
 
+class CapituloCreateView(CreateAPIView):
+    serializer_class = CapituloSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+    def post(self, request, *args, **kwargs):
+        serializer = CapituloSerializer(data=request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
+
+
 class SubcapituloListView(ListAPIView):
     serializer_class = SubcapituloListSerializer
 
@@ -310,6 +316,18 @@ class SubcapituloUpdateView(UpdateAPIView):
 class SubcapituloDetailView(RetrieveAPIView):
     queryset = Subcapitulo.objects.filter()
     serializer_class = DetallesSubcapituloSerializer
+
+
+class SubcapituloCreateView(CreateAPIView):
+    serializer_class = SubcapituloUpdateSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+    def post(self, request, *args, **kwargs):
+        serializer = SubcapituloUpdateSerializer(data=request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
 
 
 class ItemListView(ListAPIView):
@@ -335,6 +353,18 @@ class ItemDetailView(RetrieveAPIView):
     serializer_class = ItemSerializer
 
 
+class ItemCreateView(CreateAPIView):
+    serializer_class = ItemSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+    def post(self, request, *args, **kwargs):
+        serializer = ItemSerializer(data=request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
+
+
 class ActualizaVigenciaCertificados(APIView):
     permission_classes = (permissions.IsAdminUser,)
 
@@ -347,7 +377,7 @@ class ActualizaVigenciaCertificados(APIView):
                     itemIds.append(dato.medico.id)
             Medico.objects.filter(pk__in=itemIds).update(isCertificado=False)
             # print(f'--->>>itemIds: {itemIds}')
-            
+
             cuentaVencidos = Certificado.objects.filter(isVencido=False, fechaCaducidad__lt=date.today()).update(estatus=3, isVencido=True)
             cuentaVigentes = Certificado.objects.filter(isVencido=False, fechaCaducidad__gte=date.today()).update(estatus=1, isVencido=False)
             cuentaPorVencer = Certificado.objects.filter(isVencido=False, fechaCaducidad__range=[date.today(), date.today()+relativedelta(years=1)]).update(estatus=2, isVencido=False)
@@ -558,7 +588,7 @@ class RenovacionPagadoCreateView(CreateAPIView):
         serializer = CertificadoPagadoSerializer(data=request.data)
         if serializer.is_valid():
             RecertificacionItemDocumento.objects.filter(medico=request.data['medico']).delete()
-            Medico.objects.filter(id=request.data['medico']).update(isCertificado=True) # una vez que paga el medico pasa a ser certificado
+            Medico.objects.filter(id=request.data['medico']).update(isCertificado=True)  # una vez que paga el medico pasa a ser certificado
             return self.create(request, *args, **kwargs)
         log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
@@ -685,7 +715,7 @@ class PublicarCalificaciones(APIView):
         if fInicial is None or fFinal is None:
             respuesta = {"detail": "Se deben indicar las fechas"}
             return Response(respuesta, status=status.HTTP_409_CONFLICT)
-        
+
         try:
             queryset = PorExamen.objects.filter(fechaExamen=fechaExamenId, isPagado=True).values_list('id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno',
                                                                                                       'fechaExamen__fechaExamen', 'calificacion', 'medico__email', 'isAprobado', 'medico__id',
@@ -699,16 +729,16 @@ class PublicarCalificaciones(APIView):
                 if dato[8] and not dato[10]:  # se checa que este aprobado y no publicado
                     # hay que crear un nuevo campo de isPublicado y con ese verificar si se crea o no un certificado nuevo
                     medico = Medico.objects.get(id=dato[9])
-                    Certificado.objects.create(medico=medico, documento='', descripcion='generado automaticamente por recertificacion examen', isVencido=False, estatus=1, 
+                    Certificado.objects.create(medico=medico, documento='', descripcion='generado automaticamente por recertificacion examen', isVencido=False, estatus=1,
                                                fechaCertificacion=fInicial, fechaCaducidad=fFinal)
                     # PorExamen.objects.filter(medico=dato[9]).update(isPublicado=True)
                     PorExamen.objects.filter(medico=dato[9]).delete()
-                    
+
                     # se borran los registros en la tabla que es de trabajo y se mueven a la tabla para archivarlos para reportes
                     registrosAMover = list(RecertificacionItemDocumento.objects.filter(medico=dato[9]))
                     RecertificacionItemDocumento.objects.filter(medico=dato[9]).delete()
                     ArchivoDocumentosRecetificacion.objects.bulk_create(registrosAMover)
-                    
+
                     # actualizamos a que el medico de nuevo este certificado
                     medico.isCertificado = True
                     medico.save(update_fields=['isCertificado'])

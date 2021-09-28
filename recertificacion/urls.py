@@ -14,7 +14,7 @@ urlpatterns = [
     path('puntos/capitulo/<capituloId>/medico/<medicoId>/', PuntosPorCapituloMedicoDetailView.as_view(), ),
 
     path('capitulo/<pk>/detail/', DetallesCapituloDetailView.as_view(), ),
-    path('medico/<medicoId>/item/<itemId>/documentos/list/', ItemDocumentosListView.as_view(), ), 
+    path('medico/<medicoId>/item/<itemId>/documentos/list/', ItemDocumentosListView.as_view(), ),
     path('documento/create/', ItemDocumentosCreateView.as_view(), ),
 
     path('medico/<medicoId>/certificados/list/', CertificadosMedicoListView.as_view(), ),
@@ -26,14 +26,17 @@ urlpatterns = [
 
     path('capitulo/list/', CapituloListView.as_view(), ),
     path('capitulo/<pk>/update/', CapituloUpdateView.as_view(), ),
+    path('capitulo/create/', CapituloCreateView.as_view(), ),
 
     path('subcapitulo/<capituloId>/list/', SubcapituloListView.as_view(), ),
     path('subcapitulo/<pk>/update/', SubcapituloUpdateView.as_view(), ),
     path('subcapitulo/<pk>/detail/', SubcapituloDetailView.as_view(), ),
+    path('subcapitulo/create/', SubcapituloCreateView.as_view(), ),
 
     path('item/<subcapituloId>/list/', ItemListView.as_view(), ),
     path('item/<pk>/update/', ItemUpdateView.as_view(), ),
     path('item/<pk>/detail/', ItemDetailView.as_view(), ),
+    path('item/create/', ItemCreateView.as_view(), ),
 
     path('actualiza-vigencia-certificados/update/', ActualizaVigenciaCertificados.as_view(), ),
     path('solicitud-examen/create/', SolicitudExamenCreateView.as_view(), ),

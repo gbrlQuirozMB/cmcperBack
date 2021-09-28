@@ -950,7 +950,7 @@ class PutActualizaVigenciaCertificados200Test(APITestCase):
 
     def test(self):
         self.client.force_authenticate(user=self.user)
-        
+
         # pongo todos  como medicos certificados
         Medico.objects.update(isCertificado=True)
         for dato in Medico.objects.all():
@@ -964,11 +964,10 @@ class PutActualizaVigenciaCertificados200Test(APITestCase):
         queryset = Certificado.objects.all().values_list('id', 'fechaCaducidad', 'estatus', 'isVencido', 'descripcion').order_by('id')
         for dato in queryset:
             print(f'--->>>dato: {dato[0]} - {dato[1]} - {dato[2]} - {dato[3]} - {dato[4]}')
-            
+
         for dato in Medico.objects.all():
             print(f'--->>>dato.id: {dato.id} - dato.isCertificado: {dato.isCertificado}')
-        
-        
+
 
 class PostSolicitarExamen201Test(APITestCase):
     def setUp(self):
@@ -1687,7 +1686,7 @@ class GetPublicarCalificaciones200Test(APITestCase):
         PorExamen.objects.create(medico=medico9, estatus=3, isAprobado=True, calificacion=0, isPagado=True, isAceptado=False, fechaExamen=fechaExamen1, isPublicado=False)  # 1
         PorExamen.objects.create(medico=medico6, estatus=2, isAprobado=False, calificacion=0, isPagado=True, isAceptado=False, fechaExamen=fechaExamen1, isPublicado=False)  # 2
         PorExamen.objects.create(medico=medico3, estatus=1, isAprobado=True, calificacion=0, isPagado=True, isAceptado=False, fechaExamen=fechaExamen1, isPublicado=False)  # 3
-        
+
         capitulo1 = Capitulo.objects.create(titulo='titulo 1', descripcion='capitulo descripcion 1', puntos=33.0, maximo=50.0, minimo=50.0, isOpcional=False)
         subcapitulo1 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo1)
         item1 = Item.objects.create(descripcion='item descripcion 1', puntos=3, subcapitulo=subcapitulo1)
@@ -1704,7 +1703,7 @@ class GetPublicarCalificaciones200Test(APITestCase):
         item7 = Item.objects.create(descripcion='item descripcion 4', puntos=30, subcapitulo=subcapitulo4)
         item8 = Item.objects.create(descripcion='item descripcion 5', puntos=30, subcapitulo=subcapitulo4)
         item9 = Item.objects.create(descripcion='item descripcion 6', puntos=30, subcapitulo=subcapitulo4)
-        
+
         RecertificacionItemDocumento.objects.create(medico=medico9, item=item9, documento='documento-1', tituloDescripcion='tituloDescripcion-1', fechaEmision='2021-06-04', puntosOtorgados=3.69,
                                                     estatus=1, observaciones='observaciones-1', notasRechazo='notasRechazo-1', razonRechazo='razonRechazo-1')
 
@@ -1714,14 +1713,14 @@ class GetPublicarCalificaciones200Test(APITestCase):
         # self.json = {
         #     "archivo": csvFile
         # }
-        
+
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
 
     def test(self):
         self.client.force_authenticate(user=self.user)
 
         print(f'--->>>cuenta archivo: {ArchivoDocumentosRecetificacion.objects.count()}')
-        
+
         cuentaCertificados = Certificado.objects.count()
         print(f'--->>>cuentaCertificados: {cuentaCertificados}')
 
@@ -1730,7 +1729,7 @@ class GetPublicarCalificaciones200Test(APITestCase):
         # print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
         # print(f'response JSON ===>>> ok \n {response.json()} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         response = self.client.get('/api/recertificacion/por-examen/fecha/1/publicar/list/?fInicial=2021-04-06')
         print(f'response JSON ===>>> ok \n {response.content} \n ---')
         # print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
@@ -1741,9 +1740,8 @@ class GetPublicarCalificaciones200Test(APITestCase):
         print(f'--->>>cuentaCertificados: {cuentaCertificados}')
         for dato in Certificado.objects.all():
             print(f'--->>>id: {dato.id} - fechaCertificacion: {dato.fechaCertificacion} - fechaCaducidad: {dato.fechaCaducidad}')
-            
+
         print(f'--->>>cuenta archivo: {ArchivoDocumentosRecetificacion.objects.count()}')
-        
 
 
 class GetEnviarCorreoDocumentos200Test(APITestCase):
@@ -2355,3 +2353,68 @@ class variosTest(APITestCase):
                 print(f'---dato: {dato.fechaExamen} - {fechaPrueba} - {dato.descripcion}')
         except Exception as e:
             print(f'putamadre un error: {str(e)}')
+
+
+class PostSeveralSelectList200Test(APITestCase):
+    def setUp(self):
+        capitulo1 = Capitulo.objects.create(titulo='titulo 1', descripcion='capitulo descripcion 1', puntos=33.0, maximo=50.0, minimo=50.0, isOpcional=False)
+        subcapitulo1 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo1)
+        item1 = Item.objects.create(descripcion='item descripcion 1', puntos=3, subcapitulo=subcapitulo1)
+        item2 = Item.objects.create(descripcion='item descripcion 2', puntos=6, subcapitulo=subcapitulo1)
+        item3 = Item.objects.create(descripcion='item descripcion 3', puntos=9, subcapitulo=subcapitulo1)
+
+        capitulo2 = Capitulo.objects.create(titulo='titulo 2', descripcion='capitulo descripcion 2', puntos=66.0, maximo=50.0, minimo=50.0, isOpcional=False)
+        subcapitulo2 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo2)
+        subcapitulo3 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 3', comentarios='subcapitulo comentarios 3', capitulo=capitulo2)
+        item4 = Item.objects.create(descripcion='item descripcion 4', puntos=10, subcapitulo=subcapitulo2)
+        item5 = Item.objects.create(descripcion='item descripcion 5', puntos=20, subcapitulo=subcapitulo2)
+        item6 = Item.objects.create(descripcion='item descripcion 6', puntos=30, subcapitulo=subcapitulo2)
+
+        item7 = Item.objects.create(descripcion='item descripcion 7', puntos=30, subcapitulo=subcapitulo3)
+        item8 = Item.objects.create(descripcion='item descripcion 8', puntos=30, subcapitulo=subcapitulo3)
+        item9 = Item.objects.create(descripcion='item descripcion 9', puntos=30, subcapitulo=subcapitulo3)
+
+        archivo = open('./uploads/testUnit.png', 'rb')
+        imgFile = SimpleUploadedFile(archivo.name, archivo.read(), content_type='image/png')
+
+        self.jsonC = {
+            "titulo": "titulo new",
+            "descripcion": "descripcion new",
+            "puntos": 11.11,
+            "maximo": 22.22,
+            "minimo": 33.33,
+            "isOpcional": True,
+            "icono": imgFile
+        }
+
+        self.jsonSC = {
+            "descripcion": "descripcion new",
+            "comentarios": "comentarios new",
+            "capitulo": 1
+        }
+
+        self.jsonI = {
+            "descripcion": "descripcion new",
+            "puntos": 44.44,
+            "subcapitulo": 2
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        # capitulos
+        response = self.client.post('/api/recertificacion/capitulo/create/', data=self.jsonC, format='multipart')
+        print(f'response JSON ===>>> capitulos OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # subcapitulos
+        response = self.client.post('/api/recertificacion/subcapitulo/create/', data=json.dumps(self.jsonSC), content_type="application/json")
+        print(f'response JSON ===>>> subcapitulos OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # items
+        response = self.client.post('/api/recertificacion/item/create/', data=json.dumps(self.jsonI), content_type="application/json")
+        print(f'response JSON ===>>> items OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
