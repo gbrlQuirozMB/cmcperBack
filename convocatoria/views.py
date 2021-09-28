@@ -36,8 +36,10 @@ log = logging.getLogger('django')
 
 # Create your views here.
 
-totalDocumentosExtranjero = 10
-totalDocumentosNacional = 9
+# totalDocumentosExtranjero = 10
+# totalDocumentosNacional = 9
+totalDocumentosExtranjero = 9
+totalDocumentosNacional = 8
 
 
 class EsExtranjeroUpdateView(UpdateAPIView):
@@ -853,8 +855,20 @@ class AgregarDocumentosExtrasCreateView(CreateAPIView):
     def post(self, request, *args, **kwargs):
         medicoId = request.data.get('medico')
         convocatoriaId = request.data.get('convocatoria')
+        # checar que vengan los campos de manera correcta
         campoVacioNoEntero(medicoId, 'medico')
         campoVacioNoEntero(convocatoriaId, 'convocatoria')
+        # checar que exista medico y convocatoria
+        if Medico.objects.filter(id=medicoId).count() <= 0:
+            log.error(f'--->>>No existe el medico con id: {medicoId}')
+            raise ResponseError(f'No existe el medico con id: {medicoId}', 404)
+        if Convocatoria.objects.filter(id=convocatoriaId).count() <= 0:
+            log.error(f'--->>>No existe la convocatoria con id: {convocatoriaId}')
+            raise ResponseError(f'No existe la convocatoria con id: {convocatoriaId}', 404)
+        # borrar si ya existen para evitar duplicados
+        ids = [15, 16, 17, 18, 19]
+        ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__in=ids, convocatoria=convocatoriaId, medico=medicoId).delete()
+        # crear los registros para que aparezcan listados en el checklist de engargolados
         cedCurr = ConvocatoriaEnroladoDocumento.objects.create(medico=Medico.objects.get(id=medicoId),
                                                                convocatoria=Convocatoria.objects.get(id=convocatoriaId),
                                                                catTiposDocumento=CatTiposDocumento.objects.get(id=15), isValidado=True, documento='Currículo.pdf')

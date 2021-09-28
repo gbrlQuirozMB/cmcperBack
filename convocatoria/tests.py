@@ -1342,8 +1342,20 @@ class GetEnviarCorreoEngargolado200Test(APITestCase):
                                                      documento='constancia_cirugia.pdf', engargoladoOk=True, notasEngargolado='conC-NE', rechazoEngargolado='conC-RE')
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento10,
                                                      documento='carta_profesor.pdf', engargoladoOk=True, notasEngargolado='carP-NE', rechazoEngargolado='carP-RE')
+        # se crea el documento al generar la ficha de registro
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento11,
                                                      documento='ficha_registro.pdf', engargoladoOk=True, notasEngargolado='fichR-NE', rechazoEngargolado='fichR-RE')
+
+        # ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento15,
+        #                                              documento='curriculo.pdf', engargoladoOk=True, notasEngargolado='curri-NE', rechazoEngargolado='curri-RE')
+        # ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento16,
+        #                                              documento='carta_no_impe.pdf', engargoladoOk=True, notasEngargolado='cartaNoImp-NE', rechazoEngargolado='cartaNoImp-RE')
+        # ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento17,
+        #                                              documento='listado_cirug.pdf', engargoladoOk=True, notasEngargolado='listadoCirug-NE', rechazoEngargolado='listadoCirug-RE')
+        # ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento18,
+        #                                              documento='firma_profesor.pdf', engargoladoOk=True, notasEngargolado='firmaProf-NE', rechazoEngargolado='firmaProf-RE')
+        # ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento19,
+        #                                              documento='tesis_cirugia.pdf', engargoladoOk=True, notasEngargolado='tesisCirugia-NE', rechazoEngargolado='tesisCirugia-RE')
 
         ConvocatoriaEnrolado.objects.create(id=99, medico=medico, convocatoria=convocatoria, catSedes=catSedes3, catTiposExamen=catTiposExamen1)
 
@@ -1357,39 +1369,39 @@ class GetEnviarCorreoEngargolado200Test(APITestCase):
         print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         dato = ConvocatoriaEnrolado.objects.get(medico=1, convocatoria=1)
-        print(f'--->>>isAceptado: {dato.isAceptado}')
+        print(f'--->>>isAceptado: {dato.isAceptado} \n')
 
-        # menos de  10 documentos porque estudio en el extranjero envia correo faltantes
-        ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=9).update(engargoladoOk=False)
-        ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=6).update(engargoladoOk=False)
-        response = self.client.get('/api/convocatoria/1/medico/1/correo-engargolado/')
-        print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        dato = ConvocatoriaEnrolado.objects.get(medico=1, convocatoria=1)
-        print(f'--->>>isAceptado: {dato.isAceptado}')
+        # # menos de  10 documentos porque estudio en el extranjero envia correo faltantes
+        # ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=9).update(engargoladoOk=False)
+        # ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=6).update(engargoladoOk=False)
+        # response = self.client.get('/api/convocatoria/1/medico/1/correo-engargolado/')
+        # print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # dato = ConvocatoriaEnrolado.objects.get(medico=1, convocatoria=1)
+        # print(f'--->>>isAceptado: {dato.isAceptado}')
 
-        # 9 documentos porque  es nacional envia correo de OK
-        ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=9).update(engargoladoOk=True)
-        ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=6).update(engargoladoOk=True)
-        ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=1).delete()
-        Medico.objects.filter(id=1).update(estudioExtranjero=False)
-        response = self.client.get('/api/convocatoria/1/medico/1/correo-engargolado/')
-        print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        dato = ConvocatoriaEnrolado.objects.get(medico=1, convocatoria=1)
-        print(f'--->>>isAceptado: {dato.isAceptado}')
+        # # 9 documentos porque  es nacional envia correo de OK
+        # ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=9).update(engargoladoOk=True)
+        # ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=6).update(engargoladoOk=True)
+        # ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=1).delete()
+        # Medico.objects.filter(id=1).update(estudioExtranjero=False)
+        # response = self.client.get('/api/convocatoria/1/medico/1/correo-engargolado/')
+        # print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # dato = ConvocatoriaEnrolado.objects.get(medico=1, convocatoria=1)
+        # print(f'--->>>isAceptado: {dato.isAceptado}')
 
-        # menos de 9 documentos porque  es nacional envia correo faltantes
-        ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=9).update(engargoladoOk=False)
-        ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=6).update(engargoladoOk=False)
-        response = self.client.get('/api/convocatoria/1/medico/1/correo-engargolado/')
-        print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        dato = ConvocatoriaEnrolado.objects.get(medico=1, convocatoria=1)
-        print(f'--->>>isAceptado: {dato.isAceptado}')
+        # # menos de 9 documentos porque  es nacional envia correo faltantes
+        # ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=9).update(engargoladoOk=False)
+        # ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=6).update(engargoladoOk=False)
+        # response = self.client.get('/api/convocatoria/1/medico/1/correo-engargolado/')
+        # print(f'response JSON ===>>> \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # dato = ConvocatoriaEnrolado.objects.get(medico=1, convocatoria=1)
+        # print(f'--->>>isAceptado: {dato.isAceptado}')
 
-        # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(medico=1,convocatoria=1,isValidado=True).count()
-        # print(f'--->>>cuenta: {cuenta}')
+        # # cuenta = ConvocatoriaEnroladoDocumento.objects.filter(medico=1,convocatoria=1,isValidado=True).count()
+        # # print(f'--->>>cuenta: {cuenta}')
 
 
 class GetEnviarCorreoDocumentos200Test(APITestCase):
@@ -1774,14 +1786,17 @@ class PostAgregarDocumentosExtras(APITestCase):
         catTiposDocumento18 = CatTiposDocumento.objects.create(descripcion='Firma del Profesor')
         catTiposDocumento19 = CatTiposDocumento.objects.create(descripcion='Tesis de Cirugía Plástica')
 
-        Medico.objects.create(
+        medico = Medico.objects.create(
             id=3, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
             deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
             cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', estudioExtranjero=True)
 
-        Convocatoria.objects.create(id=6, fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',
+        convocatoria = Convocatoria.objects.create(id=6, fechaInicio='2020-06-04', fechaTermino='2021-02-11', fechaExamen='2021-04-06',
                                                    horaExamen='09:09', nombre='convocatoria chingona1', detalles='detalles1')
+
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento11,
+                                                     documento='ficha_registro.pdf', engargoladoOk=True, notasEngargolado='fichR-NE', rechazoEngargolado='fichR-RE')
 
         self.json = {
             "medico": 3,
@@ -1795,24 +1810,60 @@ class PostAgregarDocumentosExtras(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         response = self.client.post('/api/convocatoria/documentos-extras/create/', data=json.dumps(self.json), content_type="application/json")
-        print(f'response JSON ===>>>  \n {json.dumps(response.json())} \n ---')
+        print(f'\n response JSON ===>>> 201 todo ok  \n {json.dumps(response.json())} \n ---')
         # print(f'response JSON ===>>> \n {response.data} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         datos = ConvocatoriaEnroladoDocumento.objects.filter()
-        self.assertEqual(datos.count(), 5)
+        self.assertEqual(datos.count(), 6)
         print(f'--->>> cuenta: {datos.count()}')
         # print(f'--->>> documento: {datos.get(id=1).documento}')
         # print(f'--->>> documento: {datos.get(id=2).documento}')
         # print(f'--->>> documento: {datos.get(id=3).documento}')
         # print(f'--->>> documento: {datos.get(id=4).documento}')
         # print(f'--->>> documento: {datos.get(id=5).documento}')
-        
+
         for dato in datos:
             print(f'--->>> dato.id: {dato.id} - dato.documento: {dato.documento}')
-            
-        
-        
+
+        self.json = {
+            "medico": 33,
+            "convocatoria": 6
+        }
+        response = self.client.post('/api/convocatoria/documentos-extras/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'\n response JSON ===>>>  404 no existe el medico \n {json.dumps(response.json())} \n ---')
+        # print(f'response JSON ===>>> \n {response.data} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        self.json = {
+            "medico": 3,
+            "convocatoria": 66
+        }
+        response = self.client.post('/api/convocatoria/documentos-extras/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'\n response JSON ===>>> 404 no existe la convocatoria  \n {json.dumps(response.json())} \n ---')
+        # print(f'response JSON ===>>> \n {response.data} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        self.json = {
+            "medico": 3,
+            "convocatoria": 6
+        }
+        response = self.client.post('/api/convocatoria/documentos-extras/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'\n response JSON ===>>>  201 ya  existen documentos anteriormente \n {json.dumps(response.json())} \n ---')
+        # print(f'response JSON ===>>> \n {response.data} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        datos = ConvocatoriaEnroladoDocumento.objects.filter()
+        self.assertEqual(datos.count(), 6)
+        print(f'--->>> cuenta: {datos.count()}')
+        # print(f'--->>> documento: {datos.get(id=1).documento}')
+        # print(f'--->>> documento: {datos.get(id=2).documento}')
+        # print(f'--->>> documento: {datos.get(id=3).documento}')
+        # print(f'--->>> documento: {datos.get(id=4).documento}')
+        # print(f'--->>> documento: {datos.get(id=5).documento}')
+
+        for dato in datos:
+            print(f'--->>> dato.id: {dato.id} - dato.documento: {dato.documento}')
 
 
 # ES DE PRUEBA NO USAR!!!
