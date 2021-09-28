@@ -616,9 +616,9 @@ def digitalEngargolado(datos, medicoId, convocatoriaId, digEng):
 def preparaDatos(datos, medicoId, convocatoriaId, param, totalDocumentosExtranjero, totalDocumentosNacional):  # param -  Documentos/Engargolado
     estudioExtranjero = datos['estudioExtranjero']
     cuentaDocumentos = datos['cuentaDocumentos']
-    if param == 'Engargolado':  # tiene un documento extra el cual es la ficha de registro que se genera al descargarla
-        totalDocumentosExtranjero = totalDocumentosExtranjero + 1
-        totalDocumentosNacional = totalDocumentosNacional + 1
+    if param == 'Engargolado':  # tiene un documento extra el cual es la ficha de registro que se genera al descargarla + 5 extras nuevos = 6
+        totalDocumentosExtranjero = totalDocumentosExtranjero + 6
+        totalDocumentosNacional = totalDocumentosNacional + 6
     if estudioExtranjero:
         if cuentaDocumentos == totalDocumentosExtranjero:
             datos['mensaje'] = 'correo enviado a medico estudio extranjero con todos sus documentos validados'
