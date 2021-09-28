@@ -198,13 +198,16 @@ class PostFacturaTest(APITestCase):
 
 class GetFacturaFilteredListTest(APITestCase):
     def setUp(self):
-        Factura.objects.create()
-        Factura.objects.create()
-        Factura.objects.create()
+        Factura.objects.create(fecha = datetime.datetime.strptime('2019-01-01', '%Y-%m-%d'), rfc = 'Rfc1')
+        Factura.objects.create(fecha = datetime.datetime.strptime('2019-06-01', '%Y-%m-%d'), rfc = 'Rfc2')
+        Factura.objects.create(fecha = datetime.datetime.strptime('2019-12-01', '%Y-%m-%d'), rfc = 'Rfc3')
         self.user = User.objects.create_user(username = 'billy', is_staff = True)
     def test(self):
         self.client.force_authenticate(user = self.user)
-        response = self.client.get('/api/facturacion/list/')
+        #response = self.client.get('/api/facturacion/list/?rfcNS=Rfc1')
+        #print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
+        #self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.get('/api/facturacion/list/?fechaInicioNS=2021-06-01&fechaFinNS=2021-12-01')
         print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
