@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from api.exceptions import *
 from rest_framework.generics import CreateAPIView, ListAPIView
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
-from django_filters import CharFilter, NumberFilter
+from django_filters import CharFilter, NumberFilter, DateFilter
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import status, permissions
 from .serializers import *
@@ -25,6 +25,7 @@ from django.core.files.base import ContentFile
 from suds.client import Client
 from suds.plugin import MessagePlugin
 from rest_framework.response import Response
+from django.core import serializers
 
 log = logging.getLogger('django')
 
@@ -140,7 +141,7 @@ class FacturaCreateView(CreateAPIView):
             crearPDF(factura, datos)
             crearXML(factura)
             enviarCorreo(factura)
-            return self.create(request, *args, **kwargs)
+            return Response(serializers.serialize('json', [factura]), status = status.HTTP_201_CREATED)
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
@@ -346,9 +347,24 @@ def cancelarFactura(factura):
         except:
             return False
 
+class FacturaFilter(FilterSet):
+    rfcNS = CharFilter(field_name = 'rfc', lookup_expr = 'icontains')
+    fechaInicioNS = DateFilter(field_name = 'fecha', lookup_expr = "gte")
+    fechaFinNS = DateFilter(field_name = 'fecha', lookup_expr = "lte")
+    class Meta:
+        model = Factura
+        fields = ['rfcNS', 'fechaInicioNS', 'fechaInicioNS']
+
+class FacturaPagination(PageNumberPagination):
+    page_size = 20
+    max_page_size = 20
+
 class FacturaFilteredListView(ListAPIView):
     queryset = Factura.objects.all()
     serializer_class = FacturaFilteredListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = FacturaFilter
+    pagination_class = FacturaPagination
 
 class FacturaCancelarView(APIView):
     def post(self, request):
