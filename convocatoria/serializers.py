@@ -1,10 +1,10 @@
+from api.exceptions import *
 from preregistro.models import Medico
 from .models import *
 from rest_framework import fields, serializers
 # from api.logger import log
 import logging
 log = logging.getLogger('django')
-from api.exceptions import *
 
 
 class EsExtranjeroSerializer(serializers.ModelSerializer):
@@ -265,7 +265,7 @@ class ConvocatoriaEnroladoMedicoAPagarDetailSerializer(serializers.ModelSerializ
         repr['convocatoria'] = instance.convocatoria.nombre
         repr['medico'] = instance.medico.nombre + ' ' + instance.medico.apPaterno
         tipo = self.context.get('tipo')  # recibimos variable extra!!!  2-nacional/3-extranjero
-        if tipoExamen == 2: #examen especial
+        if tipoExamen == 2:  # examen especial
             tipo = 4
         repr['tipo'] = tipo
         try:
@@ -275,7 +275,7 @@ class ConvocatoriaEnroladoMedicoAPagarDetailSerializer(serializers.ModelSerializ
         except:
             repr['aPagar'] = 0.0
             repr['descripcion'] = 'No hay descripcion'
-            
+
         return repr
 
 
@@ -283,3 +283,9 @@ class ConvocatoriaEnroladoMedicoPagadoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConvocatoriaEnrolado
         fields = ['id', 'isPagado']
+
+
+class ConvocatoriaEnroladoCalificarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConvocatoriaEnrolado
+        fields = ['id', 'calificacion', 'isAprobado']

@@ -706,12 +706,13 @@ class CorreoDocumentosEndPoint(APIView):
         return Response(datos)
 
 
-class ConvocatoriaEnroladosExcelListView(ListAPIView):
+class ConvocatoriaEnroladosListView(ListAPIView):
     serializer_class = ConvocatoriaEnroladosMedicoListSerializer
+    permission_classes = (permissions.IsAdminUser,)  # No porque se utiliza desde un usuario normal
 
     def get_queryset(self):
         convocatoriaId = self.kwargs['convocatoriaId']
-        queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId)
+        queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId, isAceptado=True)
 
         return queryset
 
@@ -895,6 +896,12 @@ class AgregarDocumentosExtrasCreateView(CreateAPIView):
         }
         return Response(json, status.HTTP_201_CREATED)
 
+
+class ConvocatoriaEnroladosCalificarUpdateView(UpdateAPIView):
+    queryset = ConvocatoriaEnrolado.objects.filter()
+    serializer_class = ConvocatoriaEnroladoCalificarSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
 
 # ES DE PRUEBA NO USAR!!!
 
