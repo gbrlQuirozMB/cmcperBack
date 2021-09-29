@@ -1,15 +1,13 @@
+from certificados.models import Certificado
+from django.db.models import Sum
+import datetime
+from api.exceptions import *
 from preregistro.models import Medico
 from .models import *
 from rest_framework import fields, serializers
 # from api.logger import log
 import logging
 log = logging.getLogger('django')
-from api.exceptions import *
-
-import datetime
-from django.db.models import Sum
-
-from certificados.models import Certificado
 
 
 class CertificadoDatosSerializer(serializers.ModelSerializer):
@@ -328,3 +326,9 @@ class QRItemDocumentoSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecertificacionItemDocumento
         fields = ['id', 'documento']
+
+
+class PorExamenFechaCalificarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PorExamen
+        fields = ['id', 'calificacion', 'isAprobado']

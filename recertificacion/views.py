@@ -980,3 +980,21 @@ class QRItemDocumentoUpdateView(UpdateAPIView):
     queryset = RecertificacionItemDocumento.objects.filter()
     serializer_class = QRItemDocumentoSerializer
     http_method_names = ['put']
+
+
+class PorExamenFechaListView(ListAPIView):
+    serializer_class = PorExamenFilteredListSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+    def get_queryset(self):
+        fechaExamenId = self.kwargs['fechaExamenId']
+        queryset = PorExamen.objects.filter(fechaExamen=fechaExamenId, isAceptado=True)
+
+        return queryset
+
+
+class PorExamenFechaCalificarUpdateView(UpdateAPIView):
+    queryset = PorExamen.objects.filter()
+    serializer_class = PorExamenFechaCalificarSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['patch']

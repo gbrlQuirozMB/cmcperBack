@@ -708,7 +708,7 @@ class CorreoDocumentosEndPoint(APIView):
 
 class ConvocatoriaEnroladosListView(ListAPIView):
     serializer_class = ConvocatoriaEnroladosMedicoListSerializer
-    permission_classes = (permissions.IsAdminUser,)  # No porque se utiliza desde un usuario normal
+    permission_classes = (permissions.IsAdminUser,)  
 
     def get_queryset(self):
         convocatoriaId = self.kwargs['convocatoriaId']

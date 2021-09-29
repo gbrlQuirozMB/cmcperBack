@@ -78,5 +78,8 @@ urlpatterns = [
 
     path('documento-qr/<pk>/update/', QRItemDocumentoUpdateView.as_view(), ),
 
+    path('por-examen/fecha/<fechaExamenId>/list/', PorExamenFechaListView.as_view(), ),
+    path('por-examen/<pk>/calificar/', PorExamenFechaCalificarUpdateView.as_view(), ),
+
 
 ]
