@@ -881,6 +881,7 @@ class QRItemDocumentosCreateView(CreateAPIView):
         request.data['notasRechazo'] = ''
         request.data['razonRechazo'] = ''
         request.data['tituloDescripcion'] = 'Generado por QR'
+        request.data['actividadAvaladaId'] = actividadAvaladaId
 
         datosAA = ActividadAvalada.objects.filter(id=actividadAvaladaId)
         if datosAA.count() <= 0:
@@ -895,8 +896,6 @@ class QRItemDocumentosCreateView(CreateAPIView):
             raise ResponseError('No esta pagada la asistencia a la actividad avalada', 409)
 
         request.data['fechaEmision'] = datos.get().actividadAvalada.fechaInicio
-        # request.data['puntosOtorgados'] = datos.get().actividadAvalada.puntosAsignar
-        # request.data['item'] = datos.get().actividadAvalada.item.id
         if datos.get().tipo == 'Asistente':
             request.data['puntosOtorgados'] = datosAA.get().puntajeAsistente
             request.data['item'] = datosAA.get().itemAsistente.id
@@ -909,7 +908,7 @@ class QRItemDocumentosCreateView(CreateAPIView):
 
         serializer = ItemDocumentoSerializer(data=request.data)
         if serializer.is_valid():
-            cuenta = RecertificacionItemDocumento.objects.filter(medico=medicoId, item=request.data['item'], tituloDescripcion='Generado por QR').count()
+            cuenta = RecertificacionItemDocumento.objects.filter(medico=medicoId, item=request.data['item'], actividadAvaladaId=actividadAvaladaId).count()
             if cuenta > 0:
                 raise ResponseError('Ya se capturo este QR', 409)
             return self.create(request, *args, **kwargs)
@@ -943,6 +942,10 @@ class CodigoWEBitemDocumentosCreateView(CreateAPIView):
         if datosAA.get().isPagado != True:
             raise ResponseError('No esta pagada la actividad avalada', 409)
 
+        # ojo: aqui se guarda la actividad avalada
+        actividadAvaladaId = datosAA.get().id
+        request.data['actividadAvaladaId'] = actividadAvaladaId
+
         datos = AsistenteActividadAvalada.objects.filter(medico=medicoId, actividadAvalada=datosAA.get().id)
         if datos.count() <= 0:
             raise ResponseError('No existe el medico en la actividad avalada', 404)
@@ -962,7 +965,7 @@ class CodigoWEBitemDocumentosCreateView(CreateAPIView):
 
         serializer = ItemDocumentoSerializer(data=request.data)
         if serializer.is_valid():
-            cuenta = RecertificacionItemDocumento.objects.filter(medico=medicoId, item=request.data['item'], tituloDescripcion='Generado por QR').count()
+            cuenta = RecertificacionItemDocumento.objects.filter(medico=medicoId, item=request.data['item'], actividadAvaladaId=actividadAvaladaId).count()
             if cuenta > 0:
                 raise ResponseError('Ya se capturo este QR', 409)
             return self.create(request, *args, **kwargs)

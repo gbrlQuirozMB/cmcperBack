@@ -63,7 +63,7 @@ class PorExamen(models.Model):
         (3, 'Pendiente')
     ))
     isAprobado = models.BooleanField(default=False, db_column='is_aprobado')  # verificar si se le da su certificado
-    calificacion = models.DecimalField(blank=True, null=True, max_digits=6, decimal_places=2) # ahora se pide que sea decimal
+    calificacion = models.DecimalField(blank=True, null=True, max_digits=6, decimal_places=2)  # ahora se pide que sea decimal
     isPagado = models.BooleanField(default=False, db_column='is_pagado')  # verificar si ya pago
     isAceptado = models.BooleanField(default=False, db_column='is_aceptado')  # se activa para validar que aceptaron todos sus documentos
     isPublicado = models.BooleanField(default=False, db_column='is_publicado')  # verificar si se le da su certificado por primera vez
@@ -103,6 +103,8 @@ class RecertificacionItemDocumento(models.Model):
     observaciones = models.TextField(blank=True, db_column='observaciones')
     notasRechazo = models.TextField(blank=True, db_column='notas_rechzo')
     razonRechazo = models.CharField(max_length=200, blank=True, db_column='razon_rechazo')
+    # sin relacion, no es necesaria, porque no todos los documentos la tienen, solo los QR
+    actividadAvaladaId = models.PositiveSmallIntegerField(blank=True, null=True, db_column='actividad_avalada_id')
 
     class Meta:
         db_table = 'recertificacion_item_documentos'
@@ -142,12 +144,12 @@ class Renovacion(models.Model):
     actualizado_en = models.DateTimeField(auto_now=True)
     medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medicoR')
     isPagado = models.BooleanField(default=False, db_column='is_pagado')  # verificar si ya pago
-    
+
     class Meta:
         db_table = 'recertificacion_renovaciones'
         ordering = ['-actualizado_en']
-        
-        
+
+
 class ArchivoDocumentosRecetificacion(models.Model):
     creado_en = models.DateTimeField(auto_now_add=True)
     actualizado_en = models.DateTimeField(auto_now=True)

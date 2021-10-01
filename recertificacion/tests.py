@@ -2074,7 +2074,14 @@ def configDB():
                                           lugar='lugar 9', solicitante='solicitante 9', tipoPago=1, porcentaje=33, precio=369.69, descripcion='descripcion 9', isPagado=True,
                                           codigoWeb='AsdQwe69QO')
 
+    aa3 = ActividadAvalada.objects.create(id=3, institucion=institucion3, itemAsistente=item3, itemPonente=item6, itemCoordinador=item9, nombre='nombre 3', emailContacto='emailContacto 3',
+                                          puntajeAsistente=3.3, puntajePonente=6.6, puntajeCoordinador=9.9,
+                                          fechaInicio=date.today(), fechaTermino=date.today() + relativedelta(days=3), fechaLimite=date.today() + relativedelta(days=6),
+                                          lugar='lugar 3', solicitante='solicitante 3', tipoPago=1, porcentaje=33, precio=369.69, descripcion='descripcion 3', isPagado=True,
+                                          codigoWeb='ZxcPoi69QO')
+
     AsistenteActividadAvalada.objects.create(medico=medico1, actividadAvalada=aa9, tipo='Asistente', isPagado=True)
+    AsistenteActividadAvalada.objects.create(medico=medico1, actividadAvalada=aa3, tipo='Asistente', isPagado=True)
 
     RecertificacionItemDocumento.objects.create(medico=medico1, item=item3, documento='doc1.pdf', tituloDescripcion='tituloDescripcion 1', fechaEmision='2023-04-06', puntosOtorgados=3.0,
                                                 estatus=1, observaciones='observaciones 1', notasRechazo='notasRechazo 1', razonRechazo='razonRechazo 1')
@@ -2130,8 +2137,15 @@ class PostQRItemDocumentosCreate201Test(APITestCase):
         print(f'response JSON ===>>> 409 ya se capturo \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
 
-        cuenta = RecertificacionItemDocumento.objects.count()
-        print(f'--->>>cuenta: {cuenta}')
+        self.json['medico'] = 1
+        self.json['actividadAvalada'] = 3
+        response = self.client.post('/api/recertificacion/documento-qr/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> OK otra actividad, mismo medico \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        datos = RecertificacionItemDocumento.objects.filter()
+        print(f'--->>>cuenta: {datos.count()}')
+        print(f'--->>>datos: {datos.get(id=2).actividadAvaladaId}')
 
 
 class PostCodigoWEBitemDocumentosCreateTest(APITestCase):
@@ -2183,6 +2197,12 @@ class PostCodigoWEBitemDocumentosCreateTest(APITestCase):
         response = self.client.post('/api/recertificacion/codigo-web/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> 409 ya se capturo \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+
+        self.json['medico'] = 1
+        self.json['codigoWeb'] = 'ZxcPoi69QO'
+        response = self.client.post('/api/recertificacion/codigo-web/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         cuenta = RecertificacionItemDocumento.objects.count()
         print(f'--->>>cuenta: {cuenta}')
