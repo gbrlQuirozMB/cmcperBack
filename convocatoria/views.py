@@ -616,9 +616,9 @@ def digitalEngargolado(datos, medicoId, convocatoriaId, digEng):
 def preparaDatos(datos, medicoId, convocatoriaId, param, totalDocumentosExtranjero, totalDocumentosNacional):  # param -  Documentos/Engargolado
     estudioExtranjero = datos['estudioExtranjero']
     cuentaDocumentos = datos['cuentaDocumentos']
-    if param == 'Engargolado':  # tiene un documento extra el cual es la ficha de registro que se genera al descargarla + 5 extras nuevos = 6
-        totalDocumentosExtranjero = totalDocumentosExtranjero + 6
-        totalDocumentosNacional = totalDocumentosNacional + 6
+    if param == 'Engargolado':  # tiene un documento extra el cual es la ficha de registro que se genera al descargarla + 5 extras nuevos = 7
+        totalDocumentosExtranjero = totalDocumentosExtranjero + 7
+        totalDocumentosNacional = totalDocumentosNacional + 7
     if estudioExtranjero:
         if cuentaDocumentos == totalDocumentosExtranjero:
             datos['mensaje'] = 'correo enviado a medico estudio extranjero con todos sus documentos validados'
@@ -867,7 +867,7 @@ class AgregarDocumentosExtrasCreateView(CreateAPIView):
             log.error(f'--->>>No existe la convocatoria con id: {convocatoriaId}')
             raise ResponseError(f'No existe la convocatoria con id: {convocatoriaId}', 404)
         # borrar si ya existen para evitar duplicados
-        ids = [15, 16, 17, 18, 19]
+        ids = [15, 16, 17, 18, 19, 14]
         ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__in=ids, convocatoria=convocatoriaId, medico=medicoId).delete()
         # crear los registros para que aparezcan listados en el checklist de engargolados
         cedCurr = ConvocatoriaEnroladoDocumento.objects.create(medico=Medico.objects.get(id=medicoId),
@@ -885,6 +885,9 @@ class AgregarDocumentosExtrasCreateView(CreateAPIView):
         tesis = ConvocatoriaEnroladoDocumento.objects.create(medico=Medico.objects.get(id=medicoId),
                                                              convocatoria=Convocatoria.objects.get(id=convocatoriaId),
                                                              catTiposDocumento=CatTiposDocumento.objects.get(id=19), isValidado=True, documento='Tesis de Cirugía Plástica.pdf')
+        fotoDiplo = ConvocatoriaEnroladoDocumento.objects.create(medico=Medico.objects.get(id=medicoId),
+                                                             convocatoria=Convocatoria.objects.get(id=convocatoriaId),
+                                                             catTiposDocumento=CatTiposDocumento.objects.get(id=14), isValidado=True, documento='Fotografía Diploma.pdf')
         json = {
             'medicoId': medicoId,
             'convocatoriaId': convocatoriaId,
@@ -893,6 +896,7 @@ class AgregarDocumentosExtrasCreateView(CreateAPIView):
             'listCiru': listado.id,
             'firmaProfesor': firma.id,
             'tesisCiru': tesis.id,
+            'fotoDiplo': fotoDiplo.id
         }
         return Response(json, status.HTTP_201_CREATED)
 
