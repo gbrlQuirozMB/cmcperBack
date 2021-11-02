@@ -116,6 +116,9 @@ class Medico(models.Model):
         ('Especial', 'Especial')
     ), default="---")
     codigoCarta = models.CharField(max_length=300, blank=True, null=True, db_column='codigo_carta_cmcper')
+    notasObser = models.TextField(blank=True, null=True, db_column='notas_observaciones')
+
+    
 
     class Meta:
         db_table = 'pre_registro_medico'
