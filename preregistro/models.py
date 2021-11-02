@@ -115,6 +115,7 @@ class Medico(models.Model):
         ('Extemporaneo', 'Extemporaneo'),
         ('Especial', 'Especial')
     ), default="---")
+    codigoCarta = models.CharField(max_length=300, blank=True, null=True, db_column='codigo_carta_cmcper')
 
     class Meta:
         db_table = 'pre_registro_medico'
