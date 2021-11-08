@@ -26,6 +26,7 @@ class Certificado(models.Model):
         (2, 'Esta por Vencer'),
         (3, 'Vencido')
     ), default=1)
+    isConacem = models.BooleanField(default=False, db_column='is_tramite_concaem')  # verifica si ya esta tramitado por conacem
 
     class Meta:
         db_table = 'certificados'

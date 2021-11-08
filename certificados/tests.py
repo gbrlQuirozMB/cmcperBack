@@ -107,8 +107,8 @@ class PutCertificadoCargaMasiva200Test(APITestCase):
         dato = Certificado.objects.get(id=1)
         print(f'--->>>ANTES dato: {dato.id} - {dato.medico.nombre} - {dato.documento}')
 
-        response = self.client.put('/api/certificado/1/subir-documento/update/', data=self.json, format='multipart')
-        print(f'response JSON ===>>> \n {response.data} \n ---')
+        response = self.client.put('/api/certificados/1/subir-documento/update/', data=self.json, format='multipart')
+        # print(f'response JSON ===>>> \n {response.data} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         dato = Certificado.objects.get(id=1)
