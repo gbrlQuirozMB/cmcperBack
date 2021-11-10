@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'actividadesAvaladas',
     'facturacion',
     'reportes',
+    'conacem',
 ]
 
 MIDDLEWARE = [

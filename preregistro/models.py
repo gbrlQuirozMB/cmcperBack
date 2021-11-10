@@ -117,6 +117,7 @@ class Medico(models.Model):
     ), default="---")
     codigoCarta = models.CharField(max_length=300, blank=True, null=True, db_column='codigo_carta_cmcper')
     notasObser = models.TextField(blank=True, null=True, db_column='notas_observaciones')
+    titulo = models.CharField(max_length=9, blank=True, null=True)
 
     
 
