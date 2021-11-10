@@ -7,5 +7,6 @@ app_name = 'conacem'
 
 urlpatterns = [
     path('list/', MedicosListView.as_view(), ),
+    path('create/', ConacemCreateView.as_view(), ),
 
 ]
