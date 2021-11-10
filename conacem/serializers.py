@@ -12,8 +12,10 @@ class MedicosListSerializer(serializers.ModelSerializer):
         repr = super().to_representation(instance)
         repr['nombreDiploma'] = instance.medico.diplomaConacem
         repr['numCertificado'] = instance.medico.numRegistro
+        repr['medicoId'] = instance.medico.id
 
         return repr
+
 
 class DetalleConcacemSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,6 +38,16 @@ class ConacemSerializer(serializers.ModelSerializer):
 
         medicosData = validated_data.pop('medicos')
         conacem = Conacem.objects.create(**validated_data)
+        hoja = validated_data.get("hoja")
+        lugar = validated_data.get("lugar")
+        cupo = validated_data.get("cupo")
+        
         for medicoData in medicosData:
+            medicoData.update({'libro':hoja})
+            medicoData.update({'foja':lugar})
             DetalleConcacem.objects.create(**medicoData, conacem=conacem)
+            lugar = lugar + 1
+            if lugar > cupo:
+                lugar = 1
+                hoja = hoja + 1
         return conacem

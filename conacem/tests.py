@@ -15,34 +15,34 @@ import json
 
 
 def configDB():
-        medico3 = Medico.objects.create(
-            id=3, nombre='elianid', apPaterno='tolentino', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
-            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
-            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=333, diplomaConacem='Pone Dora')
-        medico6 = Medico.objects.create(
-            id=6, nombre='laura', apPaterno='cabrera', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
-            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
-            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=666, diplomaConacem='GlandM Enormes')
-        medico9 = Medico.objects.create(
-            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
-            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
-            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999, diplomaConacem='Yo mero')
+    medico3 = Medico.objects.create(
+        id=3, nombre='elianid', apPaterno='tolentino', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+        deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+        cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+        telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=333, diplomaConacem='Pone Dora')
+    medico6 = Medico.objects.create(
+        id=6, nombre='laura', apPaterno='cabrera', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+        deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+        cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+        telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=666, diplomaConacem='GlandM Enormes')
+    medico9 = Medico.objects.create(
+        id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+        deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+        cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+        telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999, diplomaConacem='Yo mero')
 
-        Certificado.objects.create(medico=medico3, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
-                                   fechaCaducidad=date.today()+relativedelta(years=5), estatus=1)
-        Certificado.objects.create(medico=medico3, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
-                                   fechaCaducidad=date.today()+relativedelta(years=5), estatus=2, isConacem=True)
-        Certificado.objects.create(medico=medico9, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
-                                   fechaCaducidad=date.today()+relativedelta(years=5), estatus=1)
-        Certificado.objects.create(medico=medico3, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
-                                   fechaCaducidad=date.today()+relativedelta(years=5), estatus=2, isConacem=True)
-        Certificado.objects.create(medico=medico6, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
-                                   fechaCaducidad=date.today()+relativedelta(years=5), estatus=1)
-        Certificado.objects.create(medico=medico9, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
-                                   fechaCaducidad=date.today()+relativedelta(years=5), estatus=3, documento='ya_hay_algo.pdf', isConacem=True)
+    Certificado.objects.create(medico=medico3, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
+                               fechaCaducidad=date.today()+relativedelta(years=5), estatus=1)
+    Certificado.objects.create(medico=medico3, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
+                               fechaCaducidad=date.today()+relativedelta(years=5), estatus=2, isConacem=True)
+    Certificado.objects.create(medico=medico9, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
+                               fechaCaducidad=date.today()+relativedelta(years=5), estatus=1)
+    Certificado.objects.create(medico=medico3, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
+                               fechaCaducidad=date.today()+relativedelta(years=5), estatus=2, isConacem=True)
+    Certificado.objects.create(medico=medico6, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
+                               fechaCaducidad=date.today()+relativedelta(years=5), estatus=1)
+    Certificado.objects.create(medico=medico9, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
+                               fechaCaducidad=date.today()+relativedelta(years=5), estatus=3, documento='ya_hay_algo.pdf', isConacem=True)
 
 
 class GetConacemListTest(APITestCase):
@@ -148,3 +148,25 @@ class PostConacemTest(APITestCase):
         if datosDetalle.count() > 0:
             for dato in datosDetalle:
                 print(f'--->>>detalle.medico.id: {dato.medico.id} --- libro: {dato.libro} --- foja: {dato.foja} --- detalle.nombre: {dato.medico.nombre} --- detalle.conacem.id: {dato.conacem.id}')
+
+
+class PruebaTest(APITestCase):
+    def setUp(self):
+        pass
+
+    def test(self):
+        hoja = 6
+        lugar = 9
+        cupo = 12
+        tam = 29
+
+        quedan = (cupo-lugar)
+        bandera = True
+        for reg in range(tam):
+            print(f'--->>>reg: {reg} -- hoja: {hoja} --- lugar: {lugar}')
+            lugar = lugar + 1
+         
+            if lugar > cupo:
+                # print(f'--->>>BANDERA-2: {bandera} -- hoja: {hoja} --- lugar: {lugar}')
+                lugar = 1
+                hoja = hoja + 1
