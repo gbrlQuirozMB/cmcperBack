@@ -1346,6 +1346,13 @@ class GetEnviarCorreoEngargolado200Test(APITestCase):
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento11,
                                                      documento='ficha_registro.pdf', engargoladoOk=True, notasEngargolado='fichR-NE', rechazoEngargolado='fichR-RE')
 
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento12,
+                                                            documento='fotografia_digital.pdf', engargoladoOk=True, notasEngargolado='fotoDig-NE', rechazoEngargolado='fotoDig-RE')
+        # ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento13,
+        #                                                     documento='certificado.pdf', engargoladoOk=True, notasEngargolado='certif-NE', rechazoEngargolado='certif-RE')
+        ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento14,
+                                                            documento='fotografia_diploma.pdf', engargoladoOk=True, notasEngargolado='fotoDiplo-NE', rechazoEngargolado='fotoDiplo-RE')
+
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento15,
                                                      documento='curriculo.pdf', engargoladoOk=True, notasEngargolado='curri-NE', rechazoEngargolado='curri-RE')
         ConvocatoriaEnroladoDocumento.objects.create(medico=medico, convocatoria=convocatoria, catTiposDocumento=catTiposDocumento16,
@@ -1366,7 +1373,7 @@ class GetEnviarCorreoEngargolado200Test(APITestCase):
 
         # 10 documentos porque estudio en el extranjero y agrega ficha de registro envia correo de OK
         response = self.client.get('/api/convocatoria/1/medico/1/correo-engargolado/')
-        print(f'\n response JSON ===>>> 200 ok - estudio extranjero son 15 documentos - isAceptado=True \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        print(f'\n response JSON ===>>> 200 ok - estudio extranjero son 17 documentos - isAceptado=True \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         dato = ConvocatoriaEnrolado.objects.get(medico=1, convocatoria=1)
         print(f'--->>>isAceptado: {dato.isAceptado} \n')
@@ -1375,7 +1382,7 @@ class GetEnviarCorreoEngargolado200Test(APITestCase):
         ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=9).update(engargoladoOk=False)
         ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=6).update(engargoladoOk=False)
         response = self.client.get('/api/convocatoria/1/medico/1/correo-engargolado/')
-        print(f'\n response JSON ===>>> 200 pero no es aceptado < 15 documentos - isAceptado=False \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        print(f'\n response JSON ===>>> 200 pero no es aceptado < 17 documentos - isAceptado=False \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         dato = ConvocatoriaEnrolado.objects.get(medico=1, convocatoria=1)
         print(f'--->>>isAceptado: {dato.isAceptado}')
@@ -1386,7 +1393,7 @@ class GetEnviarCorreoEngargolado200Test(APITestCase):
         ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=1).delete()
         Medico.objects.filter(id=1).update(estudioExtranjero=False)
         response = self.client.get('/api/convocatoria/1/medico/1/correo-engargolado/')
-        print(f'\n response JSON ===>>> 200 NO extranjero son 14 documentos - isAceptado=True \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        print(f'\n response JSON ===>>> 200 NO extranjero son 16 documentos - isAceptado=True \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         dato = ConvocatoriaEnrolado.objects.get(medico=1, convocatoria=1)
         print(f'--->>>isAceptado: {dato.isAceptado}')
@@ -1395,7 +1402,7 @@ class GetEnviarCorreoEngargolado200Test(APITestCase):
         ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=9).update(engargoladoOk=False)
         ConvocatoriaEnroladoDocumento.objects.filter(medico=1, convocatoria=1, catTiposDocumento=6).update(engargoladoOk=False)
         response = self.client.get('/api/convocatoria/1/medico/1/correo-engargolado/')
-        print(f'\n response JSON ===>>> 200 no aceptado < 14 documentos - isAceptado=False \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        print(f'\n response JSON ===>>> 200 no aceptado < 16 documentos - isAceptado=False \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         dato = ConvocatoriaEnrolado.objects.get(medico=1, convocatoria=1)
         print(f'--->>>isAceptado: {dato.isAceptado}')
