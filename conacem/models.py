@@ -24,23 +24,21 @@ class Conacem(models.Model):
     hoja = models.PositiveSmallIntegerField(db_column='hoja')
     lugar = models.PositiveSmallIntegerField(db_column='lugar')
     cupo = models.PositiveSmallIntegerField(db_column='cupo')
-    
+
     class Meta:
         db_table = 'conacem'
         ordering = ['-actualizado_en']
-        
+
+
 class DetalleConcacem(models.Model):
     creado_en = models.DateTimeField(auto_now_add=True)
     actualizado_en = models.DateTimeField(auto_now=True)
-    
     medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medico')
     conacem = models.ForeignKey(Conacem, on_delete=models.CASCADE, related_name='medicos')
-    
     libro = models.PositiveSmallIntegerField(blank=True, null=True, db_column='libro')
     foja = models.PositiveSmallIntegerField(blank=True, null=True, db_column='foja')
     observaciones = models.TextField(blank=True, null=True)
-    
+
     class Meta:
         db_table = 'detalles_conacem'
         ordering = ['-actualizado_en']
-    

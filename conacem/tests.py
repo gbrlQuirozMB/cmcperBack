@@ -30,6 +30,11 @@ def configDB():
         deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
         cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
         telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999, diplomaConacem='Yo mero')
+    medico5 = Medico.objects.create(
+        id=5, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+        deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+        cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+        telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999, diplomaConacem='XXX')
 
     Certificado.objects.create(medico=medico3, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
                                fechaCaducidad=date.today()+relativedelta(years=5), estatus=1)
@@ -41,8 +46,8 @@ def configDB():
                                fechaCaducidad=date.today()+relativedelta(years=5), estatus=2, isConacem=True)
     Certificado.objects.create(medico=medico6, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
                                fechaCaducidad=date.today()+relativedelta(years=5), estatus=1)
-    Certificado.objects.create(medico=medico9, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
-                               fechaCaducidad=date.today()+relativedelta(years=5), estatus=3, documento='ya_hay_algo.pdf', isConacem=True)
+    Certificado.objects.create(medico=medico5, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
+                               fechaCaducidad=date.today()+relativedelta(years=5), estatus=3, documento='ya_hay_algo.pdf', isConacem=False)
 
 
 class GetConacemListTest(APITestCase):
@@ -79,51 +84,6 @@ class PostConacemTest(APITestCase):
             "medicos": [
                 {"medico": 3},
                 {"medico": 6},
-                {"medico": 9},
-                {"medico": 3},
-                {"medico": 6},
-                {"medico": 9},
-                {"medico": 3},
-                {"medico": 6},
-                {"medico": 9},
-                {"medico": 3},
-                {"medico": 6},
-                {"medico": 9},
-                {"medico": 3},
-                {"medico": 6},
-                {"medico": 9},
-                {"medico": 3},
-                {"medico": 6},
-                {"medico": 9},
-                {"medico": 3},
-                {"medico": 6},
-                {"medico": 9},
-                {"medico": 3},
-                {"medico": 6},
-                {"medico": 9},
-                {"medico": 3},
-                {"medico": 6},
-                {"medico": 9},
-                {"medico": 3},
-                {"medico": 6},
-                {"medico": 9},
-                {"medico": 3},
-                {"medico": 6},
-                {"medico": 9},
-                {"medico": 3},
-                {"medico": 6},
-                {"medico": 9},
-                {"medico": 3},
-                {"medico": 6},
-                {"medico": 9},
-                {"medico": 3},
-                {"medico": 6},
-                {"medico": 9},
-                {"medico": 3},
-                {"medico": 6},
-                {"medico": 9},
-                {"medico": 3},
-                {"medico": 6},
                 {"medico": 9}
             ]
             # "medicos":[]
@@ -135,6 +95,10 @@ class PostConacemTest(APITestCase):
 
         self.client.force_authenticate(user=self.user)
 
+        # para revisar como esta el estatus 'isConacem' de los certificados antes
+        for datoCertificado in Certificado.objects.filter().order_by('id'):
+            print(f'--->>>datoCertificado.id: {datoCertificado.id} -- datoCertificado.medico.id: {datoCertificado.medico.id} -- datoCertificado.isConacem: {datoCertificado.isConacem}')
+
         response = self.client.post('/api/conacem/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -144,10 +108,16 @@ class PostConacemTest(APITestCase):
         # print(f'response JSON ===>>> ok \n {json.dumps(response.data)} \n ---')
         # self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+        # para revisar que este bien el libro y foja en detalles
         datosDetalle = DetalleConcacem.objects.filter()
         if datosDetalle.count() > 0:
             for dato in datosDetalle:
                 print(f'--->>>detalle.medico.id: {dato.medico.id} --- libro: {dato.libro} --- foja: {dato.foja} --- detalle.nombre: {dato.medico.nombre} --- detalle.conacem.id: {dato.conacem.id}')
+
+        # para revisar como esta el estatus 'isConacem' de los certificados antes
+        print(f'\n')
+        for datoCertificado in Certificado.objects.filter().order_by('id'):
+            print(f'--->>>datoCertificado.id: {datoCertificado.id} -- datoCertificado.medico.id: {datoCertificado.medico.id} -- datoCertificado.isConacem: {datoCertificado.isConacem}')
 
 
 class PruebaTest(APITestCase):
@@ -165,7 +135,7 @@ class PruebaTest(APITestCase):
         for reg in range(tam):
             print(f'--->>>reg: {reg} -- hoja: {hoja} --- lugar: {lugar}')
             lugar = lugar + 1
-         
+
             if lugar > cupo:
                 # print(f'--->>>BANDERA-2: {bandera} -- hoja: {hoja} --- lugar: {lugar}')
                 lugar = 1
