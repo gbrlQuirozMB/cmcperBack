@@ -34,7 +34,7 @@ urlpatterns = [
     path('documento/constancia-cirugia/create/', DocumentoConstanciaCirugiaCreateView.as_view(), ),
     path('documento/carta-profesor/create/', DocumentoCartaProfesorCreateView.as_view(), ),
     path('documento/foto/create/', DocumentoFotoCreateView.as_view(), ),
-    
+
     # path('documentos/medico/<medicoId>/list/', DocumentosMedicoListView.as_view(), ), # se va a cambiar por la siguiente url de abajo
     path('<convocatoriaId>/medico/<medicoId>/documentos/list/', DocumentosMedicoListView.as_view(), ),
     path('documento/update/<pk>/', ConvocatoriaDocumentoUpdateView.as_view(), ),
@@ -53,6 +53,12 @@ urlpatterns = [
     path('<convocatoriaId>/enrolados/cargar-excel/update/', ConvocatoriaEnroladosUpExcel.as_view(), ),
     path('<convocatoriaId>/enrolados/publicar/list/', PublicarCalificaciones.as_view(), ),
     path('<convocatoriaId>/enrolados/bajar-aprobados/list/', ConvocatoriaAprobadosDownExcel.as_view(), ),
+
+    path('documentos-extras/create/', AgregarDocumentosExtrasCreateView.as_view(), ),
+
+    path('<convocatoriaId>/enrolados/list/', ConvocatoriaEnroladosListView.as_view(), ),
+    path('enrolado/<pk>/calificar/', ConvocatoriaEnroladosCalificarUpdateView.as_view(), ),
+
 
     # ES DE PRUEBA NO USAR!!!
     # path('<convocatoriaId>/sede/create/', ConvocatoriaSedeCreateView.as_view(), ),

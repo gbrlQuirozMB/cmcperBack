@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "/Users/propietario/proyectos/cmcper/venv/bin/python3"
+    "python.pythonPath": "/Users/propietario/proyectos/cmcper/venv/bin/python3",
+    "terminal.integrated.fontFamily": "MesloLGS NF"
 }

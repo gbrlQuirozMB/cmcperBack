@@ -1,37 +1,34 @@
+from actividadesAvaladas.models import AsistenteActividadAvalada, ActividadAvalada
+from certificados.models import Certificado
+import codecs
+import csv
+from django.views import View
+from django.http import HttpResponse
+from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter
+from django.contrib.auth.models import User
+from notificaciones.models import Notificacion
+from rest_framework.views import APIView
+from django.core.mail import EmailMultiAlternatives
+from django.utils.html import strip_tags
+from django.template.loader import render_to_string
+from dateutil.relativedelta import relativedelta
+from datetime import date
+from rest_framework import status, permissions
+from rest_framework.response import Response
+from rest_framework.renderers import JSONRenderer
+from .serializers import *
+from api.exceptions import *
 from django.shortcuts import render
 from rest_framework.generics import DestroyAPIView, ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView
 from preregistro.models import Medico
 
-from api.logger import log
-from api.exceptions import *
+# from api.logger import log
+import logging
+log = logging.getLogger('django')
 
-from .serializers import *
-from rest_framework.renderers import JSONRenderer
-from rest_framework.response import Response
-from rest_framework import status, permissions
 
-from datetime import date
-from dateutil.relativedelta import relativedelta
-
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
-from django.core.mail import EmailMultiAlternatives
-
-from rest_framework.views import APIView
-
-from notificaciones.models import Notificacion
-from django.contrib.auth.models import User
-
-from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter
 # from django_filters import rest_framework as filters
 
-from django.http import HttpResponse
-from django.views import View
-
-import csv
-import codecs
-
-from certificados.models import Certificado
 
 # Create your views here.
 # class CertificadoDatosDetailView(RetrieveAPIView):
@@ -48,6 +45,8 @@ from certificados.models import Certificado
 
 
 class CertificadoDatosDetailView(RetrieveAPIView):
+    serializer_class = CertificadoDatosSerializer
+
     def get(self, request, *args, **kwargs):
         medicoId = kwargs['medicoId']
         try:
@@ -60,7 +59,7 @@ class CertificadoDatosDetailView(RetrieveAPIView):
 
 
 class AvanceMedicoCapituloDetailView(RetrieveAPIView):
-    # serializer_class = AvanceMedicoCapituloSerializer
+    serializer_class = AvanceMedicoCapituloSerializer
 
     def get(self, request, *args, **kwargs):
         medicoId = kwargs['medicoId']
@@ -143,7 +142,8 @@ class ItemDocumentosListView(ListAPIView):
 
     def get_queryset(self):
         itemId = self.kwargs['itemId']
-        queryset = RecertificacionItemDocumento.objects.filter(item=itemId)
+        medicoId = self.kwargs['medicoId']
+        queryset = RecertificacionItemDocumento.objects.filter(item=itemId, medico=medicoId)
         if not queryset:
             raise ResponseError('No hay documentos', 404)
         # print(f'--->>>queryset: {queryset is None}')
@@ -163,7 +163,7 @@ class ItemDocumentosCreateView(CreateAPIView):
         serializer = ItemDocumentoSerializer(data=request.data)
         if serializer.is_valid():
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -220,7 +220,7 @@ class ItemDocumentosFilteredListView(ListAPIView):
         estatus = self.kwargs['estatus']
         nombre = self.kwargs['nombre']
         apPaterno = self.kwargs['apPaterno']
-        log.info(f'se busca por:  estatus: {estatus} - nombre: {nombre} - apPaterno: {apPaterno}')
+        # log.error(f'--->>>se busca por:  estatus: {estatus} - nombre: {nombre} - apPaterno: {apPaterno}')
 
         return getQuerysetItemDocumentosFiltered(estatus, nombre, apPaterno)
 
@@ -276,6 +276,25 @@ class CapituloListView(ListAPIView):
     serializer_class = CapituloListSerializer
 
 
+class CapituloUpdateView(UpdateAPIView):
+    queryset = Capitulo.objects.filter()
+    serializer_class = CapituloSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
+
+
+class CapituloCreateView(CreateAPIView):
+    serializer_class = CapituloSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+    def post(self, request, *args, **kwargs):
+        serializer = CapituloSerializer(data=request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
+
+
 class SubcapituloListView(ListAPIView):
     serializer_class = SubcapituloListSerializer
 
@@ -285,6 +304,30 @@ class SubcapituloListView(ListAPIView):
         if not queryset:
             raise ResponseError('No existen subcapitulos con el capituloId proporcionado', 404)
         return queryset
+
+
+class SubcapituloUpdateView(UpdateAPIView):
+    queryset = Subcapitulo.objects.filter()
+    serializer_class = SubcapituloUpdateSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
+
+
+class SubcapituloDetailView(RetrieveAPIView):
+    queryset = Subcapitulo.objects.filter()
+    serializer_class = DetallesSubcapituloSerializer
+
+
+class SubcapituloCreateView(CreateAPIView):
+    serializer_class = SubcapituloUpdateSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+    def post(self, request, *args, **kwargs):
+        serializer = SubcapituloUpdateSerializer(data=request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
 
 
 class ItemListView(ListAPIView):
@@ -298,11 +341,43 @@ class ItemListView(ListAPIView):
         return queryset
 
 
+class ItemUpdateView(UpdateAPIView):
+    queryset = Item.objects.filter()
+    serializer_class = ItemSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
+
+
+class ItemDetailView(RetrieveAPIView):
+    queryset = Item.objects.filter()
+    serializer_class = ItemSerializer
+
+
+class ItemCreateView(CreateAPIView):
+    serializer_class = ItemSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+    def post(self, request, *args, **kwargs):
+        serializer = ItemSerializer(data=request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
+
+
 class ActualizaVigenciaCertificados(APIView):
     permission_classes = (permissions.IsAdminUser,)
 
     def put(self, request, *args, **kwargs):
         try:
+            # para quitarle al medico su certificacion
+            itemIds = []
+            for dato in Certificado.objects.filter(isVencido=False, fechaCaducidad__lt=date.today()):
+                if dato.medico.id not in itemIds:
+                    itemIds.append(dato.medico.id)
+            Medico.objects.filter(pk__in=itemIds).update(isCertificado=False)
+            # print(f'--->>>itemIds: {itemIds}')
+
             cuentaVencidos = Certificado.objects.filter(isVencido=False, fechaCaducidad__lt=date.today()).update(estatus=3, isVencido=True)
             cuentaVigentes = Certificado.objects.filter(isVencido=False, fechaCaducidad__gte=date.today()).update(estatus=1, isVencido=False)
             cuentaPorVencer = Certificado.objects.filter(isVencido=False, fechaCaducidad__range=[date.today(), date.today()+relativedelta(years=1)]).update(estatus=2, isVencido=False)
@@ -361,7 +436,7 @@ class SolicitudExamenCreateView(CreateAPIView):
                 raise ResponseError('Error al enviar correo', 500)
 
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -394,7 +469,7 @@ class DocumentoCedulaEspecialidadCreateView(CreateAPIView):
         if serializer.is_valid():
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -409,7 +484,7 @@ class DocumentoCertificadoCreateView(CreateAPIView):
         if serializer.is_valid():
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -429,7 +504,7 @@ class DocumentoFotoCreateView(CreateAPIView):
             PorExamenDocumento.objects.create(catTiposDocumento=catTiposDocumento, porExamen=porExamen)
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -444,7 +519,7 @@ class DocumentoCartaSolicitudCreateView(CreateAPIView):
         if serializer.is_valid():
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -453,7 +528,7 @@ class PorExamenAPagarEndPoint(APIView):
         try:
             cuenta = PorExamen.objects.filter(medico=medicoId, isAceptado=True).count()
             if cuenta == 1:
-                return CatPagos.objects.get(tipo=1)
+                return CatPagos.objects.get(id=1)
             raise ResponseError('No tiene permitido pagar', 409)
         except CatPagos.DoesNotExist:
             raise ResponseError('No existe un registro de pago para el Examen Certificación Vigente', 404)
@@ -471,7 +546,7 @@ class PorExamenAPagarEndPoint(APIView):
 class RenovacionAPagarEndPoint(APIView):
     def getQuerySet(self):
         try:
-            return CatPagos.objects.get(tipo=6)
+            return CatPagos.objects.get(id=6)
         except CatPagos.DoesNotExist:
             raise ResponseError('No existe un registro de pago para Renovación de Certificación', 404)
 
@@ -513,8 +588,9 @@ class RenovacionPagadoCreateView(CreateAPIView):
         serializer = CertificadoPagadoSerializer(data=request.data)
         if serializer.is_valid():
             RecertificacionItemDocumento.objects.filter(medico=request.data['medico']).delete()
+            Medico.objects.filter(id=request.data['medico']).update(isCertificado=True)  # una vez que paga el medico pasa a ser certificado
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -586,10 +662,12 @@ def renderCsvView(request, queryset):
     response = HttpResponse(content_type='text/csv')
     # response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename="calificaciones-medicos.csv"'
+    response.write(u'\ufeff'.encode('utf8'))
     writer = csv.writer(response)
     writer.writerow(['NO TOCAR', 'Num. de Registro', 'Nombre', 'Apellido Paterno', 'Apellido Materno', 'Calificacion', 'Aprobado'])
     for dato in queryset:
         writer.writerow(dato)
+        # writer.writerow(dato.encode('UTF-8'))
 
     return response
 
@@ -632,6 +710,12 @@ class PublicarCalificaciones(APIView):
 
     def get(self, request, *args, **kwargs):
         fechaExamenId = self.kwargs['fechaExamenId']
+        fInicial = request.query_params.get('fInicial', None)
+        fFinal = request.query_params.get('fFinal', None)
+        if fInicial is None or fFinal is None:
+            respuesta = {"detail": "Se deben indicar las fechas"}
+            return Response(respuesta, status=status.HTTP_409_CONFLICT)
+
         try:
             queryset = PorExamen.objects.filter(fechaExamen=fechaExamenId, isPagado=True).values_list('id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno',
                                                                                                       'fechaExamen__fechaExamen', 'calificacion', 'medico__email', 'isAprobado', 'medico__id',
@@ -645,11 +729,19 @@ class PublicarCalificaciones(APIView):
                 if dato[8] and not dato[10]:  # se checa que este aprobado y no publicado
                     # hay que crear un nuevo campo de isPublicado y con ese verificar si se crea o no un certificado nuevo
                     medico = Medico.objects.get(id=dato[9])
-                    Certificado.objects.create(medico=medico, documento='', descripcion='generado automaticamente por recertificacion examen', isVencido=False, estatus=1)
-                    PorExamen.objects.filter(medico=dato[9]).update(isPublicado=True)
-
+                    Certificado.objects.create(medico=medico, documento='', descripcion='generado automaticamente por recertificacion examen', isVencido=False, estatus=1,
+                                               fechaCertificacion=fInicial, fechaCaducidad=fFinal)
+                    # PorExamen.objects.filter(medico=dato[9]).update(isPublicado=True)
                     PorExamen.objects.filter(medico=dato[9]).delete()
+
+                    # se borran los registros en la tabla que es de trabajo y se mueven a la tabla para archivarlos para reportes
+                    registrosAMover = list(RecertificacionItemDocumento.objects.filter(medico=dato[9]))
                     RecertificacionItemDocumento.objects.filter(medico=dato[9]).delete()
+                    ArchivoDocumentosRecetificacion.objects.bulk_create(registrosAMover)
+
+                    # actualizamos a que el medico de nuevo este certificado
+                    medico.isCertificado = True
+                    medico.save(update_fields=['isCertificado'])
 
                 datos = {
                     'nombre': dato[2],
@@ -710,6 +802,25 @@ class FechasExamenListView(ListAPIView):
     serializer_class = FechasExamenRecertificacionSerializer
 
 
+class FechasExamenCreateView(CreateAPIView):
+    serializer_class = FechasExamenRecertificacionSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+    def post(self, request, *args, **kwargs):
+        serializer = FechasExamenRecertificacionSerializer(data=request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
+
+
+class FechasExamenUpdateView(UpdateAPIView):
+    queryset = FechasExamenRecertificacion.objects.filter()
+    serializer_class = FechasExamenRecertificacionSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
+
+
 class ProrrogaCertificadoUpdateView(UpdateAPIView):
     queryset = Certificado.objects.filter()
     serializer_class = ProrrogaCertificadoSerializer
@@ -735,10 +846,10 @@ class RenovacionCreateView(CreateAPIView):
         serializer = RenovacionSerializer(data=request.data)
         if serializer.is_valid():
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
-    
-    
+
+
 class RenovacionDetailView(RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         medicoId = kwargs['medicoId']
@@ -749,3 +860,144 @@ class RenovacionDetailView(RetrieveAPIView):
             raise ResponseError('No hay renovacion para el ID de Medico dado', 404)
 
         return Response(serializer.data)
+
+
+class QRItemDocumentosCreateView(CreateAPIView):
+    """
+    Sólo se recibe el siguiente json:
+    {
+    "medico": int,
+    "actividadAvalada": int
+    }
+    """
+    serializer_class = ItemDocumentoSerializer
+
+    def post(self, request, *args, **kwargs):
+        medicoId = request.data.get('medico')
+        actividadAvaladaId = request.data.get('actividadAvalada')
+
+        request.data['estatus'] = 1
+        request.data['observaciones'] = ''
+        request.data['notasRechazo'] = ''
+        request.data['razonRechazo'] = ''
+        request.data['tituloDescripcion'] = 'Generado por QR'
+        request.data['actividadAvaladaId'] = actividadAvaladaId
+
+        datosAA = ActividadAvalada.objects.filter(id=actividadAvaladaId)
+        if datosAA.count() <= 0:
+            raise ResponseError('No existe la actividad avalada', 404)
+        if datosAA.get().isPagado != True:
+            raise ResponseError('No esta pagada la actividad avalada', 409)
+
+        datos = AsistenteActividadAvalada.objects.filter(medico=medicoId, actividadAvalada=actividadAvaladaId)
+        if datos.count() <= 0:
+            raise ResponseError('No existe el medico en la actividad avalada', 404)
+        if datos.get().isPagado != True:
+            raise ResponseError('No esta pagada la asistencia a la actividad avalada', 409)
+
+        request.data['fechaEmision'] = datos.get().actividadAvalada.fechaInicio
+        if datos.get().tipo == 'Asistente':
+            request.data['puntosOtorgados'] = datosAA.get().puntajeAsistente
+            request.data['item'] = datosAA.get().itemAsistente.id
+        if datos.get().tipo == 'Ponente':
+            request.data['puntosOtorgados'] = datosAA.get().puntajePonente
+            request.data['item'] = datosAA.get().itemPonente.id
+        if datos.get().tipo == 'Coordinador':
+            request.data['puntosOtorgados'] = datosAA.get().puntajeCoordinador
+            request.data['item'] = datosAA.get().itemCoordinador.id
+
+        serializer = ItemDocumentoSerializer(data=request.data)
+        if serializer.is_valid():
+            cuenta = RecertificacionItemDocumento.objects.filter(medico=medicoId, item=request.data['item'], actividadAvaladaId=actividadAvaladaId).count()
+            if cuenta > 0:
+                raise ResponseError('Ya se capturo este QR', 409)
+            return self.create(request, *args, **kwargs)
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
+
+
+class CodigoWEBitemDocumentosCreateView(CreateAPIView):
+    """
+    Sólo se recibe el siguiente json:
+    {
+    "medico": int,
+    "codigoWeb": string
+    }
+    """
+    serializer_class = ItemDocumentoSerializer
+
+    def post(self, request, *args, **kwargs):
+        medicoId = request.data.get('medico')
+        codigoWeb = request.data.get('codigoWeb')
+
+        request.data['estatus'] = 1
+        request.data['observaciones'] = ''
+        request.data['notasRechazo'] = ''
+        request.data['razonRechazo'] = ''
+        request.data['tituloDescripcion'] = 'Generado por QR'
+
+        datosAA = ActividadAvalada.objects.filter(codigoWeb=codigoWeb)
+        if datosAA.count() <= 0:
+            raise ResponseError('No existe codigo WEB la actividad avalada', 404)
+        if datosAA.get().isPagado != True:
+            raise ResponseError('No esta pagada la actividad avalada', 409)
+
+        # ojo: aqui se guarda la actividad avalada
+        actividadAvaladaId = datosAA.get().id
+        request.data['actividadAvaladaId'] = actividadAvaladaId
+
+        datos = AsistenteActividadAvalada.objects.filter(medico=medicoId, actividadAvalada=datosAA.get().id)
+        if datos.count() <= 0:
+            raise ResponseError('No existe el medico en la actividad avalada', 404)
+        if datos.get().isPagado != True:
+            raise ResponseError('No esta pagada la asistencia a la actividad avalada', 409)
+
+        request.data['fechaEmision'] = datos.get().actividadAvalada.fechaInicio
+        if datos.get().tipo == 'Asistente':
+            request.data['puntosOtorgados'] = datosAA.get().puntajeAsistente
+            request.data['item'] = datosAA.get().itemAsistente.id
+        if datos.get().tipo == 'Ponente':
+            request.data['puntosOtorgados'] = datosAA.get().puntajePonente
+            request.data['item'] = datosAA.get().itemPonente.id
+        if datos.get().tipo == 'Coordinador':
+            request.data['puntosOtorgados'] = datosAA.get().puntajeCoordinador
+            request.data['item'] = datosAA.get().itemCoordinador.id
+
+        serializer = ItemDocumentoSerializer(data=request.data)
+        if serializer.is_valid():
+            cuenta = RecertificacionItemDocumento.objects.filter(medico=medicoId, item=request.data['item'], actividadAvaladaId=actividadAvaladaId).count()
+            if cuenta > 0:
+                raise ResponseError('Ya se capturo este QR', 409)
+            return self.create(request, *args, **kwargs)
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
+
+
+class QRItemDocumentoUpdateView(UpdateAPIView):
+    """
+    Sólo se recibe el siguiente json:
+    {
+    "documento": archivoFile
+    }
+    """
+    queryset = RecertificacionItemDocumento.objects.filter()
+    serializer_class = QRItemDocumentoSerializer
+    http_method_names = ['put']
+
+
+class PorExamenFechaListView(ListAPIView):
+    serializer_class = PorExamenFilteredListSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+    def get_queryset(self):
+        fechaExamenId = self.kwargs['fechaExamenId']
+        queryset = PorExamen.objects.filter(fechaExamen=fechaExamenId, isAceptado=True)
+
+        return queryset
+
+
+class PorExamenFechaCalificarUpdateView(UpdateAPIView):
+    queryset = PorExamen.objects.filter()
+    serializer_class = PorExamenFechaCalificarSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['patch']

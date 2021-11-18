@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ["*"]
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:8000',
-    'http://0f3bc3ec3174.ngrok.io',  # back
+    'http://2b40d82cf307.ngrok.io',  # back
     'http://localhost:4200',
     # 'http://54625c39d9d4.ngrok.io',  # front
 )
@@ -46,9 +46,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_filters', # hay que instalarlo antes -> pip install django-filter
+    'django_filters',  # hay que instalarlo antes -> pip install django-filter
     'rest_framework',
-    'rest_framework_swagger',
+    # 'rest_framework_swagger',
+    'drf_yasg2',
     'rest_framework.authtoken',
     'rest_auth',
     'corsheaders',
@@ -62,6 +63,12 @@ INSTALLED_APPS = [
     'recertificacion',
     'tesoreria',
     'certificados',
+    'comunicados',
+    'instituciones',
+    'actividadesAvaladas',
+    'facturacion',
+    'reportes',
+    'conacem',
 ]
 
 MIDDLEWARE = [
@@ -187,11 +194,11 @@ USE_TZ = True
 # MEDIA_ROOT = config('MEDIA_ROOT')
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
-# STATIC_ROOT = config('STATIC_ROOT', default="./static/")
-MEDIA_URL=config('MEDIA_URL', default="/uploads/")
-MEDIA_ROOT=config('MEDIA_ROOT', default="./uploads/")
 
+# STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+STATIC_ROOT = config('STATIC_ROOT', default="./static/")
+MEDIA_URL = config('MEDIA_URL', default="/uploads/")
+MEDIA_ROOT=config('MEDIA_ROOT', default="uploads/")
 
 # Claves de STRIPE
 if DEBUG:
@@ -213,3 +220,54 @@ EMAIL_HOST = config('EMAIL_HOST', default='mail.booster.com.mx')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='billy@booster.com.mx')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='billy123!')
 EMAIL_PORT = config('EMAIL_PORT', default=465)
+
+
+# Django Logging Information
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'formatters': {
+        'django.server': {
+            '()': 'django.utils.log.ServerFormatter',
+            'format': '{server_time}] {message}',
+            'style': '{',
+        },
+        'personal': {
+            'format': '{asctime} - {levelname} [{pathname}:{lineno}]-> \n {message}',
+            'datefmt': '%Y-%m-%d %H:%M',
+            'style': '{',
+        }
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            # 'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            # 'formatter': 'django.server',
+        },
+        'file': {
+            'level': 'INFO',
+            # 'class': 'logging.FileHandler',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'when': 'midnight',
+            'backupCount': 3,
+            'filename': 'errores.log',
+            'formatter': 'personal',
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            # 'propagate': True,
+        }
+    }
+}

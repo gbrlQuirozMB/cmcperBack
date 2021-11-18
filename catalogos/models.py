@@ -8,7 +8,7 @@ class CatSedes(models.Model):
     direccion = models.CharField(max_length=200)
     latitud = models.DecimalField(max_digits=9, decimal_places=6)
     longitud = models.DecimalField(max_digits=9, decimal_places=6)
-    imagen = models.FileField(blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'gif'])])
+    imagen = models.FileField(blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'gif', 'jpeg'])], upload_to='catalogos')
 
     class Meta:
         db_table = 'cat_sedes'
@@ -48,15 +48,21 @@ class CatMotivosRechazo(models.Model):
 class CatPagos(models.Model):
     descripcion = models.CharField(max_length=200)
     precio = models.DecimalField(max_digits=7, decimal_places=2, null=True)
-    tipo = models.PositiveSmallIntegerField(unique=True, choices=(
-        (1, 'Examen Certificación Vigente'),
-        (2, 'Examen Convocatoria Nacional'),
-        (3, 'Examen Convocatoria Extranjero'),
-        (4, 'Curso'),
-        (5, 'Actividad Asistencial'),
-        (6, 'Renovación de Certificación'),
-    ))
+    # tipo = models.PositiveSmallIntegerField(choices=(
+    #     (1, 'Examen Certificación Vigente'),
+    #     (2, 'Examen Convocatoria Nacional'),
+    #     (3, 'Examen Convocatoria Extranjero'),
+    #     (4, 'Curso'),
+    #     (5, 'Actividad Asistencial'),
+    #     (6, 'Renovación de Certificación'),
+    # ))
 
     class Meta:
         db_table = 'cat_pagos'
-        ordering = ['tipo']
+        ordering = ['descripcion']
+
+class CatEntidad(models.Model):
+    entidad = models.CharField(max_length = 50)
+    region = models.CharField(max_length = 50)
+    class Meta:
+        db_table = 'cat_entidad'

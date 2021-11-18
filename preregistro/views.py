@@ -6,16 +6,19 @@ from django.conf import settings
 from django.shortcuts import render
 from rest_framework import permissions
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.views import APIView
 
 from api.exceptions import *
 from .serializers import *
-from api.logger import log
+# from api.logger import log
+import logging
+log = logging.getLogger('django')
 from api.Paginacion import Paginacion
 from rest_framework.response import Response
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Permission, User
+
 from django.contrib.auth.base_user import BaseUserManager
 from django.core.mail import send_mail
 
@@ -24,6 +27,8 @@ from django.utils.html import strip_tags
 from django.core.mail import EmailMultiAlternatives
 
 # ----------------------------------------------------------------------------------Preregistro
+
+
 class PreregistroCreateView(CreateAPIView):
     serializer_class = MedicoSerializer
     permission_classes = (permissions.AllowAny,)
@@ -32,9 +37,9 @@ class PreregistroCreateView(CreateAPIView):
         serializer = MedicoSerializer(data=request.data)
         if serializer.is_valid():
             datoUser = User.objects.filter(is_superuser=True, is_staff=True).values_list('id')
-            Notificacion.objects.create(titulo='Preregistro',mensaje='Se creo un preregistro',destinatario=datoUser[0][0],remitente=0)
+            Notificacion.objects.create(titulo='Preregistro', mensaje='Se creo un preregistro', destinatario=datoUser[0][0], remitente=0)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -73,29 +78,37 @@ class PreregistroDetailView(RetrieveAPIView):
     queryset = Medico.objects.filter()
     serializer_class = MedicoSerializer
     # permission_classes = (permissions.AllowAny,)
-    
-    
+
+
 class PreregistroAceptadoUpdateView(UpdateAPIView):
     queryset = Medico.objects.filter()
     serializer_class = MedicoAceptadoRechazadoSerializer
     # permission_classes = (permissions.AllowAny,)
     http_method_names = ['put']
-    
+
     def put(self, request, *args, **kwargs):
         pk = kwargs['pk']
         # falta saber los grupos y permisos que se crearan, pero depende mas de las apps
-        datosMedico = Medico.objects.filter(id=pk).values_list('nombre','apPaterno','apMaterno','email','rfc')
-        username = datosMedico[0][0][0:3] + datosMedico[0][1][0:3] #+ datosMedico[0][4][4:6]
+        datosMedico = Medico.objects.filter(id=pk).values_list('nombre', 'apPaterno', 'apMaterno', 'email', 'rfc')
+        username = datosMedico[0][0][0:3] + datosMedico[0][1][0:3]  # + datosMedico[0][4][4:6]
         email = datosMedico[0][3]
         lastName = datosMedico[0][1] + ' ' + datosMedico[0][2]
         # password = User.objects.make_random_password() # letras mayusculas, minusculas
-        password = BaseUserManager().make_random_password() # letras mayusculas, minusculas y numeros
+        password = BaseUserManager().make_random_password()  # letras mayusculas, minusculas y numeros
         username = username + '-' + password[0:5]
-        user = User.objects.create_user(username=username,email=email,password=password,first_name=datosMedico[0][0],last_name=lastName)
-        user.user_permissions.set([41,44,37,40,34])
+        user = User.objects.create_user(username=username, email=email, password=password, first_name=datosMedico[0][0], last_name=lastName)
+        permisoChMed = Permission.objects.get(codename='change_medico')
+        permisoAdConv = Permission.objects.get(codename='add_conversacion')
+        permisoViConv = Permission.objects.get(codename='view_conversacion')
+        permisoAdMen = Permission.objects.get(codename='add_mensaje')
+        permisoViMen = Permission.objects.get(codename='view_mensaje')
+        # user.user_permissions.set([41, 44, 37, 40, 34])
+        user.user_permissions.set([permisoChMed, permisoAdConv, permisoViConv, permisoAdMen, permisoViMen])
         # actualiza el status del registro para que este aceptado
-        Medico.objects.filter(id=pk).update(aceptado=True, numRegistro=pk, username=username)
-        Notificacion.objects.create(titulo='Preregistro',mensaje='Su preregistro se aprobó',destinatario=pk,remitente=0)
+        # Medico.objects.filter(id=pk).update(aceptado=True, numRegistro=pk, username=username)
+        Medico.objects.filter(id=pk).update(aceptado=True, username=username)
+        Notificacion.objects.create(titulo='Preregistro', mensaje='Su preregistro se aprobó', destinatario=pk, remitente=0)
+        # print(f'--->>>password: {password}')
         try:
             datos = {
                 'nombre': datosMedico[0][0],
@@ -112,19 +125,20 @@ class PreregistroAceptadoUpdateView(UpdateAPIView):
             emailAcep.send()
         except:
             raise ResponseError('Error al enviar correo', 500)
-        
+
         return self.update(request, *args, **kwargs)
-    
+
+
 class PreregistroRechazadoUpdateView(UpdateAPIView):
     queryset = Medico.objects.filter()
     serializer_class = MedicoAceptadoRechazadoSerializer
     # permission_classes = (permissions.AllowAny,)
     http_method_names = ['put']
-    
+
     def put(self, request, *args, **kwargs):
         pk = kwargs['pk']
         Medico.objects.filter(id=pk).update(aceptado=False, numRegistro=0)
-        datosMedico = Medico.objects.filter(id=pk).values_list('nombre','apPaterno','apMaterno','email','rfc')
+        datosMedico = Medico.objects.filter(id=pk).values_list('nombre', 'apPaterno', 'apMaterno', 'email', 'rfc')
         email = datosMedico[0][3]
         motivo = self.request.data.get('motivo')
         # no hay notificacion porque estas son dentro del sistema
@@ -141,13 +155,56 @@ class PreregistroRechazadoUpdateView(UpdateAPIView):
             emailRecha.attach_alternative(htmlContentRecha, "text/html")
             # email.attach(filename, resultado.getvalue(), "application/pdf")
             emailRecha.send()
-            # Medico.objects.filter(id=pk).delete()
+            Medico.objects.filter(id=pk).delete()
         except:
             raise ResponseError('Error al enviar correo', 500)
         return self.update(request, *args, **kwargs)
-    
-    
+
+
 class FotoPerfilUpdateView(UpdateAPIView):
     queryset = Medico.objects.filter()
     serializer_class = FotoPerfilSerializer
-    http_method_names = ['put'] 
+    http_method_names = ['put']
+
+
+class HorarioAtencionCreateView(CreateAPIView):
+    serializer_class = HorarioAtencionSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = HorarioAtencionSerializer(data=request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
+
+
+class HorarioAtencionListView(ListAPIView):
+    serializer_class = HorarioAtencionSerializer
+
+    def get_queryset(self):
+        medicoId = self.kwargs['medicoId']
+        queryset = HorarioAtencion.objects.filter(medico=medicoId)
+        if not queryset:
+            raise ResponseError('No hay horarios de atencion', 404)
+        return queryset
+
+
+class HorarioAtencionDetailView(RetrieveAPIView):
+    queryset = HorarioAtencion.objects.filter()
+    serializer_class = HorarioAtencionSerializer
+
+
+class HorarioAtencionUpdateView(UpdateAPIView):
+    queryset = HorarioAtencion.objects.filter()
+    serializer_class = HorarioAtencionSerializer
+    http_method_names = ['put']
+
+
+class HorarioAtencionDeleteView(DestroyAPIView):
+    queryset = HorarioAtencion.objects.filter()
+
+
+class PreregistroUpdateView(UpdateAPIView):
+    queryset = Medico.objects.filter()
+    serializer_class = MedicoSerializer
+    http_method_names = ['put']

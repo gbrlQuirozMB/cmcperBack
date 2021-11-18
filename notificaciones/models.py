@@ -5,7 +5,7 @@ from django.db import models
 
 class Notificacion(models.Model):
     creado_en = models.DateTimeField(auto_now_add=True)
-    titulo = models.CharField(max_length=25, blank=True)
+    titulo = models.CharField(max_length=50, blank=True)
     mensaje = models.CharField(max_length=50, blank=True)
     destinatario = models.IntegerField(blank=True, null=True)
     remitente = models.IntegerField(blank=True, null=True)

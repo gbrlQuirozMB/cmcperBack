@@ -13,8 +13,8 @@ class Convocatoria(models.Model):
     fechaExamen = models.DateField(db_column='fecha_examen')
     horaExamen = models.TimeField(db_column='hora_examen')
     nombre = models.CharField(max_length=150)
-    archivo = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf'])])
-    banner = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'gif'])])
+    archivo = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf'])], upload_to='convocatoria')
+    banner = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'gif', 'jpeg'])], upload_to='convocatoria')
     detalles = models.TextField(blank=True)
     fechaResolucion = models.DateField(blank=True, null=True, db_column='fecha_resolucion')
 
@@ -51,7 +51,7 @@ class ConvocatoriaEnrolado(models.Model):
     comentario = models.TextField(blank=True)
     isPagado = models.BooleanField(default=False, db_column='is_pagado') # verificar si ya pago
     isAceptado = models.BooleanField(default=False, db_column='is_aceptado') # se activa para validar que aceptaron todos sus documentos y engargolados
-    calificacion = models.PositiveSmallIntegerField(blank=True, null=True)
+    calificacion = models.DecimalField(blank=True, null=True, max_digits=6, decimal_places=2) # ahora se pide que sea decimal
     # certificado = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif'])])
     isAprobado = models.BooleanField(default=False, db_column='is_aprobado') # verificar si se le da su certificado
     isPublicado = models.BooleanField(default=False, db_column='is_publicado') # verificar si se le da su certificado por primera vez
@@ -68,7 +68,7 @@ class ConvocatoriaEnroladoDocumento(models.Model):
     medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medicoD')
     convocatoria = models.ForeignKey(Convocatoria, on_delete=models.CASCADE, related_name='convocatoriaD')
     catTiposDocumento = models.ForeignKey(CatTiposDocumento, on_delete=models.CASCADE, related_name='catTiposDocumentoD')
-    documento = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif'])])
+    documento = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif', 'jpeg'])], upload_to='convocatoria')
     isValidado = models.BooleanField(default=False, db_column='is_validado')
     engargoladoOk = models.BooleanField(default=False, db_column='engargolado_ok')
     notasValidado = models.TextField(blank=True, db_column='notas_validado')

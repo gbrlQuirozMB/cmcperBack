@@ -15,8 +15,8 @@ class Medico(models.Model):
     curp = models.CharField(max_length=20)
     fechaNac = models.DateField(db_column='fecha_nacimiento')
     sexo = models.CharField(max_length=5, choices=(
-        ('M','Masculino'),
-        ('F','Femenino')
+        ('M', 'Masculino'),
+        ('F', 'Femenino')
     ), default="---")
     # pantalla 3
     pais = models.CharField(max_length=100)
@@ -29,11 +29,11 @@ class Medico(models.Model):
     numInterior = models.CharField(max_length=10, blank=True, db_column='num_interior')
     numExterior = models.CharField(max_length=10, db_column='num_exterior')
     # pantalla 4
-    rfcFacturacion = models.CharField(max_length=15,db_column='rfc_facturacion')
+    rfcFacturacion = models.CharField(max_length=15, db_column='rfc_facturacion')
     usoCfdi = models.CharField(max_length=5, db_column='uso_cfdi', choices=(
-        ('G03','Gastos en General'),
+        ('G03', 'Gastos en General'),
         # ('G01','Adquisición de Mercancías'),
-        ('P01','Por Definir')
+        ('P01', 'Por Definir')
     ), default="P01")
     razonSocial = models.CharField(max_length=250, blank=True, db_column='razon_social')
     # pantalla 5.1
@@ -48,7 +48,7 @@ class Medico(models.Model):
     numExteriorConsult = models.CharField(max_length=10, blank=True, db_column='num_exterior_consult')
     # pantalla 6
     cedProfesional = models.CharField(max_length=20, db_column='ced_profesional')
-    cedEspecialidad = models.CharField(max_length=20, db_column='ced_especialidad')
+    cedEspecialidad = models.CharField(max_length=20, blank=True, db_column='ced_especialidad')
     cedCirugiaGral = models.CharField(max_length=20, db_column='ced_cirugia_gral')
     hospitalResi = models.CharField(max_length=150, db_column='hospital_residencia')
     telJefEnse = models.CharField(max_length=15, db_column='tel_jefatura_ense')
@@ -71,9 +71,75 @@ class Medico(models.Model):
     motivo = models.TextField(blank=True)
     numRegistro = models.IntegerField(blank=True, null=True, db_column='num_registro')
     username = models.CharField(max_length=150, blank=True)
-    fotoPerfil = models.FileField(blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'gif'])], db_column='foto_perfil')
+    fotoPerfil = models.FileField(blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'gif', 'jpeg'])], db_column='foto_perfil', upload_to='preregistro')
+    # agregando por mas cosas solicitadas redes sociales
+    instagram = models.CharField(max_length=300, blank=True)
+    facebook = models.CharField(max_length=300, blank=True)
+    twitter = models.CharField(max_length=300, blank=True)
+    whatsapp = models.CharField(max_length=300, blank=True)
+    linkedin = models.CharField(max_length=300, blank=True)
+    pagWeb = models.CharField(max_length=300, blank=True, db_column='pag_web')
+    # mas cambios solicitados
+    telConsultorioPublico = models.CharField(max_length=15, blank=True, db_column='tel_consultorio_publico')
+    telCelularPublico = models.CharField(max_length=15, blank=True, db_column='tel_celular_publico')
+    # ajustes para los reportes y mas
+    isCertificado = models.BooleanField(default=False, db_column='is_certificado')
+    isConsejero = models.BooleanField(default=False, db_column='is_consejero')
+    isProfesor = models.BooleanField(default=False, db_column='is_profesor')
+    anioCertificacion = models.PositiveSmallIntegerField(default=0, db_column='anio_certificacion')
+    # campos necesarios para los reportespara los medicos certificados
+    isFinado = models.BooleanField(default=False, db_column='is_finado')
+    isRetirado = models.BooleanField(default=False, db_column='is_retirado')
+    isExprofesor = models.BooleanField(default=False, db_column='is_exprofesor')
+    isExpresidente = models.BooleanField(default=False, db_column='is_expresidente')
+    # FALTAN: tipoConsejero
+    regionGeografica = models.CharField(max_length=300, blank=True, db_column='region_geografica')
+    titularHospital = models.CharField(max_length=300, blank=True, db_column='titular_hospital')
+    diplomaConacem = models.CharField(max_length=300, blank=True, db_column='diploma_conacem')
+    univEgreso = models.CharField(max_length=300, blank=True, db_column='universidad_egreso')
+    hospLaborPrim = models.CharField(max_length=300, blank=True, db_column='hosp_labora_primario')
+    hospLaborSec = models.CharField(max_length=300, blank=True, db_column='hosp_labora_secundario')
+    isConsultaPrivada = models.BooleanField(default=False, db_column='is_consulta_privada')
+    # para los datos fiscales
+    paisFisc = models.CharField(max_length=100, blank=True, null=True, db_column='pais_fiscal')
+    estadoFisc = models.CharField(max_length=100, blank=True, null=True, db_column='estado_fiscal')
+    ciudadFisc = models.CharField(max_length=100, blank=True, null=True, db_column='ciudad_fiscal')
+    deleMuniFisc = models.CharField(max_length=100, blank=True, null=True, db_column='delegacion_municipio_fiscal')
+    coloniaFisc = models.CharField(max_length=100, blank=True, null=True, db_column='colonia_fiscal')
+    calleFisc = models.CharField(max_length=100, blank=True, null=True, db_column='calle_fiscal')
+    cpFisc = models.CharField(max_length=10, blank=True, null=True, db_column='cp_fiscal')
+    numInteriorFisc = models.CharField(max_length=10, blank=True, null=True, db_column='num_interior_fiscal')
+    numExteriorFisc = models.CharField(max_length=10, blank=True, null=True, db_column='num_exterior_fiscal')
+    tipoAspirante = models.CharField(max_length=15, choices=(
+        ('Normal', 'Normal'),
+        ('Extemporaneo', 'Extemporaneo'),
+        ('Especial', 'Especial')
+    ), default="---")
+    codigoCarta = models.CharField(max_length=300, blank=True, null=True, db_column='codigo_carta_cmcper')
+    notasObser = models.TextField(blank=True, null=True, db_column='notas_observaciones')
+    titulo = models.CharField(max_length=9, blank=True, null=True)
+
     
 
     class Meta:
         db_table = 'pre_registro_medico'
         ordering = ['-creado_en']
+
+
+class HorarioAtencion(models.Model):
+    medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medicoHA')
+    dia = models.CharField(max_length=15, choices=(
+        ('Lunes', 'Lunes'),
+        ('Martes', 'Martes'),
+        ('Miércoles', 'Miércoles'),
+        ('Jueves', 'Jueves'),
+        ('Viernes', 'Viernes'),
+        ('Sábado', 'Sábado'),
+        ('Domingo', 'Domingo'),
+    ))
+    horaInicio = models.CharField(max_length=10, blank=True, db_column='hora_inicio')
+    horaTermino = models.CharField(max_length=10, blank=True, db_column='hora_termino')
+
+    class Meta:
+        db_table = 'horario_atencion'
+        ordering = ['-medico']

@@ -1,5 +1,7 @@
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from api.logger import log
+# from api.logger import log
+import logging
+log = logging.getLogger('django')
 
 class Paginacion:
     totalElements = 0
@@ -44,7 +46,7 @@ class Paginacion:
             direc = 'desc'
         else:
             direc = 'asc'
-        log.info(f'se obtienen: {cuenta} registros, registros por pagina: {size}, direccion: {direc}, ordenados por: {orderBy}')
+        # log.error(f'--->>>se obtienen: {cuenta} registros, registros por pagina: {size}, direccion: {direc}, ordenados por: {orderBy}')
 
         page = self.page
         try:

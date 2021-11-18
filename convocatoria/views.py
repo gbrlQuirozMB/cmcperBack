@@ -1,3 +1,24 @@
+import datetime
+from certificados.models import Certificado
+import locale
+import codecs
+import csv
+from django.contrib.auth.models import User
+from notificaciones.models import Notificacion
+from django.core.mail import EmailMultiAlternatives
+from django.utils.html import strip_tags
+from django.template.loader import render_to_string
+from api.Paginacion import Paginacion
+import ssl
+from django.views import View
+from xhtml2pdf import pisa
+from django.template.loader import get_template
+from rest_framework.response import Response
+from django.http import HttpResponse, JsonResponse, Http404
+from rest_framework.parsers import JSONParser
+from datetime import date
+import json
+from api.exceptions import *
 from django.db.models.query import EmptyQuerySet
 from rest_framework import response, status, permissions
 from rest_framework.views import APIView
@@ -5,42 +26,20 @@ from .serializers import *
 from preregistro.models import Medico
 from django.shortcuts import render
 from rest_framework.generics import DestroyAPIView, ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView, get_object_or_404
-from api.logger import log
-from api.exceptions import *
-import json
-from datetime import date
-from rest_framework.parsers import JSONParser
-from django.http import HttpResponse, JsonResponse, Http404
-from rest_framework.response import Response
+# from api.logger import log
+import logging
+log = logging.getLogger('django')
 
-from django.template.loader import get_template
-from xhtml2pdf import pisa
-from django.views import View
-import ssl
-
-from api.Paginacion import Paginacion
-
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
-from django.core.mail import EmailMultiAlternatives
-
-from notificaciones.models import Notificacion
-from django.contrib.auth.models import User
-
-import csv
-import codecs
-
-import locale
-
-from certificados.models import Certificado
 
 # from django_filters import rest_framework
 # from django_filters import rest_framework as filters
 
 # Create your views here.
 
-totalDocumentosExtranjero = 10
-totalDocumentosNacional = 9
+# totalDocumentosExtranjero = 10
+# totalDocumentosNacional = 9
+totalDocumentosExtranjero = 9
+totalDocumentosNacional = 8
 
 
 class EsExtranjeroUpdateView(UpdateAPIView):
@@ -79,15 +78,15 @@ class ConvocatoriaCreateView(CreateAPIView):
         serializer = ConvocatoriaSerializer(data=request.data)
         campoSedes = request.data.get('sedes')
         if campoSedes is None:
-            log.info(f'campos incorrectos: sedes')
+            log.error(f'--->>>campos incorrectos: sedes')
             raise CamposIncorrectos({"sedes": ["Este campo es requerido"]})
         campoTiposExamen = request.data.get('tiposExamen')
         if campoTiposExamen is None:
-            log.info(f'campos incorrectos: tiposExamen')
+            log.error(f'--->>>campos incorrectos: tiposExamen')
             raise CamposIncorrectos({"tiposExamen": ["Este campo es requerido"]})
         if serializer.is_valid():
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -134,7 +133,7 @@ class ConvocatoriaEnroladoCreateView(CreateAPIView):
         convocatoriaId = request.data['convocatoria']
         cuenta = ConvocatoriaEnrolado.objects.filter(medico=medicoId, convocatoria=convocatoriaId).count()
         if cuenta > 0:
-            log.info('Ya existe el médico enrolado a esta convocatoria')
+            log.error(f'--->>>Ya existe el médico enrolado a esta convocatoria')
             raise ResponseError('Ya existe el médico enrolado a esta convocatoria', 409)
         request.data['isPagado'] = False
         request.data['comentario'] = ''
@@ -142,7 +141,7 @@ class ConvocatoriaEnroladoCreateView(CreateAPIView):
         serializer = ConvocatoriaEnroladoSerializer(data=request.data)
         if serializer.is_valid():
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -186,7 +185,7 @@ class DocumentoRevalidacionCreateView(CreateAPIView):
         serializer = ConvocatoriaEnroladoDocumentoSerializer(data=request.data)
         if serializer.is_valid():
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -201,7 +200,7 @@ class DocumentoCurpCreateView(CreateAPIView):
         if serializer.is_valid():
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -216,7 +215,7 @@ class DocumentoActaNacimientoCreateView(CreateAPIView):
         if serializer.is_valid():
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -231,7 +230,7 @@ class DocumentoCartaSolicitudCreateView(CreateAPIView):
         if serializer.is_valid():
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -246,7 +245,7 @@ class DocumentoConstanciaPosgradoCreateView(CreateAPIView):
         if serializer.is_valid():
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -261,7 +260,7 @@ class DocumentoCedulaEspecialidadCreateView(CreateAPIView):
         if serializer.is_valid():
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -276,7 +275,7 @@ class DocumentoTituloLicenciaturaCreateView(CreateAPIView):
         if serializer.is_valid():
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -291,7 +290,7 @@ class DocumentoCedulaProfesionalCreateView(CreateAPIView):
         if serializer.is_valid():
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -306,7 +305,7 @@ class DocumentoConstanciaCirugiaCreateView(CreateAPIView):
         if serializer.is_valid():
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -321,7 +320,7 @@ class DocumentoCartaProfesorCreateView(CreateAPIView):
         if serializer.is_valid():
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -337,7 +336,7 @@ class DocumentoFotoCreateView(CreateAPIView):
         if serializer.is_valid():
             totalDocumentosNotifica(request)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -456,7 +455,7 @@ class ConvocatoriaEnroladosMedicoListView(ListAPIView):
             isAceptado = False
         nombre = self.kwargs['nombre']
         apPaterno = self.kwargs['apPaterno']
-        log.info(f'se busca por: convocatoriaId: {convocatoriaId} - isAceptado: {isAceptado} - nombre: {nombre} - apPaterno: {apPaterno}')
+        # log.error(f'--->>>se busca por: convocatoriaId: {convocatoriaId} - isAceptado: {isAceptado} - nombre: {nombre} - apPaterno: {apPaterno}')
 
         return getQuerysetEnroladosMedico(convocatoriaId, isAceptado, nombre, apPaterno)
 
@@ -471,7 +470,7 @@ class ConvocatoriaEnroladosMedicoEndPoint(APIView):
             isAceptado = False
         nombre = kwargs['nombre']
         apPaterno = kwargs['apPaterno']
-        log.info(f'se busca por: convocatoriaId: {convocatoriaId} - isAceptado: {isAceptado} - nombre: {nombre} - apPaterno: {apPaterno}')
+        # log.error(f'--->>>se busca por: convocatoriaId: {convocatoriaId} - isAceptado: {isAceptado} - nombre: {nombre} - apPaterno: {apPaterno}')
 
         queryset = getQuerysetEnroladosMedico(convocatoriaId, isAceptado, nombre, apPaterno)
 
@@ -563,9 +562,9 @@ class ConvocatoriaEnroladoMedicoAPagarEndPoint(APIView):
         except ConvocatoriaEnrolado.DoesNotExist:
             cuenta = ConvocatoriaEnrolado.objects.filter(medico=medicoId, convocatoria=convocatoriaId).count()
             if cuenta == 1:
-                log.info(f'No tiene permitido pagar - convocatoriaId: {convocatoriaId} y medicoId: {medicoId}')
+                log.error(f'--->>>No tiene permitido pagar - convocatoriaId: {convocatoriaId} y medicoId: {medicoId}')
                 raise ResponseError(f'No tiene permitido pagar - convocatoriaId: {convocatoriaId} y medicoId: {medicoId}', 409)
-            log.info(f'No existe registro - convocatoriaId: {convocatoriaId} y medicoId: {medicoId}')
+            log.error(f'--->>>No existe registro - convocatoriaId: {convocatoriaId} y medicoId: {medicoId}')
             raise ResponseError(f'No existe registro con convocatoriaId: {convocatoriaId} y medicoId: {medicoId}', 404)
 
     def get(self, request, *args, **kwargs):
@@ -617,9 +616,9 @@ def digitalEngargolado(datos, medicoId, convocatoriaId, digEng):
 def preparaDatos(datos, medicoId, convocatoriaId, param, totalDocumentosExtranjero, totalDocumentosNacional):  # param -  Documentos/Engargolado
     estudioExtranjero = datos['estudioExtranjero']
     cuentaDocumentos = datos['cuentaDocumentos']
-    if param == 'Engargolado':  # tiene un documento extra el cual es la ficha de registro que se genera al descargarla
-        totalDocumentosExtranjero = totalDocumentosExtranjero + 1
-        totalDocumentosNacional = totalDocumentosNacional + 1
+    if param == 'Engargolado':  # tiene un documento extra el cual es la ficha de registro que se genera al descargarla + 5 extras nuevos = 7
+        totalDocumentosExtranjero = totalDocumentosExtranjero + 8
+        totalDocumentosNacional = totalDocumentosNacional + 8
     if estudioExtranjero:
         if cuentaDocumentos == totalDocumentosExtranjero:
             datos['mensaje'] = 'correo enviado a medico estudio extranjero con todos sus documentos validados'
@@ -707,12 +706,13 @@ class CorreoDocumentosEndPoint(APIView):
         return Response(datos)
 
 
-class ConvocatoriaEnroladosExcelListView(ListAPIView):
+class ConvocatoriaEnroladosListView(ListAPIView):
     serializer_class = ConvocatoriaEnroladosMedicoListSerializer
+    permission_classes = (permissions.IsAdminUser,)  
 
     def get_queryset(self):
         convocatoriaId = self.kwargs['convocatoriaId']
-        queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId)
+        queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId, isAceptado=True)
 
         return queryset
 
@@ -721,10 +721,12 @@ def renderCsvView(request, queryset):
     response = HttpResponse(content_type='text/csv')
     # response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename="calificaciones-medicos.csv"'
+    response.write(u'\ufeff'.encode('utf8'))
     writer = csv.writer(response)
     writer.writerow(['NO TOCAR', 'Num. de Registro', 'Nombre', 'Apellido Paterno', 'Apellido Materno', 'Calificacion', 'Aprobado'])
     for dato in queryset:
         writer.writerow(dato)
+        # writer.writerow(dato.encode('UTF-8'))
 
     return response
 
@@ -733,8 +735,8 @@ class ConvocatoriaEnroladosDownExcel(View):
     def get(self, request, *args, **kwargs):
         convocatoriaId = self.kwargs['convocatoriaId']
         try:
-            queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId).values_list('id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno',
-                                                                                                    'calificacion', 'isAprobado')
+            queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId, isAceptado=True).values_list(
+                'id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno', 'calificacion', 'isAprobado')
             # print(f'--->>>queryset como tupla(values_list): {queryset}')
             if not queryset:
                 respuesta = {"detail": "Registros no encontrados"}
@@ -785,13 +787,17 @@ class PublicarCalificaciones(APIView):
     def get(self, request, *args, **kwargs):
         convocatoriaId = self.kwargs['convocatoriaId']
         try:
+            # ordenamos segun requerimientos, para asignar el numero de registro
             queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId).values_list('id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno',
                                                                                                     'convocatoria__fechaExamen', 'calificacion', 'medico__email', 'isAprobado', 'medico__id',
-                                                                                                    'isPublicado')
+                                                                                                    'isPublicado').order_by('medico__apPaterno', 'medico__apMaterno', 'medico__nombre')
             # print(f'--->>>queryset como tupla(values_list): {queryset}')
             if not queryset:
                 respuesta = {"detail": "Registros no encontrados"}
                 return Response(respuesta, status=status.HTTP_404_NOT_FOUND)
+
+            # obtenemos el ultimo numero de registro existente
+            ultimoNumRegistro = Medico.objects.all().order_by('-numRegistro')[:1]
 
             for dato in queryset:
                 if dato[8] and not dato[10]:  # se checa que este aprobado y no publicado
@@ -799,6 +805,14 @@ class PublicarCalificaciones(APIView):
                     medico = Medico.objects.get(id=dato[9])
                     Certificado.objects.create(medico=medico, documento='', descripcion='generado automaticamente por convocatoria', isVencido=False, estatus=1)
                     ConvocatoriaEnrolado.objects.filter(medico=dato[9]).update(isPublicado=True)
+
+                    # aumentamos el ultimo numero de registro para asignarlo
+                    valor = int(ultimoNumRegistro.get().numRegistro)
+                    valor += 1
+                    # creamos el año de la certificacion
+                    anio = datetime.date.today().year
+                    # asignamos el numero de registro segun se tenga y en orden segun los criterios
+                    Medico.objects.filter(id=dato[9]).update(numRegistro=valor, isCertificado=True, anioCertificacion=anio)
 
                 datos = {
                     'nombre': dato[2],
@@ -824,6 +838,74 @@ class PublicarCalificaciones(APIView):
             respuesta = {"detail": str(e)}
             return Response(respuesta, status=status.HTTP_409_CONFLICT)
 
+
+def campoVacioNoEntero(valor, nombreCampo):
+    if valor is None:
+        log.error(f'--->>>falta dato en campo {nombreCampo}')
+        raise CamposIncorrectos(f'falta dato en campo {nombreCampo}')
+    try:
+        temporal = int(valor)
+    except ValueError:
+        log.error(f'--->>>campo {nombreCampo} tiene un tipo de dato incorrecto')
+        raise CamposIncorrectos(f'campo {nombreCampo} tiene un tipo de dato incorrecto')
+
+
+class AgregarDocumentosExtrasCreateView(CreateAPIView):
+    permission_classes = (permissions.IsAdminUser,)
+
+    def post(self, request, *args, **kwargs):
+        medicoId = request.data.get('medico')
+        convocatoriaId = request.data.get('convocatoria')
+        # checar que vengan los campos de manera correcta
+        campoVacioNoEntero(medicoId, 'medico')
+        campoVacioNoEntero(convocatoriaId, 'convocatoria')
+        # checar que exista medico y convocatoria
+        if Medico.objects.filter(id=medicoId).count() <= 0:
+            log.error(f'--->>>No existe el medico con id: {medicoId}')
+            raise ResponseError(f'No existe el medico con id: {medicoId}', 404)
+        if Convocatoria.objects.filter(id=convocatoriaId).count() <= 0:
+            log.error(f'--->>>No existe la convocatoria con id: {convocatoriaId}')
+            raise ResponseError(f'No existe la convocatoria con id: {convocatoriaId}', 404)
+        # borrar si ya existen para evitar duplicados
+        ids = [15, 16, 17, 18, 19, 14]
+        ConvocatoriaEnroladoDocumento.objects.filter(catTiposDocumento__in=ids, convocatoria=convocatoriaId, medico=medicoId).delete()
+        # crear los registros para que aparezcan listados en el checklist de engargolados
+        cedCurr = ConvocatoriaEnroladoDocumento.objects.create(medico=Medico.objects.get(id=medicoId),
+                                                               convocatoria=Convocatoria.objects.get(id=convocatoriaId),
+                                                               catTiposDocumento=CatTiposDocumento.objects.get(id=15), isValidado=True, documento='Currículo.pdf')
+        cartNoImp = ConvocatoriaEnroladoDocumento.objects.create(medico=Medico.objects.get(id=medicoId),
+                                                                 convocatoria=Convocatoria.objects.get(id=convocatoriaId),
+                                                                 catTiposDocumento=CatTiposDocumento.objects.get(id=16), isValidado=True, documento='Carta de No Impedimento.pdf')
+        listado = ConvocatoriaEnroladoDocumento.objects.create(medico=Medico.objects.get(id=medicoId),
+                                                               convocatoria=Convocatoria.objects.get(id=convocatoriaId),
+                                                               catTiposDocumento=CatTiposDocumento.objects.get(id=17), isValidado=True, documento='Listado de Cirugías con Firma de Profesor.pdf')
+        firma = ConvocatoriaEnroladoDocumento.objects.create(medico=Medico.objects.get(id=medicoId),
+                                                             convocatoria=Convocatoria.objects.get(id=convocatoriaId),
+                                                             catTiposDocumento=CatTiposDocumento.objects.get(id=18), isValidado=True, documento='Firma del Profesor.pdf')
+        tesis = ConvocatoriaEnroladoDocumento.objects.create(medico=Medico.objects.get(id=medicoId),
+                                                             convocatoria=Convocatoria.objects.get(id=convocatoriaId),
+                                                             catTiposDocumento=CatTiposDocumento.objects.get(id=19), isValidado=True, documento='Tesis de Cirugía Plástica.pdf')
+        fotoDiplo = ConvocatoriaEnroladoDocumento.objects.create(medico=Medico.objects.get(id=medicoId),
+                                                             convocatoria=Convocatoria.objects.get(id=convocatoriaId),
+                                                             catTiposDocumento=CatTiposDocumento.objects.get(id=14), isValidado=True, documento='Fotografía Diploma.pdf')
+        json = {
+            'medicoId': medicoId,
+            'convocatoriaId': convocatoriaId,
+            'docCurriculo': cedCurr.id,
+            'docCartaNoImp': cartNoImp.id,
+            'listCiru': listado.id,
+            'firmaProfesor': firma.id,
+            'tesisCiru': tesis.id,
+            'fotoDiplo': fotoDiplo.id
+        }
+        return Response(json, status.HTTP_201_CREATED)
+
+
+class ConvocatoriaEnroladosCalificarUpdateView(UpdateAPIView):
+    queryset = ConvocatoriaEnrolado.objects.filter()
+    serializer_class = ConvocatoriaEnroladoCalificarSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
 
 # ES DE PRUEBA NO USAR!!!
 

@@ -4,7 +4,9 @@ from django.shortcuts import render
 from rest_framework.generics import CreateAPIView
 from api.exceptions import *
 from .serializers import *
-from api.logger import log
+# from api.logger import log
+import logging
+log = logging.getLogger('django')
 from preregistro.models import *
 from rest_framework.views import APIView
 from api.Paginacion import Paginacion
@@ -32,7 +34,7 @@ class ChatCreateView(CreateAPIView):
             Notificacion.objects.create(titulo='Chat',mensaje='Tiene un nuevo mensaje',destinatario=destinatario,remitente=0)
             
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 

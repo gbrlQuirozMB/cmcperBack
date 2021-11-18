@@ -1,8 +1,10 @@
+from api.exceptions import *
 from preregistro.models import Medico
 from .models import *
 from rest_framework import fields, serializers
-from api.logger import log
-from api.exceptions import *
+# from api.logger import log
+import logging
+log = logging.getLogger('django')
 
 
 class EsExtranjeroSerializer(serializers.ModelSerializer):
@@ -45,13 +47,13 @@ class ConvocatoriaSerializer(serializers.ModelSerializer):
         sedesData = validated_data.pop('sedes')
         for dato in sedesData:
             if not bool(dato):
-                log.info(f'campos incorrectos: catSedes')
+                log.error(f'--->>>campos incorrectos: catSedes')
                 raise CamposIncorrectos({"catSedes": ["Este campo es requerido"]})
 
         tiposExameneData = validated_data.pop('tiposExamen')
         for dato in tiposExameneData:
             if not bool(dato):
-                log.info(f'campos incorrectos: catTiposExamen')
+                log.error(f'--->>>campos incorrectos: catTiposExamen')
                 raise CamposIncorrectos({"catTiposExamen": ["Este campo es requerido"]})
 
         convocatoria = Convocatoria.objects.create(**validated_data)
@@ -67,13 +69,13 @@ class ConvocatoriaSerializer(serializers.ModelSerializer):
         for dato in sedesData:
 
             if not bool(dato):
-                log.info(f'campos incorrectos: catSedes')
+                log.error(f'--->>>campos incorrectos: catSedes')
                 raise CamposIncorrectos({"catSedes": ["Este campo es requerido"]})
 
         tiposExameneData = validated_data.pop('tiposExamen')
         for dato in tiposExameneData:
             if not bool(dato):
-                log.info(f'campos incorrectos: catTiposExamen')
+                log.error(f'--->>>campos incorrectos: catTiposExamen')
                 raise CamposIncorrectos({"catTiposExamen": ["Este campo es requerido"]})
 
         instance.fechaInicio = validated_data.get('fechaInicio', instance.fechaInicio)
@@ -102,14 +104,14 @@ class ConvocatoriaListSerializer(serializers.ModelSerializer):
         fields = ['id', 'nombre', 'fechaInicio', 'fechaTermino', 'fechaExamen']
 
 
-class CatSedesSerializer(serializers.ModelSerializer):
+class CatSedesInternalSerializer(serializers.ModelSerializer):
     class Meta:
         model = CatSedes
         fields = '__all__'
 
 
 class SedeGetDetailSerializer(serializers.ModelSerializer):
-    catSedes = CatSedesSerializer(read_only=True)
+    catSedes = CatSedesInternalSerializer(read_only=True)
 
     class Meta:
         model = Sede
@@ -258,13 +260,21 @@ class ConvocatoriaEnroladoMedicoAPagarDetailSerializer(serializers.ModelSerializ
     def to_representation(self, instance):
         repr = super().to_representation(instance)
         repr['catTiposExamen'] = instance.catTiposExamen.descripcion
+        tipoExamen = instance.catTiposExamen.id
         repr['catSedes'] = instance.catSedes.descripcion
         repr['convocatoria'] = instance.convocatoria.nombre
         repr['medico'] = instance.medico.nombre + ' ' + instance.medico.apPaterno
-        # repr['aPagar'] = instance.catTiposExamen.precio
-        tipo = self.context.get('tipo')  # recibimos variable extra!!!
-        dato = CatPagos.objects.get(tipo=tipo)  # diferente precio si estudio en el extrajero
-        repr['aPagar'] = dato.precio
+        tipo = self.context.get('tipo')  # recibimos variable extra!!!  2-nacional/3-extranjero
+        if tipoExamen == 2:  # examen especial
+            tipo = 4
+        repr['tipo'] = tipo
+        try:
+            dato = CatPagos.objects.get(id=tipo)  # diferente precio si estudio en el extrajero, nacional o especial
+            repr['aPagar'] = dato.precio
+            repr['descripcion'] = dato.descripcion
+        except:
+            repr['aPagar'] = 0.0
+            repr['descripcion'] = 'No hay descripcion'
 
         return repr
 
@@ -273,3 +283,9 @@ class ConvocatoriaEnroladoMedicoPagadoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConvocatoriaEnrolado
         fields = ['id', 'isPagado']
+
+
+class ConvocatoriaEnroladoCalificarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConvocatoriaEnrolado
+        fields = ['id', 'calificacion', 'isAprobado']

@@ -9,11 +9,18 @@ from django.contrib.auth.models import User
 from convocatoria.models import ConvocatoriaEnrolado
 from recertificacion.models import PorExamen, Renovacion, RecertificacionItemDocumento
 from certificados.models import Certificado
+from actividadesAvaladas.models import ActividadAvalada, AsistenteActividadAvalada
+from catalogos.models import CatPagos
 
-from api.logger import log
+# from api.logger import log
+import logging
+log = logging.getLogger('django')
 from api.exceptions import *
 
 from rest_framework import response, status, permissions
+
+from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter, BooleanFilter
+
 
 
 # Create your views here.
@@ -24,10 +31,11 @@ class SubirPagoCreateView(CreateAPIView):
         request.data['estatus'] = 3
         serializer = PagoSerializer(data=request.data)
         if serializer.is_valid():
-            datoUser = User.objects.filter(is_superuser=True, is_staff=True).values_list('id')
-            Notificacion.objects.create(titulo='Convocatoria', mensaje='Se subió un pago', destinatario=datoUser[0][0], remitente=0)
+            datoUser = User.objects.filter(is_superuser=True, is_staff=True).values_list('id') # obteniendo al admin
+            datosCatalogo = CatPagos.objects.get(id=request.data.get('tipo')) # obteniendo la descripcion del tipo de pago
+            Notificacion.objects.create(titulo=datosCatalogo.descripcion, mensaje='Se subió un pago', destinatario=datoUser[0][0], remitente=0)
             return self.create(request, *args, **kwargs)
-        log.info(f'campos incorrectos: {serializer.errors}')
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 
 
@@ -45,7 +53,7 @@ class PagosListView(ListAPIView):
 
     def get_queryset(self):
         estatus = self.kwargs['estatus']
-        log.info(f'se busca por: estatus: {estatus}')
+        # log.error(f'--->>>se busca por: estatus: {estatus}')
 
         return getQuerysetEstatus(estatus)
 
@@ -55,7 +63,6 @@ class PagoAceptarUpdateView(UpdateAPIView):
     serializer_class = PagoAceptarRechazarSerializer
     permission_classes = (permissions.IsAdminUser,)
     http_method_names = ['put']
-    
 
     def put(self, request, *args, **kwargs):
         id = kwargs['pk']
@@ -65,7 +72,7 @@ class PagoAceptarUpdateView(UpdateAPIView):
             raise ResponseError('No existe registro', 404)
 
         # si se esta aceptando el pago de una CONVOCATORIA
-        if dato.tipo == 1:
+        if dato.tipo == 2 or dato.tipo == 3 or dato.tipo == 4:
             verificador = ConvocatoriaEnrolado.objects.filter(id=dato.externoId)
             if not verificador:
                 raise ResponseError('No existe el ID de convocatoria', 404)
@@ -79,7 +86,7 @@ class PagoAceptarUpdateView(UpdateAPIView):
                 raise ResponseError('No tiene permitido pagar', 409)
 
         # si se esta aceptando el pago de una RECERTIFICACION EXAMEN
-        if dato.tipo == 2:
+        if dato.tipo == 1:
             verificador = PorExamen.objects.filter(id=dato.externoId)
             if not verificador:
                 raise ResponseError('No existe el ID de porExamen', 404)
@@ -93,30 +100,35 @@ class PagoAceptarUpdateView(UpdateAPIView):
                 raise ResponseError('No tiene permitido pagar', 409)
 
         # si se esta aceptando el pago de una RECERTIFICACION RENOVACION
-        if dato.tipo == 3:
-            # request.data['estatus'] = 1
-            # medico = Medico.objects.get(id=dato.medico.id)
-            # Certificado.objects.create(medico=medico, documento='', descripcion='generado automaticamente por recertificacion renovacion', isVencido=False, estatus=1)
-            # return self.update(request, *args, **kwargs)
+        if dato.tipo == 6:
             verificador = Renovacion.objects.filter(id=dato.externoId)
             if not verificador:
                 raise ResponseError('No existe el ID de renovacion', 404)
             cuenta = Renovacion.objects.filter(id=dato.externoId).count()
             if cuenta == 1:
                 request.data['estatus'] = 1
-                # Renovacion.objects.filter(id=dato.externoId).update(isPagado=True)
                 Renovacion.objects.filter(id=dato.externoId).delete()
                 RecertificacionItemDocumento.objects.filter(medico=dato.medico.id).delete()
+                # Medico.objects.filter(id=dato.medico.id).update(isCertificado=True)  #quiza no sea tan buena idea meter aqui el update porque es un proceso de tesoreria
                 return self.update(request, *args, **kwargs)
-            
-
+        
+        # si se esta aceptando el pago de una ACTIVIDAD AVALADA
+        if dato.tipo == 5:
+            verificador = ActividadAvalada.objects.filter(id=dato.externoId)
+            if not verificador:
+                raise ResponseError('No existe el ID de actividad avalada', 404)
+            cuenta = ActividadAvalada.objects.filter(id=dato.externoId).count()
+            if cuenta == 1:
+                request.data['estatus'] = 1
+                ActividadAvalada.objects.filter(id=dato.externoId).update(isPagado=True) # ponemos en pagado a la Act Avala
+                AsistenteActividadAvalada.objects.filter(actividadAvalada=dato.externoId).update(isPagado=True) # ponemos en pagado a los asistentes de la Act Avala
+                return self.update(request, *args, **kwargs)
 
 class PagoRechazarUpdateView(UpdateAPIView):
     queryset = Pago.objects.filter()
     serializer_class = PagoAceptarRechazarSerializer
     permission_classes = (permissions.IsAdminUser,)
     http_method_names = ['put']
-    
 
     def put(self, request, *args, **kwargs):
         id = kwargs['pk']
@@ -125,7 +137,7 @@ class PagoRechazarUpdateView(UpdateAPIView):
         except Exception as e:
             raise ResponseError('No existe registro', 404)
 
-        if dato.tipo == 1:  # si se esta rechazando el pago de una CONVOCATORIA
+        if dato.tipo == 2 or dato.tipo == 3 or dato.tipo == 4:  # si se esta rechazando el pago de una CONVOCATORIA
             verificador = ConvocatoriaEnrolado.objects.filter(id=dato.externoId)
             if not verificador:
                 raise ResponseError('No existe el ID de convocatoria', 404)
@@ -138,7 +150,7 @@ class PagoRechazarUpdateView(UpdateAPIView):
             if cuenta == 1:
                 raise ResponseError('No tiene permitido pagar', 409)
 
-        if dato.tipo == 2:  # si se esta rechazando el pago de una RECERTIFICACION EXAMEN
+        if dato.tipo == 1:  # si se esta rechazando el pago de una RECERTIFICACION EXAMEN
             verificador = PorExamen.objects.filter(id=dato.externoId)
             if not verificador:
                 raise ResponseError('No existe el ID de porExamen', 404)
@@ -151,7 +163,7 @@ class PagoRechazarUpdateView(UpdateAPIView):
             if cuenta == 1:
                 raise ResponseError('No tiene permitido pagar', 409)
 
-        if dato.tipo == 3:  # si se esta rechazando el pago de una RECERTIFICACION RENOVACION
+        if dato.tipo == 6:  # si se esta rechazando el pago de una RECERTIFICACION RENOVACION
             verificador = Renovacion.objects.filter(id=dato.externoId)
             if not verificador:
                 raise ResponseError('No existe el ID de renovacion', 404)
@@ -162,3 +174,28 @@ class PagoRechazarUpdateView(UpdateAPIView):
                 return self.update(request, *args, **kwargs)
             # return self.update(request, *args, **kwargs)
             raise ResponseError('No tiene permitido pagar', 409)
+        
+        # si se esta aceptando el pago de una ACTIVIDAD AVALADA
+        if dato.tipo == 5:
+            verificador = ActividadAvalada.objects.filter(id=dato.externoId)
+            if not verificador:
+                raise ResponseError('No existe el ID de actividad avalada', 404)
+            cuenta = ActividadAvalada.objects.filter(id=dato.externoId).count()
+            if cuenta == 1:
+                request.data['estatus'] = 2
+                ActividadAvalada.objects.filter(id=dato.externoId).update(isPagado=False) # ponemos en pagado a la Act Avala
+                AsistenteActividadAvalada.objects.filter(actividadAvalada=dato.externoId).update(isPagado=False) # ponemos en pagado a los asistentes de la Act Avala
+                return self.update(request, *args, **kwargs)
+
+
+class PagoFilter(FilterSet):
+    class Meta:
+        model = Pago
+        fields = ['medico', 'tipo', 'externoId']
+
+
+class PagoFilteredListView(ListAPIView):
+    queryset = Pago.objects.all()
+    serializer_class = PagosListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = PagoFilter

@@ -3,7 +3,7 @@ import json
 from notificaciones.models import Notificacion
 
 from django.contrib.auth.models import User
-from preregistro.models import Medico
+from preregistro.models import *
 from django.http import response
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -36,7 +36,7 @@ class Post201Test(APITestCase):
             "numExterior": "111",
             "rfcFacturacion": "111",
             "cedProfesional": "333333",
-            "cedEspecialidad": "666666",
+            # "cedEspecialidad": "666666",
             "cedCirugiaGral": "999999",
             "hospitalResi": "hospital del issste",
             "telJefEnse": "7719876543",
@@ -171,15 +171,14 @@ class GetDetail200Test(APITestCase):
                               deleMuni='deleMuni3', colonia='colonia', calle='calle3', cp='cp3', numExterior='numExterior3', rfcFacturacion='rfcFacturacion3', cedProfesional='cedProfesional3',
                               cedEspecialidad='cedEspecialidad3', cedCirugiaGral='cedCirugiaGral3', hospitalResi='hospitalResi3', telJefEnse='telJefEnse3', fechaInicioResi='1999-06-06',
                               fechaFinResi='2000-07-07', telCelular='telCelular3', telParticular='telParticular3', email='email3', fotoPerfil='mi_foto_999.png')
-        
+
         self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
-        
 
     def test(self):
         self.client.force_authenticate(user=self.user)
-        
+
         response = self.client.get('/api/preregistro/detail/3/')
-        print(f'response JSON ===>>> {nl} {response.data} {nl} ---')
+        print(f'response JSON ===>>> {nl} {json.dumps(response.data)} {nl} ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
@@ -270,7 +269,7 @@ class PutFotoPerfil200Test(APITestCase):
                               cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06',
                               fechaFinResi='2000-07-07', telCelular='telCelular1', telParticular='telParticular1', email='email1')
 
-        archivo = open('./uploads/banner.png', 'rb')
+        archivo = open('./uploads/testUnit.png', 'rb')
         imgFile = SimpleUploadedFile(archivo.name, archivo.read(), content_type='image/png')
 
         self.json = {
@@ -310,3 +309,222 @@ class baseDatosTest(APITestCase):
         username = datosMedico[0][0][0:3] + datosMedico[0][1][0:3] + datosMedico[0][4][4:6]
 
         print(username)
+
+
+class PostHorarioAtencionTest(APITestCase):
+    def setUp(self):
+        medico9 = Medico.objects.create(
+            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999)
+
+        self.json = {
+            "medico": 9,
+            "dia": "Martes",
+            "horaInicio": "9:09",
+            "horaTermino": "18:33"
+        }
+
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post('/api/preregistro/horario-atencion/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+
+class GetHorarioAtencionListTest(APITestCase):
+    def setUp(self):
+        medico3 = Medico.objects.create(
+            id=3, nombre='elianid', apPaterno='tolentino', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=333)
+        medico9 = Medico.objects.create(
+            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999)
+
+        HorarioAtencion.objects.create(medico=medico9, dia='Lunes', horaInicio='3:03', horaTermino='6:06')
+        HorarioAtencion.objects.create(medico=medico9, dia='Martes', horaInicio='6:06', horaTermino='9:09')
+        HorarioAtencion.objects.create(medico=medico9, dia='Miércoles', horaInicio='9:09', horaTermino='12:12')
+        HorarioAtencion.objects.create(medico=medico3, dia='Lunes', horaInicio='3:03', horaTermino='6:06')
+
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/preregistro/horario-atencion/medico/9/list/')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/preregistro/horario-atencion/medico/99/list/')
+        print(f'response JSON ===>>> 404 \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class GetHorarioAtencionDetailTest(APITestCase):
+    def setUp(self):
+        medico3 = Medico.objects.create(
+            id=3, nombre='elianid', apPaterno='tolentino', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=333)
+        medico9 = Medico.objects.create(
+            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999)
+
+        HorarioAtencion.objects.create(medico=medico9, dia='Lunes', horaInicio='3:03', horaTermino='6:06')
+        HorarioAtencion.objects.create(medico=medico9, dia='Martes', horaInicio='6:06', horaTermino='9:09')
+        HorarioAtencion.objects.create(medico=medico9, dia='Miércoles', horaInicio='9:09', horaTermino='12:12')
+        HorarioAtencion.objects.create(medico=medico3, dia='Lunes', horaInicio='3:03', horaTermino='6:06')
+
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/preregistro/horario-atencion/3/detail/')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/preregistro/horario-atencion/9/detail/')
+        print(f'response JSON ===>>> 404 \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class PutHorarioAtencionTest(APITestCase):
+    def setUp(self):
+        medico3 = Medico.objects.create(
+            id=3, nombre='elianid', apPaterno='tolentino', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=333)
+        medico9 = Medico.objects.create(
+            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999)
+
+        HorarioAtencion.objects.create(medico=medico9, dia='Lunes', horaInicio='3:03', horaTermino='6:06')
+        HorarioAtencion.objects.create(medico=medico9, dia='Martes', horaInicio='6:06', horaTermino='9:09')
+        HorarioAtencion.objects.create(medico=medico9, dia='Miércoles', horaInicio='9:09', horaTermino='12:12')  # este es el que cambia
+        HorarioAtencion.objects.create(medico=medico3, dia='Lunes', horaInicio='3:03', horaTermino='6:06')
+
+        self.json = {
+            "medico": 3,
+            "dia": "Viernes",
+            "horaInicio": "00:00",
+            "horaTermino": "11:11"
+        }
+
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.put('/api/preregistro/horario-atencion/3/update/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> ok \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.put('/api/preregistro/horario-atencion/9/update/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> 404 \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class DeleteHorarioAtencionTest(APITestCase):
+    def setUp(self):
+        medico3 = Medico.objects.create(
+            id=3, nombre='elianid', apPaterno='tolentino', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=333)
+        medico9 = Medico.objects.create(
+            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999)
+
+        HorarioAtencion.objects.create(medico=medico9, dia='Lunes', horaInicio='3:03', horaTermino='6:06')
+        HorarioAtencion.objects.create(medico=medico9, dia='Martes', horaInicio='6:06', horaTermino='9:09')
+        HorarioAtencion.objects.create(medico=medico9, dia='Miércoles', horaInicio='9:09', horaTermino='12:12')  # este es el que cambia
+        HorarioAtencion.objects.create(medico=medico3, dia='Lunes', horaInicio='3:03', horaTermino='6:06')
+
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        cuenta = HorarioAtencion.objects.all().count()
+        print(f'--->>>cuenta registros original: {cuenta}')
+
+        response = self.client.delete('/api/preregistro/horario-atencion/3/delete/')
+        print(f'response JSON ===>>> ok 204 sin contenido \n {response.content} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        response = self.client.delete('/api/preregistro/horario-atencion/9/delete/')
+        print(f'response JSON ===>>> 404 \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        cuenta = HorarioAtencion.objects.all().count()
+        print(f'--->>>cuenta registros despues: {cuenta}')
+
+
+class PutPreregistroTest(APITestCase):
+    def setUp(self):
+        Medico.objects.create(id=1, nombre='n1', apPaterno='app1', apMaterno='apm1', rfc='rfc1', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+                              deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+                              cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06',
+                              fechaFinResi='2000-07-07', telCelular='telCelular1', telParticular='telParticular1', email='email1')
+        Medico.objects.create(id=2, nombre='n2', apPaterno='app2', apMaterno='apm2', rfc='rfc2', curp='curp2', fechaNac='2020-09-09', pais='pais2', estado='estado2', ciudad='ciudad2',
+                              deleMuni='deleMuni2', colonia='colonia', calle='calle2', cp='cp2', numExterior='numExterior2', rfcFacturacion='rfcFacturacion2', cedProfesional='cedProfesional2',
+                              cedEspecialidad='cedEspecialidad2', cedCirugiaGral='cedCirugiaGral2', hospitalResi='hospitalResi2', telJefEnse='telJefEnse2', fechaInicioResi='1999-06-06',
+                              fechaFinResi='2000-07-07', telCelular='telCelular2', telParticular='telParticular2', email='email2')
+        Medico.objects.create(id=3, nombre='n3', apPaterno='app3', apMaterno='apm3', rfc='rfc3', curp='curp3', fechaNac='2020-09-09', pais='pais3', estado='estado3', ciudad='ciudad3',
+                              deleMuni='deleMuni3', colonia='colonia', calle='calle3', cp='cp3', numExterior='numExterior3', rfcFacturacion='rfcFacturacion3', cedProfesional='cedProfesional3',
+                              cedEspecialidad='cedEspecialidad3', cedCirugiaGral='cedCirugiaGral3', hospitalResi='hospitalResi3', telJefEnse='telJefEnse3', fechaInicioResi='1999-06-06',
+                              fechaFinResi='2000-07-07', telCelular='telCelular3', telParticular='telParticular3', email='email3', fotoPerfil='mi_foto_999.png')
+
+        self.json = {
+            "nombre": "gabriel",
+            "apPaterno": "quiroz",
+            "apMaterno": "olvera",
+            "rfc": "quog000406",
+            "curp": "quog000406CURP",
+            "fechaNac": "2020-12-09",
+            "pais": "mexico",
+            "estado": "hidalgo",
+            "ciudad": "pachuca",
+            "deleMuni": "pachuca de soto",
+            "colonia": "issste",
+            "calle": "rio moctezuma",
+            "cp": "42083",
+            "numExterior": "111",
+            "rfcFacturacion": "111",
+            "cedProfesional": "333333",
+            "cedEspecialidad": "666666",
+            "cedCirugiaGral": "999999",
+            "hospitalResi": "hospital del issste",
+            "telJefEnse": "7719876543",
+            "fechaInicioResi": "1999-06-09",
+            "fechaFinResi": "2000-07-10",
+            "telCelular": "7711896189",
+            "telParticular": "7711234567",
+            "email": "doctor@medico.com"
+        }
+
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.put('/api/preregistro/update/3/', data=self.json)
+        print(f'response JSON ===>>> {nl} {json.dumps(response.data)} {nl} ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
