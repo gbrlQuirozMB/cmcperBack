@@ -8,5 +8,6 @@ app_name = 'conacem'
 urlpatterns = [
     path('list/', MedicosListView.as_view(), ),
     path('create/', ConacemCreateView.as_view(), ),
+    path('bajar-excel/<conacemId>/list/', ConacemDownExcel.as_view(), ),
 
 ]

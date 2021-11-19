@@ -13,46 +13,48 @@ from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 import json
 
+from django.db.models.functions import Concat, TruncMonth, Extract
 
-def configDB():
-    medico3 = Medico.objects.create(
-        id=3, nombre='elianid', apPaterno='tolentino', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
-        deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
-        cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-        telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=333, diplomaConacem='Pone Dora')
-    medico6 = Medico.objects.create(
-        id=6, nombre='laura', apPaterno='cabrera', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
-        deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
-        cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-        telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=666, diplomaConacem='GlandM Enormes')
-    medico9 = Medico.objects.create(
-        id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
-        deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
-        cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-        telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999, diplomaConacem='Yo mero')
-    medico5 = Medico.objects.create(
-        id=5, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
-        deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
-        cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
-        telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999, diplomaConacem='XXX')
 
-    Certificado.objects.create(medico=medico3, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
+def configDB(self):
+    self.medico3 = Medico.objects.create(
+        id=3, nombre='elianid', apPaterno='tolentino', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2023-03-03', pais='pais1', estado='estado1', ciudad='ciudad1',
+        deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+        cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+        telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=333, diplomaConacem='Pone Dora', titulo='Dra.')
+    self.medico6 = Medico.objects.create(
+        id=6, nombre='laura', apPaterno='cabrera', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2026-06-06', pais='pais1', estado='estado1', ciudad='ciudad1',
+        deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+        cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+        telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=666, diplomaConacem='GlandM Enormes', titulo='Dra.')
+    self.medico9 = Medico.objects.create(
+        id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2029-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+        deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+        cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+        telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999, diplomaConacem='Yo mero', titulo='Dr.')
+    self.medico5 = Medico.objects.create(
+        id=5, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2025-05-05', pais='pais1', estado='estado1', ciudad='ciudad1',
+        deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+        cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+        telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999, diplomaConacem='XXX', titulo='Dr.')
+
+    Certificado.objects.create(medico=self.medico3, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
                                fechaCaducidad=date.today()+relativedelta(years=5), estatus=1)
-    Certificado.objects.create(medico=medico3, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
+    Certificado.objects.create(medico=self.medico3, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
                                fechaCaducidad=date.today()+relativedelta(years=5), estatus=2, isConacem=True)
-    Certificado.objects.create(medico=medico9, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
+    Certificado.objects.create(medico=self.medico9, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
                                fechaCaducidad=date.today()+relativedelta(years=5), estatus=1)
-    Certificado.objects.create(medico=medico3, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
+    Certificado.objects.create(medico=self.medico3, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
                                fechaCaducidad=date.today()+relativedelta(years=5), estatus=2, isConacem=True)
-    Certificado.objects.create(medico=medico6, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
+    Certificado.objects.create(medico=self.medico6, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
                                fechaCaducidad=date.today()+relativedelta(years=5), estatus=1)
-    Certificado.objects.create(medico=medico5, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
+    Certificado.objects.create(medico=self.medico5, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
                                fechaCaducidad=date.today()+relativedelta(years=5), estatus=3, documento='ya_hay_algo.pdf', isConacem=False)
 
 
 class GetConacemListTest(APITestCase):
     def setUp(self):
-        configDB()
+        configDB(self)
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
 
     def test(self):
@@ -65,7 +67,7 @@ class GetConacemListTest(APITestCase):
 
 class PostConacemTest(APITestCase):
     def setUp(self):
-        configDB()
+        configDB(self)
 
         self.json = {
             "fechaEnvio": "2021-04-06",
@@ -120,6 +122,53 @@ class PostConacemTest(APITestCase):
             print(f'--->>>datoCertificado.id: {datoCertificado.id} -- datoCertificado.medico.id: {datoCertificado.medico.id} -- datoCertificado.isConacem: {datoCertificado.isConacem}')
 
 
+class GetDescargarExcel200Test(APITestCase):
+    def setUp(self):
+        configDB(self)
+
+        conacem1 = Conacem.objects.create(
+            fechaEnvio='2021-04-06', tituloPresidente='Dactar', nombrePresidente='gabriel quiroz', tituloResponsable='enferm', nombreResponsable='elianid tolentino', fechaEmision='2021-04-06',
+            costo=369.33, fechaValidezDel='2021-04-06', fechaValidezAl='2021-04-06', iniciaLibro=3, hoja=3, lugar=6, cupo=9)
+        conacem2 = Conacem.objects.create(
+            fechaEnvio='2021-04-06', tituloPresidente='Dactar', nombrePresidente='gabriel quiroz', tituloResponsable='enferm', nombreResponsable='elianid tolentino', fechaEmision='2021-04-06',
+            costo=369.33, fechaValidezDel='2021-04-06', fechaValidezAl='2021-04-06', iniciaLibro=3, hoja=3, lugar=6, cupo=9)
+        DetalleConcacem.objects.create(medico=self.medico3, conacem=conacem1, libro=3, foja=6, observaciones='ninguna')
+        DetalleConcacem.objects.create(medico=self.medico6, conacem=conacem1, libro=3, foja=7, observaciones='ninguna')
+        DetalleConcacem.objects.create(medico=self.medico9, conacem=conacem2, libro=3, foja=8, observaciones='ninguna')
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/conacem/bajar-excel/1/list/')
+        print(f'response JSON ===>>> ok \n {response.content} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        queryset = DetalleConcacem.objects.filter(conacem=1).annotate(
+            fNd=Extract('medico__fechaNac', 'day'),
+            fNm=Extract('medico__fechaNac', 'month'),
+            fNa=Extract('medico__fechaNac', 'year'),
+            fEd=Extract('conacem__fechaEmision', 'day'),
+            fEm=Extract('conacem__fechaEmision', 'month'),
+            fEa=Extract('conacem__fechaEmision', 'year'),
+            fVDd=Extract('conacem__fechaValidezDel', 'day'),
+            fVDm=Extract('conacem__fechaValidezDel', 'month'),
+            fVDa=Extract('conacem__fechaValidezDel', 'year'),
+            fVAd=Extract('conacem__fechaValidezAl', 'day'),
+            fVAm=Extract('conacem__fechaValidezAl', 'month'),
+            fVAa=Extract('conacem__fechaValidezAl', 'year')).values_list('medico__titulo', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno', 'medico__hospitalResi',
+                                                                         'medico__hospitalResi', 'medico__hospLaborPrim', 'medico__hospLaborSec', 'medico__rfc', 'medico__curp',
+                                                                         'medico__cedProfesional', 'fNd', 'fNm', 'fNa', 'medico__nacionalidad', 'medico__estado', 'medico__deleMuni', 'medico__sexo',
+                                                                         'fEd', 'fEm', 'fEa', 'fVDd', 'fVDm', 'fVDa', 'fVAd', 'fVAm', 'fVAa')
+
+        # queryset = DetalleConcacem.objects.filter(conacem=conacemId).values_list('medico__titulo', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno', 'medico__hospitalResi',
+        #                                                                              'medico__hospitalResi','medico__hospLaborPrim','medico__hospLaborSec','medico__rfc')
+
+        for dato in queryset:
+            print(f'dato: {dato}')
+
+
 class PruebaTest(APITestCase):
     def setUp(self):
         pass
@@ -140,3 +189,7 @@ class PruebaTest(APITestCase):
                 # print(f'--->>>BANDERA-2: {bandera} -- hoja: {hoja} --- lugar: {lugar}')
                 lugar = 1
                 hoja = hoja + 1
+
+        nombre = 'gabriel quiroz olvera'
+        nada = nombre.split(' ')[0]
+        print(f'--->>>nada: {nada}')
