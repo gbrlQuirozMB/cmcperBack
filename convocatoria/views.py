@@ -38,9 +38,6 @@ log = logging.getLogger('django')
 
 totalDocumentosExtranjero = 10
 totalDocumentosNacional = 9
-# totalDocumentosExtranjero = 9
-# totalDocumentosNacional = 8
-
 
 class EsExtranjeroUpdateView(UpdateAPIView):
     queryset = Medico.objects.filter()
