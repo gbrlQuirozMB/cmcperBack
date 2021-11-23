@@ -36,10 +36,10 @@ log = logging.getLogger('django')
 
 # Create your views here.
 
-# totalDocumentosExtranjero = 10
-# totalDocumentosNacional = 9
-totalDocumentosExtranjero = 9
-totalDocumentosNacional = 8
+totalDocumentosExtranjero = 10
+totalDocumentosNacional = 9
+# totalDocumentosExtranjero = 9
+# totalDocumentosNacional = 8
 
 
 class EsExtranjeroUpdateView(UpdateAPIView):
@@ -617,8 +617,8 @@ def preparaDatos(datos, medicoId, convocatoriaId, param, totalDocumentosExtranje
     estudioExtranjero = datos['estudioExtranjero']
     cuentaDocumentos = datos['cuentaDocumentos']
     if param == 'Engargolado':  # tiene un documento extra el cual es la ficha de registro que se genera al descargarla + 5 extras nuevos = 7
-        totalDocumentosExtranjero = totalDocumentosExtranjero + 8
-        totalDocumentosNacional = totalDocumentosNacional + 8
+        totalDocumentosExtranjero = totalDocumentosExtranjero + 7
+        totalDocumentosNacional = totalDocumentosNacional + 7
     if estudioExtranjero:
         if cuentaDocumentos == totalDocumentosExtranjero:
             datos['mensaje'] = 'correo enviado a medico estudio extranjero con todos sus documentos validados'
