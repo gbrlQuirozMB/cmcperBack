@@ -528,3 +528,54 @@ class PutPreregistroTest(APITestCase):
         response = self.client.put('/api/preregistro/update/3/', data=self.json)
         print(f'response JSON ===>>> {nl} {json.dumps(response.data)} {nl} ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+
+# python manage.py test preregistro.tests.test_preregistro.UsuariosPassTest
+class UsuariosPassTest(APITestCase):
+    def setUp(self):
+        medico3 = Medico.objects.create(
+            id=3, nombre='elianid', apPaterno='tolentino', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2023-03-03', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', numRegistro=333, diplomaConacem='Pone Dora', titulo='Dra.')
+        medico6 = Medico.objects.create(
+            id=6, nombre='laura', apPaterno='cabrera', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2026-06-06', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='laura.cabrera@mb.company', numRegistro=666, diplomaConacem='GlandM Enormes', titulo='Dra.')
+        medico9 = Medico.objects.create(
+            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2029-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999, diplomaConacem='Yo mero', titulo='Dr.')
+        # medico5 = Medico.objects.create(
+        #     id=5, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2025-05-05', pais='pais1', estado='estado1', ciudad='ciudad1',
+        #     deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+        #     cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+        #     telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999, diplomaConacem='XXX', titulo='Dr.')
+
+        # self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+        
+        response = self.client.get('/api/preregistro/genera-usuarios-pass/')
+        print(f'response JSON ===>>> ok \n {response.content} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        queryset =  Medico.objects.filter()
+        for dato in queryset:
+            print(f'--->>>dato: nombre: {dato.nombre} - username: {dato.username} - email: {dato.email}')
+        
+        
+        # queryset = User.objects.filter(id=5)
+        queryset = User.objects.filter()
+        for dato in queryset:
+            print(f'\nusername: {dato.username}')
+            print(f'email: {dato.email}')
+            print(f'password: {dato.password}')
+            print(f'first_name: {dato.first_name}')
+            print(f'last_name: {dato.last_name}')
+            print(f'user_permissions: {dato.get_user_permissions()}')

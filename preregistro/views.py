@@ -1,10 +1,20 @@
+from django.http import HttpResponse
+import csv
+from django.core.mail import EmailMultiAlternatives
+from django.utils.html import strip_tags
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
+from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.models import Permission, User
+from rest_framework.response import Response
+from api.Paginacion import Paginacion
 from notificaciones.models import Notificacion
 from django.shortcuts import render
 from datetime import datetime
 
 from django.conf import settings
 from django.shortcuts import render
-from rest_framework import permissions
+from rest_framework import status, permissions
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.views import APIView
@@ -14,17 +24,7 @@ from .serializers import *
 # from api.logger import log
 import logging
 log = logging.getLogger('django')
-from api.Paginacion import Paginacion
-from rest_framework.response import Response
 
-from django.contrib.auth.models import Permission, User
-
-from django.contrib.auth.base_user import BaseUserManager
-from django.core.mail import send_mail
-
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
-from django.core.mail import EmailMultiAlternatives
 
 # ----------------------------------------------------------------------------------Preregistro
 
@@ -208,3 +208,59 @@ class PreregistroUpdateView(UpdateAPIView):
     queryset = Medico.objects.filter()
     serializer_class = MedicoSerializer
     http_method_names = ['put']
+
+
+# def renderCsvView(request, queryset):
+#     response = HttpResponse(content_type='text/csv')
+#     # response = HttpResponse(content_type='application/ms-excel')
+#     response['Content-Disposition'] = 'attachment; filename="usuarios-claves.csv"'
+#     response.write(u'\ufeff'.encode('utf8'))
+#     writer = csv.writer(response)
+#     writer.writerow(['ID', 'Nombre', 'Apellido Paterno', 'Apellido Materno', 'Username', 'Password', 'Email'])
+#     for dato in queryset:
+#         writer.writerow((dato.get('id'), dato.get('nombre'), dato.get('apPaterno'), dato.get('apMaterno'), dato.get('username'), dato.get('password'), dato.get('email')))
+#         # writer.writerow(dato.encode('UTF-8'))
+
+#     return response
+
+
+# class UsuariosPassEndPoint(APIView):
+#     permission_classes = (permissions.AllowAny,)  # solo para probar en cliente interno thunder
+
+#     def get(self, request, *args, **kwargs):
+#         try:
+#             datosMedico = Medico.objects.filter().values_list('id', 'nombre', 'apPaterno', 'apMaterno','email')
+#             queryset = []
+#             for dato in datosMedico:
+#                 username = dato[1][0:3] + dato[2][0:3]
+#                 password = BaseUserManager().make_random_password()  # letras mayusculas, minusculas y numeros
+#                 username = username + '-' + password[0:5]
+#                 email = dato[4]
+#                 if email is None or email == '':
+#                     email = (username.replace('-','.') + '@gmail.com').lower()
+#                 # --- ponemos username y aceptado en medico
+#                 Medico.objects.filter(id=dato[0]).update(aceptado=True, username=username, email=email)
+#                 # --- creamos usuario
+#                 lastName = dato[2] + ' ' + dato[3]
+#                 user = User.objects.create_user(username=username, email=email, password=password, first_name=dato[1], last_name=lastName)
+#                 # user = User.objects.create_user(username=username, password=password, first_name=dato[1], last_name=lastName)
+#                 permisoChMed = Permission.objects.get(codename='change_medico')
+#                 permisoAdConv = Permission.objects.get(codename='add_conversacion')
+#                 permisoViConv = Permission.objects.get(codename='view_conversacion')
+#                 permisoAdMen = Permission.objects.get(codename='add_mensaje')
+#                 permisoViMen = Permission.objects.get(codename='view_mensaje')
+#                 # user.user_permissions.set([41, 44, 37, 40, 34])
+#                 user.user_permissions.set([permisoChMed, permisoAdConv, permisoViConv, permisoAdMen, permisoViMen])
+                
+#                 # --- para crear csv
+#                 valores = {'id': dato[0], 'nombre': dato[1], 'apPaterno': dato[2], 'apMaterno': dato[3], 'username': username, 'password': password, 'email':email}
+#                 queryset.append(valores)
+
+#             if not queryset:
+#                 respuesta = {"detail": "Registros no encontrados"}
+#                 return Response(respuesta, status=status.HTTP_404_NOT_FOUND)
+
+#             return renderCsvView(request, queryset)
+#         except Exception as e:
+#             respuesta = {"detail": str(e)}
+#             return Response(respuesta, status=status.HTTP_409_CONFLICT)
