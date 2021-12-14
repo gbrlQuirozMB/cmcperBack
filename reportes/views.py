@@ -62,7 +62,7 @@ class MedResidenteDetailView(RetrieveAPIView):
 # para un solo medico en una sola convocatoria
 class MedResidenteExtrasDetailView(RetrieveAPIView):
     queryset = ConvocatoriaEnrolado.objects.filter()
-    serializer_class = MedResidenteExtrasDetailView
+    serializer_class = MedResidenteExtrasDetailSerializer
     lookup_field = 'medico'
     lookup_url_kwarg = 'medicoId'
     permission_classes = (permissions.IsAdminUser,)

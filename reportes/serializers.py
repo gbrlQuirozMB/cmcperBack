@@ -25,7 +25,7 @@ class MedResidenteSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class MedResidenteExtrasDetailView(serializers.ModelSerializer):
+class MedResidenteExtrasDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConvocatoriaEnrolado
         fields = ['catSedes', 'catTiposExamen']
