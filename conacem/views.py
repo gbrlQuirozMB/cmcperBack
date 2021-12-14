@@ -44,7 +44,7 @@ class ConacemCreateView(CreateAPIView):
 
 
 def renderCsvView(request, queryset):
-    response = HttpResponse(content_type='text/csv', charset='utf-8')
+    response = HttpResponse(content_type='text/csv', charset='utf-8-sig')
     # response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename="conacem.csv"'
     # response.write(u'\ufeff'.encode('UTF-8'))
@@ -82,7 +82,7 @@ class ConacemDownExcel(APIView):
         conacemId = self.kwargs['conacemId']
         try:
             queryset = DetalleConcacem.objects.filter(
-                conacem=1, medico__medicoC__isConacem=False).annotate(
+                conacem=conacemId, medico__medicoC__isConacem=False).annotate(
                 fNd=Extract('medico__fechaNac', 'day'),
                 fNm=Extract('medico__fechaNac', 'month'),
                 fNa=Extract('medico__fechaNac', 'year'),

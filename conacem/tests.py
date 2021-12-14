@@ -144,6 +144,10 @@ class GetDescargarExcel200Test(APITestCase):
         response = self.client.get('/api/conacem/bajar-excel/1/list/')
         print(f'response JSON ===>>> ok \n {response.content} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        response = self.client.get('/api/conacem/bajar-excel/3/list/')
+        print(f'response JSON ===>>> ok \n {response.content} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
         # queryset = DetalleConcacem.objects.filter(conacem=1, medico__medicoC__isConacem=False).annotate(
         #     fNd=Extract('medico__fechaNac', 'day'),
