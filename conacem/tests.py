@@ -33,23 +33,23 @@ def configDB(self):
         cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
         telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999, diplomaConacem='Yo mero', titulo='Dr.')
     self.medico5 = Medico.objects.create(
-        id=5, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2025-05-05', pais='pais1', estado='estado1', ciudad='ciudad1',
+        id=5, nombre='grissel', apPaterno='bejarano', apMaterno='islas', rfc='quog??0406', curp='curp1', fechaNac='2025-05-05', pais='pais1', estado='estado1', ciudad='ciudad1',
         deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
         cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
         telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999, diplomaConacem='XXX', titulo='Dr.')
 
     Certificado.objects.create(medico=self.medico3, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
-                               fechaCaducidad=date.today()+relativedelta(years=5), estatus=1)
+                               fechaCaducidad=date.today()+relativedelta(years=5), estatus=1, documento='ya_hay_algo.pdf', isConacem=False)
     Certificado.objects.create(medico=self.medico3, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
-                               fechaCaducidad=date.today()+relativedelta(years=5), estatus=2, isConacem=True)
+                               fechaCaducidad=date.today()+relativedelta(years=5), estatus=2, documento='ya_hay_algo.pdf', isConacem=True)
     Certificado.objects.create(medico=self.medico9, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
-                               fechaCaducidad=date.today()+relativedelta(years=5), estatus=1)
+                               fechaCaducidad=date.today()+relativedelta(years=5), estatus=1, documento='ya_hay_algo.pdf', isConacem=False)
     Certificado.objects.create(medico=self.medico3, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
-                               fechaCaducidad=date.today()+relativedelta(years=5), estatus=2, isConacem=True)
+                               fechaCaducidad=date.today()+relativedelta(years=5), estatus=2, documento='ya_hay_algo.pdf', isConacem=True)
     Certificado.objects.create(medico=self.medico6, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
-                               fechaCaducidad=date.today()+relativedelta(years=5), estatus=1)
+                               fechaCaducidad=date.today()+relativedelta(years=5), estatus=1, documento='ya_hay_algo.pdf', isConacem=False)
     Certificado.objects.create(medico=self.medico5, descripcion='generado automaticamente', isVencido=False, fechaCertificacion=date.today(),
-                               fechaCaducidad=date.today()+relativedelta(years=5), estatus=3, documento='ya_hay_algo.pdf', isConacem=False)
+                               fechaCaducidad=date.today()+relativedelta(years=5), estatus=3, documento='ya_hay_algo.pdf', isConacem=True)
 
 
 class GetConacemListTest(APITestCase):
@@ -145,28 +145,30 @@ class GetDescargarExcel200Test(APITestCase):
         print(f'response JSON ===>>> ok \n {response.content} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        queryset = DetalleConcacem.objects.filter(conacem=1).annotate(
-            fNd=Extract('medico__fechaNac', 'day'),
-            fNm=Extract('medico__fechaNac', 'month'),
-            fNa=Extract('medico__fechaNac', 'year'),
-            fEd=Extract('conacem__fechaEmision', 'day'),
-            fEm=Extract('conacem__fechaEmision', 'month'),
-            fEa=Extract('conacem__fechaEmision', 'year'),
-            fVDd=Extract('conacem__fechaValidezDel', 'day'),
-            fVDm=Extract('conacem__fechaValidezDel', 'month'),
-            fVDa=Extract('conacem__fechaValidezDel', 'year'),
-            fVAd=Extract('conacem__fechaValidezAl', 'day'),
-            fVAm=Extract('conacem__fechaValidezAl', 'month'),
-            fVAa=Extract('conacem__fechaValidezAl', 'year')).values_list('medico__titulo', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno', 'medico__hospitalResi',
-                                                                         'medico__hospitalResi', 'medico__hospLaborPrim', 'medico__hospLaborSec', 'medico__rfc', 'medico__curp',
-                                                                         'medico__cedProfesional', 'fNd', 'fNm', 'fNa', 'medico__nacionalidad', 'medico__estado', 'medico__deleMuni', 'medico__sexo',
-                                                                         'fEd', 'fEm', 'fEa', 'fVDd', 'fVDm', 'fVDa', 'fVAd', 'fVAm', 'fVAa')
+        # queryset = DetalleConcacem.objects.filter(conacem=1, medico__medicoC__isConacem=False).annotate(
+        #     fNd=Extract('medico__fechaNac', 'day'),
+        #     fNm=Extract('medico__fechaNac', 'month'),
+        #     fNa=Extract('medico__fechaNac', 'year'),
+        #     fEd=Extract('conacem__fechaEmision', 'day'),
+        #     fEm=Extract('conacem__fechaEmision', 'month'),
+        #     fEa=Extract('conacem__fechaEmision', 'year'),
+        #     fVDd=Extract('conacem__fechaValidezDel', 'day'),
+        #     fVDm=Extract('conacem__fechaValidezDel', 'month'),
+        #     fVDa=Extract('conacem__fechaValidezDel', 'year'),
+        #     fVAd=Extract('conacem__fechaValidezAl', 'day'),
+        #     fVAm=Extract('conacem__fechaValidezAl', 'month'),
+        #     fVAa=Extract('conacem__fechaValidezAl', 'year')).values_list('medico__titulo', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno', 'medico__hospitalResi',
+        #                                                                  'medico__hospitalResi', 'medico__hospLaborPrim', 'medico__hospLaborSec', 'medico__rfc', 'medico__curp',
+        #                                                                  'medico__cedProfesional', 'fNd', 'fNm', 'fNa', 'medico__nacionalidad', 'medico__estado', 'medico__deleMuni', 'medico__sexo',
+        #                                                                  'fEd', 'fEm', 'fEa', 'fVDd', 'fVDm', 'fVDa', 'fVAd', 'fVAm', 'fVAa', 'medico__medicoC__id', 'libro', 'foja',
+        #                                                                  'conacem__tituloPresidente','conacem__nombrePresidente','conacem__tituloResponsable','conacem__nombreResponsable',
+        #                                                                  'conacem__costo','medico__email','observaciones','medico__cedEspecialidad')
 
         # queryset = DetalleConcacem.objects.filter(conacem=conacemId).values_list('medico__titulo', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno', 'medico__hospitalResi',
         #                                                                              'medico__hospitalResi','medico__hospLaborPrim','medico__hospLaborSec','medico__rfc')
 
-        for dato in queryset:
-            print(f'dato: {dato}')
+        # for dato in queryset:
+        #     print(f'dato: {dato}')
 
 
 class PruebaTest(APITestCase):

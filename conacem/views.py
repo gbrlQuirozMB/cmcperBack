@@ -44,30 +44,53 @@ class ConacemCreateView(CreateAPIView):
 
 
 def renderCsvView(request, queryset):
-    response = HttpResponse(content_type='text/csv')
+    response = HttpResponse(content_type='text/csv', charset='utf-8')
     # response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename="conacem.csv"'
-    response.write(u'\ufeff'.encode('utf8'))
+    # response.write(u'\ufeff'.encode('UTF-8'))
     writer = csv.writer(response)
-    writer.writerow(['Título', 'Nombre', 'Apellido Paterno', 'Apellido Materno'])
+    writer.writerow(['Título', 'Nombre', 'Apellido Paterno', 'Apellido Materno', 'Universidad de egreso de la especialidad', 'Institución de residencia de la especialidad',
+                     'Institución dónde labora', 'Hospital privado dónde labora', 'R.F.C.', 'CURP', 'Cédula profesional de médico general', 'FN-Día', 'FN-Mes', 'FN-Año', 'Nacionalidad',
+                     'Estado donde radica', 'Municipio', 'Género Femenino = F Masculino = M', 'FEC-Día', 'FEC-Mes', 'FEC-Año', 'VDe-Día', 'VDe-Mes', 'VDe-Año', 'VAl-Día', 'VAl-Mes', 'VAl-Año',
+                     'No. Certificado', 'Libro', 'Foja', 'Título', 'Presidente', 'Título', 'Responsable', 'Costo', 'Email', 'Observaciones', 'Cédula de la especialidad'])
+    # writer.writerow([u'Hóla'.encode('utf-8')])
+    # writer.writerow([u'Hóla'.encode('iso-8859-1')])
     for dato in queryset:
         writer.writerow(dato)
-        # writer.writerow(dato.encode('UTF-8'))
-
+        # writer.writerow([unicode(v).encode('utf-8') if v is not None else '' for v in row])
+    
+    
+    
+    
+        
     return response
 
 
 class ConacemDownExcel(APIView):
+    # permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.IsAdminUser,)
+    
     def get(self, request, *args, **kwargs):
         conacemId = self.kwargs['conacemId']
         try:
-            # queryset = DetalleConcacem.objects.filter(conacem=conacemId).values_list('medico__titulo', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno', 'medico__hospitalResi',
-            #                                                                          'medico__hospitalResi','medico__hospLaborPrim','medico__hospLaborSec','medico__rfc')
-
-            queryset = DetalleConcacem.objects.filter(conacem=1).annotate(
+            queryset = DetalleConcacem.objects.filter(
+                conacem=1, medico__medicoC__isConacem=False).annotate(
                 fNd=Extract('medico__fechaNac', 'day'),
                 fNm=Extract('medico__fechaNac', 'month'),
-                fNa=Extract('medico__fechaNac', 'year')).values_list('medico__nombre', 'fNd', 'fNm', 'fNa')
+                fNa=Extract('medico__fechaNac', 'year'),
+                fEd=Extract('conacem__fechaEmision', 'day'),
+                fEm=Extract('conacem__fechaEmision', 'month'),
+                fEa=Extract('conacem__fechaEmision', 'year'),
+                fVDd=Extract('conacem__fechaValidezDel', 'day'),
+                fVDm=Extract('conacem__fechaValidezDel', 'month'),
+                fVDa=Extract('conacem__fechaValidezDel', 'year'),
+                fVAd=Extract('conacem__fechaValidezAl', 'day'),
+                fVAm=Extract('conacem__fechaValidezAl', 'month'),
+                fVAa=Extract('conacem__fechaValidezAl', 'year')).values_list(
+                'medico__titulo', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno', 'medico__hospitalResi', 'medico__hospitalResi', 'medico__hospLaborPrim', 'medico__hospLaborSec',
+                'medico__rfc', 'medico__curp', 'medico__cedProfesional', 'fNd', 'fNm', 'fNa', 'medico__nacionalidad', 'medico__estado', 'medico__deleMuni', 'medico__sexo', 'fEd', 'fEm', 'fEa',
+                'fVDd', 'fVDm', 'fVDa', 'fVAd', 'fVAm', 'fVAa', 'medico__medicoC__id', 'libro', 'foja', 'conacem__tituloPresidente', 'conacem__nombrePresidente', 'conacem__tituloResponsable',
+                'conacem__nombreResponsable', 'conacem__costo', 'medico__email', 'observaciones', 'medico__cedEspecialidad')
 
             # print(f'--->>>queryset como tupla(values_list): {queryset}')
             if not queryset:
