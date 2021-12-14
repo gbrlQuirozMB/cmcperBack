@@ -49,15 +49,23 @@ def renderCsvView(request, queryset):
     response['Content-Disposition'] = 'attachment; filename="conacem.csv"'
     # response.write(u'\ufeff'.encode('UTF-8'))
     writer = csv.writer(response)
-    writer.writerow(['Título', 'Nombre', 'Apellido Paterno', 'Apellido Materno', 'Universidad de egreso de la especialidad', 'Institución de residencia de la especialidad',
+    titulos = ['Título', 'Nombre', 'Apellido Paterno', 'Apellido Materno', 'Universidad de egreso de la especialidad', 'Institución de residencia de la especialidad',
                      'Institución dónde labora', 'Hospital privado dónde labora', 'R.F.C.', 'CURP', 'Cédula profesional de médico general', 'FN-Día', 'FN-Mes', 'FN-Año', 'Nacionalidad',
                      'Estado donde radica', 'Municipio', 'Género Femenino = F Masculino = M', 'FEC-Día', 'FEC-Mes', 'FEC-Año', 'VDe-Día', 'VDe-Mes', 'VDe-Año', 'VAl-Día', 'VAl-Mes', 'VAl-Año',
-                     'No. Certificado', 'Libro', 'Foja', 'Título', 'Presidente', 'Título', 'Responsable', 'Costo', 'Email', 'Observaciones', 'Cédula de la especialidad'])
+                     'No. Certificado', 'Libro', 'Foja', 'Título', 'Presidente', 'Título', 'Responsable', 'Costo', 'Email', 'Observaciones', 'Cédula de la especialidad']
+    # writer.writerow(['Título', 'Nombre', 'Apellido Paterno', 'Apellido Materno', 'Universidad de egreso de la especialidad', 'Institución de residencia de la especialidad',
+    #                  'Institución dónde labora', 'Hospital privado dónde labora', 'R.F.C.', 'CURP', 'Cédula profesional de médico general', 'FN-Día', 'FN-Mes', 'FN-Año', 'Nacionalidad',
+    #                  'Estado donde radica', 'Municipio', 'Género Femenino = F Masculino = M', 'FEC-Día', 'FEC-Mes', 'FEC-Año', 'VDe-Día', 'VDe-Mes', 'VDe-Año', 'VAl-Día', 'VAl-Mes', 'VAl-Año',
+    #                  'No. Certificado', 'Libro', 'Foja', 'Título', 'Presidente', 'Título', 'Responsable', 'Costo', 'Email', 'Observaciones', 'Cédula de la especialidad'])
+    writer.writerow(titulos)
+    # fila = [salida.encode('iso-8859-1') for salida in titulos]
+    # writer.writerow([fila])
     # writer.writerow([u'Hóla'.encode('utf-8')])
     # writer.writerow([u'Hóla'.encode('iso-8859-1')])
     for dato in queryset:
         writer.writerow(dato)
         # writer.writerow([unicode(v).encode('utf-8') if v is not None else '' for v in row])
+        
     
     
     
@@ -68,7 +76,7 @@ def renderCsvView(request, queryset):
 
 class ConacemDownExcel(APIView):
     # permission_classes = (permissions.AllowAny,)
-    permission_classes = (permissions.IsAdminUser,)
+    # permission_classes = (permissions.IsAdminUser,)
     
     def get(self, request, *args, **kwargs):
         conacemId = self.kwargs['conacemId']
