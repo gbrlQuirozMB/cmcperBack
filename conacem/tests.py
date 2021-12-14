@@ -132,9 +132,9 @@ class GetDescargarExcel200Test(APITestCase):
         conacem2 = Conacem.objects.create(
             fechaEnvio='2021-04-06', tituloPresidente='Dactar', nombrePresidente='gabriel quiroz', tituloResponsable='enferm', nombreResponsable='elianid tolentino', fechaEmision='2021-04-06',
             costo=369.33, fechaValidezDel='2021-04-06', fechaValidezAl='2021-04-06', iniciaLibro=3, hoja=3, lugar=6, cupo=9)
-        DetalleConcacem.objects.create(medico=self.medico3, conacem=conacem1, libro=3, foja=6, observaciones='ninguna')
-        DetalleConcacem.objects.create(medico=self.medico6, conacem=conacem1, libro=3, foja=7, observaciones='ninguna')
-        DetalleConcacem.objects.create(medico=self.medico9, conacem=conacem2, libro=3, foja=8, observaciones='ninguna')
+        DetalleConcacem.objects.create(medico=self.medico3, conacem=conacem1, libro=3, foja=6, observaciones='ninguna', numCertificado=33)
+        DetalleConcacem.objects.create(medico=self.medico6, conacem=conacem1, libro=3, foja=7, observaciones='ninguna', numCertificado=66)
+        DetalleConcacem.objects.create(medico=self.medico9, conacem=conacem2, libro=3, foja=8, observaciones='ninguna', numCertificado=99)
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
 

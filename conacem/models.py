@@ -38,6 +38,7 @@ class DetalleConcacem(models.Model):
     libro = models.PositiveSmallIntegerField(blank=True, null=True, db_column='libro')
     foja = models.PositiveSmallIntegerField(blank=True, null=True, db_column='foja')
     observaciones = models.TextField(blank=True, null=True)
+    numCertificado = models.PositiveBigIntegerField(blank=True, null=True, db_column='numero_certificado')
 
     class Meta:
         db_table = 'detalles_conacem'

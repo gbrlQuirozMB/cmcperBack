@@ -47,6 +47,10 @@ class ConacemSerializer(serializers.ModelSerializer):
             # se asignan lugares
             medicoData.update({'libro': hoja})
             medicoData.update({'foja': lugar})
+            # hay que obtener los id del certificado y ponerlo en el detalle
+            numCertificado = Certificado.objects.filter(medico=medicoData['medico'].id, isConacem=False).values_list('id',flat=True).first()
+            # print(f'--->>>numCertificado: {numCertificado}')
+            medicoData.update({'numCertificado': numCertificado})
             # se crea el registro
             DetalleConcacem.objects.create(**medicoData, conacem=conacem)
             # se actualiza el lugar
