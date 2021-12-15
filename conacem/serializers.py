@@ -77,3 +77,18 @@ class ConacemListSerializer(serializers.ModelSerializer):
         repr['responsable'] = instance.tituloResponsable + ' ' + instance.nombreResponsable
 
         return repr
+
+
+class DetalleConacemDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DetalleConcacem 
+        fields = ['numCertificado', 'libro', 'foja']
+        
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        repr['diplomaConacem'] = instance.medico.diplomaConacem
+        repr['lugar'] = instance.conacem.lugar
+        
+        return repr
+        
+        

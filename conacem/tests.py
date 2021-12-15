@@ -193,6 +193,20 @@ class GetConacemListTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
+class GetDetalleConacemDetailTest(APITestCase):
+    def setUp(self):
+        configDB(self)
+        configDBConacem(self)
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/conacem/1/detail/')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
 class PruebaTest(APITestCase):
     def setUp(self):
         pass

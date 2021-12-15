@@ -120,3 +120,13 @@ class ConacemListView(ListAPIView):
     queryset = Conacem.objects.all()
     serializer_class = ConacemListSerializer
     permission_classes = (permissions.IsAdminUser,)
+
+
+class DetalleConacemDetailView(ListAPIView):
+    serializer_class = DetalleConacemDetailSerializer
+
+    def get_queryset(self):
+        conacemId = self.kwargs['conacemId']
+        queryset = DetalleConcacem.objects.filter(conacem=conacemId)
+
+        return queryset
