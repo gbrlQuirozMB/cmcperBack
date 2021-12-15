@@ -148,6 +148,9 @@ else:
             'PASSWORD': config('DATABASE_PASSWORD'),
             'HOST': config('DATABASE_HOST', default='localhost'),
             'PORT': config('PORT'),
+            'OPTIONS': {
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+                },
         }
     }
 
