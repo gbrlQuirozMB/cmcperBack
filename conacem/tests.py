@@ -52,7 +52,7 @@ def configDB(self):
                                fechaCaducidad=date.today()+relativedelta(years=5), estatus=3, documento='ya_hay_algo.pdf', isConacem=True)
 
 
-class GetConacemListTest(APITestCase):
+class GetConacemMedicosListTest(APITestCase):
     def setUp(self):
         configDB(self)
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
@@ -60,7 +60,7 @@ class GetConacemListTest(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        response = self.client.get('/api/conacem/list/')
+        response = self.client.get('/api/conacem/medicos/list/')
         print(f'response JSON ===>>> ok \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -122,19 +122,22 @@ class PostConacemTest(APITestCase):
             print(f'--->>>datoCertificado.id: {datoCertificado.id} -- datoCertificado.medico.id: {datoCertificado.medico.id} -- datoCertificado.isConacem: {datoCertificado.isConacem}')
 
 
+def configDBConacem(self):
+    conacem1 = Conacem.objects.create(
+        fechaEnvio='2021-04-06', tituloPresidente='Dactar', nombrePresidente='gabriel quiroz', tituloResponsable='enferm', nombreResponsable='elianid tolentino', fechaEmision='2021-04-06',
+        costo=369.33, fechaValidezDel='2021-04-06', fechaValidezAl='2021-04-06', iniciaLibro=3, hoja=3, lugar=6, cupo=9)
+    conacem2 = Conacem.objects.create(
+        fechaEnvio='2021-04-06', tituloPresidente='Dactar', nombrePresidente='laura vargas', tituloResponsable='enferm', nombreResponsable='grissel bejarano tolentino', fechaEmision='2021-04-06',
+        costo=369.33, fechaValidezDel='2021-04-06', fechaValidezAl='2021-04-06', iniciaLibro=3, hoja=3, lugar=6, cupo=9)
+    DetalleConcacem.objects.create(medico=self.medico3, conacem=conacem1, libro=3, foja=6, observaciones='ninguna', numCertificado=33)
+    DetalleConcacem.objects.create(medico=self.medico6, conacem=conacem1, libro=3, foja=7, observaciones='ninguna', numCertificado=66)
+    DetalleConcacem.objects.create(medico=self.medico9, conacem=conacem2, libro=3, foja=8, observaciones='ninguna', numCertificado=99)
+
+
 class GetDescargarExcel200Test(APITestCase):
     def setUp(self):
         configDB(self)
-
-        conacem1 = Conacem.objects.create(
-            fechaEnvio='2021-04-06', tituloPresidente='Dactar', nombrePresidente='gabriel quiroz', tituloResponsable='enferm', nombreResponsable='elianid tolentino', fechaEmision='2021-04-06',
-            costo=369.33, fechaValidezDel='2021-04-06', fechaValidezAl='2021-04-06', iniciaLibro=3, hoja=3, lugar=6, cupo=9)
-        conacem2 = Conacem.objects.create(
-            fechaEnvio='2021-04-06', tituloPresidente='Dactar', nombrePresidente='gabriel quiroz', tituloResponsable='enferm', nombreResponsable='elianid tolentino', fechaEmision='2021-04-06',
-            costo=369.33, fechaValidezDel='2021-04-06', fechaValidezAl='2021-04-06', iniciaLibro=3, hoja=3, lugar=6, cupo=9)
-        DetalleConcacem.objects.create(medico=self.medico3, conacem=conacem1, libro=3, foja=6, observaciones='ninguna', numCertificado=33)
-        DetalleConcacem.objects.create(medico=self.medico6, conacem=conacem1, libro=3, foja=7, observaciones='ninguna', numCertificado=66)
-        DetalleConcacem.objects.create(medico=self.medico9, conacem=conacem2, libro=3, foja=8, observaciones='ninguna', numCertificado=99)
+        configDBConacem(self)
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
 
@@ -144,7 +147,7 @@ class GetDescargarExcel200Test(APITestCase):
         response = self.client.get('/api/conacem/bajar-excel/1/list/')
         print(f'response JSON ===>>> ok \n {response.content} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         response = self.client.get('/api/conacem/bajar-excel/3/list/')
         print(f'response JSON ===>>> ok \n {response.content} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -173,6 +176,21 @@ class GetDescargarExcel200Test(APITestCase):
 
         # for dato in queryset:
         #     print(f'dato: {dato}')
+
+
+class GetConacemListTest(APITestCase):
+    def setUp(self):
+        configDB(self)
+        configDBConacem(self)
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/conacem/list/')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 class PruebaTest(APITestCase):

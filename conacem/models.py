@@ -24,6 +24,7 @@ class Conacem(models.Model):
     hoja = models.PositiveSmallIntegerField(db_column='hoja')
     lugar = models.PositiveSmallIntegerField(db_column='lugar')
     cupo = models.PositiveSmallIntegerField(db_column='cupo')
+    isCompletado = models.BooleanField(default=False, db_column='is_completado')  # verificar si ya pago
 
     class Meta:
         db_table = 'conacem'

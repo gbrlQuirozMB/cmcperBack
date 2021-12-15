@@ -114,3 +114,9 @@ class ConacemDownExcel(APIView):
         except Exception as e:
             respuesta = {"detail": str(e)}
             return Response(respuesta, status=status.HTTP_409_CONFLICT)
+
+
+class ConacemListView(ListAPIView):
+    queryset = Conacem.objects.all()
+    serializer_class = ConacemListSerializer
+    permission_classes = (permissions.IsAdminUser,)
