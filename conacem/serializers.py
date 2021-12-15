@@ -48,7 +48,7 @@ class ConacemSerializer(serializers.ModelSerializer):
             medicoData.update({'libro': hoja})
             medicoData.update({'foja': lugar})
             # hay que obtener los id del certificado y ponerlo en el detalle
-            numCertificado = Certificado.objects.filter(medico=medicoData['medico'].id, isConacem=False).values_list('id',flat=True).first()
+            numCertificado = Certificado.objects.filter(medico=medicoData['medico'].id, isConacem=False).values_list('id', flat=True).first()
             # print(f'--->>>numCertificado: {numCertificado}')
             medicoData.update({'numCertificado': numCertificado})
             # se crea el registro
@@ -64,3 +64,16 @@ class ConacemSerializer(serializers.ModelSerializer):
         Certificado.objects.filter(medico_id__in=ids).update(isConacem=True)
 
         return conacem
+
+
+class ConacemListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Conacem
+        fields = ['id', 'fechaEnvio', 'fechaEmision', 'fechaValidezDel', 'fechaValidezAl', 'isCompletado']
+
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        repr['presidente'] = instance.tituloPresidente + ' ' + instance.nombrePresidente
+        repr['responsable'] = instance.tituloResponsable + ' ' + instance.nombreResponsable
+
+        return repr
