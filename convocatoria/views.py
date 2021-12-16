@@ -30,6 +30,8 @@ from rest_framework.generics import DestroyAPIView, ListAPIView, CreateAPIView, 
 import logging
 log = logging.getLogger('django')
 
+from django.core import mail
+
 
 # from django_filters import rest_framework
 # from django_filters import rest_framework as filters
@@ -782,8 +784,11 @@ class PublicarCalificaciones(APIView):
     permission_classes = (permissions.IsAdminUser,)
 
     def get(self, request, *args, **kwargs):
+        
         convocatoriaId = self.kwargs['convocatoriaId']
         try:
+            connection = mail.get_connection()
+            connection.open()
             # ordenamos segun requerimientos, para asignar el numero de registro
             queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId).values_list('id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno',
                                                                                                     'convocatoria__fechaExamen', 'calificacion', 'medico__email', 'isAprobado', 'medico__id',
@@ -822,17 +827,17 @@ class PublicarCalificaciones(APIView):
                     'email': dato[7]
                 }
                 datitos = {
-                    'id': dato[0],
-                    'medico__numRegistro': dato[1],
-                    'medico__nombre': dato[2],
-                    'medico__apPaterno': dato[3],
-                    'medico__apMaterno': dato[4],
-                    'convocatoria__fechaExamen': dato[5],
-                    'calificacion': dato[6],
-                    'medico__email': dato[7],
-                    'isAprobado': dato[8],
-                    'medico__id': dato[9],
-                    'isPublicado': dato[10],
+                    '0-id': dato[0],
+                    '1-medico__numRegistro': dato[1],
+                    '2-medico__nombre': dato[2],
+                    '3-medico__apPaterno': dato[3],
+                    '4-medico__apMaterno': dato[4],
+                    '5-convocatoria__fechaExamen': dato[5],
+                    '6-calificacion': dato[6],
+                    '7-medico__email': dato[7],
+                    '8-isAprobado': dato[8],
+                    '9-medico__id': dato[9],
+                    '10-isPublicado': dato[10],
                 }
                 print(f'--->>>datos: {datitos}')
                 try:
@@ -843,6 +848,7 @@ class PublicarCalificaciones(APIView):
                     emailAcep.send()
                 except:
                     raise ResponseError('Error al enviar correo', 500)
+            connection.close()    
             return Response(status=status.HTTP_200_OK)
         except Exception as e:
             respuesta = {"detail": str(e)}
