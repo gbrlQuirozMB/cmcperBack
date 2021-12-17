@@ -5,7 +5,7 @@ import codecs
 import csv
 from django.contrib.auth.models import User
 from notificaciones.models import Notificacion
-from django.core.mail import EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives, send_mass_mail
 from django.utils.html import strip_tags
 from django.template.loader import render_to_string
 from api.Paginacion import Paginacion
@@ -786,9 +786,10 @@ class PublicarCalificaciones(APIView):
     def get(self, request, *args, **kwargs):
         
         convocatoriaId = self.kwargs['convocatoriaId']
+        listEmail=[]
         try:
             connection = mail.get_connection()
-            connection.open()
+            # connection.open()
             # ordenamos segun requerimientos, para asignar el numero de registro
             queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId).values_list('id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno',
                                                                                                     'convocatoria__fechaExamen', 'calificacion', 'medico__email', 'isAprobado', 'medico__id',
@@ -845,10 +846,12 @@ class PublicarCalificaciones(APIView):
                     textContent = strip_tags(htmlContent)
                     emailAcep = EmailMultiAlternatives('CMCPER - Resultado de Examen', textContent, "no-reply@cmcper.mx", [datos['email']])
                     emailAcep.attach_alternative(htmlContent, "text/html")
-                    emailAcep.send()
+                    # emailAcep.send()  #probado envir masivamente
+                    listEmail.append(emailAcep)
                 except:
                     raise ResponseError('Error al enviar correo', 500)
-            connection.close()    
+            # connection.close()    
+            send_mass_mail(listEmail)
             return Response(status=status.HTTP_200_OK)
         except Exception as e:
             respuesta = {"detail": str(e)}
