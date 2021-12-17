@@ -851,7 +851,7 @@ class PublicarCalificaciones(APIView):
                 except:
                     raise ResponseError('Error al enviar correo', 500)
             # connection.close()    
-            send_mass_mail(listEmail)
+            send_mass_mail(tuple(listEmail))
             return Response(status=status.HTTP_200_OK)
         except Exception as e:
             respuesta = {"detail": str(e)}
