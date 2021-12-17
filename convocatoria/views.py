@@ -1,3 +1,4 @@
+from django.core import mail
 import datetime
 from certificados.models import Certificado
 import locale
@@ -30,8 +31,6 @@ from rest_framework.generics import DestroyAPIView, ListAPIView, CreateAPIView, 
 import logging
 log = logging.getLogger('django')
 
-from django.core import mail
-
 
 # from django_filters import rest_framework
 # from django_filters import rest_framework as filters
@@ -40,6 +39,7 @@ from django.core import mail
 
 totalDocumentosExtranjero = 10
 totalDocumentosNacional = 9
+
 
 class EsExtranjeroUpdateView(UpdateAPIView):
     queryset = Medico.objects.filter()
@@ -707,7 +707,7 @@ class CorreoDocumentosEndPoint(APIView):
 
 class ConvocatoriaEnroladosListView(ListAPIView):
     serializer_class = ConvocatoriaEnroladosMedicoListSerializer
-    permission_classes = (permissions.IsAdminUser,)  
+    permission_classes = (permissions.IsAdminUser,)
 
     def get_queryset(self):
         convocatoriaId = self.kwargs['convocatoriaId']
@@ -780,68 +780,24 @@ class ConvocatoriaEnroladosUpExcel(APIView):
             return Response(respuesta, status=status.HTTP_409_CONFLICT)
 
 
-
-
-
-
-
-
-def create_message(subject, message_plain, message_html, email_from, email_to,
-                   custom_headers=None, attachments=None):
-    """Build a multipart message containing a multipart alternative for text (plain, HTML) plus
-    all the attached files.
-    """
-    if not message_plain and not message_html:
-        raise ValueError(_('Either message_plain or message_html should be not None'))
-
-    if not message_plain:
-        message_plain = html2text(message_html)
-
-    return {'subject': subject, 'body': message_plain, 'from_email': email_from, 'to': email_to,
-            'attachments': attachments or (), 'headers': custom_headers or {}}
-
-
-
-def send_mass_html_mail(datatuple):
-    """send mass EmailMultiAlternatives emails
-    see: http://stackoverflow.com/questions/7583801/send-mass-emails-with-emailmultialternatives
-    datatuple = ((subject, msg_plain, msg_html, email_from, email_to, custom_headers, attachments),)
-    """
-    connection = mail.get_connection()
-    messages = []
-    for subject, message_plain, message_html, email_from, email_to, custom_headers, attachments in datatuple:
-        msg = EmailMultiAlternatives(
-            **create_message(subject, message_plain, message_html, email_from, email_to, custom_headers, attachments))
-        if message_html:
-            msg.attach_alternative(message_html, 'text/html')
-        messages.append(msg)
-
-    return connection.send_messages(messages)
-
-
-
-
 def envioMasivo(listEmail):
     try:
         connection = mail.get_connection()
         connection.open()
         send_mass_mail(tuple(listEmail))
-        connection.close() 
+        connection.close()
     except Exception as e:
-            respuesta = {"detail": str(e)}
-            return Response(respuesta, status=status.HTTP_409_CONFLICT)   
-    
-    
-
+        respuesta = {"detail": str(e)}
+        return Response(respuesta, status=status.HTTP_409_CONFLICT)
 
 
 class PublicarCalificaciones(APIView):
     permission_classes = (permissions.IsAdminUser,)
 
     def get(self, request, *args, **kwargs):
-        
+
         convocatoriaId = self.kwargs['convocatoriaId']
-        listEmail=[]
+        listEmail = []
         try:
             # ordenamos segun requerimientos, para asignar el numero de registro
             queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId).values_list('id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno',
@@ -880,26 +836,27 @@ class PublicarCalificaciones(APIView):
                     'aceptado': dato[8],
                     'email': dato[7]
                 }
-                datitos = {
-                    '0-id': dato[0],
-                    '1-medico__numRegistro': dato[1],
-                    '2-medico__nombre': dato[2],
-                    '3-medico__apPaterno': dato[3],
-                    '4-medico__apMaterno': dato[4],
-                    '5-convocatoria__fechaExamen': dato[5],
-                    '6-calificacion': dato[6],
-                    '7-medico__email': dato[7],
-                    '8-isAprobado': dato[8],
-                    '9-medico__id': dato[9],
-                    '10-isPublicado': dato[10],
-                }
-                print(f'--->>>datos: {datitos}')
+                # print(f'--->>>datos: {datitos}')
+                # datitos = {
+                #     '0-id': dato[0],
+                #     '1-medico__numRegistro': dato[1],
+                #     '2-medico__nombre': dato[2],
+                #     '3-medico__apPaterno': dato[3],
+                #     '4-medico__apMaterno': dato[4],
+                #     '5-convocatoria__fechaExamen': dato[5],
+                #     '6-calificacion': dato[6],
+                #     '7-medico__email': dato[7],
+                #     '8-isAprobado': dato[8],
+                #     '9-medico__id': dato[9],
+                #     '10-isPublicado': dato[10],
+                # }
+                # print(f'--->>>datos: {datitos}')
                 try:
                     htmlContent = render_to_string('exam-a-r.html', datos)
                     textContent = strip_tags(htmlContent)
                     emailAcep = EmailMultiAlternatives('CMCPER - Resultado de Examen', textContent, "no-reply@cmcper.mx", [datos['email']])
                     emailAcep.attach_alternative(htmlContent, "text/html")
-                    # emailAcep.send()  #probado envir masivamente
+                    # emailAcep.send()  # probado envir masivamente
                     listEmail.append(emailAcep)
                 except:
                     raise ResponseError('Error al enviar correo', 500)
@@ -957,8 +914,8 @@ class AgregarDocumentosExtrasCreateView(CreateAPIView):
                                                              convocatoria=Convocatoria.objects.get(id=convocatoriaId),
                                                              catTiposDocumento=CatTiposDocumento.objects.get(id=19), isValidado=True, documento='Tesis de Cirugía Plástica.pdf')
         fotoDiplo = ConvocatoriaEnroladoDocumento.objects.create(medico=Medico.objects.get(id=medicoId),
-                                                             convocatoria=Convocatoria.objects.get(id=convocatoriaId),
-                                                             catTiposDocumento=CatTiposDocumento.objects.get(id=14), isValidado=True, documento='Fotografía Diploma.pdf')
+                                                                 convocatoria=Convocatoria.objects.get(id=convocatoriaId),
+                                                                 catTiposDocumento=CatTiposDocumento.objects.get(id=14), isValidado=True, documento='Fotografía Diploma.pdf')
         json = {
             'medicoId': medicoId,
             'convocatoriaId': convocatoriaId,
