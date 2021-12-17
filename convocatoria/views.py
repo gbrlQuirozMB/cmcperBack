@@ -786,10 +786,10 @@ class PublicarCalificaciones(APIView):
     def get(self, request, *args, **kwargs):
         
         convocatoriaId = self.kwargs['convocatoriaId']
-        listEmail=[]
+        # listEmail=[]
         try:
             connection = mail.get_connection()
-            # connection.open()
+            connection.open()
             # ordenamos segun requerimientos, para asignar el numero de registro
             queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId).values_list('id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno',
                                                                                                     'convocatoria__fechaExamen', 'calificacion', 'medico__email', 'isAprobado', 'medico__id',
@@ -846,12 +846,12 @@ class PublicarCalificaciones(APIView):
                     textContent = strip_tags(htmlContent)
                     emailAcep = EmailMultiAlternatives('CMCPER - Resultado de Examen', textContent, "no-reply@cmcper.mx", [datos['email']])
                     emailAcep.attach_alternative(htmlContent, "text/html")
-                    # emailAcep.send()  #probado envir masivamente
-                    listEmail.append(emailAcep)
+                    emailAcep.send()  #probado envir masivamente
+                    # listEmail.append(emailAcep)
                 except:
                     raise ResponseError('Error al enviar correo', 500)
-            # connection.close()    
-            send_mass_mail(tuple(listEmail))
+            connection.close()    
+            # send_mass_mail(tuple(listEmail))
             return Response(status=status.HTTP_200_OK)
         except Exception as e:
             respuesta = {"detail": str(e)}
