@@ -784,7 +784,7 @@ def envioMasivo(listEmail):
     try:
         connection = mail.get_connection()
         connection.open()
-        send_mass_mail(tuple(listEmail))
+        send_mass_mail(tuple(listEmail), fail_silently=False)
         connection.close()
     except Exception as e:
         respuesta = {"detail": str(e)}
