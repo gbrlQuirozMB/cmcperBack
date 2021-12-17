@@ -780,16 +780,69 @@ class ConvocatoriaEnroladosUpExcel(APIView):
             return Response(respuesta, status=status.HTTP_409_CONFLICT)
 
 
+
+
+
+
+
+
+def create_message(subject, message_plain, message_html, email_from, email_to,
+                   custom_headers=None, attachments=None):
+    """Build a multipart message containing a multipart alternative for text (plain, HTML) plus
+    all the attached files.
+    """
+    if not message_plain and not message_html:
+        raise ValueError(_('Either message_plain or message_html should be not None'))
+
+    if not message_plain:
+        message_plain = html2text(message_html)
+
+    return {'subject': subject, 'body': message_plain, 'from_email': email_from, 'to': email_to,
+            'attachments': attachments or (), 'headers': custom_headers or {}}
+
+
+
+def send_mass_html_mail(datatuple):
+    """send mass EmailMultiAlternatives emails
+    see: http://stackoverflow.com/questions/7583801/send-mass-emails-with-emailmultialternatives
+    datatuple = ((subject, msg_plain, msg_html, email_from, email_to, custom_headers, attachments),)
+    """
+    connection = mail.get_connection()
+    messages = []
+    for subject, message_plain, message_html, email_from, email_to, custom_headers, attachments in datatuple:
+        msg = EmailMultiAlternatives(
+            **create_message(subject, message_plain, message_html, email_from, email_to, custom_headers, attachments))
+        if message_html:
+            msg.attach_alternative(message_html, 'text/html')
+        messages.append(msg)
+
+    return connection.send_messages(messages)
+
+
+
+
+def envioMasivo(listEmail):
+    try:
+        connection = mail.get_connection()
+        connection.open()
+        send_mass_mail(tuple(listEmail))
+        connection.close() 
+    except Exception as e:
+            respuesta = {"detail": str(e)}
+            return Response(respuesta, status=status.HTTP_409_CONFLICT)   
+    
+    
+
+
+
 class PublicarCalificaciones(APIView):
     permission_classes = (permissions.IsAdminUser,)
 
     def get(self, request, *args, **kwargs):
         
         convocatoriaId = self.kwargs['convocatoriaId']
-        # listEmail=[]
+        listEmail=[]
         try:
-            connection = mail.get_connection()
-            connection.open()
             # ordenamos segun requerimientos, para asignar el numero de registro
             queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId).values_list('id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno',
                                                                                                     'convocatoria__fechaExamen', 'calificacion', 'medico__email', 'isAprobado', 'medico__id',
@@ -846,12 +899,11 @@ class PublicarCalificaciones(APIView):
                     textContent = strip_tags(htmlContent)
                     emailAcep = EmailMultiAlternatives('CMCPER - Resultado de Examen', textContent, "no-reply@cmcper.mx", [datos['email']])
                     emailAcep.attach_alternative(htmlContent, "text/html")
-                    emailAcep.send()  #probado envir masivamente
-                    # listEmail.append(emailAcep)
+                    # emailAcep.send()  #probado envir masivamente
+                    listEmail.append(emailAcep)
                 except:
                     raise ResponseError('Error al enviar correo', 500)
-            connection.close()    
-            # send_mass_mail(tuple(listEmail))
+            envioMasivo(listEmail)
             return Response(status=status.HTTP_200_OK)
         except Exception as e:
             respuesta = {"detail": str(e)}
