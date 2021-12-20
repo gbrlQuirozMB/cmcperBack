@@ -242,6 +242,12 @@ class NotasObservacionesDetailView(RetrieveAPIView):
     serializer_class = NotasObservacionesSerializer
 
 
+class NotasObservacionesUpdateView(UpdateAPIView):
+    queryset = NotasObservaciones.objects.filter()
+    serializer_class = NotasObservacionesSerializer
+    http_method_names = ['put']
+
+
 # def renderCsvView(request, queryset):
 #     response = HttpResponse(content_type='text/csv')
 #     # response = HttpResponse(content_type='application/ms-excel')
