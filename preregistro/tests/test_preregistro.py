@@ -530,6 +530,62 @@ class PutPreregistroTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
+class PostNotasObservacionesTest(APITestCase):
+    def setUp(self):
+        medico9 = Medico.objects.create(
+            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999)
+
+        self.json = {
+            "medico": 9,
+            "texto": "aqui va la nota observacion de esta cosa",
+            "tipo": "Nota"
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post('/api/preregistro/notas-observaciones/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+
+
+class GetNotasObservacionesListTest(APITestCase):
+    def setUp(self):
+        medico3 = Medico.objects.create(
+            id=3, nombre='elianid', apPaterno='tolentino', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=333)
+        medico9 = Medico.objects.create(
+            id=9, nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company', numRegistro=999)
+
+        HorarioAtencion.objects.create(medico=medico9, dia='Lunes', horaInicio='3:03', horaTermino='6:06')
+        HorarioAtencion.objects.create(medico=medico9, dia='Martes', horaInicio='6:06', horaTermino='9:09')
+        HorarioAtencion.objects.create(medico=medico9, dia='Miércoles', horaInicio='9:09', horaTermino='12:12')
+        HorarioAtencion.objects.create(medico=medico3, dia='Lunes', horaInicio='3:03', horaTermino='6:06')
+
+        self.user = User.objects.create_user(username='gabriel')  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/preregistro/horario-atencion/medico/9/list/')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/preregistro/horario-atencion/medico/99/list/')
+        print(f'response JSON ===>>> 404 \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
 
 # python manage.py test preregistro.tests.test_preregistro.UsuariosPassTest
 class UsuariosPassTest(APITestCase):
@@ -560,16 +616,15 @@ class UsuariosPassTest(APITestCase):
 
     def test(self):
         self.client.force_authenticate(user=self.user)
-        
+
         response = self.client.get('/api/preregistro/genera-usuarios-pass/')
         print(f'response JSON ===>>> ok \n {response.content} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
-        queryset =  Medico.objects.filter()
+
+        queryset = Medico.objects.filter()
         for dato in queryset:
             print(f'--->>>dato: nombre: {dato.nombre} - username: {dato.username} - email: {dato.email}')
-        
-        
+
         # queryset = User.objects.filter(id=5)
         queryset = User.objects.filter()
         for dato in queryset:

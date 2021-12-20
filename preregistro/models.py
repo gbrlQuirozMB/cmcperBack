@@ -116,7 +116,6 @@ class Medico(models.Model):
         ('Especial', 'Especial')
     ), default="---")
     codigoCarta = models.CharField(max_length=300, blank=True, null=True, db_column='codigo_carta_cmcper')
-    notasObser = models.TextField(blank=True, null=True, db_column='notas_observaciones')
     titulo = models.CharField(max_length=9, blank=True, null=True)
 
     
@@ -143,3 +142,19 @@ class HorarioAtencion(models.Model):
     class Meta:
         db_table = 'horario_atencion'
         ordering = ['-medico']
+
+
+class NotasObservaciones(models.Model):
+    creado_en = models.DateTimeField(auto_now_add=True)
+    actualzado_en = models.DateTimeField(auto_now=True)
+    medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medicoNO')
+    texto = models.TextField(blank=True, null=True)
+    isBorrado = models.BooleanField(default=False, db_column='is_borrado')  # si se utiliza o no
+    tipo = models.CharField(max_length=15, choices=(
+        ('Nota', 'Nota'),
+        ('Observacion', 'Observacion')
+    ), default="Nota")
+    
+    class Meta:
+        db_table = 'preregistro_notas_observaciones'
+        ordering = ['-creado_en']

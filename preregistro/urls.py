@@ -22,7 +22,12 @@ urlpatterns = [
     path('horario-atencion/<pk>/update/', HorarioAtencionUpdateView.as_view(), ),
     path('horario-atencion/<pk>/delete/', HorarioAtencionDeleteView.as_view(), ),
     
+    path('notas-observaciones/create/', NotasObservacionesCreateView.as_view(), ),
+    
+    
     # path('genera-usuarios-pass/', UsuariosPassEndPoint.as_view(), ),
+    
+    
 
 
 ]

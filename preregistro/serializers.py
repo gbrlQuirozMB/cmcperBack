@@ -1,3 +1,4 @@
+from django.db.models import fields
 from rest_framework import serializers
 
 from .models import *
@@ -35,4 +36,9 @@ class FotoPerfilSerializer(serializers.ModelSerializer):
 class HorarioAtencionSerializer(serializers.ModelSerializer):
     class Meta:
         model = HorarioAtencion
+        fields = '__all__'
+        
+class NotasObservacionesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NotasObservaciones
         fields = '__all__'
