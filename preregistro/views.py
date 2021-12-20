@@ -237,6 +237,11 @@ class NotasObservacionesFilteredListView(ListAPIView):
     permission_classes = (permissions.IsAdminUser,)
 
 
+class NotasObservacionesDetailView(RetrieveAPIView):
+    queryset = NotasObservaciones.objects.filter()
+    serializer_class = NotasObservacionesSerializer
+
+
 # def renderCsvView(request, queryset):
 #     response = HttpResponse(content_type='text/csv')
 #     # response = HttpResponse(content_type='application/ms-excel')
