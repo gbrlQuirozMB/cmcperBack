@@ -18,6 +18,7 @@ from rest_framework import status, permissions
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.views import APIView
+from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 
 from api.exceptions import *
 from .serializers import *
@@ -213,7 +214,7 @@ class PreregistroUpdateView(UpdateAPIView):
 class NotasObservacionesCreateView(CreateAPIView):
     serializer_class = NotasObservacionesSerializer
     permission_classes = (permissions.IsAdminUser,)
-    
+
     def post(self, request, *args, **kwargs):
         serializer = NotasObservacionesSerializer(data=request.data)
         if serializer.is_valid():
@@ -222,9 +223,18 @@ class NotasObservacionesCreateView(CreateAPIView):
         raise CamposIncorrectos(serializer.errors)
 
 
+class NotasObservacionesFilter(FilterSet):
+    class Meta:
+        model = NotasObservaciones
+        fields = ['medico', 'tipo', 'isBorrado']
 
 
-
+class NotasObservacionesFilteredListView(ListAPIView):
+    queryset = NotasObservaciones.objects.filter()
+    serializer_class = NotasObservacionesSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = NotasObservacionesFilter
+    permission_classes = (permissions.IsAdminUser,)
 
 
 # def renderCsvView(request, queryset):
@@ -268,7 +278,7 @@ class NotasObservacionesCreateView(CreateAPIView):
 #                 permisoViMen = Permission.objects.get(codename='view_mensaje')
 #                 # user.user_permissions.set([41, 44, 37, 40, 34])
 #                 user.user_permissions.set([permisoChMed, permisoAdConv, permisoViConv, permisoAdMen, permisoViMen])
-                
+
 #                 # --- para crear csv
 #                 valores = {'id': dato[0], 'nombre': dato[1], 'apPaterno': dato[2], 'apMaterno': dato[3], 'username': username, 'password': password, 'email':email}
 #                 queryset.append(valores)
