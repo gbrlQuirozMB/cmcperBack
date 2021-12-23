@@ -99,7 +99,7 @@ class Factura(models.Model):
     iva = models.DecimalField(decimal_places = 6, max_digits = 21, null = True)
     total = models.DecimalField(decimal_places = 6, max_digits = 21, null = True)
     pais = models.ForeignKey(Pais, on_delete = models.SET_NULL, null = True)
-    numRegIdTrib = models.CharField(max_length = 50, null = True)
+    numRegIdTrib = models.CharField(max_length = 50, null = True, blank=True)
     uuid = models.CharField(max_length = 50, null = True)
     cadenaOriginal = models.TextField(null = True)
     numeroCertificado = models.CharField(max_length = 50,  null = True)
