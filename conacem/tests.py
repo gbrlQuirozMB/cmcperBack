@@ -78,7 +78,7 @@ class PostConacemTest(APITestCase):
             "fechaEmision": "2021-04-06",
             "costo": 369.33,
             "fechaValidezDel": "2021-04-06",
-            "fechaValidezAl": "2021-04-06",
+            "fechaValidezAl": "2026-04-06",
             "iniciaLibro": 3,
             "hoja": 3,
             "lugar": 6,
@@ -99,7 +99,7 @@ class PostConacemTest(APITestCase):
 
         # para revisar como esta el estatus 'isConacem' de los certificados antes
         for datoCertificado in Certificado.objects.filter().order_by('id'):
-            print(f'--->>>datoCertificado.id: {datoCertificado.id} -- datoCertificado.medico.id: {datoCertificado.medico.id} -- datoCertificado.isConacem: {datoCertificado.isConacem}')
+            print(f'--->>>id: {datoCertificado.id} - medico.id: {datoCertificado.medico.id} - isConacem: {datoCertificado.isConacem} - fechaCertificacion: {datoCertificado.fechaCertificacion} - fechaCaducidad: {datoCertificado.fechaCaducidad}')
 
         response = self.client.post('/api/conacem/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> \n {json.dumps(response.json())} \n ---')
@@ -119,7 +119,7 @@ class PostConacemTest(APITestCase):
         # para revisar como esta el estatus 'isConacem' de los certificados antes
         print(f'\n')
         for datoCertificado in Certificado.objects.filter().order_by('id'):
-            print(f'--->>>datoCertificado.id: {datoCertificado.id} -- datoCertificado.medico.id: {datoCertificado.medico.id} -- datoCertificado.isConacem: {datoCertificado.isConacem}')
+            print(f'--->>>id: {datoCertificado.id} - medico.id: {datoCertificado.medico.id} - isConacem: {datoCertificado.isConacem} - fechaCertificacion: {datoCertificado.fechaCertificacion} - fechaCaducidad: {datoCertificado.fechaCaducidad}')
 
 
 def configDBConacem(self):
@@ -206,6 +206,7 @@ class GetDetalleConacemDetailTest(APITestCase):
         response = self.client.get('/api/conacem/1/detail/')
         print(f'response JSON ===>>> ok \n {json.dumps(response.json(), ensure_ascii=False)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
 
 class PruebaTest(APITestCase):
     def setUp(self):
