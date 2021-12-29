@@ -142,6 +142,8 @@ class FacturaCreateView(CreateAPIView):
             crearXML(factura)
             enviarCorreo(factura)
             return Response(serializers.serialize('json', [factura]), status = status.HTTP_201_CREATED)
+            # return self.create(request, *args, **kwargs)
+        
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
 

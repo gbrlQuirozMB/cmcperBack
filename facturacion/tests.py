@@ -7,7 +7,7 @@ import json, datetime
 from instituciones.models import *
 from preregistro.models import *
 
-class GetConceptoPagoListTest(APITestCase):
+class GetConceptoPagoListTest(APITestCase): 
     def setUp(self):
         unidadMedida1 = UnidadMedida.objects.create(unidadMedida = 'UM1', nombre = 'Servicio1', descripcion = 'unidadMedida1', nota = '', simbolo = '')
         unidadMedida2 = UnidadMedida.objects.create(unidadMedida = 'UM2', nombre = 'Servicio2', descripcion = 'unidadMedida2', nota = '', simbolo = '')
@@ -187,7 +187,10 @@ class PostFacturaTest(APITestCase):
             "agregarDireccion": "True",
             "certificado": "2020",
             "recertificacion": "2025",
-            "conceptosPago": conceptosPago
+            "conceptosPago": conceptosPago,
+            "fecha":"1999-09-09",
+            "hora":"03:33:33",
+            "tipo":"Aval"
         }
         self.user = User.objects.create_user(username = 'billy', is_staff = True)
     def test(self):
