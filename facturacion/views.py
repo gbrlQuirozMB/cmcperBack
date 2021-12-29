@@ -383,10 +383,11 @@ class FacturaFilter(FilterSet):
     rfcNS = CharFilter(field_name='rfc', lookup_expr='icontains')
     fechaInicioNS = DateFilter(field_name='fecha', lookup_expr="gte")
     fechaFinNS = DateFilter(field_name='fecha', lookup_expr="lte")
+    concepto = CharFilter(field_name='facturaCF__conceptoPago')
 
     class Meta:
         model = Factura
-        fields = ['rfcNS', 'fechaInicioNS', 'fechaInicioNS']
+        fields = ['rfcNS', 'fechaInicioNS', 'fechaInicioNS', 'tipo', 'concepto', 'isCancelada', 'formaPago', 'metodoPago']
 
 
 class FacturaPagination(PageNumberPagination):

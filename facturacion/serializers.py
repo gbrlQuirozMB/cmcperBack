@@ -57,7 +57,8 @@ class PaisListSerializer(serializers.ModelSerializer):
 class FacturaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Factura
-        fields = ['fecha', 'hora', 'tipo', 'institucion', 'medico', 'usoCFDI', 'formaPago', 'moneda', 'comentarios', 'folio', 'subtotal', 'iva', 'total', 'pais', 'numRegIdTrib']
+        fields = ['fecha', 'hora', 'tipo', 'institucion', 'medico', 'usoCFDI', 'formaPago', 'moneda', 'comentarios', 'folio', 'subtotal', 'iva', 'total', 'pais',
+                  'numRegIdTrib', 'metodoPago']
 
 
 class FacturaFilteredListSerializer(serializers.ModelSerializer):

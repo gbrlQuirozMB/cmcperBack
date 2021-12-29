@@ -110,6 +110,8 @@ class Factura(models.Model):
         ('Certificado', 'Certificado'),
         ('Aval', 'Aval')
     ), default="---")
+    isCancelada = models.BooleanField(default=False, db_column='is_cancelada')
+    metodoPago = models.ForeignKey(MetodoPago, on_delete=models.SET_NULL, null=True)
 
     institucion = models.ForeignKey(Institucion, on_delete=models.SET_NULL, null=True)
     medico = models.ForeignKey(Medico, on_delete=models.SET_NULL, null=True)
@@ -146,10 +148,11 @@ class Factura(models.Model):
 
     class Meta:
         db_table = 'facturacionFactura'
+        ordering = ['-actualizado_en']
 
 
 class ConceptoFactura(models.Model):
-    factura = models.ForeignKey(Factura, on_delete=models.CASCADE)
+    factura = models.ForeignKey(Factura, on_delete=models.CASCADE, related_name='facturaCF')
     conceptoPago = models.ForeignKey(ConceptoPago, on_delete=models.CASCADE)
     cantidad = models.IntegerField()
 
