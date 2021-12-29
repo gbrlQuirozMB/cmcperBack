@@ -6,6 +6,14 @@ import datetime
 from datetime import datetime as fechas
 
 
+class MetodoPago(models.Model):
+    metodoPago = models.CharField(max_length=3)
+    descripcion = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'facturacionMetodoPago'
+
+
 class FormaPago(models.Model):
     formaPago = models.IntegerField()
     descripcion = models.CharField(max_length=100)

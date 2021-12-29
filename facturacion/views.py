@@ -410,3 +410,8 @@ class FacturaCancelarView(APIView):
             return Response({}, status=status.HTTP_200_OK)
         else:
             return Response({}, status=status.HTTP_417_EXPECTATION_FAILED)
+
+
+class MetodoPagoListView(ListAPIView):
+    queryset = MetodoPago.objects.all()
+    serializer_class = MetodoPagoListSerializer

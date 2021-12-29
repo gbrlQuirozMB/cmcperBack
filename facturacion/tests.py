@@ -218,6 +218,9 @@ class PostFacturaTest(APITestCase):
 
 class GetFacturaFilteredListTest(APITestCase):
     def setUp(self):
+        metPago1 = MetodoPago.objects.create(metodoPago='PUE', descripcion='Pago en una sola exhibición')
+        metPago2 = MetodoPago.objects.create(metodoPago='PPD', descripcion='Pago en parcialidades o diferido')
+
         formPago1 = FormaPago.objects.create(formaPago=1, descripcion='Efectivo', orden=1, abreviatura='EFE', solicitarReferencia=False, inactivo=False)
         formPago3 = FormaPago.objects.create(formaPago=3, descripcion='Transferencia electrónica de fondos', orden=3, abreviatura='TE', solicitarReferencia=True, inactivo=False)
         formPago4 = FormaPago.objects.create(formaPago=4, descripcion='Tarjeta de crédito', orden=4, abreviatura='TC', solicitarReferencia=True, inactivo=False)

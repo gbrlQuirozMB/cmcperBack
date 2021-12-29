@@ -4,6 +4,7 @@ from .views import *
 app_name = 'facturacion'
 
 urlpatterns = [
+    path('metodo-pago/list/', MetodoPagoListView.as_view()),
     path('conceptoPago/list/', ConceptoPagoListView.as_view()),
     path('moneda/list/', MonedaListView.as_view()),
     path('formaPago/list/', FormaPagoListView.as_view()),
