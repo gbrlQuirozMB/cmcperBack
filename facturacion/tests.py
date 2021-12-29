@@ -218,18 +218,60 @@ class PostFacturaTest(APITestCase):
 
 class GetFacturaFilteredListTest(APITestCase):
     def setUp(self):
-        Factura.objects.create(rfc='Rfc1')
-        Factura.objects.create(rfc='Rfc2')
-        Factura.objects.create(rfc='Rfc3')
+        metPago1 = MetodoPago.objects.create(metodoPago='PUE', descripcion='Pago en una sola exhibición')
+        metPago2 = MetodoPago.objects.create(metodoPago='PPD', descripcion='Pago en parcialidades o diferido')
+
+        formPago1 = FormaPago.objects.create(formaPago=1, descripcion='Efectivo', orden=1, abreviatura='EFE', solicitarReferencia=False, inactivo=False)
+        formPago3 = FormaPago.objects.create(formaPago=3, descripcion='Transferencia electrónica de fondos', orden=3, abreviatura='TE', solicitarReferencia=True, inactivo=False)
+        formPago4 = FormaPago.objects.create(formaPago=4, descripcion='Tarjeta de crédito', orden=4, abreviatura='TC', solicitarReferencia=True, inactivo=False)
+
+        fact1 = Factura.objects.create(rfc='Rfc1', tipo='Residente', fecha='2001-01-01', hora='01:01:01', formaPago=formPago1, metodoPago=metPago1)
+        fact2 = Factura.objects.create(rfc='Rfc2', tipo='Certificado', fecha='2002-02-02', hora='02:02:02', formaPago=formPago3, metodoPago=metPago2)
+        fact3 = Factura.objects.create(rfc='Rfc3', tipo='Aval', fecha='2003-03-03', hora='03:03:03', formaPago=formPago4, metodoPago=metPago1, isCancelada=True)
+
+        unmed1 = UnidadMedida.objects.create(unidadMedida='E48', nombre='Servicio', descripcion='descripcion1', nota='nota1', simbolo='simbolo1')
+        unmed2 = UnidadMedida.objects.create(unidadMedida='H87', nombre='Pieza', descripcion='descripcion2', nota='nota2', simbolo='simbolo2')
+
+        conPag1 = ConceptoPago.objects.create(conceptoPago='PAGO DE CERTIFICACION VIGENTE', precio=111, inactivo=False, claveSAT='sat111', unidadMedida=unmed1)
+        conPag2 = ConceptoPago.objects.create(conceptoPago='PAGO EXAMEN DE CERTIFICACIÓN', precio=222, inactivo=False, claveSAT='sat222', unidadMedida=unmed1)
+        conPag3 = ConceptoPago.objects.create(conceptoPago='PAGO DE EXAMEN DE CERTIFICACION VIGENTE', precio=333, inactivo=False, claveSAT='sat333', unidadMedida=unmed1)
+
+        ConceptoFactura.objects.create(factura=fact1, conceptoPago=conPag1, cantidad=1)
+        ConceptoFactura.objects.create(factura=fact1, conceptoPago=conPag2, cantidad=1)
+        ConceptoFactura.objects.create(factura=fact2, conceptoPago=conPag1, cantidad=1)
+        ConceptoFactura.objects.create(factura=fact3, conceptoPago=conPag3, cantidad=1)
+
         self.user = User.objects.create_user(username='billy', is_staff=True)
 
     def test(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.get('/api/facturacion/list/?rfcNS=Rfc1')
-        print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.client.get('/api/facturacion/list/?fechaInicioNS=2021-06-01&fechaFinNS=2021-12-01')
-        print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
+
+        # response = self.client.get('/api/facturacion/list/?tipo=Aval')
+        # print(f'response JSON ===>>> filtrado por tipo=Aval \n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # response = self.client.get('/api/facturacion/list/?fechaInicioNS=2002-02-02&fechaFinNS=2003-03-03')
+        # print(f'response JSON ===>>> filtrado por rango de fechas \n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # response = self.client.get('/api/facturacion/list/?concepto=1')
+        # print(f'response JSON ===>>> filtrado por concepto=1 \n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # response = self.client.get('/api/facturacion/list/?isCancelada=false')
+        # print(f'response JSON ===>>> filtrado por isCancelada=false \n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # response = self.client.get('/api/facturacion/list/?formaPago=3')
+        # print(f'response JSON ===>>> formaPago=3 \n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # response = self.client.get('/api/facturacion/list/?metodoPago=1')
+        # print(f'response JSON ===>>> metodoPago=2 \n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/facturacion/list/?rfcNS=Rfc3')
+        print(f'response JSON ===>>> rfcNS=Rfc1 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
@@ -245,9 +287,16 @@ class PostFacturaCancelarTest(APITestCase):
 
     def test(self):
         self.client.force_authenticate(user=self.user)
+
+        dato = Factura.objects.get(id=1)
+        print(f'\n--->>>isCancelada: {dato.isCancelada}')
+
         response = self.client.post('/api/facturacion/cancelar/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
         try:
             self.assertEqual(response.status_code, status.HTTP_200_OK)
         except:
             self.assertEqual(response.status_code, status.HTTP_417_EXPECTATION_FAILED)
+
+        dato = Factura.objects.get(id=1)
+        print(f'\n--->>>isCancelada: {dato.isCancelada}')

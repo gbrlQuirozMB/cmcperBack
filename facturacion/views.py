@@ -383,10 +383,11 @@ class FacturaFilter(FilterSet):
     rfcNS = CharFilter(field_name='rfc', lookup_expr='icontains')
     fechaInicioNS = DateFilter(field_name='fecha', lookup_expr="gte")
     fechaFinNS = DateFilter(field_name='fecha', lookup_expr="lte")
+    concepto = CharFilter(field_name='facturaCF__conceptoPago')
 
     class Meta:
         model = Factura
-        fields = ['rfcNS', 'fechaInicioNS', 'fechaInicioNS']
+        fields = ['rfcNS', 'fechaInicioNS', 'fechaInicioNS', 'tipo', 'concepto', 'isCancelada', 'formaPago', 'metodoPago']
 
 
 class FacturaPagination(PageNumberPagination):
@@ -406,6 +407,12 @@ class FacturaCancelarView(APIView):
     def post(self, request):
         factura = Factura.objects.get(id=request.data['id'])
         if cancelarFactura(factura):
+            Factura.objects.filter(id=request.data['id']).update(isCancelada=True)
             return Response({}, status=status.HTTP_200_OK)
         else:
             return Response({}, status=status.HTTP_417_EXPECTATION_FAILED)
+
+
+class MetodoPagoListView(ListAPIView):
+    queryset = MetodoPago.objects.all()
+    serializer_class = MetodoPagoListSerializer
