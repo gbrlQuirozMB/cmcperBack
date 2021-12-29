@@ -287,9 +287,16 @@ class PostFacturaCancelarTest(APITestCase):
 
     def test(self):
         self.client.force_authenticate(user=self.user)
+
+        dato = Factura.objects.get(id=1)
+        print(f'\n--->>>isCancelada: {dato.isCancelada}')
+
         response = self.client.post('/api/facturacion/cancelar/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
         try:
             self.assertEqual(response.status_code, status.HTTP_200_OK)
         except:
             self.assertEqual(response.status_code, status.HTTP_417_EXPECTATION_FAILED)
+
+        dato = Factura.objects.get(id=1)
+        print(f'\n--->>>isCancelada: {dato.isCancelada}')

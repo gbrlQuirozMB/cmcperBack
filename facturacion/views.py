@@ -407,6 +407,7 @@ class FacturaCancelarView(APIView):
     def post(self, request):
         factura = Factura.objects.get(id=request.data['id'])
         if cancelarFactura(factura):
+            Factura.objects.filter(id=request.data['id']).update(isCancelada=True)
             return Response({}, status=status.HTTP_200_OK)
         else:
             return Response({}, status=status.HTTP_417_EXPECTATION_FAILED)
