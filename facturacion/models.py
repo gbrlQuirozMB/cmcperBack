@@ -3,7 +3,8 @@ from instituciones.models import *
 from preregistro.models import *
 import os
 import datetime
-from datetime import datetime as  fechas
+from datetime import datetime as fechas
+
 
 class FormaPago(models.Model):
     formaPago = models.IntegerField()

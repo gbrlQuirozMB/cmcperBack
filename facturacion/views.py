@@ -1,6 +1,8 @@
 from django.http.response import HttpResponse
 from django.shortcuts import render
-import rest_framework, logging, json
+import rest_framework
+import logging
+import json
 from rest_framework import exceptions
 from rest_framework.views import APIView
 from api.exceptions import *
@@ -13,7 +15,9 @@ from .serializers import *
 from instituciones.models import *
 from django.db.models import Value
 from django.db.models.functions import Concat
-import os, base64, ssl
+import os
+import base64
+import ssl
 from django.conf import settings
 from django.template.loader import get_template, render_to_string
 from xhtml2pdf import pisa
@@ -29,31 +33,39 @@ from django.core import serializers
 
 log = logging.getLogger('django')
 
+
 class ConceptoPagoListView(ListAPIView):
     queryset = ConceptoPago.objects.all()
     serializer_class = ConceptoPagoListSerializer
+
 
 class MonedaListView(ListAPIView):
     queryset = Moneda.objects.all()
     serializer_class = MonedaListSerializer
 
+
 class FormaPagoListView(ListAPIView):
     queryset = FormaPago.objects.all()
     serializer_class = FormaPagoListSerializer
+
 
 class UsoCFDIListView(ListAPIView):
     queryset = UsoCFDI.objects.all()
     serializer_class = UsoCFDIListSerializer
 
-class AvalFilter(FilterSet):#Aval se refiere al modelo de Institucion
-    nombreInstitucionNS = CharFilter(field_name = 'nombreInstitucion', lookup_expr = 'icontains')
+
+class AvalFilter(FilterSet):  # Aval se refiere al modelo de Institucion
+    nombreInstitucionNS = CharFilter(field_name='nombreInstitucion', lookup_expr='icontains')
+
     class Meta:
         model = Institucion
         fields = ['nombreInstitucionNS']
 
+
 class AvalPagination(PageNumberPagination):
     page_size = 20
     max_page_size = 20
+
 
 class AvalFilteredListView(ListAPIView):
     queryset = Institucion.objects.all()
@@ -62,21 +74,26 @@ class AvalFilteredListView(ListAPIView):
     filterset_class = AvalFilter
     pagination_class = AvalPagination
 
+
 class MedicoFilter(FilterSet):
-    nombreCompletoNS = CharFilter(method = 'nombreCompletoFilter')
-    rfcNS = CharFilter(field_name = 'rfcFacturacion', lookup_expr = 'icontains')
-    noCertificadoNS = NumberFilter(field_name='numRegistro', lookup_expr = 'icontains')
-    isCertificadoNS = CharFilter(field_name = 'isCertificado')
+    nombreCompletoNS = CharFilter(method='nombreCompletoFilter')
+    rfcNS = CharFilter(field_name='rfcFacturacion', lookup_expr='icontains')
+    noCertificadoNS = NumberFilter(field_name='numRegistro', lookup_expr='icontains')
+    isCertificadoNS = CharFilter(field_name='isCertificado')
+
     class Meta:
         model = Medico
         fields = ['nombreCompletoNS', 'rfcNS', 'noCertificadoNS', 'isCertificadoNS']
+
     def nombreCompletoFilter(self, queryset, name, value):
-        queryset = Medico.objects.annotate(completo = Concat('nombre', Value(' '), 'apPaterno', Value(' '), 'apMaterno'))
-        return queryset.filter(completo__icontains = value)
+        queryset = Medico.objects.annotate(completo=Concat('nombre', Value(' '), 'apPaterno', Value(' '), 'apMaterno'))
+        return queryset.filter(completo__icontains=value)
+
 
 class MedicoPagination(PageNumberPagination):
     page_size = 20
     max_page_size = 20
+
 
 class MedicoFilteredListView(ListAPIView):
     queryset = Medico.objects.all()
@@ -85,18 +102,22 @@ class MedicoFilteredListView(ListAPIView):
     filterset_class = MedicoFilter
     pagination_class = MedicoPagination
 
+
 class IdUltimaFacturaView(ListAPIView):
     queryset = Factura.objects.all().order_by('-id')[:1]
     serializer_class = IdUltimaFacturaSerializer
+
 
 class PaisListView(ListAPIView):
     queryset = Pais.objects.all()
     serializer_class = PaisListSerializer
 
+
 class FacturaCreateView(CreateAPIView):
     serializer_class = FacturaSerializer
+
     def post(self, request, *args, **kwargs):
-        serializer = FacturaSerializer(data = request.data)
+        serializer = FacturaSerializer(data=request.data)
         if serializer.is_valid():
             factura = serializer.save()
             if factura.institucion:
@@ -129,23 +150,24 @@ class FacturaCreateView(CreateAPIView):
             conceptosPago = []
             for conceptoPago in request.data['conceptosPago']:
                 conceptoPagoObject = ConceptoFactura.objects.create(
-                    factura = factura,
-                    conceptoPago = ConceptoPago.objects.get(id = conceptoPago['idConceptoPago']),
-                    cantidad = conceptoPago['cantidad']
+                    factura=factura,
+                    conceptoPago=ConceptoPago.objects.get(id=conceptoPago['idConceptoPago']),
+                    cantidad=conceptoPago['cantidad']
                 )
                 conceptosPago.append({
-                    'concepto' : conceptoPagoObject,
-                    'total' : int(conceptoPagoObject.conceptoPago.precio) * int(conceptoPagoObject.cantidad)
+                    'concepto': conceptoPagoObject,
+                    'total': int(conceptoPagoObject.conceptoPago.precio) * int(conceptoPagoObject.cantidad)
                 })
             datos['conceptosPago'] = conceptosPago
             crearPDF(factura, datos)
             crearXML(factura)
             enviarCorreo(factura)
-            return Response(serializers.serialize('json', [factura]), status = status.HTTP_201_CREATED)
+            return Response(serializers.serialize('json', [factura]), status=status.HTTP_201_CREATED)
             # return self.create(request, *args, **kwargs)
-        
+
         log.info(f'campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
+
 
 def crearPDF(factura, datos):
     try:
@@ -162,9 +184,10 @@ def crearPDF(factura, datos):
     nombreArchivo = str(factura.folio) + '.pdf'
     rutaPDF = os.path.join(settings.MEDIA_ROOT, carpeta, nombreArchivo)
     pdf = open(rutaPDF, 'wb+')
-    pisa.CreatePDF(html.encode('utf-8'), dest = pdf, encoding = 'utf-8')
+    pisa.CreatePDF(html.encode('utf-8'), dest=pdf, encoding='utf-8')
     factura.pdf = rutaPDF
     factura.save()
+
 
 def crearXML(factura):
     if factura.xmlTimbrado:
@@ -172,9 +195,9 @@ def crearXML(factura):
         os.remove(ruta)
         factura.xmlTimbrado = None
     factura.save()
-    #CREA XML
+    # CREA XML
     root = minidom.Document()
-    #COMPROBANTE
+    # COMPROBANTE
     comprobante = root.createElement('cfdi:Comprobante')
     comprobante.setAttribute('xmlns:cfdi', 'http://www.sat.gob.mx/cfd/3')
     comprobante.setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
@@ -192,12 +215,12 @@ def crearXML(factura):
     root.appendChild(comprobante)
     #COMPROBANTE - EMISOR
     emisor = root.createElement('cfdi:Emisor')
-    #RFC PRAR PRUEBAS
+    # RFC PRAR PRUEBAS
     emisor.setAttribute('Rfc', 'EKU9003173C9')
-    #RFC PARA PRODUCCIÓN
+    # RFC PARA PRODUCCIÓN
     #emisor.setAttribute('Rfc', 'CMC9107125P1')
     emisor.setAttribute('Nombre', 'CMCPER')
-    emisor.setAttribute('RegimenFiscal', '603')#PERSONAS MORALES CON FINES NO LUCRATIVOS
+    emisor.setAttribute('RegimenFiscal', '603')  # PERSONAS MORALES CON FINES NO LUCRATIVOS
     comprobante.appendChild(emisor)
     #COMPROBANTE - RECEPTOR
     receptor = root.createElement('cfdi:Receptor')
@@ -205,7 +228,7 @@ def crearXML(factura):
     receptor.setAttribute('Nombre', str(factura.razonSocial))
     receptor.setAttribute('UsoCFDI', str(factura.usoCFDI.usoCFDI))
     comprobante.appendChild(receptor)
-    conceptosFactura = ConceptoFactura.objects.filter(factura = factura)
+    conceptosFactura = ConceptoFactura.objects.filter(factura=factura)
     if conceptosFactura.count() > 0:
         #COMPROBANTE - CONCEPTOS
         conceptos = root.createElement('cfdi:Conceptos')
@@ -253,28 +276,29 @@ def crearXML(factura):
             comprobante.appendChild(impuestos)
     facturar(factura, root)
 
+
 def facturar(factura, root):
-    #DATOS PARA PRUEBAS
+    # DATOS PARA PRUEBAS
     url = "https://demo-facturacion.finkok.com/servicios/soap/stamp.wsdl"
     usuario = 'clientedeprueba'
     contrasena = '20cf7fc55fd9e99021840be6dac7ffdb48e96ef67d83d357de4b0a9e2fa7'
-    #DATOS PARA PRODUCCIÓN
+    # DATOS PARA PRODUCCIÓN
     """ url = "https://facturacion.finkok.com/servicios/soap/stamp.wsdl"
     usuario = ''
     contrasena = '' """
-    #COMIENZA A FACTURAR
-    xmlstr = root.toxml(encoding = "utf-8")
+    # COMIENZA A FACTURAR
+    xmlstr = root.toxml(encoding="utf-8")
     encodedBytes = base64.b64encode(xmlstr)
     encodedStr = str(encodedBytes, "utf-8")
     context = ssl._create_unverified_context()
     ssl._create_default_https_context = ssl._create_unverified_context
-    client = Client(url, cache = None)
+    client = Client(url, cache=None)
     xmlSAT = None
     contenido = client.service.sign_stamp(encodedStr, usuario, contrasena)
-    #OBTIENE XMLSAT
+    # OBTIENE XMLSAT
     xmlSAT = contenido.xml
     if xmlSAT is not None:
-        #OBTIENE DATOS DE XMLSAT
+        # OBTIENE DATOS DE XMLSAT
         xmlParsed = minidom.parseString(str(xmlSAT))
         comprobante = xmlParsed.getElementsByTagName('cfdi:Comprobante')[0]
         complemento = comprobante.getElementsByTagName('cfdi:Complemento')[0]
@@ -284,7 +308,7 @@ def facturar(factura, root):
         numeroCertificado = comprobante.getAttribute("NoCertificado")
         fechaTimbrado = timbre.getAttribute("FechaTimbrado")
         fechaTimbradoStr = datetime.strptime(fechaTimbrado, '%Y-%m-%dT%H:%M:%S')
-        #GUARDA DATOS DE XMLSAT EN FACTURA
+        # GUARDA DATOS DE XMLSAT EN FACTURA
         factura.uuid = uuid
         factura.numeroCertificado = numeroCertificado
         factura.selloSAT = selloSAT
@@ -292,13 +316,14 @@ def facturar(factura, root):
         factura.xmlTimbrado.save(factura.folio + ".xml", ContentFile(str(xmlSAT)))
         factura.save()
 
+
 def enviarCorreo(factura):
     email = ''
     if factura.institucion:
         email = factura.institucion.email
     else:
         email = factura.medico.email
-    html_content = render_to_string('email.html', {'nombre' : factura.razonSocial, 'hoy' : datetime.now().year})
+    html_content = render_to_string('email.html', {'nombre': factura.razonSocial, 'hoy': datetime.now().year})
     text_content = strip_tags(html_content)
     email = EmailMultiAlternatives('CMCPER', text_content, 'admin@cmcper.com.mx', [email])
     email.attach_alternative(html_content, 'text/html')
@@ -307,59 +332,67 @@ def enviarCorreo(factura):
         email.attach(str(factura.folio) + '.xml', open(factura.xmlTimbrado, 'rb').read(), 'application/xml')
     email.send()
 
+
 class MyPlugin(MessagePlugin):
     def __init__(self):
         self.lastSentStr = None
         self.lastReceivedStr = None
+
     def sending(self, context):
         self.lastSentStr = str(context.envelope)
+
     def received(self, context):
         self.lastReceivedStr = str(context.reply)
 
+
 def cancelarFactura(factura):
-        logging.basicConfig(level = logging.INFO)
-        logging.getLogger('suds.client').setLevel(logging.DEBUG)
-        logging.getLogger('suds.transport').setLevel(logging.DEBUG)
-        logging.getLogger('suds.xsd.schema').setLevel(logging.DEBUG)
-        logging.getLogger('suds.wsdl').setLevel(logging.DEBUG)
-        #DATOS PARA PRUEBAS
-        url = "https://demo-facturacion.finkok.com/servicios/soap/cancel.wsdl"
-        usuario = 'clientedeprueba'
-        contrasena = '20cf7fc55fd9e99021840be6dac7ffdb48e96ef67d83d357de4b0a9e2fa7'
-        certificado = '30001000000400002434'
-        emisor = 'EKU9003173C9'
-        #DATOS PARA PRODUCCIÓN
-        """ url = "https://facturacion.finkok.com/servicios/soap/cancel.wsdl"
+    logging.basicConfig(level=logging.INFO)
+    logging.getLogger('suds.client').setLevel(logging.DEBUG)
+    logging.getLogger('suds.transport').setLevel(logging.DEBUG)
+    logging.getLogger('suds.xsd.schema').setLevel(logging.DEBUG)
+    logging.getLogger('suds.wsdl').setLevel(logging.DEBUG)
+    # DATOS PARA PRUEBAS
+    url = "https://demo-facturacion.finkok.com/servicios/soap/cancel.wsdl"
+    usuario = 'clientedeprueba'
+    contrasena = '20cf7fc55fd9e99021840be6dac7ffdb48e96ef67d83d357de4b0a9e2fa7'
+    certificado = '30001000000400002434'
+    emisor = 'EKU9003173C9'
+    # DATOS PARA PRODUCCIÓN
+    """ url = "https://facturacion.finkok.com/servicios/soap/cancel.wsdl"
         usuario = ''
         contrasena = ''
         certificado = ''
         emisor = 'CMC9107125P1' """
-        facturas = [factura.uuid]
-        context = ssl._create_unverified_context()
-        ssl._create_default_https_context = ssl._create_unverified_context
-        plugin = MyPlugin()
-        client = Client(url, cache = None, plugins=[plugin])
-        listaFacturas = client.factory.create("UUIDS")
-        listaFacturas.uuids = {"string" : facturas}
-        result = client.service.sign_cancel(listaFacturas, usuario, contrasena, emisor, certificado)
-        try:
-            xml = plugin.lastReceivedStr[2 : len(plugin.lastReceivedStr) - 1]
-            factura.xmlCancelado.save(factura.folio + ".xml", ContentFile(str(xml)))
-            return True
-        except:
-            return False
+    facturas = [factura.uuid]
+    context = ssl._create_unverified_context()
+    ssl._create_default_https_context = ssl._create_unverified_context
+    plugin = MyPlugin()
+    client = Client(url, cache=None, plugins=[plugin])
+    listaFacturas = client.factory.create("UUIDS")
+    listaFacturas.uuids = {"string": facturas}
+    result = client.service.sign_cancel(listaFacturas, usuario, contrasena, emisor, certificado)
+    try:
+        xml = plugin.lastReceivedStr[2: len(plugin.lastReceivedStr) - 1]
+        factura.xmlCancelado.save(factura.folio + ".xml", ContentFile(str(xml)))
+        return True
+    except:
+        return False
+
 
 class FacturaFilter(FilterSet):
-    rfcNS = CharFilter(field_name = 'rfc', lookup_expr = 'icontains')
-    fechaInicioNS = DateFilter(field_name = 'fecha', lookup_expr = "gte")
-    fechaFinNS = DateFilter(field_name = 'fecha', lookup_expr = "lte")
+    rfcNS = CharFilter(field_name='rfc', lookup_expr='icontains')
+    fechaInicioNS = DateFilter(field_name='fecha', lookup_expr="gte")
+    fechaFinNS = DateFilter(field_name='fecha', lookup_expr="lte")
+
     class Meta:
         model = Factura
         fields = ['rfcNS', 'fechaInicioNS', 'fechaInicioNS']
 
+
 class FacturaPagination(PageNumberPagination):
     page_size = 20
     max_page_size = 20
+
 
 class FacturaFilteredListView(ListAPIView):
     queryset = Factura.objects.all()
@@ -368,10 +401,11 @@ class FacturaFilteredListView(ListAPIView):
     filterset_class = FacturaFilter
     pagination_class = FacturaPagination
 
+
 class FacturaCancelarView(APIView):
     def post(self, request):
-        factura = Factura.objects.get(id = request.data['id'])
+        factura = Factura.objects.get(id=request.data['id'])
         if cancelarFactura(factura):
-            return Response({}, status = status.HTTP_200_OK)
+            return Response({}, status=status.HTTP_200_OK)
         else:
-            return Response({}, status = status.HTTP_417_EXPECTATION_FAILED)
+            return Response({}, status=status.HTTP_417_EXPECTATION_FAILED)
