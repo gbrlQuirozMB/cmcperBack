@@ -136,7 +136,7 @@ class Factura(models.Model):
     formaPago = models.ForeignKey(FormaPago, on_delete=models.SET_NULL, null=True)
     moneda = models.ForeignKey(Moneda, on_delete=models.SET_NULL, null=True)
     comentarios = models.CharField(max_length=250, null=True, blank=True)
-    folio = models.CharField(max_length=50, null=True)
+    folio = models.CharField(max_length=50, null=True, blank=True)
     subtotal = models.DecimalField(decimal_places=6, max_digits=21, null=True)
     iva = models.DecimalField(decimal_places=6, max_digits=21, null=True)
     total = models.DecimalField(decimal_places=6, max_digits=21, null=True)

@@ -80,6 +80,17 @@ class FacturaSerializer(serializers.ModelSerializer):
 
         return data
 
+    def create(self, validated_data):
+        factura = Factura.objects.filter()[:1]
+        if factura.count() != 0:
+            valor = int(factura.get().folio)
+            valor += 1
+            validated_data.update({'folio': valor})
+        else:
+            validated_data.update({'folio': 1})
+
+        return Factura(**validated_data)
+
 
 class FacturaFilteredListSerializer(serializers.ModelSerializer):
     class Meta:

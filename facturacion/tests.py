@@ -35,11 +35,11 @@ def configDB():
 
     # -------------
     fact1 = Factura.objects.create(rfc='Rfc1', tipo='Residente', fecha='2001-01-01', hora='01:01:01', formaPago=formPago1, metodoPago=metPago1, usoCFDI=usoCFDI1,
-                                   moneda=moneda1, pais=pais1)
+                                   moneda=moneda1, pais=pais1, folio=1)
     fact2 = Factura.objects.create(rfc='Rfc2', tipo='Certificado', fecha='2002-02-02', hora='02:02:02', formaPago=formPago3, metodoPago=metPago2, usoCFDI=usoCFDI2,
-                                   moneda=moneda2, pais=pais2)
+                                   moneda=moneda2, pais=pais2, folio=2)
     fact3 = Factura.objects.create(rfc='Rfc3', tipo='Aval', fecha='2003-03-03', hora='03:03:03', formaPago=formPago4, metodoPago=metPago1, isCancelada=True, usoCFDI=usoCFDI3,
-                                   moneda=moneda3, pais=pais3)
+                                   moneda=moneda3, pais=pais3, folio=3)
     # -------------
 
     unmed1 = UnidadMedida.objects.create(unidadMedida='E48', nombre='Servicio', descripcion='descripcion1', nota='nota1', simbolo='simbolo1')
@@ -224,14 +224,17 @@ class PostFacturaTest(APITestCase):
             calleFisc='CalleFisc', cpFisc='CpFisc', numInteriorFisc='NumInteriorFisc', numExteriorFisc='NumExteriorFisc', fechaNac=datetime.datetime.strptime('1980-01-01', '%Y-%m-%d'),
             fechaInicioResi=datetime.datetime.strptime('2019-01-01', '%Y-%m-%d'),
             fechaFinResi=datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'))
-        UsoCFDI.objects.create(usoCFDI='UsoCFDI1', descripcion='Descripcion1', orden=1)
-        FormaPago.objects.create(formaPago=1, descripcion='Descripcion1', orden=1, abreviatura='Abreviatura1')
-        MetodoPago.objects.create(metodoPago='PUE', descripcion='Pago en una sola exhibición')
-        Moneda.objects.create(moneda='Moneda1', descripcion='Descripcion1', decimales=1, porcentajeVariacion='1%', orden=1)
-        Pais.objects.create(pais='111', descripcion='Descripcion1')
+        usoCFDI3=UsoCFDI.objects.create(usoCFDI='UsoCFDI1', descripcion='Descripcion1', orden=1)
+        formPago4=FormaPago.objects.create(formaPago=1, descripcion='Descripcion1', orden=1, abreviatura='Abreviatura1')
+        metPago1=MetodoPago.objects.create(metodoPago='PUE', descripcion='Pago en una sola exhibición')
+        moneda3=Moneda.objects.create(moneda='Moneda1', descripcion='Descripcion1', decimales=1, porcentajeVariacion='1%', orden=1)
+        pais3=Pais.objects.create(pais='111', descripcion='Descripcion1')
         unidadMedida = UnidadMedida.objects.create(unidadMedida='UnidadMedida', nombre='Nombre', descripcion='Descripcion', nota='nota', simbolo='Simbolo')
         ConceptoPago.objects.create(conceptoPago='ConceptoPago1', precio=100, claveSAT='claveSAT', unidadMedida=unidadMedida)
         ConceptoPago.objects.create(conceptoPago='ConceptoPago2', precio=100, claveSAT='claveSAT', unidadMedida=unidadMedida)
+        # para probar cuado ya existe un factura tome el FOLIO correcto
+        # fact3 = Factura.objects.create(rfc='Rfc3', tipo='Aval', fecha='2003-03-03', hora='03:03:03', formaPago=formPago4, metodoPago=metPago1, isCancelada=True, usoCFDI=usoCFDI3,
+        #                            moneda=moneda3, pais=pais3, folio=3)
         conceptosPago = [{'idConceptoPago': '1', 'cantidad': '1'}, {'idConceptoPago': '2', 'cantidad': '1'}]
         self.json = {
             "fecha": "2021-01-01",
@@ -243,7 +246,7 @@ class PostFacturaTest(APITestCase):
             "pais": 1,
             "metodoPago": 1,
             "comentarios": "Sin comentarios",
-            "folio": "1",
+            # "folio": "1",  # este no debe ir, se toma del ultimo registro existente en la tabla
             "subtotal": 200.00,
             "iva": 32.00,
             "total": 232.00,
@@ -382,3 +385,24 @@ class GetMetodoPagoListTest(APITestCase):
         response = self.client.get('/api/facturacion/metodo-pago/list/')
         print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class OtrosTest(APITestCase):
+    def setUp(self):
+        configDB()
+        
+    def test(self):
+        for dato in Factura.objects.filter():
+            print(f'id: {dato.id} - creado_en: {dato.creado_en} - folio: {dato.folio}')
+        
+        
+        
+        dato = Factura.objects.filter()[:1]
+        if dato.get().folio is None:
+            print(f'dato: 1')
+        else:
+            print(f'dato: {dato.get().folio}')
+            valor = int(dato.get().folio)
+            valor += 1
+            print(f'valor: {valor}')
+        
