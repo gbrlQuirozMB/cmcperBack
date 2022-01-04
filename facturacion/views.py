@@ -31,6 +31,8 @@ from suds.plugin import MessagePlugin
 from rest_framework.response import Response
 from django.core import serializers
 
+from rest_framework_csv import renderers as r
+
 log = logging.getLogger('django')
 
 
@@ -416,3 +418,12 @@ class FacturaCancelarView(APIView):
 class MetodoPagoListView(ListAPIView):
     queryset = MetodoPago.objects.all()
     serializer_class = MetodoPagoListSerializer
+
+
+class FacturaFilteredDownExcelListView(ListAPIView):
+    queryset = Factura.objects.all()
+    serializer_class = FacturaFilteredDownExcelSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = FacturaFilter
+    renderer_classes = (r.CSVRenderer, )
+    # permission_classes = (permissions.AllowAny,)
