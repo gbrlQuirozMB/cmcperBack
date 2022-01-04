@@ -16,4 +16,7 @@ urlpatterns = [
     path('create/', FacturaCreateView.as_view()),
     path('list/', FacturaFilteredListView.as_view()),
     path('cancelar/', FacturaCancelarView.as_view()),
+    
+    path('bajar-excel/list/', FacturaFilteredDownExcelListView.as_view()),
+    
 ]

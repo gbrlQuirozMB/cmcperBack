@@ -71,3 +71,22 @@ class MetodoPagoListSerializer(serializers.ModelSerializer):
     class Meta:
         model = MetodoPago
         fields = '__all__'
+
+
+class FacturaFilteredDownExcelSerializer(serializers.ModelSerializer):
+    # tipo = serializers.CharField(source='get_tipo_display')
+    class Meta:
+        model = Factura
+        fields = ['creado_en', 'rfc', 'razonSocial', 'estado', 'deleMuni', 'colonia', 'calle', 'numInterior', 'numExterior', 'codigoPostal', 'usoCFDI', 'formaPago',
+                  'moneda', 'comentarios', 'folio', 'subtotal', 'iva', 'total', 'pais', 'numRegIdTrib', 'uuid', 'numeroCertificado', 'fechaTimbrado', 'fechaCancelado',
+                  'fecha', 'hora']
+        # fields = ['usoCFDI', 'formaPago', 'moneda', 'pais']
+
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        repr['usoCFDI'] = instance.usoCFDI.usoCFDI
+        repr['formaPago'] = instance.formaPago.formaPago
+        repr['moneda'] = instance.moneda.moneda
+        repr['pais'] = instance.pais.pais
+
+        return repr

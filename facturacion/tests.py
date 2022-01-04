@@ -9,6 +9,54 @@ from instituciones.models import *
 from preregistro.models import *
 
 
+def configDB():
+    usoCFDI1 = UsoCFDI.objects.create(usoCFDI='uso1', descripcion='USO descripcion 1', orden=1)
+    usoCFDI2 = UsoCFDI.objects.create(usoCFDI='uso2', descripcion='USO descripcion 2', orden=2)
+    usoCFDI3 = UsoCFDI.objects.create(usoCFDI='uso3', descripcion='USO descripcion 3', orden=3)
+
+    moneda1 = Moneda.objects.create(moneda='Moneda1', descripcion='Descripcion 1', decimales=1, porcentajeVariacion='1%', orden=1)
+    moneda2 = Moneda.objects.create(moneda='Moneda2', descripcion='Descripcion 2', decimales=2, porcentajeVariacion='2%', orden=2)
+    moneda3 = Moneda.objects.create(moneda='Moneda3', descripcion='Descripcion 3', decimales=3, porcentajeVariacion='3%', orden=3)
+
+    pais1 = Pais.objects.create(pais='pais 1', descripcion='Descripcion 1')
+    pais2 = Pais.objects.create(pais='pais 2', descripcion='Descripcion 2')
+    pais3 = Pais.objects.create(pais='pais 3', descripcion='Descripcion 3')
+
+    uniMedi1 = unidadMedida = UnidadMedida.objects.create(unidadMedida='UnidadMedida 1', nombre='Nombre 1', descripcion='Descripcion 1', nota='nota 1', simbolo='Simbolo 1')
+    uniMedi2 = unidadMedida = UnidadMedida.objects.create(unidadMedida='UnidadMedida 2', nombre='Nombre 2', descripcion='Descripcion 2', nota='nota 2', simbolo='Simbolo 2')
+    uniMedi3 = unidadMedida = UnidadMedida.objects.create(unidadMedida='UnidadMedida 3', nombre='Nombre 3', descripcion='Descripcion 3', nota='nota 3', simbolo='Simbolo 3')
+
+    metPago1 = MetodoPago.objects.create(metodoPago='PUE', descripcion='Pago en una sola exhibición')
+    metPago2 = MetodoPago.objects.create(metodoPago='PPD', descripcion='Pago en parcialidades o diferido')
+
+    formPago1 = FormaPago.objects.create(formaPago=1, descripcion='Efectivo', orden=1, abreviatura='EFE', solicitarReferencia=False, inactivo=False)
+    formPago3 = FormaPago.objects.create(formaPago=3, descripcion='Transferencia electrónica de fondos', orden=3, abreviatura='TE', solicitarReferencia=True, inactivo=False)
+    formPago4 = FormaPago.objects.create(formaPago=4, descripcion='Tarjeta de crédito', orden=4, abreviatura='TC', solicitarReferencia=True, inactivo=False)
+
+    # -------------
+    fact1 = Factura.objects.create(rfc='Rfc1', tipo='Residente', fecha='2001-01-01', hora='01:01:01', formaPago=formPago1, metodoPago=metPago1, usoCFDI=usoCFDI1,
+                                   moneda=moneda1, pais=pais1)
+    fact2 = Factura.objects.create(rfc='Rfc2', tipo='Certificado', fecha='2002-02-02', hora='02:02:02', formaPago=formPago3, metodoPago=metPago2, usoCFDI=usoCFDI2,
+                                   moneda=moneda2, pais=pais2)
+    fact3 = Factura.objects.create(rfc='Rfc3', tipo='Aval', fecha='2003-03-03', hora='03:03:03', formaPago=formPago4, metodoPago=metPago1, isCancelada=True, usoCFDI=usoCFDI3,
+                                   moneda=moneda3, pais=pais3)
+    # -------------
+
+    unmed1 = UnidadMedida.objects.create(unidadMedida='E48', nombre='Servicio', descripcion='descripcion1', nota='nota1', simbolo='simbolo1')
+    unmed2 = UnidadMedida.objects.create(unidadMedida='H87', nombre='Pieza', descripcion='descripcion2', nota='nota2', simbolo='simbolo2')
+
+    conPag1 = ConceptoPago.objects.create(conceptoPago='PAGO DE CERTIFICACION VIGENTE', precio=111, inactivo=False, claveSAT='sat111', unidadMedida=unmed1)
+    conPag2 = ConceptoPago.objects.create(conceptoPago='PAGO EXAMEN DE CERTIFICACIÓN', precio=222, inactivo=False, claveSAT='sat222', unidadMedida=unmed1)
+    conPag3 = ConceptoPago.objects.create(conceptoPago='PAGO DE EXAMEN DE CERTIFICACION VIGENTE', precio=333, inactivo=False, claveSAT='sat333', unidadMedida=unmed1)
+
+    # -------------
+    ConceptoFactura.objects.create(factura=fact1, conceptoPago=conPag1, cantidad=1)
+    ConceptoFactura.objects.create(factura=fact1, conceptoPago=conPag2, cantidad=1)
+    ConceptoFactura.objects.create(factura=fact2, conceptoPago=conPag1, cantidad=1)
+    ConceptoFactura.objects.create(factura=fact3, conceptoPago=conPag3, cantidad=1)
+    # -------------
+
+
 class GetConceptoPagoListTest(APITestCase):
     def setUp(self):
         unidadMedida1 = UnidadMedida.objects.create(unidadMedida='UM1', nombre='Servicio1', descripcion='unidadMedida1', nota='', simbolo='')
@@ -218,28 +266,7 @@ class PostFacturaTest(APITestCase):
 
 class GetFacturaFilteredListTest(APITestCase):
     def setUp(self):
-        metPago1 = MetodoPago.objects.create(metodoPago='PUE', descripcion='Pago en una sola exhibición')
-        metPago2 = MetodoPago.objects.create(metodoPago='PPD', descripcion='Pago en parcialidades o diferido')
-
-        formPago1 = FormaPago.objects.create(formaPago=1, descripcion='Efectivo', orden=1, abreviatura='EFE', solicitarReferencia=False, inactivo=False)
-        formPago3 = FormaPago.objects.create(formaPago=3, descripcion='Transferencia electrónica de fondos', orden=3, abreviatura='TE', solicitarReferencia=True, inactivo=False)
-        formPago4 = FormaPago.objects.create(formaPago=4, descripcion='Tarjeta de crédito', orden=4, abreviatura='TC', solicitarReferencia=True, inactivo=False)
-
-        fact1 = Factura.objects.create(rfc='Rfc1', tipo='Residente', fecha='2001-01-01', hora='01:01:01', formaPago=formPago1, metodoPago=metPago1)
-        fact2 = Factura.objects.create(rfc='Rfc2', tipo='Certificado', fecha='2002-02-02', hora='02:02:02', formaPago=formPago3, metodoPago=metPago2)
-        fact3 = Factura.objects.create(rfc='Rfc3', tipo='Aval', fecha='2003-03-03', hora='03:03:03', formaPago=formPago4, metodoPago=metPago1, isCancelada=True)
-
-        unmed1 = UnidadMedida.objects.create(unidadMedida='E48', nombre='Servicio', descripcion='descripcion1', nota='nota1', simbolo='simbolo1')
-        unmed2 = UnidadMedida.objects.create(unidadMedida='H87', nombre='Pieza', descripcion='descripcion2', nota='nota2', simbolo='simbolo2')
-
-        conPag1 = ConceptoPago.objects.create(conceptoPago='PAGO DE CERTIFICACION VIGENTE', precio=111, inactivo=False, claveSAT='sat111', unidadMedida=unmed1)
-        conPag2 = ConceptoPago.objects.create(conceptoPago='PAGO EXAMEN DE CERTIFICACIÓN', precio=222, inactivo=False, claveSAT='sat222', unidadMedida=unmed1)
-        conPag3 = ConceptoPago.objects.create(conceptoPago='PAGO DE EXAMEN DE CERTIFICACION VIGENTE', precio=333, inactivo=False, claveSAT='sat333', unidadMedida=unmed1)
-
-        ConceptoFactura.objects.create(factura=fact1, conceptoPago=conPag1, cantidad=1)
-        ConceptoFactura.objects.create(factura=fact1, conceptoPago=conPag2, cantidad=1)
-        ConceptoFactura.objects.create(factura=fact2, conceptoPago=conPag1, cantidad=1)
-        ConceptoFactura.objects.create(factura=fact3, conceptoPago=conPag3, cantidad=1)
+        configDB()
 
         self.user = User.objects.create_user(username='billy', is_staff=True)
 
@@ -300,3 +327,56 @@ class PostFacturaCancelarTest(APITestCase):
 
         dato = Factura.objects.get(id=1)
         print(f'\n--->>>isCancelada: {dato.isCancelada}')
+
+
+class GetFacturaFilteredListDownExcelTest(APITestCase):
+    def setUp(self):
+        configDB()
+
+        self.user = User.objects.create_user(username='billy', is_staff=True)
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        # response = self.client.get('/api/facturacion/bajar-excel/list/?tipo=Aval')
+        # print(f'response JSON ===>>> filtrado por tipo=Aval \n {response.content} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/facturacion/bajar-excel/list/?fechaInicioNS=2002-02-02&fechaFinNS=2003-03-03')
+        print(f'response JSON ===>>> filtrado por rango de fechas \n {response.content} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # response = self.client.get('/api/facturacion/bajar-excel/list/?concepto=1')
+        # print(f'response JSON ===>>> filtrado por concepto=1 \n {response.content} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # response = self.client.get('/api/facturacion/bajar-excel/list/?isCancelada=false')
+        # print(f'response JSON ===>>> filtrado por isCancelada=false \n {response.content} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # response = self.client.get('/api/facturacion/bajar-excel/list/?formaPago=3')
+        # print(f'response JSON ===>>> formaPago=3 \n {response.content} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # response = self.client.get('/api/facturacion/bajar-excel/list/?metodoPago=1')
+        # print(f'response JSON ===>>> metodoPago=2 \n {response.content} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # response = self.client.get('/api/facturacion/bajar-excel/list/?rfcNS=Rfc3')
+        # print(f'response JSON ===>>> rfcNS=Rfc1 \n {response.content} \n ---')
+        # # print(f'response JSON ===>>> rfcNS=Rfc1 \n {response} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class GetMetodoPagoListTest(APITestCase):
+    def setUp(self):
+        MetodoPago.objects.create(metodoPago='PUE', descripcion='Pago en una sola exhibición')
+        MetodoPago.objects.create(metodoPago='PPD', descripcion='Pago en parcialidades o diferido')
+
+        self.user = User.objects.create_user(username='billy', is_staff=True)
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get('/api/facturacion/metodo-pago/list/')
+        print(f'response JSON ===>>> 200-OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
