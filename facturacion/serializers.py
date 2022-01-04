@@ -64,7 +64,8 @@ class FacturaSerializer(serializers.ModelSerializer):
 class FacturaFilteredListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Factura
-        fields = ['creado_en', 'folio', 'razonSocial', 'rfc', 'isCancelada', 'total', 'fecha', 'hora']
+        fields = '__all__'
+        # fields = ['creado_en', 'folio', 'razonSocial', 'rfc', 'isCancelada', 'total', 'fecha', 'hora']
 
 
 class MetodoPagoListSerializer(serializers.ModelSerializer):
