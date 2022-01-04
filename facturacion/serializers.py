@@ -69,5 +69,5 @@ class FacturaFilteredListSerializer(serializers.ModelSerializer):
 
 class MetodoPagoListSerializer(serializers.ModelSerializer):
     class Meta:
-        model = FormaPago
+        model = MetodoPago
         fields = '__all__'
