@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import *
 from instituciones.models import *
 from preregistro.models import *
+from api.exceptions import *
 
 
 class ConceptoPagoListSerializer(serializers.ModelSerializer):
@@ -59,6 +60,25 @@ class FacturaSerializer(serializers.ModelSerializer):
         model = Factura
         fields = ['fecha', 'hora', 'tipo', 'institucion', 'medico', 'usoCFDI', 'formaPago', 'moneda', 'comentarios', 'folio', 'subtotal', 'iva', 'total', 'pais',
                   'numRegIdTrib', 'metodoPago']
+
+    def validate(self, data):
+        if 'usoCFDI' not in data or data.get('usoCFDI') is None:
+            # raise serializers.ValidationError('chingao')
+            raise CampoIncorrecto({"usoCFDI": ["Este campo es requerido y/o debe contener un valor válido "]})
+
+        if 'formaPago' not in data or data.get('formaPago') is None:
+            raise CampoIncorrecto({"formaPago": ["Este campo es requerido y/o debe contener un valor válido "]})
+
+        if 'moneda' not in data or data.get('moneda') is None:
+            raise CampoIncorrecto({"moneda": ["Este campo es requerido y/o debe contener un valor válido "]})
+
+        if 'pais' not in data or data.get('pais') is None:
+            raise CampoIncorrecto({"pais": ["Este campo es requerido y/o debe contener un valor válido "]})
+
+        if 'metodoPago' not in data or data.get('metodoPago') is None:
+            raise CampoIncorrecto({"metodoPago": ["Este campo es requerido y/o debe contener un valor válido "]})
+
+        return data
 
 
 class FacturaFilteredListSerializer(serializers.ModelSerializer):

@@ -22,3 +22,11 @@ class ResponseError(APIException):
     def __init__(self, detail, code):
         self.detail = detail
         self.status_code = code
+
+
+class CampoIncorrecto(ValidationError):
+    default_code = 'error'
+
+    def __init__(self, detail, status_code=400):
+        self.detail = detail
+        self.status_code = status_code

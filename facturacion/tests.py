@@ -226,6 +226,7 @@ class PostFacturaTest(APITestCase):
             fechaFinResi=datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'))
         UsoCFDI.objects.create(usoCFDI='UsoCFDI1', descripcion='Descripcion1', orden=1)
         FormaPago.objects.create(formaPago=1, descripcion='Descripcion1', orden=1, abreviatura='Abreviatura1')
+        MetodoPago.objects.create(metodoPago='PUE', descripcion='Pago en una sola exhibición')
         Moneda.objects.create(moneda='Moneda1', descripcion='Descripcion1', decimales=1, porcentajeVariacion='1%', orden=1)
         Pais.objects.create(pais='111', descripcion='Descripcion1')
         unidadMedida = UnidadMedida.objects.create(unidadMedida='UnidadMedida', nombre='Nombre', descripcion='Descripcion', nota='nota', simbolo='Simbolo')
@@ -236,18 +237,19 @@ class PostFacturaTest(APITestCase):
             "fecha": "2021-01-01",
             # "institucion": "1",
             "medico": "1",
-            "usoCFDI": "1",
-            "formaPago": "1",
-            "moneda": "1",
+            "usoCFDI": 1,
+            "formaPago": 1,
+            "moneda": 1,
+            "pais": 1,
+            "metodoPago": 1,
             "comentarios": "Sin comentarios",
             "folio": "1",
-            "subtotal": "200.00",
-            "iva": "32.00",
-            "total": "232.00",
-            "pais": "1",
+            "subtotal": 200.00,
+            "iva": 32.00,
+            "total": 232.00,
             "numRegIdTrib": "0123456789",
             "importeLetra": "Doscientos treinta y dos pesos 00 MXN",
-            "agregarDireccion": "True",
+            "agregarDireccion": True,
             "certificado": "2020",
             "recertificacion": "2025",
             "conceptosPago": conceptosPago,
