@@ -16,6 +16,7 @@ class Capitulo(models.Model):
     minimo = models.DecimalField(max_digits=6, decimal_places=2)
     isOpcional = models.BooleanField(default=False, db_column='is_opcional')
     icono = models.FileField(blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif', 'jpeg'])], upload_to='recertificacion')
+    isActivo = models.BooleanField(default=True, db_column='is_activo')  
 
     class Meta:
         db_table = 'capitulos'
@@ -26,6 +27,7 @@ class Subcapitulo(models.Model):
     descripcion = models.CharField(max_length=300)
     comentarios = models.TextField(blank=True, null=True)
     capitulo = models.ForeignKey(Capitulo, on_delete=models.CASCADE, related_name='capituloS')
+    isActivo = models.BooleanField(default=True, db_column='is_activo')
 
     class Meta:
         db_table = 'subcapitulos'
@@ -36,6 +38,7 @@ class Item(models.Model):
     descripcion = models.CharField(max_length=300)
     puntos = models.DecimalField(max_digits=6, decimal_places=2)
     subcapitulo = models.ForeignKey(Subcapitulo, on_delete=models.CASCADE, related_name='subcapituloI')
+    isActivo = models.BooleanField(default=True, db_column='is_activo')
 
     class Meta:
         db_table = 'items'
