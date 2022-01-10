@@ -58,8 +58,8 @@ class PaisListSerializer(serializers.ModelSerializer):
 class FacturaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Factura
-        fields = ['fecha', 'hora', 'tipo', 'institucion', 'medico', 'usoCFDI', 'formaPago', 'moneda', 'comentarios', 'folio', 'subtotal', 'iva', 'total', 'pais',
-                  'numRegIdTrib', 'metodoPago']
+        fields = ['fecha', 'tipo', 'institucion', 'medico', 'usoCFDI', 'formaPago', 'moneda', 'comentarios', 'folio', 'subtotal', 'iva', 'total', 'pais',
+                  'numRegIdTrib', 'metodoPago', 'codigoPostal']
 
     def validate(self, data):
         if 'usoCFDI' not in data or data.get('usoCFDI') is None:
@@ -90,6 +90,20 @@ class FacturaSerializer(serializers.ModelSerializer):
             validated_data.update({'folio': 1})
 
         return Factura(**validated_data)
+    
+    # def to_representation(self, value):
+    #     # fecha = time.strftime('%M:%S', time.gmtime(value.duration))
+    #     fecha = serializers.DateTimeField('%Y-%m-%dT%H:%M:%SZ').to_representation(value.fecha)
+    #     # fecha = (value.fecha)
+    #     # return 'Track %d: %s (%s)' % (value.order, value.name, duration)
+    #     return fecha
+    
+    
+    # def get_fecha(self, instance) -> str:
+
+    #     representation: str = serializers.DateTimeField('%Y-%m-%dT%H:%M:%SZ').to_representation(instance.fecha)
+    #     return representation
+    
 
 
 class FacturaFilteredListSerializer(serializers.ModelSerializer):

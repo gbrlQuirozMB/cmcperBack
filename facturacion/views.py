@@ -210,7 +210,7 @@ def crearXML(factura):
     comprobante.setAttribute('Moneda', str(factura.moneda.moneda))
     comprobante.setAttribute('TipoDeComprobante', 'I')
     comprobante.setAttribute('MetodoPago', 'PUE')
-    comprobante.setAttribute('FormaPago', str(factura.formaPago.formaPago))
+    comprobante.setAttribute('FormaPago', '0'+str(factura.formaPago.formaPago))
     comprobante.setAttribute('LugarExpedicion', str(factura.codigoPostal))
     comprobante.setAttribute('SubTotal', str(round(factura.subtotal, factura.moneda.decimales)))
     comprobante.setAttribute('Total', str(round(factura.total, factura.moneda.decimales)))
@@ -297,14 +297,18 @@ def facturar(factura, root):
     client = Client(url, cache=None)
     xmlSAT = None
     contenido = client.service.sign_stamp(encodedStr, usuario, contrasena)
+
     # OBTIENE XMLSAT
     xmlSAT = contenido.xml
+
     if xmlSAT is not None:
         # OBTIENE DATOS DE XMLSAT
         xmlParsed = minidom.parseString(str(xmlSAT))
         comprobante = xmlParsed.getElementsByTagName('cfdi:Comprobante')[0]
         complemento = comprobante.getElementsByTagName('cfdi:Complemento')[0]
         timbre = complemento.getElementsByTagName('tfd:TimbreFiscalDigital')[0]
+        factura.numeroCertificadoSAT = timbre.getAttribute("NoCertificadoSAT")
+        factura.selloCFDI = timbre.getAttribute("SelloCFD")
         uuid = timbre.getAttribute("UUID")
         selloSAT = timbre.getAttribute("SelloSAT")
         numeroCertificado = comprobante.getAttribute("NoCertificado")
@@ -314,9 +318,15 @@ def facturar(factura, root):
         factura.uuid = uuid
         factura.numeroCertificado = numeroCertificado
         factura.selloSAT = selloSAT
-        factura.fechaTimbrado = fechaTimbrado
-        factura.xmlTimbrado.save(factura.folio + ".xml", ContentFile(str(xmlSAT)))
+        # factura.fechaTimbrado = fechaTimbrado
+        factura.fechaTimbrado = fechaTimbradoStr
+        factura.xmlTimbrado.save(str(factura.folio) + ".xml", ContentFile(str(xmlSAT)))
+        # valores = xmlParsed.toprettyxml()
+        # print(f'\n--->>>xmlParsed: {valores}')
+        # print(f'\n--->>>xmlSAT: {xmlSAT}')
         factura.save()
+    else:
+        print(f'--->>>Error! -> xml: {contenido}')
 
 
 def enviarCorreo(factura):

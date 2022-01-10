@@ -111,8 +111,8 @@ class Factura(models.Model):
     creado_en = models.DateTimeField(auto_now_add=True)
     actualizado_en = models.DateTimeField(auto_now=True)
 
-    fecha = models.DateField(default=datetime.date.today, blank=True, null=True, db_column='fecha_factura')
-    hora = models.TimeField(default=hora, blank=True, null=True, db_column='hora_factura')
+    fecha = models.DateTimeField(default=datetime.date.today, blank=True, null=True, db_column='fecha_factura')
+    # hora = models.TimeField(default=hora, blank=True, null=True, db_column='hora_factura')
     tipo = models.CharField(max_length=15, choices=(
         ('Residente', 'Residente'),
         ('Certificado', 'Certificado'),

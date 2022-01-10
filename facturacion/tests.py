@@ -219,25 +219,25 @@ class PostFacturaTest(APITestCase):
             cp = 'Cp', numInterior = 'NumInterior', numExterior = 'NumExterior', username = 'Username'
         ) """
         Medico.objects.create(
-            nombre='Nombre', apPaterno='ApPaterno', apMaterno='ApMaterno', rfcFacturacion='RfcFacturacion', usoCfdi='G03', razonSocial='RazonSocial', telCelular='01234', email='email@email.com',
+            nombre='Nombre', apPaterno='ApPaterno', apMaterno='ApMaterno', rfcFacturacion='EKU9003173C9', usoCfdi='G03', razonSocial='RazonSocial', telCelular='01234', email='email@email.com',
             isExtranjero=True, aceptado=True, numRegistro=56789, isCertificado=True, anioCertificacion=2020, estadoFisc='EstadoFisc', deleMuniFisc='DeleMuniFisc', coloniaFisc='ColoniaFisc',
-            calleFisc='CalleFisc', cpFisc='CpFisc', numInteriorFisc='NumInteriorFisc', numExteriorFisc='NumExteriorFisc', fechaNac=datetime.datetime.strptime('1980-01-01', '%Y-%m-%d'),
+            calleFisc='CalleFisc', cpFisc='42080', numInteriorFisc='NumInteriorFisc', numExteriorFisc='NumExteriorFisc', fechaNac=datetime.datetime.strptime('1980-01-01', '%Y-%m-%d'),
             fechaInicioResi=datetime.datetime.strptime('2019-01-01', '%Y-%m-%d'),
             fechaFinResi=datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'))
-        usoCFDI3=UsoCFDI.objects.create(usoCFDI='UsoCFDI1', descripcion='Descripcion1', orden=1)
+        usoCFDI3=UsoCFDI.objects.create(usoCFDI='G03', descripcion='Descripcion1', orden=1)
         formPago4=FormaPago.objects.create(formaPago=1, descripcion='Descripcion1', orden=1, abreviatura='Abreviatura1')
         metPago1=MetodoPago.objects.create(metodoPago='PUE', descripcion='Pago en una sola exhibición')
-        moneda3=Moneda.objects.create(moneda='Moneda1', descripcion='Descripcion1', decimales=1, porcentajeVariacion='1%', orden=1)
+        moneda3=Moneda.objects.create(moneda='MXN', descripcion='Descripcion1', decimales=1, porcentajeVariacion='1%', orden=1)
         pais3=Pais.objects.create(pais='111', descripcion='Descripcion1')
-        unidadMedida = UnidadMedida.objects.create(unidadMedida='UnidadMedida', nombre='Nombre', descripcion='Descripcion', nota='nota', simbolo='Simbolo')
-        ConceptoPago.objects.create(conceptoPago='ConceptoPago1', precio=100, claveSAT='claveSAT', unidadMedida=unidadMedida)
-        ConceptoPago.objects.create(conceptoPago='ConceptoPago2', precio=100, claveSAT='claveSAT', unidadMedida=unidadMedida)
+        unidadMedida = UnidadMedida.objects.create(unidadMedida='E48', nombre='Nombre', descripcion='Descripcion', nota='nota', simbolo='Simbolo')
+        ConceptoPago.objects.create(conceptoPago='ConceptoPago1', precio=100, claveSAT='10101500', unidadMedida=unidadMedida)
+        ConceptoPago.objects.create(conceptoPago='ConceptoPago2', precio=100, claveSAT='10101500', unidadMedida=unidadMedida)
         # para probar cuado ya existe un factura tome el FOLIO correcto
         # fact3 = Factura.objects.create(rfc='Rfc3', tipo='Aval', fecha='2003-03-03', hora='03:03:03', formaPago=formPago4, metodoPago=metPago1, isCancelada=True, usoCFDI=usoCFDI3,
         #                            moneda=moneda3, pais=pais3, folio=3)
         conceptosPago = [{'idConceptoPago': '1', 'cantidad': '1'}, {'idConceptoPago': '2', 'cantidad': '1'}]
         self.json = {
-            "fecha": "2021-01-01",
+            
             # "institucion": "1",
             "medico": "1",
             "usoCFDI": 1,
@@ -256,13 +256,21 @@ class PostFacturaTest(APITestCase):
             "certificado": "2020",
             "recertificacion": "2025",
             "conceptosPago": conceptosPago,
-            "fecha": "1999-09-09",
-            "hora": "03:33:33",
-            "tipo": "Aval"
+            # "fecha": "1999-09-09",
+            "fecha": "2022-01-10T09:06:03",
+            # "fecha": datetime.datetime.now(),
+            # "hora": "03:33:33",
+            "tipo": "Aval",
+            # "codigoPostal": "21397",
+            
         }
         self.user = User.objects.create_user(username='billy', is_staff=True)
 
     def test(self):
+        
+        print(f'--->>>json: {self.json}')
+        
+        
         self.client.force_authenticate(user=self.user)
         response = self.client.post('/api/facturacion/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> 201-OK \n {json.dumps(response.json())} \n ---')
