@@ -103,8 +103,8 @@ def rutaCancelado(instance, nombreArchivo):
     return os.path.join('facturasCanceladas/', rfc, instance.fecha.date().strftime("%d-%m-%Y"), nombreArchivo)
 
 
-def hora():
-    return fechas.now()
+# def hora():
+#     return fechas.now()
 
 
 class Factura(models.Model):

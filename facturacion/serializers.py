@@ -125,7 +125,7 @@ class FacturaFilteredDownExcelSerializer(serializers.ModelSerializer):
         model = Factura
         fields = ['creado_en', 'rfc', 'razonSocial', 'estado', 'deleMuni', 'colonia', 'calle', 'numInterior', 'numExterior', 'codigoPostal', 'usoCFDI', 'formaPago',
                   'moneda', 'comentarios', 'folio', 'subtotal', 'iva', 'total', 'pais', 'numRegIdTrib', 'uuid', 'numeroCertificado', 'fechaTimbrado', 'fechaCancelado',
-                  'fecha', 'hora']
+                  'fecha']
         # fields = ['usoCFDI', 'formaPago', 'moneda', 'pais']
 
     def to_representation(self, instance):
