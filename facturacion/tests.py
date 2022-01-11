@@ -569,3 +569,11 @@ class CuUsoCFDITest(APITestCase):
         response = self.client.put('/api/facturacion/uso-cfdi/1/update/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/facturacion/usoCFDI/list/')
+        print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/facturacion/usoCFDI/list/?inactivo=true')
+        print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

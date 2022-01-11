@@ -75,9 +75,17 @@ class FormaPagoListView(ListAPIView):
     filterset_class = FormaPagoFilter
 
 
+class UsoCFDIFilter(FilterSet):
+    class Meta:
+        model = UsoCFDI
+        fields = ['inactivo']
+
+
 class UsoCFDIListView(ListAPIView):
     queryset = UsoCFDI.objects.all()
     serializer_class = UsoCFDIListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = UsoCFDIFilter
 
 
 class AvalFilter(FilterSet):  # Aval se refiere al modelo de Institucion
