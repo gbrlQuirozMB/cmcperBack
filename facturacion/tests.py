@@ -430,6 +430,10 @@ def configCatalogosDB():
     Moneda.objects.create(moneda='Moneda2', descripcion='Descripcion 2', decimales=2, porcentajeVariacion='2%', orden=2)
     Moneda.objects.create(moneda='Moneda3', descripcion='Descripcion 3', decimales=3, porcentajeVariacion='3%', orden=3)
 
+    UsoCFDI.objects.create(usoCFDI='uso1', descripcion='USO descripcion 1', orden=1)
+    UsoCFDI.objects.create(usoCFDI='uso2', descripcion='USO descripcion 2', orden=2)
+    UsoCFDI.objects.create(usoCFDI='uso3', descripcion='USO descripcion 3', orden=3)
+
 
 class CuConceptoPagoTest(APITestCase):
     def setUp(self):
@@ -511,5 +515,33 @@ class CuMonedaTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         response = self.client.put('/api/facturacion/moneda/1/update/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class CuUsoCFDITest(APITestCase):
+    def setUp(self):
+
+        configCatalogosDB()
+
+        self.json = {
+            "usoCFDI": "uso4",
+            "descripcion": "descripcion4",
+            "personaFisica": True,
+            "personaMoral": True,
+            "orden": 4,
+            "inactivo": True,
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post('/api/facturacion/uso-cfdi/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        response = self.client.put('/api/facturacion/uso-cfdi/1/update/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)

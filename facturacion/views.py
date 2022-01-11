@@ -494,3 +494,22 @@ class MonedaUpdateView(UpdateAPIView):
     serializer_class = MonedaListSerializer
     permission_classes = (permissions.IsAdminUser,)
     http_method_names = ['put']
+
+
+class UsoCFDICreateView(CreateAPIView):
+    serializer_class = UsoCFDIListSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+    def post(self, request, *args, **kwargs):
+        serializer = UsoCFDIListSerializer(data=request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
+
+
+class UsoCFDIUpdateView(UpdateAPIView):
+    queryset = UsoCFDI.objects.filter()
+    serializer_class = UsoCFDIListSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']

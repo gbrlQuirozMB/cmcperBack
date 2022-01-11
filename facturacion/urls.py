@@ -28,4 +28,6 @@ urlpatterns = [
     path('moneda/create/', MonedaCreateView.as_view()),
     path('moneda/<pk>/update/', MonedaUpdateView.as_view()),
 
+    path('uso-cfdi/create/', UsoCFDICreateView.as_view()),
+    path('uso-cfdi/<pk>/update/', UsoCFDIUpdateView.as_view()),
 ]
