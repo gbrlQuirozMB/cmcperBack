@@ -271,9 +271,17 @@ class ItemDocumentosReasignar(UpdateAPIView):
         return self.update(request, *args, **kwargs)
 
 
+class CapituloFilter(FilterSet):
+    class Meta:
+        model = Capitulo
+        fields = ['isActivo']
+
+
 class CapituloListView(ListAPIView):
     queryset = Capitulo.objects.all()
     serializer_class = CapituloListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = CapituloFilter
 
 
 class CapituloUpdateView(UpdateAPIView):

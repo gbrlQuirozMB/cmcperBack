@@ -2593,3 +2593,11 @@ class PutSeveralSelectList200Test(APITestCase):
         response = self.client.put('/api/recertificacion/item/1/update/', data=json.dumps(self.jsonI), content_type="application/json")
         print(f'response JSON ===>>> items OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        response = self.client.get('/api/recertificacion/capitulo/list/')
+        print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        response = self.client.get('/api/recertificacion/capitulo/list/?isActivo=false')
+        print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
