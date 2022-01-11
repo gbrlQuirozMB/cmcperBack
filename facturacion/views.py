@@ -54,9 +54,17 @@ class MonedaListView(ListAPIView):
     serializer_class = MonedaListSerializer
 
 
+class FormaPagoFilter(FilterSet):
+    class Meta:
+        model = FormaPago
+        fields = ['inactivo']
+
+
 class FormaPagoListView(ListAPIView):
     queryset = FormaPago.objects.all()
     serializer_class = FormaPagoListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = FormaPagoFilter
 
 
 class UsoCFDIListView(ListAPIView):
