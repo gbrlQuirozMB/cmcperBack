@@ -22,5 +22,7 @@ urlpatterns = [
     path('concepto-pago/create/', ConceptoPagoCreateView.as_view()),
     path('concepto-pago/<pk>/update/', ConceptoPagoUpdateView.as_view()),
 
+    path('forma-pago/create/', FormaPagoCreateView.as_view()),
+    path('forma-pago/<pk>/update/', FormaPagoUpdateView.as_view()),
 
 ]

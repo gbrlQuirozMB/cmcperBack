@@ -456,3 +456,23 @@ class ConceptoPagoUpdateView(UpdateAPIView):
     serializer_class = ConceptoPagoListSerializer
     permission_classes = (permissions.IsAdminUser,)
     http_method_names = ['put']
+
+
+
+class FormaPagoCreateView(CreateAPIView):
+    serializer_class = FormaPagoListSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+    def post(self, request, *args, **kwargs):
+        serializer = FormaPagoListSerializer(data=request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
+
+
+class FormaPagoUpdateView(UpdateAPIView):
+    queryset = FormaPago.objects.filter()
+    serializer_class = FormaPagoListSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']

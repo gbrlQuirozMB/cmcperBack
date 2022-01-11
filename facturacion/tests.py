@@ -422,6 +422,10 @@ def configCatalogosDB():
     ConceptoPago.objects.create(conceptoPago='PAGO EXAMEN DE CERTIFICACIÓN', precio=222, inactivo=False, claveSAT='sat222', unidadMedida=unmed1)
     ConceptoPago.objects.create(conceptoPago='PAGO DE EXAMEN DE CERTIFICACION VIGENTE', precio=333, inactivo=False, claveSAT='sat333', unidadMedida=unmed1)
 
+    FormaPago.objects.create(formaPago=1, descripcion='Efectivo', orden=1, abreviatura='EFE', solicitarReferencia=False, inactivo=False)
+    FormaPago.objects.create(formaPago=3, descripcion='Transferencia electrónica de fondos', orden=3, abreviatura='TE', solicitarReferencia=True, inactivo=False)
+    FormaPago.objects.create(formaPago=4, descripcion='Tarjeta de crédito', orden=4, abreviatura='TC', solicitarReferencia=True, inactivo=False)
+
 
 class CuConceptoPagoTest(APITestCase):
     def setUp(self):
@@ -446,5 +450,33 @@ class CuConceptoPagoTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         response = self.client.put('/api/facturacion/concepto-pago/1/update/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class CuFormaPagoTest(APITestCase):
+    def setUp(self):
+
+        configCatalogosDB()
+
+        self.json = {
+            "formaPago": 2,
+            "descripcion": "formaPago2",
+            "orden": 2,
+            "abreviatura": "FP2",
+            "solicitarReferencia": False,
+            "inactivo": False,
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post('/api/facturacion/forma-pago/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        response = self.client.put('/api/facturacion/forma-pago/1/update/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
