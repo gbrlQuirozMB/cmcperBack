@@ -224,11 +224,11 @@ class PostFacturaTest(APITestCase):
             calleFisc='CalleFisc', cpFisc='42080', numInteriorFisc='NumInteriorFisc', numExteriorFisc='NumExteriorFisc', fechaNac=datetime.datetime.strptime('1980-01-01', '%Y-%m-%d'),
             fechaInicioResi=datetime.datetime.strptime('2019-01-01', '%Y-%m-%d'),
             fechaFinResi=datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'))
-        usoCFDI3=UsoCFDI.objects.create(usoCFDI='G03', descripcion='Descripcion1', orden=1)
-        formPago4=FormaPago.objects.create(formaPago=1, descripcion='Descripcion1', orden=1, abreviatura='Abreviatura1')
-        metPago1=MetodoPago.objects.create(metodoPago='PUE', descripcion='Pago en una sola exhibición')
-        moneda3=Moneda.objects.create(moneda='MXN', descripcion='Descripcion1', decimales=1, porcentajeVariacion='1%', orden=1)
-        pais3=Pais.objects.create(pais='111', descripcion='Descripcion1')
+        usoCFDI3 = UsoCFDI.objects.create(usoCFDI='G03', descripcion='Descripcion1', orden=1)
+        formPago4 = FormaPago.objects.create(formaPago=1, descripcion='Descripcion1', orden=1, abreviatura='Abreviatura1')
+        metPago1 = MetodoPago.objects.create(metodoPago='PUE', descripcion='Pago en una sola exhibición')
+        moneda3 = Moneda.objects.create(moneda='MXN', descripcion='Descripcion1', decimales=1, porcentajeVariacion='1%', orden=1)
+        pais3 = Pais.objects.create(pais='111', descripcion='Descripcion1')
         unidadMedida = UnidadMedida.objects.create(unidadMedida='E48', nombre='Nombre', descripcion='Descripcion', nota='nota', simbolo='Simbolo')
         ConceptoPago.objects.create(conceptoPago='ConceptoPago1', precio=100, claveSAT='10101500', unidadMedida=unidadMedida)
         ConceptoPago.objects.create(conceptoPago='ConceptoPago2', precio=100, claveSAT='10101500', unidadMedida=unidadMedida)
@@ -237,7 +237,7 @@ class PostFacturaTest(APITestCase):
         #                            moneda=moneda3, pais=pais3, folio=3)
         conceptosPago = [{'idConceptoPago': '1', 'cantidad': '1'}, {'idConceptoPago': '2', 'cantidad': '1'}]
         self.json = {
-            
+
             # "institucion": "1",
             "medico": "1",
             "usoCFDI": 1,
@@ -262,15 +262,14 @@ class PostFacturaTest(APITestCase):
             # "hora": "03:33:33",
             "tipo": "Aval",
             # "codigoPostal": "21397",
-            
+
         }
         self.user = User.objects.create_user(username='billy', is_staff=True)
 
     def test(self):
-        
+
         print(f'--->>>json: {self.json}')
-        
-        
+
         self.client.force_authenticate(user=self.user)
         response = self.client.post('/api/facturacion/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> 201-OK \n {json.dumps(response.json())} \n ---')
@@ -398,13 +397,11 @@ class GetMetodoPagoListTest(APITestCase):
 class OtrosTest(APITestCase):
     def setUp(self):
         configDB()
-        
+
     def test(self):
         for dato in Factura.objects.filter():
             print(f'id: {dato.id} - creado_en: {dato.creado_en} - folio: {dato.folio}')
-        
-        
-        
+
         dato = Factura.objects.filter()[:1]
         if dato.get().folio is None:
             print(f'dato: 1')
@@ -413,4 +410,41 @@ class OtrosTest(APITestCase):
             valor = int(dato.get().folio)
             valor += 1
             print(f'valor: {valor}')
-        
+
+
+# ******************** CRUD de concepto de pago ********************
+
+def configCatalogosDB():
+    unmed1 = UnidadMedida.objects.create(unidadMedida='E48', nombre='Servicio', descripcion='descripcion1', nota='nota1', simbolo='simbolo1')
+    unmed2 = UnidadMedida.objects.create(unidadMedida='H87', nombre='Pieza', descripcion='descripcion2', nota='nota2', simbolo='simbolo2')
+
+    ConceptoPago.objects.create(conceptoPago='PAGO DE CERTIFICACION VIGENTE', precio=111, inactivo=False, claveSAT='sat111', unidadMedida=unmed1)
+    ConceptoPago.objects.create(conceptoPago='PAGO EXAMEN DE CERTIFICACIÓN', precio=222, inactivo=False, claveSAT='sat222', unidadMedida=unmed1)
+    ConceptoPago.objects.create(conceptoPago='PAGO DE EXAMEN DE CERTIFICACION VIGENTE', precio=333, inactivo=False, claveSAT='sat333', unidadMedida=unmed1)
+
+
+class CuConceptoPagoTest(APITestCase):
+    def setUp(self):
+
+        configCatalogosDB()
+
+        self.json = {
+            "conceptoPago": "conceptoPago 4",
+            "precio": 444,
+            "inactivo": True,
+            "claveSAT": "sat444",
+            "unidadMedida": 2
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post('/api/facturacion/concepto-pago/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        response = self.client.put('/api/facturacion/concepto-pago/1/update/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
