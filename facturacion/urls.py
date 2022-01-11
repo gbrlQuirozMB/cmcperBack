@@ -22,5 +22,12 @@ urlpatterns = [
     path('concepto-pago/create/', ConceptoPagoCreateView.as_view()),
     path('concepto-pago/<pk>/update/', ConceptoPagoUpdateView.as_view()),
 
+    path('forma-pago/create/', FormaPagoCreateView.as_view()),
+    path('forma-pago/<pk>/update/', FormaPagoUpdateView.as_view()),
 
+    path('moneda/create/', MonedaCreateView.as_view()),
+    path('moneda/<pk>/update/', MonedaUpdateView.as_view()),
+
+    path('uso-cfdi/create/', UsoCFDICreateView.as_view()),
+    path('uso-cfdi/<pk>/update/', UsoCFDIUpdateView.as_view()),
 ]
