@@ -49,9 +49,17 @@ class ConceptoPagoListView(ListAPIView):
     filterset_class = ConceptoPagoFilter
 
 
+class MonedaFilter(FilterSet):
+    class Meta:
+        model = Moneda
+        fields = ['inactivo']
+
+
 class MonedaListView(ListAPIView):
     queryset = Moneda.objects.all()
     serializer_class = MonedaListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = MonedaFilter
 
 
 class FormaPagoFilter(FilterSet):
