@@ -6,7 +6,7 @@ import json
 from rest_framework import exceptions
 from rest_framework.views import APIView
 from api.exceptions import *
-from rest_framework.generics import CreateAPIView, ListAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 from django_filters import CharFilter, NumberFilter, DateFilter
 from rest_framework.pagination import PageNumberPagination
@@ -437,3 +437,22 @@ class FacturaFilteredDownExcelListView(ListAPIView):
     filterset_class = FacturaFilter
     renderer_classes = (r.CSVRenderer, )
     # permission_classes = (permissions.AllowAny,)
+
+
+class ConceptoPagoCreateView(CreateAPIView):
+    serializer_class = ConceptoPagoListSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+    def post(self, request, *args, **kwargs):
+        serializer = ConceptoPagoListSerializer(data=request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
+
+
+class ConceptoPagoUpdateView(UpdateAPIView):
+    queryset = ConceptoPago.objects.filter()
+    serializer_class = ConceptoPagoListSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']

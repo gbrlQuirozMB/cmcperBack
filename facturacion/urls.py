@@ -16,7 +16,11 @@ urlpatterns = [
     path('create/', FacturaCreateView.as_view()),
     path('list/', FacturaFilteredListView.as_view()),
     path('cancelar/', FacturaCancelarView.as_view()),
-    
+
     path('bajar-excel/list/', FacturaFilteredDownExcelListView.as_view()),
-    
+
+    path('concepto-pago/create/', ConceptoPagoCreateView.as_view()),
+    path('concepto-pago/<pk>/update/', ConceptoPagoUpdateView.as_view()),
+
+
 ]
