@@ -36,9 +36,17 @@ from rest_framework_csv import renderers as r
 log = logging.getLogger('django')
 
 
+class ConceptoPagoFilter(FilterSet):
+    class Meta:
+        model = ConceptoPago
+        fields = ['inactivo']
+
+
 class ConceptoPagoListView(ListAPIView):
     queryset = ConceptoPago.objects.all()
     serializer_class = ConceptoPagoListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ConceptoPagoFilter
 
 
 class MonedaListView(ListAPIView):

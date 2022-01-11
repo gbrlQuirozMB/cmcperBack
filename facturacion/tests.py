@@ -460,7 +460,14 @@ class CuConceptoPagoTest(APITestCase):
         response = self.client.put('/api/facturacion/concepto-pago/1/update/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
+        
+        response = self.client.get('/api/facturacion/conceptoPago/list/')
+        print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        response = self.client.get('/api/facturacion/conceptoPago/list/?inactivo=true')
+        print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 class CuFormaPagoTest(APITestCase):
     def setUp(self):
