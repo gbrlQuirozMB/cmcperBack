@@ -36,24 +36,56 @@ from rest_framework_csv import renderers as r
 log = logging.getLogger('django')
 
 
+class ConceptoPagoFilter(FilterSet):
+    class Meta:
+        model = ConceptoPago
+        fields = ['inactivo']
+
+
 class ConceptoPagoListView(ListAPIView):
     queryset = ConceptoPago.objects.all()
     serializer_class = ConceptoPagoListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ConceptoPagoFilter
+
+
+class MonedaFilter(FilterSet):
+    class Meta:
+        model = Moneda
+        fields = ['inactivo']
 
 
 class MonedaListView(ListAPIView):
     queryset = Moneda.objects.all()
     serializer_class = MonedaListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = MonedaFilter
+
+
+class FormaPagoFilter(FilterSet):
+    class Meta:
+        model = FormaPago
+        fields = ['inactivo']
 
 
 class FormaPagoListView(ListAPIView):
     queryset = FormaPago.objects.all()
     serializer_class = FormaPagoListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = FormaPagoFilter
+
+
+class UsoCFDIFilter(FilterSet):
+    class Meta:
+        model = UsoCFDI
+        fields = ['inactivo']
 
 
 class UsoCFDIListView(ListAPIView):
     queryset = UsoCFDI.objects.all()
     serializer_class = UsoCFDIListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = UsoCFDIFilter
 
 
 class AvalFilter(FilterSet):  # Aval se refiere al modelo de Institucion

@@ -271,9 +271,17 @@ class ItemDocumentosReasignar(UpdateAPIView):
         return self.update(request, *args, **kwargs)
 
 
+class CapituloFilter(FilterSet):
+    class Meta:
+        model = Capitulo
+        fields = ['isActivo']
+
+
 class CapituloListView(ListAPIView):
     queryset = Capitulo.objects.all()
     serializer_class = CapituloListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = CapituloFilter
 
 
 class CapituloUpdateView(UpdateAPIView):
@@ -295,8 +303,16 @@ class CapituloCreateView(CreateAPIView):
         raise CamposIncorrectos(serializer.errors)
 
 
+class SubcapituloFilter(FilterSet):
+    class Meta:
+        model = Subcapitulo
+        fields = ['isActivo']
+
+
 class SubcapituloListView(ListAPIView):
     serializer_class = SubcapituloListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = SubcapituloFilter
 
     def get_queryset(self):
         capituloId = self.kwargs['capituloId']
@@ -330,8 +346,16 @@ class SubcapituloCreateView(CreateAPIView):
         raise CamposIncorrectos(serializer.errors)
 
 
+class ItemFilter(FilterSet):
+    class Meta:
+        model = Item
+        fields = ['isActivo']
+
+
 class ItemListView(ListAPIView):
     serializer_class = ItemListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ItemFilter
 
     def get_queryset(self):
         subcapituloId = self.kwargs['subcapituloId']

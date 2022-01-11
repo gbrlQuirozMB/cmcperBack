@@ -461,6 +461,14 @@ class CuConceptoPagoTest(APITestCase):
         print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+        response = self.client.get('/api/facturacion/conceptoPago/list/')
+        print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/facturacion/conceptoPago/list/?inactivo=true')
+        print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
 
 class CuFormaPagoTest(APITestCase):
     def setUp(self):
@@ -473,7 +481,7 @@ class CuFormaPagoTest(APITestCase):
             "orden": 2,
             "abreviatura": "FP2",
             "solicitarReferencia": False,
-            "inactivo": False,
+            "inactivo": True,
         }
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
@@ -486,6 +494,14 @@ class CuFormaPagoTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         response = self.client.put('/api/facturacion/forma-pago/1/update/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/facturacion/formaPago/list/')
+        print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/facturacion/formaPago/list/?inactivo=true')
         print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -502,7 +518,7 @@ class CuMonedaTest(APITestCase):
             "tipoCambio": 4,
             "porcentajeVariacion": "4%",
             "orden": 4,
-            "inactivo": False,
+            "inactivo": True,
         }
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
@@ -515,6 +531,14 @@ class CuMonedaTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         response = self.client.put('/api/facturacion/moneda/1/update/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/facturacion/moneda/list/')
+        print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/facturacion/moneda/list/?inactivo=true')
         print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -543,5 +567,13 @@ class CuUsoCFDITest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         response = self.client.put('/api/facturacion/uso-cfdi/1/update/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/facturacion/usoCFDI/list/')
+        print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/facturacion/usoCFDI/list/?inactivo=true')
         print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
