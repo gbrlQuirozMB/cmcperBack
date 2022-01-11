@@ -2375,7 +2375,6 @@ class variosTest(APITestCase):
             print(f'putamadre un error: {str(e)}')
 
 
-
 def configCatalogosDB():
     capitulo1 = Capitulo.objects.create(titulo='titulo 1', descripcion='capitulo descripcion 1', puntos=33.0, maximo=50.0, minimo=50.0, isOpcional=False)
     subcapitulo1 = Subcapitulo.objects.create(descripcion='subcapitulo descripcion 1', comentarios='subcapitulo comentarios 1', capitulo=capitulo1)
@@ -2397,7 +2396,7 @@ def configCatalogosDB():
 
 class PostSeveralSelectList200Test(APITestCase):
     def setUp(self):
-        
+
         configCatalogosDB()
 
         archivo = open('./uploads/testUnit.png', 'rb')
@@ -2410,7 +2409,7 @@ class PostSeveralSelectList200Test(APITestCase):
             "maximo": 22.22,
             "minimo": 33.33,
             "isOpcional": True,
-            "icono": imgFile, 
+            "icono": imgFile,
             "isActivo": True
         }
 
@@ -2437,11 +2436,10 @@ class PostSeveralSelectList200Test(APITestCase):
         response = self.client.post('/api/recertificacion/capitulo/create/', data=self.jsonC, format='multipart')
         print(f'response JSON ===>>> capitulos OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        
+
         # response = self.client.put('/api/recertificacion/capitulo/1/update/', data=self.jsonC, format='multipart')
         # print(f'response JSON ===>>> capitulos OK \n {json.dumps(response.json())} \n ---')
         # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        
 
         # subcapitulos
         response = self.client.post('/api/recertificacion/subcapitulo/create/', data=json.dumps(self.jsonSC), content_type="application/json")
@@ -2540,7 +2538,6 @@ class PutPorExamenCalificarTest(APITestCase):
         self.assertEqual('6.90', str(PorExamen.objects.get(id=2).calificacion))
 
 
-
 class PutSeveralSelectList200Test(APITestCase):
     def setUp(self):
 
@@ -2556,7 +2553,7 @@ class PutSeveralSelectList200Test(APITestCase):
             "maximo": 22.22,
             "minimo": 33.33,
             "isOpcional": True,
-            "icono": imgFile, 
+            "icono": imgFile,
             "isActivo": True
         }
 
@@ -2593,11 +2590,32 @@ class PutSeveralSelectList200Test(APITestCase):
         response = self.client.put('/api/recertificacion/item/1/update/', data=json.dumps(self.jsonI), content_type="application/json")
         print(f'response JSON ===>>> items OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
+
+class GetSeveralSelectListFilterTest(APITestCase):
+    def setUp(self):
+
+        configCatalogosDB()
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        # capitulos
         response = self.client.get('/api/recertificacion/capitulo/list/')
         print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         response = self.client.get('/api/recertificacion/capitulo/list/?isActivo=false')
         print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # subcapitulos
+        response = self.client.get('/api/recertificacion/subcapitulo/2/list/')
+        print(f'response JSON ===>>> subcapitulos OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/recertificacion/subcapitulo/2/list/?isActivo=false')
+        print(f'response JSON ===>>> subcapitulos OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
