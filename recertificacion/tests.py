@@ -2604,18 +2604,27 @@ class GetSeveralSelectListFilterTest(APITestCase):
 
         # capitulos
         response = self.client.get('/api/recertificacion/capitulo/list/')
-        print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
+        print(f'response JSON ===>>> capitulo filtrado OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         response = self.client.get('/api/recertificacion/capitulo/list/?isActivo=false')
-        print(f'response JSON ===>>> concepto-pago OK \n {json.dumps(response.json())} \n ---')
+        print(f'response JSON ===>>> capitulo filtrado OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # subcapitulos
         response = self.client.get('/api/recertificacion/subcapitulo/2/list/')
-        print(f'response JSON ===>>> subcapitulos OK \n {json.dumps(response.json())} \n ---')
+        print(f'response JSON ===>>> subcapitulos filtrado OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         response = self.client.get('/api/recertificacion/subcapitulo/2/list/?isActivo=false')
-        print(f'response JSON ===>>> subcapitulos OK \n {json.dumps(response.json())} \n ---')
+        print(f'response JSON ===>>> subcapitulos filtrado OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # items
+        response = self.client.get('/api/recertificacion/item/2/list/')
+        print(f'response JSON ===>>> items filtrado OK \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/recertificacion/item/2/list/?isActivo=false')
+        print(f'response JSON ===>>> items filtrado OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)

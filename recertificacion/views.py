@@ -346,8 +346,16 @@ class SubcapituloCreateView(CreateAPIView):
         raise CamposIncorrectos(serializer.errors)
 
 
+class ItemFilter(FilterSet):
+    class Meta:
+        model = Item
+        fields = ['isActivo']
+
+
 class ItemListView(ListAPIView):
     serializer_class = ItemListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ItemFilter
 
     def get_queryset(self):
         subcapituloId = self.kwargs['subcapituloId']
