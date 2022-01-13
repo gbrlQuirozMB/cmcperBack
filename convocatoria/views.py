@@ -837,20 +837,20 @@ class PublicarCalificaciones(APIView):
                     'email': dato[7]
                 }
                 # print(f'--->>>datos: {datitos}')
-                # datitos = {
-                #     '0-id': dato[0],
-                #     '1-medico__numRegistro': dato[1],
-                #     '2-medico__nombre': dato[2],
-                #     '3-medico__apPaterno': dato[3],
-                #     '4-medico__apMaterno': dato[4],
-                #     '5-convocatoria__fechaExamen': dato[5],
-                #     '6-calificacion': dato[6],
-                #     '7-medico__email': dato[7],
-                #     '8-isAprobado': dato[8],
-                #     '9-medico__id': dato[9],
-                #     '10-isPublicado': dato[10],
-                # }
-                # print(f'--->>>datos: {datitos}')
+                datitos = {
+                    '0-id': dato[0],
+                    '1-medico__numRegistro': dato[1],
+                    '2-medico__nombre': dato[2],
+                    '3-medico__apPaterno': dato[3],
+                    '4-medico__apMaterno': dato[4],
+                    '5-convocatoria__fechaExamen': dato[5],
+                    '6-calificacion': dato[6],
+                    '7-medico__email': dato[7],
+                    '8-isAprobado': dato[8],
+                    '9-medico__id': dato[9],
+                    '10-isPublicado': dato[10],
+                }
+                print(f'--->>>datos: {datitos}')
                 try:
                     htmlContent = render_to_string('exam-a-r.html', datos)
                     textContent = strip_tags(htmlContent)
