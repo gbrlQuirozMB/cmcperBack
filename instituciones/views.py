@@ -98,19 +98,20 @@ class CorreoInstitucionEndPoint(APIView):
 
         user = User.objects.create_user(username=username, email=email, password=password, first_name=nombreInstitucion, last_name=contacto, is_staff=True)
         # user.user_permissions.set([153, 154, 155, 156])
-        try:
-            permisoView = Permission.objects.get(codename='view_actividadavaladaasistente')
-            permisoDelete = Permission.objects.get(codename='delete_actividadavaladaasistente')
-            permisoAdd = Permission.objects.get(codename='add_actividadavaladaasistente')
-            permisoChange = Permission.objects.get(codename='change_actividadavaladaasistente')
-            user.user_permissions.set([permisoView, permisoDelete, permisoAdd, permisoChange])
-        except Exception as e:
-            print(f'--->>>Error grave: {str(e)}')
-            permisoView = Permission.objects.get(codename='view_asistenteactividadavalada')
-            permisoDelete = Permission.objects.get(codename='delete_asistenteactividadavalada')
-            permisoAdd = Permission.objects.get(codename='add_asistenteactividadavalada')
-            permisoChange = Permission.objects.get(codename='change_asistenteactividadavalada')
-            user.user_permissions.set([permisoView, permisoDelete, permisoAdd, permisoChange])
+        # usado en la DB anterior, ya que los registros cambiaron
+        # try:
+        #     permisoView = Permission.objects.get(codename='view_actividadavaladaasistente')
+        #     permisoDelete = Permission.objects.get(codename='delete_actividadavaladaasistente')
+        #     permisoAdd = Permission.objects.get(codename='add_actividadavaladaasistente')
+        #     permisoChange = Permission.objects.get(codename='change_actividadavaladaasistente')
+        #     user.user_permissions.set([permisoView, permisoDelete, permisoAdd, permisoChange])
+        # except Exception as e:
+        # print(f'--->>>Error grave: {str(e)}')
+        permisoView = Permission.objects.get(codename='view_asistenteactividadavalada')
+        permisoDelete = Permission.objects.get(codename='delete_asistenteactividadavalada')
+        permisoAdd = Permission.objects.get(codename='add_asistenteactividadavalada')
+        permisoChange = Permission.objects.get(codename='change_asistenteactividadavalada')
+        user.user_permissions.set([permisoView, permisoDelete, permisoAdd, permisoChange])
             
         Institucion.objects.filter(id=institucionId).update(username=username)
 
