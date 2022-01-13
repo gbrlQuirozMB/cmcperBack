@@ -80,6 +80,10 @@ class ConceptoPago(models.Model):
     inactivo = models.BooleanField(default=False)
     claveSAT = models.CharField(max_length=50)
     unidadMedida = models.ForeignKey(UnidadMedida, on_delete=models.SET_NULL, null=True)
+    isResidente = models.BooleanField(default=True, db_column='is_residente')
+    isCertificado = models.BooleanField(default=True, db_column='is_certificado')
+    isAval = models.BooleanField(default=True, db_column='is_aval')
+    
 
     class Meta:
         db_table = 'facturacionConceptoPago'

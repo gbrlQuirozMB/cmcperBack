@@ -445,7 +445,8 @@ class CuConceptoPagoTest(APITestCase):
             "precio": 444,
             "inactivo": True,
             "claveSAT": "sat444",
-            "unidadMedida": 2
+            "unidadMedida": 2,
+            "isAval":False
         }
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
