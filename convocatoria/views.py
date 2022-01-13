@@ -856,11 +856,12 @@ class PublicarCalificaciones(APIView):
                     textContent = strip_tags(htmlContent)
                     emailAcep = EmailMultiAlternatives('CMCPER - Resultado de Examen', textContent, "no-reply@cmcper.mx", [datos['email']])
                     emailAcep.attach_alternative(htmlContent, "text/html")
-                    # emailAcep.send()  # probado envir masivamente
-                    listEmail.append(emailAcep)
+                    print(f'--->>>enviando...')
+                    emailAcep.send()  # probado enviar masivamente
+                    # listEmail.append(emailAcep)
                 except:
                     raise ResponseError('Error al enviar correo', 500)
-            envioMasivo(listEmail)
+            # envioMasivo(listEmail)
             return Response(status=status.HTTP_200_OK)
         except Exception as e:
             respuesta = {"detail": str(e)}
