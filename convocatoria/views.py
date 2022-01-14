@@ -780,15 +780,15 @@ class ConvocatoriaEnroladosUpExcel(APIView):
             return Response(respuesta, status=status.HTTP_409_CONFLICT)
 
 
-def envioMasivo(listEmail):
-    try:
-        connection = mail.get_connection()
-        connection.open()
-        send_mass_mail(tuple(listEmail), fail_silently=False)
-        connection.close()
-    except Exception as e:
-        respuesta = {"detail": str(e)}
-        return Response(respuesta, status=status.HTTP_409_CONFLICT)
+# def envioMasivo(listEmail):
+#     try:
+#         connection = mail.get_connection()
+#         connection.open()
+#         send_mass_mail(tuple(listEmail), fail_silently=False)
+#         connection.close()
+#     except Exception as e:
+#         respuesta = {"detail": str(e)}
+#         return Response(respuesta, status=status.HTTP_409_CONFLICT)
 
 
 class PublicarCalificaciones(APIView):
@@ -797,7 +797,7 @@ class PublicarCalificaciones(APIView):
     def get(self, request, *args, **kwargs):
 
         convocatoriaId = self.kwargs['convocatoriaId']
-        listEmail = []
+        # listEmail = []
         try:
             # ordenamos segun requerimientos, para asignar el numero de registro
             queryset = ConvocatoriaEnrolado.objects.filter(convocatoria=convocatoriaId).values_list('id', 'medico__numRegistro', 'medico__nombre', 'medico__apPaterno', 'medico__apMaterno',
@@ -842,15 +842,15 @@ class PublicarCalificaciones(APIView):
                     '1-medico__numRegistro': dato[1],
                     '2-medico__nombre': dato[2],
                     '3-medico__apPaterno': dato[3],
-                    '4-medico__apMaterno': dato[4],
-                    '5-convocatoria__fechaExamen': dato[5],
+                    # '4-medico__apMaterno': dato[4],
+                    # '5-convocatoria__fechaExamen': dato[5],
                     '6-calificacion': dato[6],
-                    '7-medico__email': dato[7],
-                    '8-isAprobado': dato[8],
+                    # '7-medico__email': dato[7],
+                    # '8-isAprobado': dato[8],
                     '9-medico__id': dato[9],
-                    '10-isPublicado': dato[10],
+                    # '10-isPublicado': dato[10],
                 }
-                print(f'--->>>datos: {datitos}')
+                print(f'--->>>enviar email a: {datitos}')
                 try:
                     htmlContent = render_to_string('exam-a-r.html', datos)
                     textContent = strip_tags(htmlContent)
