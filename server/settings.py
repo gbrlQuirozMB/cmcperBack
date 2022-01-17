@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'facturacion',
     'reportes',
     'conacem',
+    'entregaFisica',
 ]
 
 MIDDLEWARE = [

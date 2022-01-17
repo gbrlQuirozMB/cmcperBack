@@ -1,0 +1,15 @@
+from django.urls import path
+from django.views.decorators.csrf import csrf_exempt
+
+from .views import *
+
+app_name = 'entrega-fisica'
+
+urlpatterns = [
+    path('create/', EntregaFisicaCreateView.as_view(), ),
+    path('list/', EntregaFisicaFilteredListView.as_view(), ),
+    path('<pk>/detail/', EntregaFisicaDetailView.as_view(), ),
+    path('<pk>/update/', EntregaFisicaUpdateView.as_view(), ),
+    path('<pk>/delete/', EntregaFisicaDeleteView.as_view(), ),
+
+]
