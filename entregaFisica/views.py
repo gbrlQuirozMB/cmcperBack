@@ -35,3 +35,8 @@ class EntregaFisicaFilteredListView(ListAPIView):
     serializer_class = EntregaFisicaFilteredListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = EntregaFisicaFilter
+
+
+class EntregaFisicaDetailView(RetrieveAPIView):
+    queryset = EntregaFisica.objects.filter()
+    serializer_class = EntregaFisicaDetailSerializer

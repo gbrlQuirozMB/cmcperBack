@@ -96,3 +96,23 @@ class GetEntregaFisicaFilteredListTest(APITestCase):
         response = self.client.get('/api/entrega-fisica/list/?fechaEntrega='+fecha)
         print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+# python manage.py test entregaFisica.tests.GetEntregaFisicaDetailTest
+class GetEntregaFisicaDetailTest(APITestCase):
+    def setUp(self):
+
+        configDB()
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/entrega-fisica/3/detail/')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/entrega-fisica/33/detail/')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

@@ -19,3 +19,15 @@ class EntregaFisicaFilteredListSerializer(serializers.ModelSerializer):
         repr['tipoDocumento'] = instance.catTiposDocumentoEntrega.descripcion
 
         return repr
+
+
+class EntregaFisicaDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EntregaFisica
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        repr['tipoDocumento'] = instance.catTiposDocumentoEntrega.descripcion
+
+        return repr
