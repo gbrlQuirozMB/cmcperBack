@@ -116,3 +116,32 @@ class GetEntregaFisicaDetailTest(APITestCase):
         response = self.client.get('/api/entrega-fisica/33/detail/')
         print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+# python manage.py test entregaFisica.tests.GetEntregaFisicaUpdateTest
+class GetEntregaFisicaUpdateTest(APITestCase):
+    def setUp(self):
+
+        configDB()
+
+        archivo = open('./uploads/testUnit.jpg', 'rb')
+        archivoFile = SimpleUploadedFile(archivo.name, archivo.read(), content_type='image/jpg')
+
+        self.json = {
+            "fechaEntrega": "2222-02-02",
+            "catTiposDocumentoEntrega": 2,
+            "nombreRecibe": "Sutanita chiquita ",
+            "libro": 9,
+            "foja": 12,
+            "archivo": archivoFile,
+            "comentarios": "comentarios chidos modificados",
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.put('/api/entrega-fisica/3/update/', data=self.json, format='multipart')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

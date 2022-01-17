@@ -9,5 +9,6 @@ urlpatterns = [
     path('create/', EntregaFisicaCreateView.as_view(), ),
     path('list/', EntregaFisicaFilteredListView.as_view(), ),
     path('<pk>/detail/', EntregaFisicaDetailView.as_view(), ),
+    path('<pk>/update/', EntregaFisicaUpdateView.as_view(), ),
 
 ]

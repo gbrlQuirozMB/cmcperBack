@@ -40,3 +40,10 @@ class EntregaFisicaFilteredListView(ListAPIView):
 class EntregaFisicaDetailView(RetrieveAPIView):
     queryset = EntregaFisica.objects.filter()
     serializer_class = EntregaFisicaDetailSerializer
+
+
+class EntregaFisicaUpdateView(UpdateAPIView):
+    queryset = EntregaFisica.objects.filter()
+    serializer_class = EntregaFisicaSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
