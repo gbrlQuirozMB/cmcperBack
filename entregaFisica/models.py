@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
+import datetime
 
 
 class CatTiposDocumentoEntrega(models.Model):
@@ -14,7 +15,7 @@ class EntregaFisica(models.Model):
     creado_en = models.DateTimeField(auto_now_add=True)
     actualizado_en = models.DateTimeField(auto_now=True)
 
-    fecha = models.DateTimeField(db_column='fecha_entrega')
+    fechaEntrega = models.DateField(db_column='fecha_entrega', default=datetime.date.today)
     catTiposDocumentoEntrega = models.ForeignKey(CatTiposDocumentoEntrega, on_delete=models.SET_NULL, related_name='catTiposDocumentoEntregaEF', null=True)
     nombreRecibe = models.CharField(max_length=250, db_column='nombre_quien_recibe')
     libro = models.PositiveSmallIntegerField(blank=True, null=True)

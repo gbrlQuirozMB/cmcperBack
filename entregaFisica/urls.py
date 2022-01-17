@@ -6,7 +6,6 @@ from .views import *
 app_name = 'entrega-fisica'
 
 urlpatterns = [
-
-
+    path('create/', EntregaFisicaCreateView.as_view(), ),
 
 ]
