@@ -47,3 +47,7 @@ class EntregaFisicaUpdateView(UpdateAPIView):
     serializer_class = EntregaFisicaSerializer
     permission_classes = (permissions.IsAdminUser,)
     http_method_names = ['put']
+
+
+class EntregaFisicaDeleteView(DestroyAPIView):
+    queryset = EntregaFisica.objects.filter()
