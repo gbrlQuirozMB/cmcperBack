@@ -31,10 +31,12 @@ class MedResidenteFilter(FilterSet):
     anioInscr = CharFilter(field_name='creado_en', lookup_expr='icontains')
     sede = CharFilter(field_name='medicoE__catSedes')
     convocatoria = CharFilter(field_name='medicoE__convocatoria')
+    ciudadNS = CharFilter(field_name='ciudad', lookup_expr='icontains')
 
     class Meta:
         model = Medico
-        fields = ['nombreCompletoNS', 'hospitalResiNS', 'estadoNS', 'sexo', 'anioInscr', 'isCertificado', 'sede', 'convocatoria']
+        fields = ['nombreCompletoNS', 'hospitalResiNS', 'estadoNS', 'sexo', 'anioInscr', 'isCertificado', 'sede', 'convocatoria',
+                  'ciudadNS', 'estudioExtranjero', 'isExtranjero']
 
     def nombreCompletoFilter(self, queryset, name, value):
         queryset = Medico.objects.annotate(completo=Concat('nombre', Value(' '), 'apPaterno', Value(' '), 'apMaterno'))
@@ -140,7 +142,7 @@ class MedCertificadoFechasDetailView(RetrieveAPIView):
 
 # class PruebasPdfDetailView(APIView):
 #     permission_classes = (permissions.AllowAny,)
-    
+
 #     def get(self, request, *args, **kwargs):
 #         medicoId = kwargs['medicoId']
 #         http = urllib3.PoolManager()

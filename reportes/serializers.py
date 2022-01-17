@@ -10,7 +10,7 @@ class MedResidenteListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Medico
-        fields = ['id', 'telConsultorio', 'telParticular', 'telJefEnse', 'email', 'sexo']
+        fields = ['id', 'telConsultorio', 'telParticular', 'telJefEnse', 'email', 'sexo', 'ciudad', 'estudioExtranjero', 'isExtranjero']
 
     def to_representation(self, instance):
         repr = super().to_representation(instance)
