@@ -7,5 +7,7 @@ app_name = 'entrega-fisica'
 
 urlpatterns = [
     path('create/', EntregaFisicaCreateView.as_view(), ),
+    path('list/', EntregaFisicaFilteredListView.as_view(), ),
+
 
 ]
