@@ -31,6 +31,13 @@ from rest_framework.generics import DestroyAPIView, ListAPIView, CreateAPIView, 
 import logging
 log = logging.getLogger('django')
 
+# import cStringIO as StringIO
+from io import StringIO
+
+from django.conf import settings
+import os
+import io
+
 
 # from django_filters import rest_framework
 # from django_filters import rest_framework as filters
@@ -360,6 +367,36 @@ class ConvocatoriaDocumentoUpdateView(UpdateAPIView):
         return self.update(request, *args, **kwargs)
 
 
+def link_callback(uri, rel):
+    """
+    Convert HTML URIs to absolute system paths so xhtml2pdf can access those
+    resources
+    """
+    # use short variable names
+    sUrl = settings.STATIC_URL      # Typically /static/
+    sRoot = settings.STATIC_ROOT    # Typically /home/userX/project_static/
+    mUrl = settings.MEDIA_URL       # Typically /static/media/
+    mRoot = settings.MEDIA_ROOT     # Typically /home/userX/project_static/media/
+    
+    # convert URIs to absolute system paths
+    if uri.startswith(mUrl):
+        path = os.path.join(mRoot, uri.replace(mUrl, ""))
+    elif uri.startswith(sUrl):
+        path = os.path.join(sRoot, uri.replace(sUrl, ""))
+    else:
+        return uri  # handle absolute uri (ie: http://some.tld/foo.png)
+    
+    # make sure that file exists
+    if not os.path.isfile(path):
+            raise Exception(
+                'media URI must start with %s or %s' % (sUrl, mUrl)
+            )
+    print(path)
+    return path
+
+
+
+
 def renderPdfView(request, templateSrc, datosContexto):
     template_path = templateSrc
     context = datosContexto
@@ -371,6 +408,15 @@ def renderPdfView(request, templateSrc, datosContexto):
     html = template.render(context)
     ssl._create_default_https_context = ssl._create_unverified_context
     # create a pdf
+    
+    
+    
+    archivo = io.BytesIO()
+    pdf = pisa.pisaDocument(html,dest = archivo,  link_callback=link_callback)
+
+
+    
+    
     pisa_status = pisa.CreatePDF(
         #    html, dest=response, link_callback=link_callback)
         html, dest=response)
@@ -379,7 +425,8 @@ def renderPdfView(request, templateSrc, datosContexto):
         print(f'--->>>error: {pisa_status.err}')
         return HttpResponse('Error: ' + html)
     print(f'--->>>exitoso')
-    return response
+    # return response
+    return HttpResponse(pdf.read(), content_type='application/pdf')
 
 
 class FichaRegistroPDF(View):
