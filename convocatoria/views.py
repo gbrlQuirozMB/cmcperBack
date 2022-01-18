@@ -412,7 +412,8 @@ def renderPdfView(request, templateSrc, datosContexto):
     
     
     archivo = io.BytesIO()
-    pdf = pisa.pisaDocument(html,dest = archivo,  link_callback=link_callback)
+    # pdf = pisa.pisaDocument(html,dest = archivo,  link_callback=link_callback)
+    pdf = pisa.pisaDocument(html,dest = archivo)
 
 
     
