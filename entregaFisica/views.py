@@ -27,7 +27,7 @@ class EntregaFisicaFilter(FilterSet):
 
     class Meta:
         model = EntregaFisica
-        fields = ['nombreRecibeNS', 'fechaEntrega']
+        fields = ['nombreRecibeNS', 'fechaEntrega', 'medico']
 
 
 class EntregaFisicaFilteredListView(ListAPIView):

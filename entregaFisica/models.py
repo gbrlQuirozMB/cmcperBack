@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
 import datetime
+from preregistro.models import Medico
 
 
 class CatTiposDocumentoEntrega(models.Model):
@@ -22,6 +23,7 @@ class EntregaFisica(models.Model):
     foja = models.PositiveSmallIntegerField(blank=True, null=True)
     archivo = models.FileField(blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'gif', 'jpeg'])], upload_to='entregaFisica')
     comentarios = models.TextField(blank=True, null=True)
+    medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medicoEF', null=True)
 
     class Meta:
         db_table = 'entrega_fisica'

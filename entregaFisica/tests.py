@@ -14,15 +14,31 @@ def configDB():
     ctde2 = CatTiposDocumentoEntrega.objects.create(descripcion='Certificado2')
     ctde3 = CatTiposDocumentoEntrega.objects.create(descripcion='Certificado3')
 
-    EntregaFisica.objects.create(fechaEntrega=date.today(), catTiposDocumentoEntrega=ctde1, nombreRecibe='nombre de quien recibe1', libro=1, foja=1, archivo='ninguno1', comentarios='ninguno1')
+    medico = Medico.objects.create(
+        nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp3', fechaNac='2020-09-09', pais='pais3', estado='estado3', ciudad='ciudad3',
+        deleMuni='deleMuni3', colonia='colonia', calle='calle3', cp='cp3', numExterior='numExterior3', rfcFacturacion='rfcFacturacion3', cedProfesional='cedProfesional3',
+        cedEspecialidad='cedEspecialidad3', cedCirugiaGral='cedCirugiaGral3', hospitalResi='hospitalResi3', telJefEnse='telJefEnse3', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+        telCelular='telCelular3', telParticular='telParticular3', email='gabriel@mb.company', numRegistro=333, aceptado=True, telConsultorio='telConsultorio3', sexo='M',
+        anioCertificacion=2022, isConsejero=True, isProfesor=False, isCertificado=False, estudioExtranjero=False, isExtranjero=False)
+    medico2 = Medico.objects.create(
+        nombre='elianid', apPaterno='tolentino', apMaterno='tolentino', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+        deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+        cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+        telCelular='telCelular1', telParticular='telParticular1', email='elianid@mb.company', numRegistro=111, aceptado=True, telConsultorio='telConsultorio1', sexo='F',
+        anioCertificacion=2022, isConsejero=True, isProfesor=False, isCertificado=True, estudioExtranjero=False, isExtranjero=False)
+
+    EntregaFisica.objects.create(fechaEntrega=date.today(), catTiposDocumentoEntrega=ctde1, nombreRecibe='nombre de quien recibe1',
+                                 libro=1, foja=1, archivo='ninguno1', comentarios='ninguno1', medico=medico)
     EntregaFisica.objects.create(fechaEntrega=date.today() + relativedelta(days=8), catTiposDocumentoEntrega=ctde2,
-                                 nombreRecibe='nombre de quien recibe2', libro=2, foja=2, archivo='ninguno2', comentarios='ninguno2')
-    EntregaFisica.objects.create(fechaEntrega=date.today(), catTiposDocumentoEntrega=ctde2, nombreRecibe='nombre de quien recibe3', libro=3, foja=3, archivo='ninguno3', comentarios='ninguno3')
+                                 nombreRecibe='nombre de quien recibe2', libro=2, foja=2, archivo='ninguno2', comentarios='ninguno2', medico=medico2)
+    EntregaFisica.objects.create(fechaEntrega=date.today(), catTiposDocumentoEntrega=ctde2, nombreRecibe='nombre de quien recibe3',
+                                 libro=3, foja=3, archivo='ninguno3', comentarios='ninguno3', medico=medico)
     EntregaFisica.objects.create(fechaEntrega=date.today() + relativedelta(days=8), catTiposDocumentoEntrega=ctde1,
-                                 nombreRecibe='nombre de quien recibe4', libro=4, foja=4, archivo='ninguno4', comentarios='ninguno4')
-    EntregaFisica.objects.create(fechaEntrega=date.today(), catTiposDocumentoEntrega=ctde1, nombreRecibe='nombre de quien recibe5', libro=5, foja=5, archivo='ninguno5', comentarios='ninguno5')
+                                 nombreRecibe='nombre de quien recibe4', libro=4, foja=4, archivo='ninguno4', comentarios='ninguno4', medico=medico2)
+    EntregaFisica.objects.create(fechaEntrega=date.today(), catTiposDocumentoEntrega=ctde1, nombreRecibe='nombre de quien recibe5',
+                                 libro=5, foja=5, archivo='ninguno5', comentarios='ninguno5', medico=medico)
     EntregaFisica.objects.create(fechaEntrega=date.today() + relativedelta(days=8), catTiposDocumentoEntrega=ctde2,
-                                 nombreRecibe='nombre de quien recibe6', libro=6, foja=6, archivo='ninguno6', comentarios='ninguno6')
+                                 nombreRecibe='nombre de quien recibe6', libro=6, foja=6, archivo='ninguno6', comentarios='ninguno6', medico=medico2)
 
 
 # python manage.py test entregaFisica.tests.BaseDatosTest
@@ -36,7 +52,7 @@ class BaseDatosTest(APITestCase):
 
         datos = EntregaFisica.objects.all()
         for dato in datos:
-            print(f'--->>>id: {dato.id} - nombreRecibe: {dato.nombreRecibe} - fecha: {dato.fecha}')
+            print(f'--->>>id: {dato.id} - nombreRecibe: {dato.nombreRecibe} - fechaEntrega: {dato.fechaEntrega} - medico: {dato.medico}')
 
 
 # python manage.py test entregaFisica.tests.PostEntregaFisicaTest
@@ -56,6 +72,7 @@ class PostEntregaFisicaTest(APITestCase):
             "foja": 6,
             "archivo": archivoFile,
             "comentarios": "comentarios chidos",
+            "medico": 1
         }
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
@@ -89,12 +106,16 @@ class GetEntregaFisicaFilteredListTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         response = self.client.get('/api/entrega-fisica/list/?nombreRecibeNS=recibe3')
-        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        print(f'response JSON ===>>> nombreRecibeNS=recibe3 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         fecha = str(date.today())
         response = self.client.get('/api/entrega-fisica/list/?fechaEntrega='+fecha)
-        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        print(f'response JSON ===>>> fechaEntrega={fecha} \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/entrega-fisica/list/?medico=1')
+        print(f'response JSON ===>>> medico=1 \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
@@ -135,6 +156,7 @@ class PutEntregaFisicaUpdateTest(APITestCase):
             "foja": 12,
             "archivo": archivoFile,
             "comentarios": "comentarios chidos modificados",
+            "medico": 2
         }
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
