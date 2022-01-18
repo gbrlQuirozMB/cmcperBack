@@ -376,7 +376,9 @@ def renderPdfView(request, templateSrc, datosContexto):
         html, dest=response)
     # if error then show some funy view
     if pisa_status.err:
+        print(f'--->>>error: {pisa_status.err}')
         return HttpResponse('Error: ' + html)
+    print(f'--->>>exitoso')
     return response
 
 
