@@ -464,7 +464,7 @@ class FichaRegistroPDF(View):
             # crea un registro en documentos, porque este no se sube manual
             ConvocatoriaEnroladoDocumento.objects.create(medico=convocatoriaEnrolado.medico, convocatoria=convocatoriaEnrolado.convocatoria, catTiposDocumento_id=11)
 
-        return renderPdfView(request, 'ficha-registro2.html', datos)
+        return renderPdfView(request, 'ficha-registro.html', datos)
         # return renderPdfView(request, 'ficha-registr2.html')
         # except Exception as e:
             # print(f'--->>>error: {str(e)}')
