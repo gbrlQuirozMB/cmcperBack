@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 
@@ -21,7 +22,7 @@
 
         @font-face {
             font-family: montserrat-bold;
-            src: url('https://cmcper.sandboxmb.com/static/fonts/Montserrat-Bold.ttf');
+            src: url('{% static 'fonts/Montserrat-Bold.ttf' %}');
         }
     </style>
 </head>
