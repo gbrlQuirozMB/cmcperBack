@@ -15,5 +15,7 @@ urlpatterns = [
     path('med-certificados/<medicoId>/fecha-ultima-certificacion/', MedCertificadoFechasDetailView.as_view(), ),
     
     # path('pruebas/<medicoId>/pdf/', PruebasPdfDetailView.as_view(), ),
+    
+    path('med-residentes/documentos/list/', MedResidenteDocumentosFilteredListView.as_view(), ),
 
 ]

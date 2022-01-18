@@ -150,3 +150,16 @@ class MedCertificadoFechasDetailView(RetrieveAPIView):
 #         print(f'--->>>url: {url}')
 #         r = http.request('GET', url)
 #         return Response(r.data)
+
+
+class MedResidenteDocumentosFilter(FilterSet):
+    class Meta:
+        model = ConvocatoriaEnrolado
+        fields = ['convocatoria']
+
+
+class MedResidenteDocumentosFilteredListView(ListAPIView):
+    queryset = ConvocatoriaEnrolado.objects.all()
+    serializer_class = MedResidenteDocumentosFilteredListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = MedResidenteDocumentosFilter

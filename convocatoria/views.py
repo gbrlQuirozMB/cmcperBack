@@ -32,11 +32,11 @@ import logging
 log = logging.getLogger('django')
 
 # import cStringIO as StringIO
-from io import StringIO
+# from io import StringIO
 
-from django.conf import settings
-import os
-import io
+# from django.conf import settings
+# import os
+# import io
 
 
 # from django_filters import rest_framework
@@ -367,108 +367,56 @@ class ConvocatoriaDocumentoUpdateView(UpdateAPIView):
         return self.update(request, *args, **kwargs)
 
 
-def link_callback(uri, rel):
-    """
-    Convert HTML URIs to absolute system paths so xhtml2pdf can access those
-    resources
-    """
-    # use short variable names
-    sUrl = settings.STATIC_URL      # Typically /static/
-    sRoot = settings.STATIC_ROOT    # Typically /home/userX/project_static/
-    mUrl = settings.MEDIA_URL       # Typically /static/media/
-    mRoot = settings.MEDIA_ROOT     # Typically /home/userX/project_static/media/
-    
-    # convert URIs to absolute system paths
-    if uri.startswith(mUrl):
-        path = os.path.join(mRoot, uri.replace(mUrl, ""))
-    elif uri.startswith(sUrl):
-        path = os.path.join(sRoot, uri.replace(sUrl, ""))
-    else:
-        return uri  # handle absolute uri (ie: http://some.tld/foo.png)
-    
-    # make sure that file exists
-    if not os.path.isfile(path):
-            raise Exception(
-                'media URI must start with %s or %s' % (sUrl, mUrl)
-            )
-    print(path)
-    return path
-
-
-
-
 def renderPdfView(request, templateSrc, datosContexto):
-# def renderPdfView(request, templateSrc):
     template_path = templateSrc
     context = datosContexto
-    # context = {}
-    # Create a Django response object, and specify content_type as pdf
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="ficha-registro.pdf"'
-    # find the template and render it.
     template = get_template(template_path)
     html = template.render(context)
     ssl._create_default_https_context = ssl._create_unverified_context
-    # create a pdf
-    
-    
-    
-    archivo = io.BytesIO()
-    # pdf = pisa.pisaDocument(html,dest = archivo,  link_callback=link_callback)
-    pdf = pisa.pisaDocument(html,dest = archivo)
 
+    pisa_status = pisa.CreatePDF(
+        #    html, dest=response, link_callback=link_callback)
+        html, dest=response)
 
-    
-    
-    # pisa_status = pisa.CreatePDF(
-    #     #    html, dest=response, link_callback=link_callback)
-    #     html, dest=response)
-    # if error then show some funy view
-    # if pisa_status.err:
-    if pdf.err:
-        # print(f'--->>>error: {pisa_status.err}')
-        print(f'--->>>error')
-        # print(f'--->>>error: {pdf.err}')
-        return HttpResponse('Error: ' + html)
-    print(f'--->>>exitoso')
-    # return response
-    # return HttpResponse(pdf.read(), content_type='application/pdf')
-    return HttpResponse(archivo.getvalue(), content_type='application/pdf')
+    if pisa_status.err:
+        return HttpResponse('Error: ' + html, status=409)
+    return response
 
 
 class FichaRegistroPDF(View):
     def get(self, request, *args, **kwargs):
         id = self.kwargs['pk']
-        # try:
-        convocatoriaEnrolado = ConvocatoriaEnrolado.objects.get(id=id)
-        datos = {
-            'id': convocatoriaEnrolado.id,
-            'nombre': convocatoriaEnrolado.medico.nombre,
-            'apPaterno': convocatoriaEnrolado.medico.apPaterno,
-            'apMaterno': convocatoriaEnrolado.medico.apMaterno,
-            'hospitalResi': convocatoriaEnrolado.medico.hospitalResi,
-            'sede': convocatoriaEnrolado.catSedes.descripcion,
-            'tipoExamen': convocatoriaEnrolado.catTiposExamen.descripcion,
-            'fechaExamen': convocatoriaEnrolado.convocatoria.fechaExamen,
-            'horaExamen': convocatoriaEnrolado.convocatoria.horaExamen,
-            'fechaResolucion': convocatoriaEnrolado.convocatoria.fechaResolucion
-            # 'fechaResolucion': convocatoriaEnrolado.convocatoria.fechaResolucion.strftime('%d/%b/%Y').upper()
-            # 'fechaResolucion': convocatoriaEnrolado.convocatoria.fechaResolucion.strftime('%d %B %Y').upper()
-        }
+        try:
+            convocatoriaEnrolado = ConvocatoriaEnrolado.objects.get(id=id)
+            datos = {
+                'id': convocatoriaEnrolado.id,
+                'nombre': convocatoriaEnrolado.medico.nombre,
+                'apPaterno': convocatoriaEnrolado.medico.apPaterno,
+                'apMaterno': convocatoriaEnrolado.medico.apMaterno,
+                'hospitalResi': convocatoriaEnrolado.medico.hospitalResi,
+                'sede': convocatoriaEnrolado.catSedes.descripcion,
+                'tipoExamen': convocatoriaEnrolado.catTiposExamen.descripcion,
+                'fechaExamen': convocatoriaEnrolado.convocatoria.fechaExamen,
+                'horaExamen': convocatoriaEnrolado.convocatoria.horaExamen,
+                'fechaResolucion': convocatoriaEnrolado.convocatoria.fechaResolucion
+                # 'fechaResolucion': convocatoriaEnrolado.convocatoria.fechaResolucion.strftime('%d/%b/%Y').upper()
+                # 'fechaResolucion': convocatoriaEnrolado.convocatoria.fechaResolucion.strftime('%d %B %Y').upper()
+            }
 
-        # ay que contar si existe para permitir el generarla multiples veces
-        cuenta = ConvocatoriaEnroladoDocumento.objects.filter(medico=convocatoriaEnrolado.medico, convocatoria=convocatoriaEnrolado.convocatoria, catTiposDocumento_id=11).count()
-        if cuenta <= 0:
-            # para evitar que se presenten duplicados
-            ConvocatoriaEnroladoDocumento.objects.filter(medico=convocatoriaEnrolado.medico, convocatoria=convocatoriaEnrolado.convocatoria, catTiposDocumento_id=11).delete()
-            # crea un registro en documentos, porque este no se sube manual
-            ConvocatoriaEnroladoDocumento.objects.create(medico=convocatoriaEnrolado.medico, convocatoria=convocatoriaEnrolado.convocatoria, catTiposDocumento_id=11)
+            # hay que contar si existe para permitir el generarla multiples veces
+            cuenta = ConvocatoriaEnroladoDocumento.objects.filter(medico=convocatoriaEnrolado.medico, convocatoria=convocatoriaEnrolado.convocatoria, catTiposDocumento_id=11).count()
+            if cuenta <= 0:
+                # para evitar que se presenten duplicados
+                ConvocatoriaEnroladoDocumento.objects.filter(medico=convocatoriaEnrolado.medico, convocatoria=convocatoriaEnrolado.convocatoria, catTiposDocumento_id=11).delete()
+                # crea un registro en documentos, porque este no se sube manual
+                ConvocatoriaEnroladoDocumento.objects.create(medico=convocatoriaEnrolado.medico, convocatoria=convocatoriaEnrolado.convocatoria, catTiposDocumento_id=11)
 
-        return renderPdfView(request, 'ficha-registro.html', datos)
-        # return renderPdfView(request, 'ficha-registr2.html')
-        # except Exception as e:
-            # print(f'--->>>error: {str(e)}')
-            # return HttpResponse('Error: ' + str(e), content_type='text/plain')
+            return renderPdfView(request, 'ficha-registro.html', datos)
+        except Exception as e:
+            print(f'--->>>error: {str(e)}')
+            return HttpResponse('Error: ' + str(e), content_type='text/plain')
 
 
 class ConvocatoriaEnroladoMedicoDetailView(RetrieveAPIView):

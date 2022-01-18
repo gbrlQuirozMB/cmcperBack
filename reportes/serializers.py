@@ -78,3 +78,23 @@ class MedCertificadoFechasSerializer(serializers.ModelSerializer):
         repr['anioProxima'] = anio
 
         return repr
+
+
+class MedResidenteDocumentosFilteredListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConvocatoriaEnrolado
+        fields = ['medico']
+
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+
+        repr['estudioExtranjero'] = instance.medico.estudioExtranjero
+        repr['nombreCompleto'] = instance.medico.nombre + ' ' + instance.medico.apPaterno + ' ' + instance.medico.apMaterno
+        cuentaTotal = ConvocatoriaEnroladoDocumento.objects.filter(medico=instance.medico, convocatoria=instance.convocatoria).count()
+        repr['cuentaTotal'] = cuentaTotal
+        cuentaDigitales = ConvocatoriaEnroladoDocumento.objects.filter(medico=instance.medico, convocatoria=instance.convocatoria, isValidado=True).count()
+        repr['cuentaDigitales'] = cuentaDigitales  # * 100 / cuentaTotal
+        cuentaEngargolados = ConvocatoriaEnroladoDocumento.objects.filter(medico=instance.medico, convocatoria=instance.convocatoria, engargoladoOk=True).count()
+        repr['cuentaEngargolados'] = cuentaEngargolados  # * 100 / cuentaTotal
+
+        return repr
