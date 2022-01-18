@@ -417,22 +417,26 @@ def renderPdfView(request, templateSrc, datosContexto):
 
     
     
-    pisa_status = pisa.CreatePDF(
-        #    html, dest=response, link_callback=link_callback)
-        html, dest=response)
+    # pisa_status = pisa.CreatePDF(
+    #     #    html, dest=response, link_callback=link_callback)
+    #     html, dest=response)
     # if error then show some funy view
-    if pisa_status.err:
-        print(f'--->>>error: {pisa_status.err}')
+    # if pisa_status.err:
+    if pdf.err:
+        # print(f'--->>>error: {pisa_status.err}')
+        print(f'--->>>error')
+        # print(f'--->>>error: {pdf.err}')
         return HttpResponse('Error: ' + html)
     print(f'--->>>exitoso')
     # return response
-    return HttpResponse(pdf.read(), content_type='application/pdf')
+    # return HttpResponse(pdf.read(), content_type='application/pdf')
+    return HttpResponse(archivo.getvalue(), content_type='application/pdf')
 
 
 class FichaRegistroPDF(View):
     def get(self, request, *args, **kwargs):
         id = self.kwargs['pk']
-        try:
+        # try:
             convocatoriaEnrolado = ConvocatoriaEnrolado.objects.get(id=id)
             datos = {
                 'id': convocatoriaEnrolado.id,
@@ -458,8 +462,9 @@ class FichaRegistroPDF(View):
                 ConvocatoriaEnroladoDocumento.objects.create(medico=convocatoriaEnrolado.medico, convocatoria=convocatoriaEnrolado.convocatoria, catTiposDocumento_id=11)
 
             return renderPdfView(request, 'ficha-registro.html', datos)
-        except Exception as e:
-            return HttpResponse('Error: ' + str(e), content_type='text/plain')
+        # except Exception as e:
+            # print(f'--->>>error: {str(e)}')
+            # return HttpResponse('Error: ' + str(e), content_type='text/plain')
 
 
 class ConvocatoriaEnroladoMedicoDetailView(RetrieveAPIView):
