@@ -209,8 +209,8 @@ class PostCatTiposDocumentoEntregaTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
-# python manage.py test entregaFisica.tests.GetCatTiposDocumentoEntregaTest
-class GetCatTiposDocumentoEntregaTest(APITestCase):
+# python manage.py test entregaFisica.tests.GetCatTiposDocumentoEntregaListTest
+class GetCatTiposDocumentoEntregaListTest(APITestCase):
     def setUp(self):
 
         configDB()
@@ -221,5 +221,21 @@ class GetCatTiposDocumentoEntregaTest(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         response = self.client.get('/api/entrega-fisica/tipo-documento/list/')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+# python manage.py test entregaFisica.tests.GetCatTiposDocumentoEntregaDetailTest
+class GetCatTiposDocumentoEntregaDetailTest(APITestCase):
+    def setUp(self):
+
+        configDB()
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/entrega-fisica/tipo-documento/3/detail/')
         print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)

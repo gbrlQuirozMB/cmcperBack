@@ -14,6 +14,7 @@ urlpatterns = [
 
     path('tipo-documento/create/', CatTiposDocumentoEntregaCreateView.as_view(), ),
     path('tipo-documento/list/', CatTiposDocumentoEntregaListView.as_view(), ),
+    path('tipo-documento/<pk>/detail/', CatTiposDocumentoEntregaDetailView.as_view(), ),
 
 
 ]

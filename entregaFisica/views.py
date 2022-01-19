@@ -68,3 +68,8 @@ class CatTiposDocumentoEntregaCreateView(CreateAPIView):
 class CatTiposDocumentoEntregaListView(ListAPIView):
     queryset = CatTiposDocumentoEntrega.objects.all()
     serializer_class = CatTiposDocumentoEntregaListSerializer
+
+
+class CatTiposDocumentoEntregaDetailView(RetrieveAPIView):
+    queryset = CatTiposDocumentoEntrega.objects.filter()
+    serializer_class = CatTiposDocumentoEntregaSerializer
