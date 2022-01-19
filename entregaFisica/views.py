@@ -63,3 +63,8 @@ class CatTiposDocumentoEntregaCreateView(CreateAPIView):
             return self.create(request, *args, **kwargs)
         log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
+
+
+class CatTiposDocumentoEntregaListView(ListAPIView):
+    queryset = CatTiposDocumentoEntrega.objects.all()
+    serializer_class = CatTiposDocumentoEntregaListSerializer

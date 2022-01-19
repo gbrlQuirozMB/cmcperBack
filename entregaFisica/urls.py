@@ -13,5 +13,7 @@ urlpatterns = [
     path('<pk>/delete/', EntregaFisicaDeleteView.as_view(), ),
 
     path('tipo-documento/create/', CatTiposDocumentoEntregaCreateView.as_view(), ),
+    path('tipo-documento/list/', CatTiposDocumentoEntregaListView.as_view(), ),
+
 
 ]

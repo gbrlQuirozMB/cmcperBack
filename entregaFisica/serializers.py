@@ -37,3 +37,9 @@ class CatTiposDocumentoEntregaSerializer(serializers.ModelSerializer):
     class Meta:
         model = CatTiposDocumentoEntrega
         fields = '__all__'
+
+
+class CatTiposDocumentoEntregaListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CatTiposDocumentoEntrega
+        fields = '__all__'
