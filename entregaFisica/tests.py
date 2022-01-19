@@ -187,3 +187,23 @@ class DeleteEntregaFisicaTest(APITestCase):
         response = self.client.delete('/api/entrega-fisica/33/delete/')
         print(f'response JSON ===>>> ok 204 sin contenido \n {response.content} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+# python manage.py test entregaFisica.tests.PostCatTiposDocumentoEntregaTest
+class PostCatTiposDocumentoEntregaTest(APITestCase):
+    def setUp(self):
+
+        configDB()
+
+        self.json = {
+            "descripcion": "descripcion1",
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post('/api/entrega-fisica/tipo-documento/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> ok \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)

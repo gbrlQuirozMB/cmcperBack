@@ -12,4 +12,6 @@ urlpatterns = [
     path('<pk>/update/', EntregaFisicaUpdateView.as_view(), ),
     path('<pk>/delete/', EntregaFisicaDeleteView.as_view(), ),
 
+    path('tipo-documento/create/', CatTiposDocumentoEntregaCreateView.as_view(), ),
+
 ]

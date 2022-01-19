@@ -31,3 +31,9 @@ class EntregaFisicaDetailSerializer(serializers.ModelSerializer):
         repr['tipoDocumento'] = instance.catTiposDocumentoEntrega.descripcion
 
         return repr
+
+
+class CatTiposDocumentoEntregaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CatTiposDocumentoEntrega
+        fields = '__all__'
