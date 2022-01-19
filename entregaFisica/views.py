@@ -73,3 +73,10 @@ class CatTiposDocumentoEntregaListView(ListAPIView):
 class CatTiposDocumentoEntregaDetailView(RetrieveAPIView):
     queryset = CatTiposDocumentoEntrega.objects.filter()
     serializer_class = CatTiposDocumentoEntregaSerializer
+
+
+class CatTiposDocumentoEntregaUpdateView(UpdateAPIView):
+    queryset = CatTiposDocumentoEntrega.objects.filter()
+    serializer_class = CatTiposDocumentoEntregaSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
