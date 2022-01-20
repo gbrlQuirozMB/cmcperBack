@@ -249,6 +249,7 @@ class PutCatTiposDocumentoEntregaTest(APITestCase):
 
         self.json = {
             "descripcion": "descripcionModificada",
+            "isActivo": False
         }
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated

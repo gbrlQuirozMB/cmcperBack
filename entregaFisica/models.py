@@ -6,6 +6,7 @@ from preregistro.models import Medico
 
 class CatTiposDocumentoEntrega(models.Model):
     descripcion = models.CharField(max_length=200)
+    isActivo = models.BooleanField(default=True, db_column='is_activo')
 
     class Meta:
         db_table = 'cat_tipos_documento_entrega'
@@ -21,7 +22,7 @@ class EntregaFisica(models.Model):
     nombreRecibe = models.CharField(max_length=250, db_column='nombre_quien_recibe')
     libro = models.PositiveSmallIntegerField(blank=True, null=True)
     foja = models.PositiveSmallIntegerField(blank=True, null=True)
-    archivo = models.FileField(blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'gif', 'jpeg'])], upload_to='entregaFisica')
+    archivo = models.FileField(blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif', 'jpeg'])], upload_to='entregaFisica')
     comentarios = models.TextField(blank=True, null=True)
     medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medicoEF', null=True)
 
