@@ -433,3 +433,4 @@ static/rest_framework_swagger/
 .env
 uploads/
 *.log.*
+db.sqlite3
