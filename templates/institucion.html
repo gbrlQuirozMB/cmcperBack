@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
@@ -451,9 +452,9 @@
                                         <tr>
                                             <td valign="top" class="headerContent">
                                             {% if aceptado %}
-                                            	<img src="https://cmcper.sandboxmb.com/static/img/examen-a-r.png" style="max-width:600px;" id="headerImage" mc:label="header_image" mc:edit="header_image" mc:allowdesigner mc:allowtext />
+                                            	<img src="{% static 'img/examen-a-r.png' %}" style="max-width:600px;" id="headerImage" mc:label="header_image" mc:edit="header_image" mc:allowdesigner mc:allowtext />
 											{% else %}
-                                            	<img src="https://cmcper.sandboxmb.com/static/img/examen-a-r.png" style="max-width:600px;" id="headerImage" mc:label="header_image" mc:edit="header_image" mc:allowdesigner mc:allowtext />
+                                            	<img src="{% static 'img/examen-a-r.png' %}" style="max-width:600px;" id="headerImage" mc:label="header_image" mc:edit="header_image" mc:allowdesigner mc:allowtext />
 											{% endif %}
                                             </td>
                                         </tr>

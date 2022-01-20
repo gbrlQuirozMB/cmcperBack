@@ -454,7 +454,7 @@
                                             {% if aceptado %}
                                             	<img src="{% static 'img/prer-acept.png' %}" style="max-width:600px;" id="headerImage" mc:label="header_image" mc:edit="header_image" mc:allowdesigner mc:allowtext />
 											{% else %}
-                                            	<img src="https://sistema.cmcper.org/static/img/prer-recha.png" style="max-width:600px;" id="headerImage" mc:label="header_image" mc:edit="header_image" mc:allowdesigner mc:allowtext />
+                                            	<img src="{% static 'img/prer-recha.png' %}" style="max-width:600px;" id="headerImage" mc:label="header_image" mc:edit="header_image" mc:allowdesigner mc:allowtext />
 											{% endif %}
                                             </td>
                                         </tr>
@@ -470,7 +470,6 @@
                                             <td valign="top" class="bodyContent" mc:edit="body_content">
                                             {% if aceptado %}
 												<p>
-													---::: el estatic: {% static ''%}
 													Estimado(a): {{ nombre }} {{apPaterno}}
 													<br/>
 													<br/>
