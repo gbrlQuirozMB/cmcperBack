@@ -197,9 +197,10 @@ USE_TZ = True
 # MEDIA_URL = '/uploads/'
 # MEDIA_ROOT = config('MEDIA_ROOT')
 
-STATIC_URL = '/static/'
+# STATIC_URL = '/static/'
+STATIC_URL = 'https://sistema.cmcper.org/static/'
 
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),) #para que el collectstatic busque y encuentre los archivos
 STATIC_ROOT = config('STATIC_ROOT', default="./static/")
 MEDIA_URL = config('MEDIA_URL', default="/uploads/")
 MEDIA_ROOT=config('MEDIA_ROOT', default="uploads/")
