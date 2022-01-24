@@ -25,6 +25,8 @@ class EntregaFisica(models.Model):
     archivo = models.FileField(blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['pdf', 'png', 'jpg', 'gif', 'jpeg'])], upload_to='entregaFisica')
     comentarios = models.TextField(blank=True, null=True)
     medico = models.ForeignKey(Medico, on_delete=models.CASCADE, related_name='medicoEF', null=True)
+    anioInicio = models.CharField(max_length=10, default='', db_column='anio_inicio')
+    anioFin = models.CharField(max_length=10, default='', db_column='anio_fin')
 
     class Meta:
         db_table = 'entrega_fisica'

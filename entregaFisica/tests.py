@@ -72,7 +72,9 @@ class PostEntregaFisicaTest(APITestCase):
             "foja": 6,
             "archivo": archivoFile,
             "comentarios": "comentarios chidos",
-            "medico": 1
+            "medico": 1,
+            "anioInicio": "2022",
+            "anioFin": "2222"
         }
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
@@ -84,10 +86,10 @@ class PostEntregaFisicaTest(APITestCase):
         print(f'response JSON ===>>> ok \n {json.dumps(response.data)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        # del self.json['nombreRecibe']
-        # response = self.client.post('/api/entrega-fisica/create/', data=self.json, format='multipart')
-        # print(f'response JSON ===>>> ok \n {json.dumps(response.data)} \n ---')
-        # self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        del self.json['nombreRecibe']
+        response = self.client.post('/api/entrega-fisica/create/', data=self.json, format='multipart')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 # python manage.py test entregaFisica.tests.GetEntregaFisicaFilteredListTest
