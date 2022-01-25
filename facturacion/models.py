@@ -83,7 +83,6 @@ class ConceptoPago(models.Model):
     isResidente = models.BooleanField(default=True, db_column='is_residente')
     isCertificado = models.BooleanField(default=True, db_column='is_certificado')
     isAval = models.BooleanField(default=True, db_column='is_aval')
-    
 
     class Meta:
         db_table = 'facturacionConceptoPago'
@@ -157,6 +156,8 @@ class Factura(models.Model):
     xmlTimbrado = models.FileField(upload_to=rutaTimbrado, null=True)
     xmlCancelado = models.FileField(upload_to=rutaCancelado, null=True)
     pdf = models.CharField(max_length=500, null=True)
+    anioInicio = models.CharField(max_length=10, default='', blank=True, db_column='anio_inicio')
+    anioFin = models.CharField(max_length=10, default='', blank=True, db_column='anio_fin')
 
     class Meta:
         db_table = 'facturacionFactura'

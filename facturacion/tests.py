@@ -211,6 +211,7 @@ class GetPaisListTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
+# python manage.py test facturacion.tests.PostFacturaTest
 class PostFacturaTest(APITestCase):
     def setUp(self):
         """ Institucion.objects.create(
@@ -218,7 +219,7 @@ class PostFacturaTest(APITestCase):
             email = 'Email', pais = 'Pais', estado = 'estado', ciudad = 'Ciudad', deleMuni = 'DeleMuni', colonia = 'Colonia', calle = 'Calle',
             cp = 'Cp', numInterior = 'NumInterior', numExterior = 'NumExterior', username = 'Username'
         ) """
-        Medico.objects.create(
+        medico1 = Medico.objects.create(
             nombre='Nombre', apPaterno='ApPaterno', apMaterno='ApMaterno', rfcFacturacion='EKU9003173C9', usoCfdi='G03', razonSocial='RazonSocial', telCelular='01234', email='email@email.com',
             isExtranjero=True, aceptado=True, numRegistro=56789, isCertificado=True, anioCertificacion=2020, estadoFisc='EstadoFisc', deleMuniFisc='DeleMuniFisc', coloniaFisc='ColoniaFisc',
             calleFisc='CalleFisc', cpFisc='42080', numInteriorFisc='NumInteriorFisc', numExteriorFisc='NumExteriorFisc', fechaNac=datetime.datetime.strptime('1980-01-01', '%Y-%m-%d'),
@@ -230,14 +231,16 @@ class PostFacturaTest(APITestCase):
         moneda3 = Moneda.objects.create(moneda='MXN', descripcion='Descripcion1', decimales=1, porcentajeVariacion='1%', orden=1)
         pais3 = Pais.objects.create(pais='111', descripcion='Descripcion1')
         unidadMedida = UnidadMedida.objects.create(unidadMedida='E48', nombre='Nombre', descripcion='Descripcion', nota='nota', simbolo='Simbolo')
-        ConceptoPago.objects.create(conceptoPago='ConceptoPago1', precio=100, claveSAT='10101500', unidadMedida=unidadMedida)
-        ConceptoPago.objects.create(conceptoPago='ConceptoPago2', precio=100, claveSAT='10101500', unidadMedida=unidadMedida)
+        conPag1 = ConceptoPago.objects.create(conceptoPago='ConceptoPago1', precio=100, claveSAT='10101500', unidadMedida=unidadMedida)
+        conPag2 = ConceptoPago.objects.create(conceptoPago='ConceptoPago2', precio=100, claveSAT='10101500', unidadMedida=unidadMedida)
         # para probar cuado ya existe un factura tome el FOLIO correcto
-        # fact3 = Factura.objects.create(rfc='Rfc3', tipo='Aval', fecha='2003-03-03', hora='03:03:03', formaPago=formPago4, metodoPago=metPago1, isCancelada=True, usoCFDI=usoCFDI3,
-        #                            moneda=moneda3, pais=pais3, folio=3)
+        # fact3 = Factura.objects.create(rfc='Rfc3', tipo='Aval', fecha='2022-03-03T09:06:03', formaPago=formPago4, metodoPago=metPago1, isCancelada=True, usoCFDI=usoCFDI3,
+        #                            moneda=moneda3, pais=pais3, folio=3, medico=medico1, anioInicio='2222', anioFin='2222')
+        # ConceptoFactura.objects.create(factura=fact3, conceptoPago=conPag1, cantidad=9)
         conceptosPago = [{'idConceptoPago': '1', 'cantidad': '1'}, {'idConceptoPago': '2', 'cantidad': '1'}]
-        self.json = {
 
+        self.json = {
+            # "folio": "1",  # este no debe ir, se toma del ultimo registro existente en la tabla
             # "institucion": "1",
             "medico": "1",
             "usoCFDI": 1,
@@ -246,7 +249,6 @@ class PostFacturaTest(APITestCase):
             "pais": 1,
             "metodoPago": 1,
             "comentarios": "Sin comentarios",
-            # "folio": "1",  # este no debe ir, se toma del ultimo registro existente en la tabla
             "subtotal": 200.00,
             "iva": 32.00,
             "total": 232.00,
@@ -256,24 +258,29 @@ class PostFacturaTest(APITestCase):
             "certificado": "2020",
             "recertificacion": "2025",
             "conceptosPago": conceptosPago,
-            # "fecha": "1999-09-09",
-            "fecha": "2022-01-10T09:06:03",
-            # "fecha": datetime.datetime.now(),
-            # "hora": "03:33:33",
-            "tipo": "Aval",
             # "codigoPostal": "21397",
-
+            # "fecha": "1999-09-09",
+            # "fecha": datetime.datetime.now(),
+            "fecha": "2022-01-10T09:06:03",
+            "tipo": "Aval",
+            "anioInicio": "2222",
+            "anioFin": "2222"
         }
         self.user = User.objects.create_user(username='billy', is_staff=True)
 
     def test(self):
 
-        print(f'--->>>json: {self.json}')
+        # print(f'test--->>>json: {self.json}')
 
         self.client.force_authenticate(user=self.user)
         response = self.client.post('/api/facturacion/create/', data=json.dumps(self.json), content_type="application/json")
-        print(f'response JSON ===>>> 201-OK \n {json.dumps(response.json())} \n ---')
+        print(f'\n response JSON ===>>> 201-OK \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post('/api/facturacion/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'\n response JSON ===>>> 409 facturas repetidas \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
 
 
 class GetFacturaFilteredListTest(APITestCase):
@@ -446,7 +453,7 @@ class CuConceptoPagoTest(APITestCase):
             "inactivo": True,
             "claveSAT": "sat444",
             "unidadMedida": 2,
-            "isAval":False
+            "isAval": False
         }
 
         self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
