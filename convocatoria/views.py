@@ -846,8 +846,8 @@ class PublicarCalificaciones(APIView):
                 datitos = {
                     '0-id': dato[0],
                     '1-medico__numRegistro': dato[1],
-                    '2-medico__nombre': dato[2],
-                    '3-medico__apPaterno': dato[3],
+                    '2-medico__nombre': (dato[2]).encode('utf-8'),
+                    '3-medico__apPaterno': (dato[3]).encode('utf-8'),
                     # '4-medico__apMaterno': dato[4],
                     # '5-convocatoria__fechaExamen': dato[5],
                     '6-calificacion': dato[6],
