@@ -1,3 +1,4 @@
+from rest_framework.pagination import PageNumberPagination
 import urllib3
 from rest_framework.views import APIView
 
@@ -21,7 +22,13 @@ from rest_framework.response import Response
 import logging
 log = logging.getLogger('django')
 
+
 # Create your views here.
+
+
+class ReportesPagination(PageNumberPagination):
+    page_size = 20
+    max_page_size = 20
 
 
 class MedResidenteFilter(FilterSet):
@@ -49,6 +56,7 @@ class MedResidenteFilteredListView(ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_class = MedResidenteFilter
     permission_classes = (permissions.IsAdminUser,)
+    pagination_class = ReportesPagination
 
     # def get_queryset(self):
     #     queryset = Medico.objects.filter(isCertificado=False)
@@ -118,6 +126,7 @@ class MedCertificadoFilteredListView(ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_class = MedCertificadoFilter
     permission_classes = (permissions.IsAdminUser,)
+    pagination_class = ReportesPagination
 
 
 class MedCertificadoDetailView(RetrieveAPIView):
