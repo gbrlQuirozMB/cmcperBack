@@ -833,9 +833,9 @@ class PublicarCalificaciones(APIView):
                     Medico.objects.filter(id=dato[9]).update(numRegistro=valor, isCertificado=True, anioCertificacion=anio)
 
                 datos = {
-                    'nombre': dato[2],
-                    'apPaterno': dato[3],
-                    'apMaterno': dato[4],
+                    'nombre': (dato[2]).encode('utf-8'),
+                    'apPaterno': (dato[3]).encode('utf-8'),
+                    'apMaterno': (dato[4]).encode('utf-8'),
                     'fechaExamen': dato[5],
                     'anioExamen': dato[5].strftime("%Y"),
                     # 'aceptado': True if dato[6] > 5 else False,
