@@ -2003,3 +2003,23 @@ class PutConvocatoriaEnroladoCalificar(APITestCase):
 #         print(f'--->>>datos: {datos}')
 #         for dato in datos:
 #             print(dato.catSedes.descripcion)
+
+
+
+
+# python manage.py test convocatoria.tests.VariasPruebasTest
+
+class VariasPruebasTest(APITestCase):
+    def setUp(self):
+        Medico.objects.create(
+            id=1, nombre='gabriél', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2020-09-09', pais='pais1', estado='estado1', ciudad='ciudad1',
+            deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
+            cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
+            telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
+    
+    def test(self):
+        queryset = Medico.objects.filter(id=1).values_list('nombre', 'apPaterno', 'apMaterno')
+        print(f'--->>>datos: {queryset}')
+        for dato in queryset:
+            print(f'--->>>dato: {dato[0]}')
+            print(f'--->>>dato: {(dato[0]).encode("utf-8")}')
