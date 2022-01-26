@@ -2018,8 +2018,19 @@ class VariasPruebasTest(APITestCase):
             telCelular='telCelular1', telParticular='telParticular1', email='gabriel@mb.company')
     
     def test(self):
+        
+        # import codecs
+        # import sys
+        # UTF8Writer = codecs.getwriter('utf8')
+        # sys.stdout = UTF8Writer(sys.stdout)
+        # print(u'gabriél')
+        
+        # la impresion en terminan depende mucho del SO dond se encuentre, y a veces puede no funcionar con codigos especiales
         queryset = Medico.objects.filter(id=1).values_list('nombre', 'apPaterno', 'apMaterno')
         print(f'--->>>datos: {queryset}')
         for dato in queryset:
             print(f'--->>>dato: {dato[0]}')
-            print(f'--->>>dato: {(dato[0]).encode("utf-8")}')
+            print(f'--->>>dato: {(dato[0]).encode("utf-8", errors="replace")}')
+            print(f'--->>>dato: {(dato[0]).encode("ascii", errors="replace")}')
+            print(f'--->>>dato: {(dato[0]).encode("ascii", errors="ignore")}')
+            
