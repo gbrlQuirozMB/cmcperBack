@@ -235,37 +235,62 @@ class PostFacturaTest(APITestCase):
         conPag2 = ConceptoPago.objects.create(conceptoPago='ConceptoPago2', precio=100, claveSAT='10101500', unidadMedida=unidadMedida)
         # para probar cuado ya existe un factura tome el FOLIO correcto
         # fact3 = Factura.objects.create(rfc='Rfc3', tipo='Aval', fecha='2022-03-03T09:06:03', formaPago=formPago4, metodoPago=metPago1, isCancelada=True, usoCFDI=usoCFDI3,
-        #                            moneda=moneda3, pais=pais3, folio=3, medico=medico1, anioInicio='2222', anioFin='2222')
+        #                            moneda=moneda3, pais=pais3, folio=3, medico=medico1, anioInicio='2022', anioFin='2027')
         # ConceptoFactura.objects.create(factura=fact3, conceptoPago=conPag1, cantidad=9)
         conceptosPago = [{'idConceptoPago': '1', 'cantidad': '1'}, {'idConceptoPago': '2', 'cantidad': '1'}]
 
+        # self.json = {
+        #     # "folio": "1",  # este no debe ir, se toma del ultimo registro existente en la tabla
+        #     # "institucion": "1",
+        #     "medico": "1",
+        #     "usoCFDI": 1,
+        #     "formaPago": 1,
+        #     "moneda": 1,
+        #     "pais": 1,
+        #     "metodoPago": 1,
+        #     "comentarios": "Sin comentarios",
+        #     "subtotal": 200.00,
+        #     "iva": 32.00,
+        #     "total": 232.00,
+        #     "numRegIdTrib": "0123456789",
+        #     "importeLetra": "Doscientos treinta y dos pesos 00 MXN",
+        #     "agregarDireccion": True,
+        #     "certificado": "2020",
+        #     "recertificacion": "2025",
+        #     "conceptosPago": conceptosPago,
+        #     # "codigoPostal": "21397",
+        #     # "fecha": "1999-09-09",
+        #     # "fecha": datetime.datetime.now(),
+        #     "fecha": "2022-01-10T09:06:03",
+        #     "tipo": "Aval",
+        #     "anioInicio": "2222",
+        #     "anioFin": "2222"
+        # }
+
         self.json = {
-            # "folio": "1",  # este no debe ir, se toma del ultimo registro existente en la tabla
-            # "institucion": "1",
-            "medico": "1",
+            "institucion": "",
+            "medico": 1,
             "usoCFDI": 1,
             "formaPago": 1,
             "moneda": 1,
             "pais": 1,
             "metodoPago": 1,
-            "comentarios": "Sin comentarios",
-            "subtotal": 200.00,
-            "iva": 32.00,
-            "total": 232.00,
-            "numRegIdTrib": "0123456789",
-            "importeLetra": "Doscientos treinta y dos pesos 00 MXN",
+            "comentarios": "factura duplicada",
+            "subtotal": 11000,
+            "iva": 1760,
+            "total": "12760",
+            "numRegIdTrib": "",
+            "importeLetra": "DOCE MIL SETECIENTOS SESENTA  PESOS 00/100 MXN",
             "agregarDireccion": True,
-            "certificado": "2020",
-            "recertificacion": "2025",
-            "conceptosPago": conceptosPago,
-            # "codigoPostal": "21397",
-            # "fecha": "1999-09-09",
-            # "fecha": datetime.datetime.now(),
-            "fecha": "2022-01-10T09:06:03",
-            "tipo": "Aval",
-            "anioInicio": "2222",
-            "anioFin": "2222"
+            "certificado": "11",
+            "recertificacion": 2022,
+            "conceptosPago": [{"idConceptoPago": "1", "cantidad": "1"}],
+            "fecha": "2022-01-27T13:12:02",
+            "tipo": "Certificado",
+            "anioFin": "2027",
+            "anioInicio": "2022",
         }
+
         self.user = User.objects.create_user(username='billy', is_staff=True)
 
     def test(self):
@@ -281,6 +306,9 @@ class PostFacturaTest(APITestCase):
         response = self.client.post('/api/facturacion/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'\n response JSON ===>>> 409 facturas repetidas \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+        
+        # queryset = Factura.objects.filter(medico=1, anioInicio='2222', anioFin='3333', facturaCF__conceptoPago=369)
+        # print(f'impresion de query: {queryset.query}')
 
 
 class GetFacturaFilteredListTest(APITestCase):

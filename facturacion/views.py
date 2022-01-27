@@ -159,9 +159,9 @@ class FacturaCreateView(CreateAPIView):
         medicoId = request.data.get('medico')
         if anioInicio is not None and anioFin is not None:
             for dato in conceptosPago:
-                cuenta = Factura.objects.filter(medico=medicoId, anioInicio=anioInicio, anioFin=anioFin, facturaCF=int(dato["idConceptoPago"])).count()
+                cuenta = Factura.objects.filter(medico=medicoId, anioInicio=anioInicio, anioFin=anioFin, facturaCF__conceptoPago=int(dato["idConceptoPago"])).count()
                 if cuenta > 0:
-                    raise ResponseError('Ya existe una factura del medico con ese rango de años', 409)
+                    raise ResponseError('Ya existe una factura del médico con mismo concepto en ese rango de años', 409)
         if serializer.is_valid():
             factura = serializer.save()
             if factura.institucion:
