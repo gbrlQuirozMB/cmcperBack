@@ -406,3 +406,23 @@ class GetMedCertificadoDocumentosTest(APITestCase):
         response = self.client.get('/api/reportes/med-residentes/documentos/list/?convocatoria=1')
         print(f'response JSON ===>>> obtiene solo lo certificados (isCertificado=True) \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+# python manage.py test reportes.tests.GetDirectorioTest
+class GetDirectorioTest(APITestCase):
+    def setUp(self):
+
+        configDB()
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/reportes/directorio/list/')
+        print(f'response JSON ===>>> todos \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        response = self.client.get('/api/reportes/directorio/list/?isCertificado=false')
+        print(f'response JSON ===>>> obtiene solo lo certificados (isCertificado=True) \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

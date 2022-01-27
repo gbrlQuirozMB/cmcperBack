@@ -17,5 +17,6 @@ urlpatterns = [
     # path('pruebas/<medicoId>/pdf/', PruebasPdfDetailView.as_view(), ),
     
     path('med-residentes/documentos/list/', MedResidenteDocumentosFilteredListView.as_view(), ),
+    path('directorio/list/', DirectorioFilteredListView.as_view(), ),
 
 ]

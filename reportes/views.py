@@ -172,3 +172,20 @@ class MedResidenteDocumentosFilteredListView(ListAPIView):
     serializer_class = MedResidenteDocumentosFilteredListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = MedResidenteDocumentosFilter
+
+
+class DirectorioFilter(FilterSet):
+    class Meta:
+        model = Medico
+        fields = ['isCertificado']
+
+
+class DirectorioFilteredListView(ListAPIView):
+    queryset = Medico.objects.all()
+    serializer_class = DirectorioListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = DirectorioFilter
+    pagination_class = ReportesPagination
+    permission_classes = (permissions.AllowAny,)
+    
+    

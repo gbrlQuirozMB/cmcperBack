@@ -98,3 +98,23 @@ class MedResidenteDocumentosFilteredListSerializer(serializers.ModelSerializer):
         repr['cuentaEngargolados'] = cuentaEngargolados  # * 100 / cuentaTotal
 
         return repr
+
+
+class DirectorioListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Medico
+        fields = ['numRegistro', 'nombre', 'apPaterno', 'apMaterno', 'titulo', 'telConsultorioPublico', 'telCelularPublico', 'email', 'facebook', 'instagram', 'twitter', 'pagWeb', 'whatsapp',
+                  'paisConsult', 'estadoConsult', 'ciudadConsult', 'deleMuniConsult', 'coloniaConsult', 'calleConsult', 'cpConsult', 'numInteriorConsult', 'numExteriorConsult',
+                  'univEgreso', 'isCertificado']
+
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        # repr['nombreCompleto'] = instance.nombre + ' ' + instance.apPaterno + ' ' + instance.apMaterno
+        try:
+            dato = Certificado.objects.filter(medico=instance.id)[0]
+            repr['ultimaCertificacion'] = dato.fechaCertificacion
+        except:
+            repr['ultimaCertificacion'] = 'No existe'
+
+        return repr
