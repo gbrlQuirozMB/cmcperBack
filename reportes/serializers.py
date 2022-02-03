@@ -114,7 +114,10 @@ class DirectorioListSerializer(serializers.ModelSerializer):
         try:
             dato = Certificado.objects.filter(medico=instance.id)[0]
             repr['ultimaCertificacion'] = dato.fechaCertificacion
+            repr['ultimoCertificado'] = dato.id
+            
         except:
             repr['ultimaCertificacion'] = 'No existe'
+            repr['ultimoCertificado'] = 'No existe'
 
         return repr
