@@ -185,7 +185,7 @@ class DirectorioFilteredListView(ListAPIView):
     serializer_class = DirectorioListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = DirectorioFilter
-    pagination_class = ReportesPagination
+    # pagination_class = ReportesPagination
     permission_classes = (permissions.AllowAny,)
     
     
