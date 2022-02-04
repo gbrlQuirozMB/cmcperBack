@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     'reportes',
     'conacem',
     'entregaFisica',
+    'encuestas',
 ]
 
 MIDDLEWARE = [
