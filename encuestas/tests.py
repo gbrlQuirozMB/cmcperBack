@@ -6,6 +6,9 @@ from .models import *
 from datetime import date
 from dateutil.relativedelta import relativedelta
 
+import json
+from rest_framework import status
+
 # Create your tests here.
 
 
@@ -59,3 +62,35 @@ class BaseDatosTest(APITestCase):
 
         for dato in Respuesta.objects.all():
             print(f'Respuesta--->>>opcion: {dato.opcion} - fecha: {dato.fecha} - otro: {dato.otro}')
+
+
+# python manage.py test encuestas.tests.PostEncuestaTest
+class PostEncuestaTest(APITestCase):
+    def setUp(self):
+
+        configDB()
+
+        self.json = {
+            "titulo": "tituloNew",
+            "descripcion": "descripcionNew",
+            "fechaInicio": date.today().strftime('%Y-%m-%d'),
+            "fechaFin": (date.today() + relativedelta(days=8)).strftime('%Y-%m-%d'),
+            "estatus": "Editar",
+            "regionGeografica": "Centro",
+            "isSoloConsejero": False
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+        print(f'--->>>json: {self.json}')
+
+        response = self.client.post('/api/encuestas/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> ok \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        del self.json['titulo']
+        response = self.client.post('/api/encuestas/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> ok \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

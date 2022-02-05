@@ -6,6 +6,7 @@ from .views import *
 app_name = 'encuestas'
 
 urlpatterns = [
+    path('create/', EncuestaCreateView.as_view(), ),
 
 
 ]
