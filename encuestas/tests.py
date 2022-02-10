@@ -36,7 +36,7 @@ def configDB():
     opcion22 = Opcion.objects.create(pregunta=pregunta2, descripcion='descripcionO-2', orden=2)
 
     Respuesta.objects.create(opcion=opcion11, medico=medico1, fecha=date.today() + relativedelta(days=3), encuesta=encuesta1, pregunta=pregunta1)
-    Respuesta.objects.create(opcion=opcion12, medico=medico1, fecha=date.today() + relativedelta(days=3), encuesta=encuesta1, pregunta=pregunta1)
+    Respuesta.objects.create(opcion=opcion11, medico=medico1, fecha=date.today() + relativedelta(days=3), encuesta=encuesta1, pregunta=pregunta1)
     Respuesta.objects.create(opcion=opcion22, medico=medico1, fecha=date.today() + relativedelta(days=3), encuesta=encuesta1, pregunta=pregunta2)
     Respuesta.objects.create(medico=medico1, fecha=date.today() + relativedelta(days=3), otro='otroR', encuesta=encuesta1, pregunta=pregunta2)
 
@@ -462,7 +462,44 @@ class PostRespuestaTest(APITestCase):
         print(f'response JSON ===>>> ok \n {json.dumps(response.data)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        del self.json['titulo']
-        response = self.client.post('/api/encuestas/create/', data=json.dumps(self.json), content_type="application/json")
+        del self.json['opcion']
+        response = self.client.post('/api/encuestas/respuestas/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> ok \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        del self.json['medico']
+        response = self.client.post('/api/encuestas/respuestas/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> ok \n {json.dumps(response.data)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+# python manage.py test encuestas.tests.GetRespuestaListTest
+class GetRespuestaListTest(APITestCase):
+    def setUp(self):
+
+        configDB()
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/encuestas/respuestas/list/')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/encuestas/respuestas/list/?opcion=1')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/encuestas/respuestas/list/?otro=otroR')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/encuestas/respuestas/list/?encuesta=2')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/encuestas/respuestas/list/?pregunta=2')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

@@ -66,3 +66,9 @@ class RespuestaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Respuesta
         fields = '__all__'
+
+
+class RespuestaListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Respuesta
+        fields = '__all__'

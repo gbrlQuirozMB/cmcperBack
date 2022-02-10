@@ -148,3 +148,16 @@ class RespuestaCreateView(CreateAPIView):
             return self.create(request, *args, **kwargs)
         log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
+
+
+class RespuestaFilter(FilterSet):
+    class Meta:
+        model = Respuesta
+        fields = ['opcion', 'otro', 'encuesta', 'pregunta']
+
+
+class RespuestaFilteredListView(ListAPIView):
+    queryset = Respuesta.objects.all()
+    serializer_class = RespuestaListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = RespuestaFilter
