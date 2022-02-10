@@ -38,3 +38,11 @@ class PreguntaDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pregunta
         fields = '__all__'
+
+
+# --------------------------OPCIONES--------------------------
+
+class OpcionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Opcion
+        fields = '__all__'

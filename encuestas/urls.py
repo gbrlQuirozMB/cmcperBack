@@ -18,4 +18,7 @@ urlpatterns = [
     path('preguntas/<pk>/update/', PreguntaUpdateView.as_view(), ),
     path('preguntas/<pk>/delete/', PreguntaDeleteView.as_view(), ),
 
+    path('preguntas/<pk>/opciones/create/', OpcionCreateView.as_view(), ),
+
+
 ]
