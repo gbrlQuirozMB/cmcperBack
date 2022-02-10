@@ -161,3 +161,8 @@ class RespuestaFilteredListView(ListAPIView):
     serializer_class = RespuestaListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = RespuestaFilter
+
+
+class RespuestaDetailView(RetrieveAPIView):
+    queryset = Respuesta.objects.filter()
+    serializer_class = RespuestaDetailSerializer
