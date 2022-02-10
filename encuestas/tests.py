@@ -412,3 +412,23 @@ class PutOpcionUpdateTest(APITestCase):
         response = self.client.put('/api/encuestas/preguntas/opciones/2/update/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+# python manage.py test encuestas.tests.DeleteOpcionTest
+class DeleteOpcionTest(APITestCase):
+    def setUp(self):
+
+        configDB()
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.delete('/api/encuestas/preguntas/opciones/2/delete/')
+        print(f'response JSON ===>>> ok 204 sin contenido \n {response.content} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        response = self.client.delete('/api/encuestas/preguntas/opciones/22/delete/')
+        print(f'response JSON ===>>> ok 204 sin contenido \n {response.content} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

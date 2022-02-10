@@ -22,6 +22,7 @@ urlpatterns = [
     path('preguntas/<pk>/opciones/list/', OpcionListView.as_view(), ),
     path('preguntas/opciones/<pk>/detail/', OpcionDetailView.as_view(), ),
     path('preguntas/opciones/<pk>/update/', OpcionUpdateView.as_view(), ),
+    path('preguntas/opciones/<pk>/delete/', OpcionDeleteView.as_view(), ),
 
 
 

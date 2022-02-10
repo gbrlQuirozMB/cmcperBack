@@ -130,3 +130,7 @@ class OpcionUpdateView(UpdateAPIView):
     serializer_class = OpcionSerializer
     permission_classes = (permissions.IsAdminUser,)
     http_method_names = ['put']
+
+
+class OpcionDeleteView(DestroyAPIView):
+    queryset = Opcion.objects.filter()
