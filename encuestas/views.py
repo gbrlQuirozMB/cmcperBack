@@ -109,3 +109,12 @@ class OpcionCreateView(CreateAPIView):
             return self.create(request, *args, **kwargs)
         log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
+
+
+class OpcionListView(ListAPIView):
+    serializer_class = OpcionListSerializer
+
+    def get_queryset(self):
+        pregunta = self.kwargs['pk']
+        queryset = Opcion.objects.filter(pregunta=pregunta)
+        return queryset

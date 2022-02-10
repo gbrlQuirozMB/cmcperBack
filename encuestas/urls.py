@@ -19,6 +19,7 @@ urlpatterns = [
     path('preguntas/<pk>/delete/', PreguntaDeleteView.as_view(), ),
 
     path('preguntas/<pk>/opciones/create/', OpcionCreateView.as_view(), ),
+    path('preguntas/<pk>/opciones/list/', OpcionListView.as_view(), ),
 
 
 ]

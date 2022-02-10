@@ -353,3 +353,19 @@ class PostOpcionTest(APITestCase):
         response = self.client.post('/api/encuestas/preguntas/1/opciones/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> ok \n {json.dumps(response.data)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+# python manage.py test encuestas.tests.GetOpcionListTest
+class GetOpcionListTest(APITestCase):
+    def setUp(self):
+
+        configDB()
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/encuestas/preguntas/1/opciones/list/')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
