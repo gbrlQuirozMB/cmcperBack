@@ -40,8 +40,12 @@ def configDB():
     Respuesta.objects.create(opcion=opcion22, medico=medico1, fecha=date.today() + relativedelta(days=3), encuesta=encuesta1, pregunta=pregunta2)
     Respuesta.objects.create(medico=medico1, fecha=date.today() + relativedelta(days=3), otro='otroR', encuesta=encuesta1, pregunta=pregunta2)
 
+    encuesta2 = Encuesta.objects.create(titulo='titulo1', descripcion='descripcion', fechaInicio=date.today(), fechaFin=date.today() + relativedelta(days=8), estatus='Cerrada',
+                                        regionGeografica='Norte', isSoloConsejero=True)
 
 # python manage.py test encuestas.tests.BaseDatosTest
+
+
 class BaseDatosTest(APITestCase):
     def setUp(self):
         configDB()
@@ -94,3 +98,50 @@ class PostEncuestaTest(APITestCase):
         response = self.client.post('/api/encuestas/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> ok \n {json.dumps(response.data)} \n ---')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+# python manage.py test encuestas.tests.GetEncuestaListTest
+class GetEncuestaListTest(APITestCase):
+    def setUp(self):
+
+        configDB()
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/encuestas/list/')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/encuestas/list/?estatus=Cerrada')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/encuestas/list/?regionGeografica=Norte')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/encuestas/list/?isSoloConsejero=true')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        fechaInicio = (date.today() + relativedelta(days=0)).strftime('%Y-%m-%d')
+        fechaFin = (date.today() + relativedelta(days=8)).strftime('%Y-%m-%d')
+        print(f'--->>>fechaInicio: {fechaInicio}')
+        print(f'--->>>fechaFin: {fechaFin}')
+
+        url = '/api/encuestas/list/?fechaInicioNS='+fechaInicio
+        print(f'--->>>url: {url}')
+
+        response = self.client.get(url)
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        url = '/api/encuestas/list/?fechaFinNS='+fechaFin
+        print(f'--->>>url: {url}')
+
+        response = self.client.get(url)
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

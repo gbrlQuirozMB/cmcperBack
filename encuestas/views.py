@@ -3,7 +3,7 @@ from django.shortcuts import render
 from rest_framework.generics import DestroyAPIView, ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView
 from .serializers import *
 from rest_framework import permissions
-from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter
+from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter, DateFilter
 
 
 import logging
@@ -20,3 +20,19 @@ class EncuestaCreateView(CreateAPIView):
             return self.create(request, *args, **kwargs)
         log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
+
+
+class EncuestaFilter(FilterSet):
+    fechaInicioNS = DateFilter(field_name='fechaInicio', lookup_expr="lte")
+    fechaFinNS = DateFilter(field_name='fechaFin', lookup_expr="gte")
+
+    class Meta:
+        model = Encuesta
+        fields = ['estatus', 'regionGeografica', 'isSoloConsejero', 'fechaInicioNS', 'fechaFinNS']
+
+
+class EncuestaFilteredListView(ListAPIView):
+    queryset = Encuesta.objects.all()
+    serializer_class = EncuestaListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = EncuestaFilter
