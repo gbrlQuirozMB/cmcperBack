@@ -48,3 +48,7 @@ class EncuestaUpdateView(UpdateAPIView):
     serializer_class = EncuestaSerializer
     permission_classes = (permissions.IsAdminUser,)
     http_method_names = ['put']
+
+
+class EncuestaDeleteView(DestroyAPIView):
+    queryset = Encuesta.objects.filter()
