@@ -54,7 +54,7 @@ class BaseDatosTest(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
-        # datos = EntregaFisica.objects.all()
+        # datos = Encuesta.objects.all()
         for dato in Encuesta.objects.all():
             print(f'Encuesta--->>>titulo: {dato.titulo} - fechaInicio: {dato.fechaInicio} - fechaFin: {dato.fechaFin} - estatus: {dato.estatus}')
 
@@ -165,3 +165,29 @@ class GetEncuestaDetailTest(APITestCase):
         response = self.client.get('/api/encuestas/33/detail/')
         print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+# python manage.py test encuestas.tests.PutEncuestaUpdateTest
+class PutEncuestaUpdateTest(APITestCase):
+    def setUp(self):
+
+        configDB()
+
+        self.json = {
+            "titulo": "tituloUpdate",
+            "descripcion": "descripcionUpdate",
+            "fechaInicio": (date.today() + relativedelta(days=33)).strftime('%Y-%m-%d'),
+            "fechaFin": (date.today() + relativedelta(days=66)).strftime('%Y-%m-%d'),
+            "estatus": "Editar",
+            "regionGeografica": "CentroUpdate",
+            "isSoloConsejero": False
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.put('/api/encuestas/2/update/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

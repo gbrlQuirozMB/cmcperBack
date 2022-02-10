@@ -41,3 +41,10 @@ class EncuestaFilteredListView(ListAPIView):
 class EncuestaDetailView(RetrieveAPIView):
     queryset = Encuesta.objects.filter()
     serializer_class = EncuestaDetailSerializer
+
+
+class EncuestaUpdateView(UpdateAPIView):
+    queryset = Encuesta.objects.filter()
+    serializer_class = EncuestaSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
