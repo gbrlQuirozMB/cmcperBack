@@ -52,3 +52,19 @@ class EncuestaUpdateView(UpdateAPIView):
 
 class EncuestaDeleteView(DestroyAPIView):
     queryset = Encuesta.objects.filter()
+
+
+# --------------------------PREGUNTAS--------------------------
+
+class PreguntaCreateView(CreateAPIView):
+    serializer_class = PreguntaSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+    def post(self, request, *args, **kwargs):
+        id = kwargs['pk']
+        request.data['encuesta'] = id
+        serializer = PreguntaSerializer(data=request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)

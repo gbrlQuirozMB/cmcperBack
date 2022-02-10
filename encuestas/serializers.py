@@ -18,3 +18,11 @@ class EncuestaDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Encuesta
         fields = '__all__'
+
+
+# --------------------------PREGUNTAS--------------------------
+
+class PreguntaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pregunta
+        fields = '__all__'
