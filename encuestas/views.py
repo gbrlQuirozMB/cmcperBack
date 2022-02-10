@@ -68,3 +68,12 @@ class PreguntaCreateView(CreateAPIView):
             return self.create(request, *args, **kwargs)
         log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
+
+
+class PreguntaListView(ListAPIView):
+    serializer_class = PreguntaListSerializer
+
+    def get_queryset(self):
+        encuesta = self.kwargs['pk']
+        queryset = Pregunta.objects.filter(encuesta=encuesta)
+        return queryset

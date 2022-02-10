@@ -13,5 +13,6 @@ urlpatterns = [
     path('<pk>/delete/', EncuestaDeleteView.as_view(), ),
 
     path('<pk>/preguntas/create/', PreguntaCreateView.as_view(), ),
+    path('<pk>/preguntas/list/', PreguntaListView.as_view(), ),
 
 ]
