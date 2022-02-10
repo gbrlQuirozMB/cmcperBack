@@ -123,3 +123,10 @@ class OpcionListView(ListAPIView):
 class OpcionDetailView(RetrieveAPIView):
     queryset = Opcion.objects.filter()
     serializer_class = OpcionDetailSerializer
+
+
+class OpcionUpdateView(UpdateAPIView):
+    queryset = Opcion.objects.filter()
+    serializer_class = OpcionSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
