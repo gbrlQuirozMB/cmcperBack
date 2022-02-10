@@ -432,3 +432,37 @@ class DeleteOpcionTest(APITestCase):
         response = self.client.delete('/api/encuestas/preguntas/opciones/22/delete/')
         print(f'response JSON ===>>> ok 204 sin contenido \n {response.content} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+# --------------------------RESPUESTAS--------------------------
+
+#  python manage.py test encuestas.tests.PostRespuestaTest
+class PostRespuestaTest(APITestCase):
+    def setUp(self):
+
+        configDB()
+
+        self.json = {
+            "opcion": 1,
+            "medico": 1,
+            "fecha": (date.today() + relativedelta(days=0)).strftime('%Y-%m-%d'),
+            "otro": "otro respuestas",
+            "encuesta": 1,
+            "pregunta": 1
+
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+        print(f'--->>>json: {self.json}')
+
+        response = self.client.post('/api/encuestas/respuestas/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> ok \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        del self.json['titulo']
+        response = self.client.post('/api/encuestas/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> ok \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

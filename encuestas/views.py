@@ -134,3 +134,17 @@ class OpcionUpdateView(UpdateAPIView):
 
 class OpcionDeleteView(DestroyAPIView):
     queryset = Opcion.objects.filter()
+
+
+# --------------------------RESPUESTAS--------------------------
+
+class RespuestaCreateView(CreateAPIView):
+    serializer_class = RespuestaSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+    def post(self, request, *args, **kwargs):
+        serializer = RespuestaSerializer(data=request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
