@@ -31,7 +31,7 @@ def configDB():
     pregunta1 = Pregunta.objects.create(encuesta=encuesta1, descripcion='descripcionP', orden=1, hasOtro=False)
     opcion11 = Opcion.objects.create(pregunta=pregunta1, descripcion='descripcionO-1', orden=1)
     opcion12 = Opcion.objects.create(pregunta=pregunta1, descripcion='descripcionO-2', orden=2)
-    pregunta2 = Pregunta.objects.create(encuesta=encuesta1, descripcion='descripcionP', orden=1, hasOtro=True)
+    pregunta2 = Pregunta.objects.create(encuesta=encuesta1, descripcion='descripcionP', orden=2, hasOtro=True)
     opcion21 = Opcion.objects.create(pregunta=pregunta2, descripcion='descripcionO-1', orden=1)
     opcion22 = Opcion.objects.create(pregunta=pregunta2, descripcion='descripcionO-2', orden=2)
 
@@ -258,3 +258,23 @@ class GetPreguntaListTest(APITestCase):
         response = self.client.get('/api/encuestas/1/preguntas/list/')
         print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+# python manage.py test encuestas.tests.GetPreguntaDetailTest
+class GetPreguntaDetailTest(APITestCase):
+    def setUp(self):
+
+        configDB()
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/encuestas/preguntas/2/detail/')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/encuestas/preguntas/33/detail/')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

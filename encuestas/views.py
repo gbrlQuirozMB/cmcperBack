@@ -77,3 +77,8 @@ class PreguntaListView(ListAPIView):
         encuesta = self.kwargs['pk']
         queryset = Pregunta.objects.filter(encuesta=encuesta)
         return queryset
+
+
+class PreguntaDetailView(RetrieveAPIView):
+    queryset = Pregunta.objects.filter()
+    serializer_class = PreguntaDetailSerializer

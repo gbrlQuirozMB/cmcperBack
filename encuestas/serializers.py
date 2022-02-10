@@ -32,3 +32,9 @@ class PreguntaListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pregunta
         fields = '__all__'
+
+
+class PreguntaDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pregunta
+        fields = '__all__'
