@@ -12,3 +12,9 @@ class EncuestaListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Encuesta
         fields = '__all__'
+
+
+class EncuestaDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Encuesta
+        fields = '__all__'

@@ -36,3 +36,8 @@ class EncuestaFilteredListView(ListAPIView):
     serializer_class = EncuestaListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = EncuestaFilter
+
+
+class EncuestaDetailView(RetrieveAPIView):
+    queryset = Encuesta.objects.filter()
+    serializer_class = EncuestaDetailSerializer
