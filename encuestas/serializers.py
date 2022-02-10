@@ -52,3 +52,9 @@ class OpcionListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Opcion
         fields = '__all__'
+
+
+class OpcionDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Opcion
+        fields = '__all__'

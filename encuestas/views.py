@@ -118,3 +118,8 @@ class OpcionListView(ListAPIView):
         pregunta = self.kwargs['pk']
         queryset = Opcion.objects.filter(pregunta=pregunta)
         return queryset
+
+
+class OpcionDetailView(RetrieveAPIView):
+    queryset = Opcion.objects.filter()
+    serializer_class = OpcionDetailSerializer
