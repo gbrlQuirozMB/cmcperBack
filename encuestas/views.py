@@ -89,3 +89,7 @@ class PreguntaUpdateView(UpdateAPIView):
     serializer_class = PreguntaSerializer
     permission_classes = (permissions.IsAdminUser,)
     http_method_names = ['put']
+
+
+class PreguntaDeleteView(DestroyAPIView):
+    queryset = Pregunta.objects.filter()
