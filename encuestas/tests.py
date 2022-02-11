@@ -527,3 +527,29 @@ class GetRespuestaDetailTest(APITestCase):
         response = self.client.get('/api/encuestas/respuestas/33/detail/')
         print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+# python manage.py test encuestas.tests.PutRespuestaUpdateTest
+class PutRespuestaUpdateTest(APITestCase):
+    def setUp(self):
+
+        configDB()
+
+        self.json = {
+            "opcion": 3,
+            "medico": 2,
+            "fecha": (date.today() + relativedelta(days=0)).strftime('%Y-%m-%d'),
+            "otro": "otro respuestas Update",
+            "encuesta": 2,
+            "pregunta": 2
+
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.put('/api/encuestas/respuestas/2/update/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

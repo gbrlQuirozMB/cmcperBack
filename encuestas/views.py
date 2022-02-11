@@ -166,3 +166,10 @@ class RespuestaFilteredListView(ListAPIView):
 class RespuestaDetailView(RetrieveAPIView):
     queryset = Respuesta.objects.filter()
     serializer_class = RespuestaDetailSerializer
+
+
+class RespuestaUpdateView(UpdateAPIView):
+    queryset = Respuesta.objects.filter()
+    serializer_class = RespuestaSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
