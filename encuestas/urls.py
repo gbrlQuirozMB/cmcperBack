@@ -28,6 +28,7 @@ urlpatterns = [
     path('respuestas/list/', RespuestaFilteredListView.as_view(), ),
     path('respuestas/<pk>/detail/', RespuestaDetailView.as_view(), ),
     path('respuestas/<pk>/update/', RespuestaUpdateView.as_view(), ),
+    path('respuestas/<pk>/delete/', RespuestaDeleteView.as_view(), ),
 
 
 ]

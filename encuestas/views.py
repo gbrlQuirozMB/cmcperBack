@@ -173,3 +173,7 @@ class RespuestaUpdateView(UpdateAPIView):
     serializer_class = RespuestaSerializer
     permission_classes = (permissions.IsAdminUser,)
     http_method_names = ['put']
+
+
+class RespuestaDeleteView(DestroyAPIView):
+    queryset = Respuesta.objects.filter()
