@@ -73,6 +73,19 @@ class RespuestaListSerializer(serializers.ModelSerializer):
         model = Respuesta
         fields = '__all__'
 
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        if instance.opcion is None:
+            repr['opcionDescripcion'] = 'No hay opcion'
+        else:
+            repr['opcionDescripcion'] = instance.opcion.descripcion
+        repr['encuestaTitulo'] = instance.encuesta.titulo
+        repr['preguntaDescripcion'] = instance.pregunta.descripcion
+        repr['medicoNombre'] = instance.medico.nombre + ' ' + instance.medico.apPaterno + ' ' + instance.medico.apMaterno
+        repr['medicoNumRegistro'] = instance.medico.numRegistro
+
+        return repr
+
 
 class RespuestaDetailSerializer(serializers.ModelSerializer):
     class Meta:
@@ -81,7 +94,10 @@ class RespuestaDetailSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         repr = super().to_representation(instance)
-        repr['opcionDescripcion'] = instance.opcion.descripcion
+        if instance.opcion is None:
+            repr['opcionDescripcion'] = 'No hay opcion'
+        else:
+            repr['opcionDescripcion'] = instance.opcion.descripcion
         repr['encuestaTitulo'] = instance.encuesta.titulo
         repr['preguntaDescripcion'] = instance.pregunta.descripcion
         repr['medicoNombre'] = instance.medico.nombre + ' ' + instance.medico.apPaterno + ' ' + instance.medico.apMaterno
