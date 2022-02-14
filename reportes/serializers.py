@@ -111,13 +111,16 @@ class DirectorioListSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         repr = super().to_representation(instance)
         # repr['nombreCompleto'] = instance.nombre + ' ' + instance.apPaterno + ' ' + instance.apMaterno
+
         try:
             dato = Certificado.objects.filter(medico=instance.id)[0]
             repr['ultimaCertificacion'] = dato.fechaCertificacion
             repr['ultimoCertificado'] = dato.id
-            
+            repr['alias'] = instance.nombre.lower() + '-' + instance.apPaterno.lower() + '-' + instance.apMaterno.lower() + '-' + str(dato.id)
+
         except:
             repr['ultimaCertificacion'] = 'No existe'
             repr['ultimoCertificado'] = 'No existe'
+            repr['alias'] = instance.nombre.lower() + '-' + instance.apPaterno.lower() + '-' + instance.apMaterno.lower()
 
         return repr

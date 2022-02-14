@@ -31,7 +31,7 @@ def configDB():
         telCelular='telCelular2', telParticular='telParticular2', email='laura@mb.company', numRegistro=222, aceptado=False, telConsultorio='telConsultorio2', sexo='F',
         anioCertificacion=2000, isConsejero=False, isProfesor=True, isCertificado=True, estudioExtranjero=True, isExtranjero=True)
     medico3 = Medico.objects.create(
-        nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp3', fechaNac='2020-09-09', pais='pais3', estado='estado3', ciudad='ciudad3',
+        nombre='GABRIEL', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp3', fechaNac='2020-09-09', pais='pais3', estado='estado3', ciudad='ciudad3',
         deleMuni='deleMuni3', colonia='colonia', calle='calle3', cp='cp3', numExterior='numExterior3', rfcFacturacion='rfcFacturacion3', cedProfesional='cedProfesional3',
         cedEspecialidad='cedEspecialidad3', cedCirugiaGral='cedCirugiaGral3', hospitalResi='hospitalResi3', telJefEnse='telJefEnse3', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
         telCelular='telCelular3', telParticular='telParticular3', email='gabriel@mb.company', numRegistro=333, aceptado=True, telConsultorio='telConsultorio3', sexo='M',
