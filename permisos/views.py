@@ -13,6 +13,7 @@ log = logging.getLogger('django')
 
 class PermisosListView(ListAPIView):
     serializer_class = PermisosListSerializer
+    permission_classes = (permissions.IsAdminUser,)
 
     def get_queryset(self):
         queryset = Permission.objects.all().order_by('content_type')
@@ -34,6 +35,7 @@ class UsuariosFilteredListView(ListAPIView):
     serializer_class = UsuariosFilteredListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = UsuariosFilter
+    permission_classes = (permissions.IsAdminUser,)
 
 
 class UsuariosPermisosEndPoint(APIView):
@@ -70,3 +72,4 @@ class UsuariosPermisosEndPoint(APIView):
 class UsuariosDetailView(RetrieveAPIView):
     queryset = User.objects.filter()
     serializer_class = UsuariosDetailSerializer
+    permission_classes = (permissions.IsAdminUser,)
