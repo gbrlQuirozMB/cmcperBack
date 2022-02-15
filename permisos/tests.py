@@ -29,6 +29,8 @@ def configDB():
 
     uNormal.user_permissions.set([permisoAdd, permisoChange, permisoDelete, permisoView])
 
+    # uNormal.user_permissions.set([permisoAdd])
+
     medico3 = Medico.objects.create(
         id=3, nombre='elianid', apPaterno='tolentino', apMaterno='olvera', rfc='quog??0406', curp='curp1', fechaNac='2023-03-03', pais='pais1', estado='estado1', ciudad='ciudad1',
         deleMuni='deleMuni1', colonia='colonia', calle='calle1', cp='cp1', numExterior='numExterior1', rfcFacturacion='rfcFacturacion1', cedProfesional='cedProfesional1',
@@ -59,6 +61,38 @@ class GetPermisosTest(APITestCase):
 
         response = self.client.get('/api/permisos/list/')
         print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+# python manage.py test permisos.tests.GetUsuariosFilteredTest
+class GetUsuariosFilteredTest(APITestCase):
+    def setUp(self):
+
+        configDB()
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/permisos/usuarios/list/')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/permisos/usuarios/list/?username=normal')
+        print(f'response JSON ===>>> username=normal \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/permisos/usuarios/list/?nombreNS=Panchito')
+        print(f'response JSON ===>>> nombreNS=Panchito \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/permisos/usuarios/list/?apellidosNS=Perez')
+        print(f'response JSON ===>>> apellidosNS=Perez \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/permisos/usuarios/list/?emailNS=limitado')
+        print(f'response JSON ===>>> emailNS=limitado \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
