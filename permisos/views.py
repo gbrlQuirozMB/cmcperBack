@@ -65,3 +65,8 @@ class UsuariosPermisosEndPoint(APIView):
             # respuesta = {"detail": str(e)}
             # return Response(respuesta, status=status.HTTP_409_CONFLICT)
             raise ResponseError(f'Error: {str(e)}', 409)
+
+
+class UsuariosDetailView(RetrieveAPIView):
+    queryset = User.objects.filter()
+    serializer_class = UsuariosDetailSerializer

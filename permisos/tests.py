@@ -122,6 +122,22 @@ class PutPermisosUsuariosTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
+# python manage.py test permisos.tests.GetUsuariosDetailTest
+class GetUsuariosDetailTest(APITestCase):
+    def setUp(self):
+
+        configDB()
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/permisos/usuarios/2/detail/')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
 # python manage.py test permisos.tests.DataBaseTest
 class DataBaseTest(APITestCase):
     def setUp(self):
