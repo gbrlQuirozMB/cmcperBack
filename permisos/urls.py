@@ -6,5 +6,5 @@ from .views import *
 app_name = 'permisos'
 
 urlpatterns = [
-    
+    path('list/', PermisosListView.as_view(), ),
 ]
