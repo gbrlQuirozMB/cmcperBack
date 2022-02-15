@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'conacem',
     'entregaFisica',
     'encuestas',
+    'permisos',
 ]
 
 MIDDLEWARE = [

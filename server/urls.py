@@ -41,6 +41,7 @@ urlpatterns = [
     path('api/conacem/', include('conacem.urls')),
     path('api/entrega-fisica/', include('entregaFisica.urls')),
     path('api/encuestas/', include('encuestas.urls')),
+    path('api/permisos/', include('permisos.urls')),
 
     path('api/admin/password_reset/', auth_views.PasswordResetView.as_view(template_name='admin/password_reset.html'), name='password_reset'),
     path('api/admin/password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='admin/password_reset_done.html'), name='password_reset_done'),
