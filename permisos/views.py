@@ -3,6 +3,12 @@ from rest_framework.generics import DestroyAPIView, ListAPIView, CreateAPIView, 
 from .serializers import *
 from api.exceptions import *
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter, DateFilter
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status, permissions
+
+import logging
+log = logging.getLogger('django')
 
 
 class PermisosListView(ListAPIView):
@@ -28,3 +34,34 @@ class UsuariosFilteredListView(ListAPIView):
     serializer_class = UsuariosFilteredListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = UsuariosFilter
+
+
+class UsuariosPermisosEndPoint(APIView):
+    permission_classes = (permissions.IsAdminUser,)
+
+    def put(self, request, *args, **kwargs):
+        try:
+            usuarioId = kwargs['pk']
+            permisos = request.data['permisos']
+
+            usuario = User.objects.get(id=usuarioId)
+            permisosList = []
+            for dato in permisos:
+                permisosList.append(Permission.objects.get(codename=dato))
+            usuario.user_permissions.set(permisosList)
+
+            datos = {
+                'id': usuario.id,
+                'username': usuario.username,
+                'first_name': usuario.first_name,
+                'last_name': usuario.last_name,
+                'email': usuario.email,
+                'permisos': usuario.get_user_permissions()
+            }
+
+            return Response(datos)
+        except Exception as e:
+            # log.error(f'--->>> {str(e)}')
+            # respuesta = {"detail": str(e)}
+            # return Response(respuesta, status=status.HTTP_409_CONFLICT)
+            raise ResponseError(f'Error: {str(e)}', 409)

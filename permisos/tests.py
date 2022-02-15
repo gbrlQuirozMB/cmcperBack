@@ -96,6 +96,32 @@ class GetUsuariosFilteredTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
+# python manage.py test permisos.tests.PutPermisosUsuariosTest
+class PutPermisosUsuariosTest(APITestCase):
+    def setUp(self):
+
+        configDB()
+
+        self.json = {
+            "permisos": [
+                "delete_nada", "view_nada"
+            ]
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        # response = self.client.get('/api/permisos/usuarios/list/?nombreNS=Panchito')
+        # print(f'response JSON ===>>> nombreNS=Panchito \n {json.dumps(response.json())} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.put('/api/permisos/usuarios/2/permisos/update/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
 # python manage.py test permisos.tests.DataBaseTest
 class DataBaseTest(APITestCase):
     def setUp(self):
