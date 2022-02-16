@@ -107,3 +107,8 @@ class UsuariosUpdateView(UpdateAPIView):
     #     request.data['password'] = BaseUserManager().make_random_password()
 
     #     return self.update(request, *args, **kwargs)
+
+
+class UsuariosDeleteView(DestroyAPIView):
+    queryset = User.objects.filter()
+    permission_classes = (permissions.IsAdminUser,)

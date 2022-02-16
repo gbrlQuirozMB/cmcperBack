@@ -12,4 +12,5 @@ urlpatterns = [
     path('usuarios/<pk>/detail/', UsuariosDetailView.as_view(), ),
     path('usuarios/create/', UsuariosCreateView.as_view(), ),
     path('usuarios/<pk>/update/', UsuariosUpdateView.as_view(), ),
+    path('usuarios/<pk>/delete/', UsuariosDeleteView.as_view(), ),
 ]
