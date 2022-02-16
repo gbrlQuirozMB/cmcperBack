@@ -140,7 +140,7 @@ class OpcionDeleteView(DestroyAPIView):
 
 class RespuestaCreateView(CreateAPIView):
     serializer_class = RespuestaSerializer
-    permission_classes = (permissions.IsAdminUser,)
+    # permission_classes = (permissions.IsAdminUser,)
 
     def post(self, request, *args, **kwargs):
         serializer = RespuestaSerializer(data=request.data)
@@ -161,19 +161,22 @@ class RespuestaFilteredListView(ListAPIView):
     serializer_class = RespuestaListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = RespuestaFilter
+    permission_classes = (permissions.IsAdminUser,)
 
 
 class RespuestaDetailView(RetrieveAPIView):
     queryset = Respuesta.objects.filter()
     serializer_class = RespuestaDetailSerializer
+    permission_classes = (permissions.IsAdminUser,)
 
 
 class RespuestaUpdateView(UpdateAPIView):
     queryset = Respuesta.objects.filter()
     serializer_class = RespuestaSerializer
-    permission_classes = (permissions.IsAdminUser,)
+    # permission_classes = (permissions.IsAdminUser,)
     http_method_names = ['put']
 
 
 class RespuestaDeleteView(DestroyAPIView):
     queryset = Respuesta.objects.filter()
+    permission_classes = (permissions.IsAdminUser,)
