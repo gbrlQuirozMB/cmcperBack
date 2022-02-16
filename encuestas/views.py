@@ -161,7 +161,7 @@ class RespuestaFilteredListView(ListAPIView):
     serializer_class = RespuestaListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = RespuestaFilter
-    permission_classes = (permissions.IsAdminUser,)
+    # permission_classes = (permissions.IsAdminUser,)
 
 
 class RespuestaDetailView(RetrieveAPIView):
