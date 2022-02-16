@@ -145,8 +145,6 @@ class PostUsuariosTest(APITestCase):
 
         configDB()
 
-        # user = User.objects.create_user(username=username, email=email, password=password, first_name=nombreInstitucion, last_name=contacto, is_staff=True)
-
         self.json = {
             "username": "gabrielMB",
             "email": "gabriel@mb.company",
@@ -160,6 +158,33 @@ class PostUsuariosTest(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         response = self.client.post('/api/permisos/usuarios/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+
+# python manage.py test permisos.tests.PutUsuariosTest
+class PutUsuariosTest(APITestCase):
+    def setUp(self):
+
+        configDB()
+
+        self.json = {
+            "username": "gabrielMB",
+            "email": "gabriel@mb.company",
+            "first_name": "Gabriel",
+            "last_name": "Quiroz Olvera"
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/permisos/usuarios/2/detail/')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.put('/api/permisos/usuarios/2/update/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

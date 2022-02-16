@@ -11,4 +11,5 @@ urlpatterns = [
     path('usuarios/<pk>/permisos/update/', UsuariosPermisosEndPoint.as_view(), ),
     path('usuarios/<pk>/detail/', UsuariosDetailView.as_view(), ),
     path('usuarios/create/', UsuariosCreateView.as_view(), ),
+    path('usuarios/<pk>/update/', UsuariosUpdateView.as_view(), ),
 ]

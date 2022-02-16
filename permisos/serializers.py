@@ -32,4 +32,9 @@ class UsuariosSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'first_name', 'last_name', 'email', 'password']
-        # fields = '__all__'
+
+
+class UsuariosUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'first_name', 'last_name', 'email']

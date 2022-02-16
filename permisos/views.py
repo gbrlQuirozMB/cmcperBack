@@ -94,3 +94,16 @@ class UsuariosCreateView(CreateAPIView):
             return self.create(request, *args, **kwargs)
         log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
+
+
+class UsuariosUpdateView(UpdateAPIView):
+    queryset = User.objects.filter()
+    serializer_class = UsuariosUpdateSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
+
+    # sin password ya que este endpoint no es para eso! ademas que se guarda encriptado, no se puede extraer!
+    # def put(self, request, *args, **kwargs):
+    #     request.data['password'] = BaseUserManager().make_random_password()
+
+    #     return self.update(request, *args, **kwargs)
