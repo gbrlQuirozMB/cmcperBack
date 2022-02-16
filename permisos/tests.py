@@ -83,16 +83,16 @@ class GetUsuariosFilteredTest(APITestCase):
         print(f'response JSON ===>>> username=normal \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = self.client.get('/api/permisos/usuarios/list/?nombreNS=Panchito')
-        print(f'response JSON ===>>> nombreNS=Panchito \n {json.dumps(response.json())} \n ---')
+        response = self.client.get('/api/permisos/usuarios/list/?first_name=Panchito')
+        print(f'response JSON ===>>> first_name=Panchito \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = self.client.get('/api/permisos/usuarios/list/?apellidosNS=Perez')
-        print(f'response JSON ===>>> apellidosNS=Perez \n {json.dumps(response.json())} \n ---')
+        response = self.client.get('/api/permisos/usuarios/list/?last_name=Perez')
+        print(f'response JSON ===>>> last_name=Perez \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = self.client.get('/api/permisos/usuarios/list/?emailNS=limitado')
-        print(f'response JSON ===>>> emailNS=limitado \n {json.dumps(response.json())} \n ---')
+        response = self.client.get('/api/permisos/usuarios/list/?email=limitado')
+        print(f'response JSON ===>>> email=limitado \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 

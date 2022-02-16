@@ -21,13 +21,13 @@ class PermisosListView(ListAPIView):
 
 
 class UsuariosFilter(FilterSet):
-    nombreNS = CharFilter(field_name='first_name', lookup_expr='icontains')
-    apellidosNS = CharFilter(field_name='last_name', lookup_expr='icontains')
-    emailNS = CharFilter(field_name='email', lookup_expr='icontains')
+    first_name = CharFilter(field_name='first_name', lookup_expr='icontains')
+    last_name = CharFilter(field_name='last_name', lookup_expr='icontains')
+    email = CharFilter(field_name='email', lookup_expr='icontains')
 
     class Meta:
         model = User
-        fields = ['username', 'nombreNS', 'apellidosNS', 'emailNS']
+        fields = ['username', 'first_name', 'last_name', 'email']
 
 
 class UsuariosFilteredListView(ListAPIView):
@@ -58,7 +58,7 @@ class UsuariosPermisosEndPoint(APIView):
                 'first_name': usuario.first_name,
                 'last_name': usuario.last_name,
                 'email': usuario.email,
-                'permisos': usuario.get_user_permissions()
+                'user_permissions': usuario.get_user_permissions()
             }
 
             return Response(datos)
