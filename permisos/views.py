@@ -39,6 +39,12 @@ class UsuariosFilteredListView(ListAPIView):
 
 
 class UsuariosPermisosEndPoint(APIView):
+    """
+    Sólo se recibe el siguiente json:
+    "permisos": [
+                ArrayOf: codenames: string
+            ]
+    """
     permission_classes = (permissions.IsAdminUser,)
 
     def put(self, request, *args, **kwargs):

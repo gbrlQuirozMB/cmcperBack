@@ -113,6 +113,7 @@ class PutPermisosUsuariosTest(APITestCase):
     def test(self):
         self.client.force_authenticate(user=self.user)
 
+        print(f'--->>>json: {self.json}')
         # response = self.client.get('/api/permisos/usuarios/list/?nombreNS=Panchito')
         # print(f'response JSON ===>>> nombreNS=Panchito \n {json.dumps(response.json())} \n ---')
         # self.assertEqual(response.status_code, status.HTTP_200_OK)
