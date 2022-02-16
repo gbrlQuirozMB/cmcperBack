@@ -6,6 +6,8 @@ from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFi
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
+from django.contrib.auth.base_user import BaseUserManager
+
 
 import logging
 log = logging.getLogger('django')
@@ -79,3 +81,16 @@ class UsuariosDetailView(RetrieveAPIView):
     queryset = User.objects.filter()
     serializer_class = UsuariosDetailSerializer
     permission_classes = (permissions.IsAdminUser,)
+
+
+class UsuariosCreateView(CreateAPIView):
+    serializer_class = UsuariosSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+    def post(self, request, *args, **kwargs):
+        request.data['password'] = BaseUserManager().make_random_password()
+        serializer = UsuariosSerializer(data=request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)

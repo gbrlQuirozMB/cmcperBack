@@ -20,9 +20,16 @@ class UsuariosDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'first_name', 'last_name', 'email', 'user_permissions']
-        
+
     def to_representation(self, instance):
         repr = super().to_representation(instance)
         repr['codenames'] = instance.get_user_permissions()
 
         return repr
+
+
+class UsuariosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'password']
+        # fields = '__all__'
