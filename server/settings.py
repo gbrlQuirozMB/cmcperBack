@@ -31,10 +31,10 @@ ALLOWED_HOSTS = ["*"]
 # CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
-    'http://localhost:8000',
-    'http://2b40d82cf307.ngrok.io',  # back
-    'http://localhost:4200',
-    # 'http://54625c39d9d4.ngrok.io',  # front
+    'directorio.cmcper.enproduccion.com',
+    'cirujanoscertificados.org',
+    'cmcper.org',
+    'cmcper.org.mx',
 )
 
 # Application definition
