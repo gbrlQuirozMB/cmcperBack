@@ -33,10 +33,10 @@ CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:8000',
     'http://localhost:4200',
-    'http://directorio.cmcper.enproduccion.com',
-    'http://cirujanoscertificados.org',
-    'http://cmcper.org',
-    'http://cmcper.org.mx',
+    'https://directorio.cmcper.enproduccion.com',
+    'https://cirujanoscertificados.org',
+    'https://cmcper.org',
+    'https://cmcper.org.mx',
 )
 
 # Application definition
