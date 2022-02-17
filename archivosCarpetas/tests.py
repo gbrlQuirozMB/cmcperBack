@@ -4,8 +4,6 @@ from rest_framework.test import APITestCase
 from django.contrib.auth.models import User
 
 
-
-
 def configDB():
     medico1 = Medico.objects.create(
         nombre='gabriel', apPaterno='quiroz', apMaterno='olvera', rfc='quog??0406', curp='curp3', fechaNac='2020-09-09', pais='pais3', estado='estado3', ciudad='ciudad3',
@@ -19,17 +17,16 @@ def configDB():
         cedEspecialidad='cedEspecialidad1', cedCirugiaGral='cedCirugiaGral1', hospitalResi='hospitalResi1', telJefEnse='telJefEnse1', fechaInicioResi='1999-06-06', fechaFinResi='2000-07-07',
         telCelular='telCelular1', telParticular='telParticular1', email='elianid@mb.company', numRegistro=111, aceptado=True, telConsultorio='telConsultorio1', sexo='F',
         anioCertificacion=2022, isConsejero=True, isProfesor=False, isCertificado=True, estudioExtranjero=False, isExtranjero=False)
-    
+
     carpeta1 = Carpeta.objects.create(medico=medico1, nombre='carpeta1')
     carpeta2 = Carpeta.objects.create(medico=medico1, nombre='carpeta2')
     carpeta3 = Carpeta.objects.create(medico=medico2, nombre='carpeta3')
-    
+
     Archivo.objects.create(carpeta=carpeta1, nombre='sexoso.jpg', archivo='sexoso.jpg')
     Archivo.objects.create(carpeta=carpeta1, nombre='fotos calientes.jpg', archivo='fot-Hot.jpg')
     Archivo.objects.create(carpeta=carpeta2, nombre='gatitas sexys.jpg', archivo='pussy.jpg')
     Archivo.objects.create(carpeta=carpeta3, nombre='juguetes sexuales.jpg', archivo='toys.jpg')
     Archivo.objects.create(carpeta=carpeta2, nombre='no se algo de sexo.jpg', archivo='unknow-sex.jpg')
-    
 
 
 # python manage.py test archivosCarpetas.tests.BaseDatosTest
@@ -44,4 +41,3 @@ class BaseDatosTest(APITestCase):
         datos = Archivo.objects.all()
         for dato in datos:
             print(f'--->>>id: {dato.id} - carpeta: {dato.carpeta.nombre} - medico: {dato.carpeta.medico.nombre} - nombre: {dato.nombre} - archivo: {dato.archivo}')
-
