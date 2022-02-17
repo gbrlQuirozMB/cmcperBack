@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     'entregaFisica',
     'encuestas',
     'permisos',
+    'archivosCarpetas',
 ]
 
 MIDDLEWARE = [
