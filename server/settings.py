@@ -31,10 +31,10 @@ ALLOWED_HOSTS = ["*"]
 # CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
-    'directorio.cmcper.enproduccion.com',
-    'cirujanoscertificados.org',
-    'cmcper.org',
-    'cmcper.org.mx',
+    'http://directorio.cmcper.enproduccion.com',
+    'http://cirujanoscertificados.org',
+    'http://cmcper.org',
+    'http://cmcper.org.mx',
 )
 
 # Application definition
