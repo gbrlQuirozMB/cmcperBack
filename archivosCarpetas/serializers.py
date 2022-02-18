@@ -28,3 +28,9 @@ class ArchivoSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ArchivoListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Archivo
+        fields = '__all__'
+
+

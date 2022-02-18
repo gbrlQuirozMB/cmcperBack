@@ -13,4 +13,5 @@ urlpatterns = [
     path('carpeta/<pk>/delete/', CarpetaDeleteView.as_view(), ),
 
     path('archivo/create/', ArchivoCreateView.as_view(), ),
+    path('archivo/list/', ArchivoFilteredListView.as_view(), ),
 ]

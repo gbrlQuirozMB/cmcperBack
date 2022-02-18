@@ -181,3 +181,23 @@ class PostArchivoTest(APITestCase):
         # self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
+# python manage.py test archivosCarpetas.tests.GetArchivoFilteredListTest
+class GetArchivoFilteredListTest(APITestCase):
+    def setUp(self):
+
+        configDB()
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/archivos-carpetas/archivo/list/')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get('/api/archivos-carpetas/archivo/list/?carpeta=3')
+        print(f'response JSON ===>>> nombreRecibeNS=recibe3 \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+

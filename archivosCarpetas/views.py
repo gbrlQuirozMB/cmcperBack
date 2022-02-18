@@ -56,3 +56,16 @@ class ArchivoCreateView(CreateAPIView):
         raise CamposIncorrectos(serializer.errors)
 
 
+class ArchivoFilter(FilterSet):
+    class Meta:
+        model = Archivo
+        fields = ['carpeta']
+
+
+class ArchivoFilteredListView(ListAPIView):
+    queryset = Archivo.objects.all()
+    serializer_class = ArchivoListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ArchivoFilter
+
+
