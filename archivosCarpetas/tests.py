@@ -201,3 +201,19 @@ class GetArchivoFilteredListTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
+# python manage.py test archivosCarpetas.tests.GetArchivoDetailTest
+class GetArchivoDetailTest(APITestCase):
+    def setUp(self):
+
+        configDB()
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get('/api/archivos-carpetas/archivo/3/detail/')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+

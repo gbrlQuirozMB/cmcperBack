@@ -69,3 +69,8 @@ class ArchivoFilteredListView(ListAPIView):
     filterset_class = ArchivoFilter
 
 
+class ArchivoDetailView(RetrieveAPIView):
+    queryset = Archivo.objects.filter()
+    serializer_class = ArchivoDetailSerializer
+
+
