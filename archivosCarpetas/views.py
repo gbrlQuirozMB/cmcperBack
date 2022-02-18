@@ -81,3 +81,5 @@ class ArchivoUpdateView(UpdateAPIView):
     http_method_names = ['put']
 
 
+class ArchivoDeleteView(DestroyAPIView):
+    queryset = Archivo.objects.filter()

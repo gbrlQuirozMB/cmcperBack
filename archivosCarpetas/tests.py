@@ -242,3 +242,21 @@ class PutArchivoUpdateTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
+# python manage.py test archivosCarpetas.tests.DeleteArchivoTest
+class DeleteArchivoTest(APITestCase):
+    def setUp(self):
+
+        configDB()
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.delete('/api/archivos-carpetas/archivo/2/delete/')
+        print(f'response JSON ===>>> ok 204 sin contenido \n {response.content} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        response = self.client.delete('/api/archivos-carpetas/archivo/33/delete/')
+        print(f'response JSON ===>>> ok 204 sin contenido \n {response.content} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

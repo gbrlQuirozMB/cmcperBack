@@ -16,4 +16,5 @@ urlpatterns = [
     path('archivo/list/', ArchivoFilteredListView.as_view(), ),
     path('archivo/<pk>/detail/', ArchivoDetailView.as_view(), ),
     path('archivo/<pk>/update/', ArchivoUpdateView.as_view(), ),
+    path('archivo/<pk>/delete/', ArchivoDeleteView.as_view(), ),
 ]
