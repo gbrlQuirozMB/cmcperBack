@@ -19,3 +19,10 @@ class CarpetaCreateView(CreateAPIView):
             return self.create(request, *args, **kwargs)
         log.error(f'--->>>campos incorrectos: {serializer.errors}')
         raise CamposIncorrectos(serializer.errors)
+
+
+class CarpetaListView(ListAPIView):
+    queryset = Carpeta.objects.all()
+    serializer_class = CarpetaListSerializer
+
+
