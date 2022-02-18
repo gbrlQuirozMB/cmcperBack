@@ -38,3 +38,5 @@ class CarpetaUpdateView(UpdateAPIView):
     http_method_names = ['put']
 
 
+class CarpetaDeleteView(DestroyAPIView):
+    queryset = Carpeta.objects.filter()
