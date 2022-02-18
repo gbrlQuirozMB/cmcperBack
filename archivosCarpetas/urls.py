@@ -6,5 +6,6 @@ from .views import *
 app_name = 'archivos-carpetas'
 
 urlpatterns = [
-    
+    path('carpeta/create/', CarpetaCreateView.as_view(), ),
+
 ]

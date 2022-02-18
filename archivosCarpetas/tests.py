@@ -3,6 +3,9 @@ from .models import *
 from rest_framework.test import APITestCase
 from django.contrib.auth.models import User
 
+import json
+from rest_framework import status
+
 
 def configDB():
     medico1 = Medico.objects.create(
@@ -41,3 +44,30 @@ class BaseDatosTest(APITestCase):
         datos = Archivo.objects.all()
         for dato in datos:
             print(f'--->>>id: {dato.id} - carpeta: {dato.carpeta.nombre} - medico: {dato.carpeta.medico.nombre} - nombre: {dato.nombre} - archivo: {dato.archivo}')
+
+
+# python manage.py test archivosCarpetas.tests.PostCarpetasTest
+class PostCarpetasTest(APITestCase):
+    def setUp(self):
+
+        configDB()
+
+        self.json = {
+            "medico": 1,
+            "nombre": "carpetaNew"
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+        # print(f'--->>>json: {self.json}')
+
+        response = self.client.post('/api/archivos-carpetas/carpeta/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> ok \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        del self.json['medico']
+        response = self.client.post('/api/archivos-carpetas/carpeta/create/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> ok \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
