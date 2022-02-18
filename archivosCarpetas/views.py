@@ -26,3 +26,8 @@ class CarpetaListView(ListAPIView):
     serializer_class = CarpetaListSerializer
 
 
+class CarpetaDetailView(RetrieveAPIView):
+    queryset = Carpeta.objects.filter()
+    serializer_class = CarpetaDetailSerializer
+
+

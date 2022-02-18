@@ -14,3 +14,7 @@ class CarpetaListSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class CarpetaDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Carpeta
+        fields = '__all__'
