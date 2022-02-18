@@ -9,5 +9,6 @@ urlpatterns = [
     path('carpeta/create/', CarpetaCreateView.as_view(), ),
     path('carpeta/list/', CarpetaListView.as_view(), ),
     path('carpeta/<pk>/detail/', CarpetaDetailView.as_view(), ),
+    path('carpeta/<pk>/update/', CarpetaUpdateView.as_view(), ),
 
 ]

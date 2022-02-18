@@ -31,3 +31,10 @@ class CarpetaDetailView(RetrieveAPIView):
     serializer_class = CarpetaDetailSerializer
 
 
+class CarpetaUpdateView(UpdateAPIView):
+    queryset = Carpeta.objects.filter()
+    serializer_class = CarpetaSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
+
+

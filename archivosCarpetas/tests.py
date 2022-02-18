@@ -105,3 +105,24 @@ class GetCarpetaDetailTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
+# python manage.py test archivosCarpetas.tests.PutCarpetaUpdateTest
+class PutCarpetaUpdateTest(APITestCase):
+    def setUp(self):
+
+        configDB()
+
+        self.json = {
+            "medico": 2,
+            "nombre": "carpetaUpdate"
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.put('/api/archivos-carpetas/carpeta/2/update/', data=json.dumps(self.json), content_type="application/json")
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
