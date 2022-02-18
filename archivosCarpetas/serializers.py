@@ -18,3 +18,13 @@ class CarpetaDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Carpeta
         fields = '__all__'
+
+
+# --------------------------ARCHIVOS--------------------------
+
+class ArchivoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Archivo
+        fields = '__all__'
+
+

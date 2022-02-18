@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 import json
 from rest_framework import status
 
+from django.core.files.uploadedfile import SimpleUploadedFile
+
 
 def configDB():
     medico1 = Medico.objects.create(
@@ -27,8 +29,8 @@ def configDB():
 
     Archivo.objects.create(carpeta=carpeta1, nombre='sexoso.jpg', archivo='sexoso.jpg')
     Archivo.objects.create(carpeta=carpeta1, nombre='fotos calientes.jpg', archivo='fot-Hot.jpg')
-    Archivo.objects.create(carpeta=carpeta2, nombre='gatitas sexys.jpg', archivo='pussy.jpg')
-    Archivo.objects.create(carpeta=carpeta3, nombre='juguetes sexuales.jpg', archivo='toys.jpg')
+    Archivo.objects.create(carpeta=carpeta3, nombre='gatitas sexys.jpg', archivo='pussy.jpg')
+    Archivo.objects.create(carpeta=carpeta2, nombre='juguetes sexuales.jpg', archivo='toys.jpg')
     Archivo.objects.create(carpeta=carpeta2, nombre='no se algo de sexo.jpg', archivo='unknow-sex.jpg')
 
 
@@ -144,3 +146,38 @@ class DeleteCarpetaTest(APITestCase):
         response = self.client.delete('/api/archivos-carpetas/carpeta/33/delete/')
         print(f'response JSON ===>>> ok 204 sin contenido \n {response.content} \n ---')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+# --------------------------ARCHIVOS--------------------------
+
+
+# python manage.py test archivosCarpetas.tests.PostArchivoTest
+class PostArchivoTest(APITestCase):
+    def setUp(self):
+
+        configDB()
+
+        archivo = open('./uploads/testUnit.jpg', 'rb')
+        archivoFile = SimpleUploadedFile(archivo.name, archivo.read(), content_type='image/jpg')
+
+        self.json = {
+            "carpeta": 1,
+            "nombre": "archivoNew",
+            "archivo": archivoFile,
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post('/api/archivos-carpetas/archivo/create/', data=self.json, format='multipart')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.data)} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # del self.json['carpeta']
+        # response = self.client.post('/api/archivos-carpetas/archivo/create/', data=self.json, format='multipart')
+        # print(f'response JSON ===>>> ok \n {json.dumps(response.data)} \n ---')
+        # self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+

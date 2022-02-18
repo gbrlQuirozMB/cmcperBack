@@ -40,3 +40,19 @@ class CarpetaUpdateView(UpdateAPIView):
 
 class CarpetaDeleteView(DestroyAPIView):
     queryset = Carpeta.objects.filter()
+
+
+# --------------------------ARCHIVOS--------------------------
+
+class ArchivoCreateView(CreateAPIView):
+    serializer_class = ArchivoSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+    def post(self, request, *args, **kwargs):
+        serializer = ArchivoSerializer(data=request.data)
+        if serializer.is_valid():
+            return self.create(request, *args, **kwargs)
+        log.error(f'--->>>campos incorrectos: {serializer.errors}')
+        raise CamposIncorrectos(serializer.errors)
+
+
