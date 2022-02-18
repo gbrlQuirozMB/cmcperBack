@@ -74,3 +74,10 @@ class ArchivoDetailView(RetrieveAPIView):
     serializer_class = ArchivoDetailSerializer
 
 
+class ArchivoUpdateView(UpdateAPIView):
+    queryset = Archivo.objects.filter()
+    serializer_class = ArchivoSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    http_method_names = ['put']
+
+

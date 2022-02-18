@@ -217,3 +217,28 @@ class GetArchivoDetailTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
+# python manage.py test archivosCarpetas.tests.PutArchivoUpdateTest
+class PutArchivoUpdateTest(APITestCase):
+    def setUp(self):
+
+        configDB()
+
+        archivo = open('./uploads/testUnit.jpg', 'rb')
+        archivoFile = SimpleUploadedFile(archivo.name, archivo.read(), content_type='image/jpg')
+
+        self.json = {
+            "carpeta": 3,
+            "nombre": "archivoUpdate",
+            "archivo": archivoFile,
+        }
+
+        self.user = User.objects.create_user(username='gabriel', is_staff=True)  # IsAuthenticated
+
+    def test(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.put('/api/archivos-carpetas/archivo/3/update/', data=self.json, format='multipart')
+        print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
