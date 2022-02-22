@@ -2,6 +2,7 @@ from rest_framework import fields, serializers
 from .models import *
 
 from django.contrib.auth.models import Permission, User
+from django.contrib.auth.hashers import make_password
 
 
 class PermisosListSerializer(serializers.ModelSerializer):
@@ -38,6 +39,10 @@ class UsuariosSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'first_name', 'last_name', 'email', 'password', 'is_staff']
+        
+        def create(self, validated_data):
+            validated_data['password'] = make_password(validated_data['password'])
+            return User(**validated_data)
 
 
 class UsuariosUpdateSerializer(serializers.ModelSerializer):

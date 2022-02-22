@@ -8,7 +8,6 @@ from rest_framework.response import Response
 from rest_framework import status, permissions
 from django.contrib.auth.base_user import BaseUserManager
 
-
 import logging
 log = logging.getLogger('django')
 
