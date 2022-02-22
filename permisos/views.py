@@ -89,6 +89,7 @@ class UsuariosCreateView(CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         request.data['password'] = BaseUserManager().make_random_password()
+        request.data['is_staff'] = True
         serializer = UsuariosSerializer(data=request.data)
         if serializer.is_valid():
             return self.create(request, *args, **kwargs)
