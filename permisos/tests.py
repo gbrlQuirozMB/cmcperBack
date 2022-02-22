@@ -160,6 +160,11 @@ class PostUsuariosTest(APITestCase):
         response = self.client.post('/api/permisos/usuarios/create/', data=json.dumps(self.json), content_type="application/json")
         print(f'response JSON ===>>> ok \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        
+        queryset = User.objects.filter(username='gabrielMB')
+        for dato in queryset:
+            print(f'--->>>username: {dato.username}')
+            print(f'--->>>password: {dato.password}')
 
 
 # python manage.py test permisos.tests.PutUsuariosTest
