@@ -12,8 +12,8 @@ from rest_framework import status
 
 
 def configDB():
-    ulimitado = User.objects.create_user(username='limitado', email='limitado@cmcper.com', password='password', first_name='Juanito', last_name='Perez')
-    uNormal = User.objects.create_user(username='normal', email='normal@cmcper.com', password='password', first_name='Panchito', last_name='Sanchez')
+    ulimitado = User.objects.create_user(username='limitado', email='limitado@cmcper.com', password='password', first_name='Juanito', last_name='Perez',is_staff=False)
+    uNormal = User.objects.create_user(username='normal', email='normal@cmcper.com', password='password', first_name='Panchito', last_name='Sanchez',is_staff=True)
     # uAdmin = User.objects.create_user(username='admin', email='admin@cmcper.com', password='password', first_name='Enrique', last_name='Lucero', is_superuser=True, is_staff=True)
 
     ct1 = ContentType.objects.create(app_label='chingao', model='nada')
@@ -95,6 +95,9 @@ class GetUsuariosFilteredTest(APITestCase):
         print(f'response JSON ===>>> email=limitado \n {json.dumps(response.json())} \n ---')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+        response = self.client.get('/api/permisos/usuarios/list/?is_staff=false')
+        print(f'response JSON ===>>> email=limitado \n {json.dumps(response.json())} \n ---')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 # python manage.py test permisos.tests.PutPermisosUsuariosTest
 class PutPermisosUsuariosTest(APITestCase):

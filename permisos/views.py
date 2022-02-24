@@ -28,7 +28,7 @@ class UsuariosFilter(FilterSet):
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email']
+        fields = ['username', 'first_name', 'last_name', 'email', 'is_staff']
 
 
 class UsuariosFilteredListView(ListAPIView):
